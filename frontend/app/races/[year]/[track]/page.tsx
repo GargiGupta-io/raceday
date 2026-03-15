@@ -5,6 +5,7 @@ import Link from "next/link";
 import { use } from "react";
 import ResultsCard from "@/app/components/ResultsCard";
 import StandingsTable from "@/app/components/StandingsTable";
+import StrategyPanel from "@/app/components/StrategyPanel";
 
 const API = "http://localhost:8001";
 
@@ -121,7 +122,7 @@ export default function RacePage({
               <StandingsTable data={standings} />
             )}
             {tab === "strategy" && strategy && (
-              <StrategyPlaceholder data={strategy} />
+              <StrategyPanel data={strategy} />
             )}
           </>
         )}
@@ -133,23 +134,3 @@ export default function RacePage({
 
 
 
-function StrategyPlaceholder({ data }: { data: StrategyEntry[] }) {
-  return (
-    <div className="rounded-lg bg-zinc-900 overflow-hidden">
-      {data.map((entry) => (
-        <div
-          key={entry.driver}
-          className="flex items-center justify-between px-5 py-3 border-b border-zinc-800 last:border-0"
-        >
-          <div className="flex items-center gap-4">
-            <div>
-              <p className="text-sm font-medium text-zinc-100">{entry.driver}</p>
-              <p className="text-xs text-zinc-500">{entry.team}</p>
-            </div>
-          </div>
-          <p className="text-xs text-zinc-400">{entry.label}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
