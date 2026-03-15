@@ -7,7 +7,7 @@ import ResultsCard from "@/app/components/ResultsCard";
 import StandingsTable from "@/app/components/StandingsTable";
 import StrategyPanel from "@/app/components/StrategyPanel";
 
-const API = "http://localhost:8001";
+const API = "http://localhost:8080";
 
 interface RaceSummary {
   winner: string;
