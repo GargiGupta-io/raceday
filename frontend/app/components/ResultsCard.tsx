@@ -79,8 +79,8 @@ export default function ResultsCard({ data }: { data: RaceSummary }) {
             <p className="text-sm text-zinc-600">None</p>
           ) : (
             <ul className="space-y-1">
-              {data.retirements.map((r) => (
-                <li key={r.driver} className="text-sm text-zinc-500">
+              {data.retirements.map((r, i) => (
+                <li key={r.driver ?? i} className="text-sm text-zinc-500">
                   {r.driver}
                 </li>
               ))}
