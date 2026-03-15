@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { use } from "react";
+import ResultsCard from "@/app/components/ResultsCard";
 
 const API = "http://localhost:8001";
 
@@ -113,7 +114,7 @@ export default function RacePage({
 
             {/* Tab content */}
             {tab === "results" && results && (
-              <ResultsPlaceholder data={results} />
+              <ResultsCard data={results} />
             )}
             {tab === "standings" && standings && (
               <StandingsPlaceholder data={standings} />
@@ -129,39 +130,6 @@ export default function RacePage({
   );
 }
 
-function ResultsPlaceholder({ data }: { data: RaceSummary }) {
-  return (
-    <div className="rounded-lg bg-zinc-900 p-6 space-y-4">
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Winner</p>
-        <p className="text-lg font-semibold text-white">{data.winner}</p>
-        <p className="text-sm text-zinc-400">{data.winner_team}</p>
-      </div>
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Weather</p>
-        <p className="text-sm text-zinc-300">{data.weather}</p>
-      </div>
-      <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Podium</p>
-        {data.podium.map((p) => (
-          <p key={p.position} className="text-sm text-zinc-300">
-            P{p.position} — {p.driver} ({p.team})
-          </p>
-        ))}
-      </div>
-      {data.retirements.length > 0 && (
-        <div>
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Retirements</p>
-          {data.retirements.map((r) => (
-            <p key={r.driver} className="text-sm text-zinc-500">
-              {r.driver} ({r.team})
-            </p>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function StandingsPlaceholder({ data }: { data: StandingEntry[] }) {
   return (
