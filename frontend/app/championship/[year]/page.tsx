@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { use } from "react";
 
 const API = "http://localhost:8001";
@@ -50,14 +49,6 @@ export default function ChampionshipPage({
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-3xl px-6 py-12">
-
-        {/* Back link */}
-        <Link
-          href="/"
-          className="mb-8 inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
-        >
-          ← {year} season
-        </Link>
 
         {/* Header */}
         <div className="mb-8">

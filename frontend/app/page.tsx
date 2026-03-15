@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 const API = "http://localhost:8001";
@@ -18,8 +19,15 @@ interface Race {
 }
 
 export default function Home() {
-  const [year, setYear] = useState(2023);
+  const searchParams = useSearchParams();
+  const urlYear = searchParams.get("year");
+  const [year, setYear] = useState(urlYear ? parseInt(urlYear) : 2023);
   const [races, setRaces] = useState<Race[]>([]);
+
+  // Sync with nav year links
+  useEffect(() => {
+    if (urlYear) setYear(parseInt(urlYear));
+  }, [urlYear]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,12 +52,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-3xl px-6 py-12">
-
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold tracking-tight text-white">Raceday</h1>
-          <p className="mt-1 text-zinc-400 text-sm">F1 race results, strategy, and championship standings</p>
-        </div>
 
         {/* Year selector */}
         <div className="mb-8 flex gap-2 flex-wrap">
