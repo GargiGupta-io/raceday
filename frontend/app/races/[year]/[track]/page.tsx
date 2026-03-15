@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { use } from "react";
 import ResultsCard from "@/app/components/ResultsCard";
+import StandingsTable from "@/app/components/StandingsTable";
 
 const API = "http://localhost:8001";
 
@@ -117,7 +118,7 @@ export default function RacePage({
               <ResultsCard data={results} />
             )}
             {tab === "standings" && standings && (
-              <StandingsPlaceholder data={standings} />
+              <StandingsTable data={standings} />
             )}
             {tab === "strategy" && strategy && (
               <StrategyPlaceholder data={strategy} />
@@ -131,41 +132,6 @@ export default function RacePage({
 }
 
 
-function StandingsPlaceholder({ data }: { data: StandingEntry[] }) {
-  return (
-    <div className="rounded-lg bg-zinc-900 overflow-hidden">
-      {data.map((entry) => (
-        <div
-          key={entry.driver}
-          className="flex items-center justify-between px-5 py-3 border-b border-zinc-800 last:border-0"
-        >
-          <div className="flex items-center gap-4">
-            <span className="w-6 text-right text-xs text-zinc-500 font-mono">
-              {entry.finish_position ?? "—"}
-            </span>
-            <div>
-              <p className="text-sm font-medium text-zinc-100">{entry.driver}</p>
-              <p className="text-xs text-zinc-500">{entry.team}</p>
-            </div>
-          </div>
-          <DeltaBadge delta={entry.positions_gained} status={entry.status} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function DeltaBadge({ delta, status }: { delta: number | null; status: string }) {
-  if (status === "Retired") {
-    return <span className="text-xs text-zinc-600">Retired</span>;
-  }
-  if (delta === null) return null;
-  if (delta > 0)
-    return <span className="text-xs font-medium text-emerald-400">+{delta}</span>;
-  if (delta < 0)
-    return <span className="text-xs font-medium text-red-400">{delta}</span>;
-  return <span className="text-xs text-zinc-600">—</span>;
-}
 
 function StrategyPlaceholder({ data }: { data: StrategyEntry[] }) {
   return (
