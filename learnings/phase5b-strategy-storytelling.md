@@ -238,11 +238,88 @@ This produces different narratives for every race without repeating the same str
 **1. Races with no stint data**
 Returns `["No detailed stint data available for this race."]` — a single paragraph that the frontend renders cleanly.
 
-**2. Driver code highlighting catches non-driver words**
-The regex `\b([A-Z]{3})\b` matches any 3-letter uppercase word, not just driver codes. "DRY", "WET", "THE" would also match. In practice this rarely happens because the narrative uses lowercase for most words, and the few false positives (DRY in weather descriptions) still look fine in bold.
-
-**3. Server restart needed for new endpoints**
+**2. Server restart needed for new endpoints**
 Even with `--reload`, adding new route paths in `api.py` sometimes doesn't get picked up by uvicorn's file watcher. Required a manual restart to test the new `/strategy/narrative` and `/strategy/stats` endpoints.
+
+---
+
+## Post-Build Improvements
+
+Three improvements were made after the initial build based on user feedback:
+
+### 1. Full driver names instead of codes
+
+**Problem:** Story mode showed "HUL was the first to blink" — meaningless to a beginner who doesn't know driver codes.
+
+**Fix:** Added a `_DRIVER_NAMES` mapping (78 drivers, 2010–2024) built from the Jolpica API. Created a `_dn(code)` helper that returns "Full Name (CODE)":
+
+```python
+_DRIVER_NAMES = {
+    "HAM": "Lewis Hamilton", "VER": "Max Verstappen",
+    "NOR": "Lando Norris", "LEC": "Charles Leclerc", ...
+}
+
+def _dn(code: str) -> str:
+    name = _DRIVER_NAMES.get(code, code)
+    return f"{name} ({code})" if name != code else code
+```
+
+Now reads: "Nico Hulkenberg (HUL) was the first to pit" — beginners learn the codes naturally.
+
+The frontend highlights these with a regex: full name in bold white, code in muted zinc:
+
+```typescript
+const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/g;
+
+// "Max Verstappen (VER)" → bold "Max Verstappen" + grey "(VER)"
+```
+
+### 2. Structured sections instead of flat paragraphs
+
+**Problem:** Story mode was a wall of plain paragraphs — no visual structure.
+
+**Fix:** Changed the API response from `list[str]` to `list[dict]` with `heading` + `body`:
+
+```python
+# Before: ["paragraph1", "paragraph2", ...]
+# After: [{"heading": "Race Conditions", "body": "..."}, {"heading": "The Key Move", "body": "..."}, ...]
+```
+
+Five named sections: "Race Conditions", "The Opening Gambit", "The Key Move", "Strategy Split", "The Winning Formula". Each renders in its own card with a coloured icon marker.
+
+### 3. Strategy breakdown replaces "strategies used" count
+
+**Problem:** "Strategies used: 4" didn't explain what the 4 strategies were.
+
+**Fix:** Replaced with a visual breakdown showing badges:
+
+```python
+# Before: "strategies": 4
+# After: "strategy_breakdown": [
+#   {"strategy": "0-stop", "count": 2},
+#   {"strategy": "1-stop", "count": 13},
+#   {"strategy": "2-stop", "count": 4},
+#   {"strategy": "3-stop", "count": 1}
+# ]
+```
+
+Frontend renders as small tags: `0-stop: 2` `1-stop: 13` `2-stop: 4` `3-stop: 1`
+
+---
+
+## Bugs Fixed During Build
+
+**1. `highlightDrivers` called on undefined body**
+In plain English: The frontend tried to highlight driver names in a paragraph that didn't exist, crashing the page.
+Cause: The API response format changed from `string[]` to `{heading, body}[]`, but the server was still returning the old format until restarted.
+Fix: Added `if (!text) return ""` guard in the highlight function.
+
+**2. `strategy_breakdown.map()` on undefined**
+In plain English: The stats panel tried to loop through strategy badges but the field didn't exist yet.
+Cause: Same server-not-restarted issue — old code returned `strategies: 4` (a number), new frontend expected `strategy_breakdown: [...]` (an array).
+Fix: Added `{stats.strategy_breakdown && stats.strategy_breakdown.length > 0 && (...)}` guard. Also restarted the server to serve the new format.
+
+**Root cause of both bugs:** uvicorn's `--reload` flag watches for file changes but doesn't always detect changes in imported modules (like `insights.py` imported by `api.py`). When in doubt, kill and restart the server manually.
 
 ---
 
@@ -250,10 +327,10 @@ Even with `--reload`, adding new route paths in `api.py` sometimes doesn't get p
 
 | File | Status | What it does |
 |------|--------|-------------|
-| `backend/core/insights.py` | **Modified** | Added `get_strategy_narrative()` + `get_strategy_stats()` |
+| `backend/core/insights.py` | **Modified** | `get_strategy_narrative()` (structured sections + full names), `get_strategy_stats()` (breakdown), `_DRIVER_NAMES` mapping |
 | `backend/api.py` | **Modified** | Added `/strategy/narrative` + `/strategy/stats` endpoints |
-| `frontend/app/components/StrategyStory.tsx` | **Created** | Story mode — prose narrative with driver highlighting |
-| `frontend/app/components/StrategyKey.tsx` | **Created** | Data mode side panel — compound legend + race stats |
+| `frontend/app/components/StrategyStory.tsx` | **Created** | Story mode — structured sections with driver name highlighting |
+| `frontend/app/components/StrategyKey.tsx` | **Created** | Data mode side panel — compound legend + strategy breakdown |
 | `frontend/app/races/[year]/[track]/page.tsx` | **Modified** | Story/Data sub-tabs inside Strategy tab |
 
 ---
@@ -263,14 +340,14 @@ Even with `--reload`, adding new route paths in `api.py` sometimes doesn't get p
 ### Strategy narrative API
 ```
 GET /races/{year}/{track}/strategy/narrative
-→ ["paragraph1", "paragraph2", "paragraph3", ...]
+→ [{"heading": "Race Conditions", "body": "..."}, {"heading": "The Key Move", "body": "..."}, ...]
 ```
 
 ### Strategy stats API
 ```
 GET /races/{year}/{track}/strategy/stats
-→ {most_common, strategies, first_to_pit, last_to_pit,
-   longest_stint, shortest_stint, compounds_used}
+→ {most_common, strategy_breakdown: [{strategy, count}],
+   first_to_pit, last_to_pit, longest_stint, shortest_stint, compounds_used}
 ```
 
 ### Key Terms
@@ -278,10 +355,11 @@ GET /races/{year}/{track}/strategy/stats
 |------|---------------|-----------|
 | Undercut | Pit before your rival to jump ahead on fresh tyres | Grid behind + pit earlier + finish ahead |
 | Overcut | Stay out longer to gain an advantage | Opposite of undercut — longer first stint pays off |
-| Strategy narrative | Auto-written race commentary | Template-based prose from stint data patterns |
+| Strategy narrative | Auto-written race commentary | Template-based prose with structured sections |
+| `_dn(code)` | Shows "Full Name (CODE)" for any driver | Lookup in `_DRIVER_NAMES` dict |
+| Strategy breakdown | Visual badges showing how many drivers per strategy | `[{strategy: "1-stop", count: 13}, ...]` |
 | Compound key | Colour legend for tyre types | Maps compound names to dot colours + descriptions |
-| Sub-tabs | Story/Data toggle within a main tab | Local state `strategyMode` switches between components |
 
 ---
 
-*Updated: 2026-03-17 | Project: Raceday | Phase 5B complete | Files: insights.py, api.py, StrategyStory.tsx, StrategyKey.tsx, page.tsx*
+*Updated: 2026-03-17 | Project: Raceday | Phase 5B complete + improvements | Files: insights.py, api.py, StrategyStory.tsx, StrategyKey.tsx, page.tsx*
