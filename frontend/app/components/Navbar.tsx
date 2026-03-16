@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-const YEARS = [2019, 2020, 2021, 2022, 2023, 2024];
+const YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   // Extract year from URL if present, default to 2023
   const yearMatch = pathname.match(/\/(\d{4})/);
@@ -52,21 +53,18 @@ export default function Navbar() {
         </div>
 
         {/* Year selector */}
-        <div className="flex items-center gap-1">
+        <select
+          value={activeYear}
+          onChange={(e) => {
+            const y = e.target.value;
+            router.push(isChampionship ? `/championship/${y}` : `/?year=${y}`);
+          }}
+          className="rounded bg-zinc-800 px-2 py-1.5 text-xs text-zinc-300 border border-zinc-700 focus:outline-none focus:border-zinc-500 cursor-pointer"
+        >
           {YEARS.map((y) => (
-            <Link
-              key={y}
-              href={isChampionship ? `/championship/${y}` : `/?year=${y}`}
-              className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
-                y === activeYear
-                  ? "text-white"
-                  : "text-zinc-600 hover:text-zinc-400"
-              }`}
-            >
-              {y}
-            </Link>
+            <option key={y} value={y}>{y}</option>
           ))}
-        </div>
+        </select>
 
       </div>
     </nav>

@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const API = "http://localhost:8080";
 
-const YEARS = [2019, 2020, 2021, 2022, 2023, 2024];
+const YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
 interface Race {
   round: number;
