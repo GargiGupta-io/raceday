@@ -71,6 +71,14 @@ def race_strategy(year: int, track: str):
     return data
 
 
+@app.get("/races/{year}/{track}/sidebar")
+def race_sidebar(year: int, track: str):
+    data = insights.get_sidebar_content(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
 @app.get("/championship/{year}/drivers")
 def championship_standings(year: int):
     data = insights.get_championship_standings(year)
