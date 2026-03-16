@@ -111,17 +111,17 @@ export default function RacePage({
         {error && <p className="text-red-400 text-sm">Could not load race data.</p>}
 
         {!loading && !error && (
-          <div className="flex gap-8">
+          <div className="flex flex-col lg:flex-row gap-8">
 
             {/* Main content — tabs */}
             <div className="flex-1 min-w-0">
               {/* Tab bar */}
-              <div className="mb-6 flex gap-1 border-b border-zinc-800 pb-0">
+              <div className="mb-6 flex gap-1 border-b border-zinc-800 pb-0 overflow-x-auto">
                 {(["results", "standings", "strategy", "discussion"] as Tab[]).map((t) => (
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px ${
+                    className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px whitespace-nowrap ${
                       tab === t
                         ? "border-red-500 text-white"
                         : "border-transparent text-zinc-500 hover:text-zinc-300"
@@ -147,13 +147,18 @@ export default function RacePage({
               )}
             </div>
 
-            {/* Sidebar */}
-            <div className="hidden lg:block w-72 shrink-0">
+            {/* Sidebar — below tabs on mobile, right column on desktop */}
+            <div className="w-full lg:w-72 shrink-0">
               {sidebar ? (
                 <FactsSidebar data={sidebar} />
               ) : (
-                <div className="rounded-lg bg-zinc-900 p-4">
-                  <p className="text-xs text-zinc-600">Loading sidebar...</p>
+                <div className="rounded-lg bg-zinc-900 p-4 animate-pulse">
+                  <div className="h-3 w-24 bg-zinc-800 rounded mb-4" />
+                  <div className="space-y-2">
+                    <div className="h-3 w-full bg-zinc-800 rounded" />
+                    <div className="h-3 w-3/4 bg-zinc-800 rounded" />
+                    <div className="h-3 w-5/6 bg-zinc-800 rounded" />
+                  </div>
                 </div>
               )}
             </div>
