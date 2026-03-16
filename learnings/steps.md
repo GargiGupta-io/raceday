@@ -598,6 +598,76 @@ Both loaders were tested against real data. RSS feeds returned 15 entries from T
 
 ---
 
+## ✅ Step 5 (4B) — get_did_you_know()
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/insights.py` — get_did_you_know(year, track) auto-stats generator
+
+**In plain English**
+Raceday can now automatically spot interesting things about a race from its data. It looks at the results and generates facts like "8 drivers retired — an unusually chaotic race" or "Perez gained 9 positions — the biggest climb of the race." It checks retirements, biggest movers, winners from far back on the grid, strategy variety, weather, and podium surprises. Tested against 2023 British GP (4 facts) and 2014 Australian GP (5 facts). Fixed a bug where Jolpica's retired drivers still had finish positions, making retirements invisible.
+
+**Files changed**
+~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 6 (4B) — get_sidebar_content()
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/insights.py` — get_sidebar_content(year, track) combining all three sidebar sources
+
+**In plain English**
+The sidebar content function ties everything together. Call it with a year and race name and it fetches articles from RSS feeds, pulls fan posts from Reddit, and generates auto-stats — then returns them all in one package. RSS and Reddit results are cached to disk after the first fetch so the page loads instantly on repeat visits. Tested against 2023 British GP: 0 articles (too old for live feeds), 1 race thread + 8 Reddit posts, 3 auto-generated facts.
+
+**Files changed**
+~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 7 (4B) — /sidebar API Route
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/api.py` — GET /races/{year}/{track}/sidebar endpoint
+
+**In plain English**
+The sidebar data is now available over HTTP. Start the backend server and hit `/races/2023/British%20Grand%20Prix/sidebar` and you get back a JSON object with articles, Reddit posts, and did-you-know facts — all in one response. Returns 404 if the race isn't indexed, same as the other endpoints.
+
+**Files changed**
+~ modified: backend/api.py
+
+---
+
+## ✅ Step 8 (4B) — FactsSidebar Component
+*Completed: 2026-03-16*
+
+**What was built**
+- `frontend/app/components/FactsSidebar.tsx` — sidebar component with three sections
+
+**In plain English**
+The sidebar now has a face. It shows three sections in dark zinc cards: "Did you know" with yellow bullet markers for auto-generated facts, "From the press" with clickable article headlines linking to The Race and Autosport, and "Fan discussion" showing Reddit's race thread plus top fan posts with upvote counts and comment numbers. Empty sections are hidden automatically.
+
+**Files changed**
++ created: frontend/app/components/FactsSidebar.tsx
+
+---
+
+## ✅ Step 9 (4B) — Wire Sidebar Into Race Page
+*Completed: 2026-03-16*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — sidebar fetch, wider layout, FactsSidebar rendered
+
+**In plain English**
+The race page now has two columns instead of one. The main content (tabs for Results, Standings, Strategy) sits on the left, and the sidebar with facts, press articles, and Reddit posts sits on the right. The sidebar loads independently from the tabs — so the main content appears instantly and the sidebar fills in a moment later without blocking anything. The layout widened from max-w-3xl to max-w-5xl to accommodate both columns. On smaller screens (below large breakpoint), the sidebar hides to keep things readable on mobile.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
 ## ✅ Step 5 (4A) — OpenMeteo Weather Test
 *Completed: 2026-03-16*
 
