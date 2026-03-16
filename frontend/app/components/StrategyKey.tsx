@@ -76,19 +76,21 @@ export default function StrategyKey({
             <StatRow label="Most popular" value={stats.most_common} />
 
             {/* Strategy breakdown */}
-            <div>
-              <span className="text-xs text-zinc-500">Pit stop strategies</span>
-              <div className="flex flex-wrap gap-1.5 mt-1">
-                {stats.strategy_breakdown.map((s) => (
-                  <span
-                    key={s.strategy}
-                    className="text-[10px] bg-zinc-800 text-zinc-300 rounded px-2 py-0.5"
-                  >
-                    {s.strategy}: {s.count}
-                  </span>
-                ))}
+            {stats.strategy_breakdown && stats.strategy_breakdown.length > 0 && (
+              <div>
+                <span className="text-xs text-zinc-500">Pit stop strategies</span>
+                <div className="flex flex-wrap gap-1.5 mt-1">
+                  {stats.strategy_breakdown.map((s) => (
+                    <span
+                      key={s.strategy}
+                      className="text-[10px] bg-zinc-800 text-zinc-300 rounded px-2 py-0.5"
+                    >
+                      {s.strategy}: {s.count}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {stats.first_to_pit && (
               <StatRow
