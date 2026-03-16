@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import AuthButton from "@/app/components/AuthButton";
 
 const YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018];
 
@@ -18,7 +19,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur">
-      <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-3">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
 
         {/* Brand */}
         <Link
@@ -52,19 +53,23 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Year selector */}
-        <select
-          value={activeYear}
-          onChange={(e) => {
-            const y = e.target.value;
-            router.push(isChampionship ? `/championship/${y}` : `/?year=${y}`);
-          }}
-          className="rounded bg-zinc-800 px-2 py-1.5 text-xs text-zinc-300 border border-zinc-700 focus:outline-none focus:border-zinc-500 cursor-pointer"
-        >
-          {YEARS.map((y) => (
-            <option key={y} value={y}>{y}</option>
-          ))}
-        </select>
+        {/* Year selector + Auth */}
+        <div className="flex items-center gap-3">
+          <select
+            value={activeYear}
+            onChange={(e) => {
+              const y = e.target.value;
+              router.push(isChampionship ? `/championship/${y}` : `/?year=${y}`);
+            }}
+            className="rounded bg-zinc-800 px-2 py-1.5 text-xs text-zinc-300 border border-zinc-700 focus:outline-none focus:border-zinc-500 cursor-pointer"
+          >
+            {YEARS.map((y) => (
+              <option key={y} value={y}>{y}</option>
+            ))}
+          </select>
+
+          <AuthButton />
+        </div>
 
       </div>
     </nav>
