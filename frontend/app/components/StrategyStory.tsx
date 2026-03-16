@@ -99,8 +99,8 @@ export default function StrategyStory({
   );
 }
 
-function highlightDrivers(text: string): string {
-  // Highlight "Full Name (CODE)" — make the name bold white, code in zinc
+function highlightDrivers(text: string | undefined): string {
+  if (!text) return "";
   return text.replace(
     DRIVER_NAME_PATTERN,
     '<span class="font-semibold text-white">$1</span> <span class="text-zinc-500">($2)</span>'
