@@ -19,7 +19,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from backend.core import loader
+from backend.core import loader, jolpica_loader, openmeteo_loader, compound_lookup
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -53,22 +53,28 @@ def _race_dir(year: int, track: str) -> Path:
 
 def index_race(year: int, track: str) -> bool:
     """
-    Fetch race results, weather, and stint data for the given race via the
-    loader and persist them to disk as JSON.
+    Fetch race results, weather, and stint data and persist to disk as JSON.
+
+    Year-aware routing:
+        2018+ → FastF1 (existing loader.py path)
+        ≤2017 → Jolpica + OpenMeteo + compound_lookup (historical path)
 
     Saves to:
         INDEX_DIR/{year}/{track}/race_results.json
         INDEX_DIR/{year}/{track}/weather.json
         INDEX_DIR/{year}/{track}/stints.json
 
-    Returns True if indexing succeeded, False if the loader returned no data.
-    Does not re-index if files already exist — call with force=True to overwrite.
+    Returns True if indexing succeeded, False if no data available.
     Stint data is optional — if unavailable, stints.json is written as {}.
     """
+    if year <= 2017:
+        return _index_race_historical(year, track)
+    return _index_race_fastf1(year, track)
+
+
+def _index_race_fastf1(year: int, track: str) -> bool:
+    """Index a race using FastF1 (2018+ path). Original logic."""
     race_dir = _race_dir(year, track)
-    results_path = race_dir / "race_results.json"
-    weather_path = race_dir / "weather.json"
-    stints_path  = race_dir / "stints.json"
 
     results = loader.get_race_results(year, track)
     if results is None:
@@ -77,7 +83,7 @@ def index_race(year: int, track: str) -> bool:
 
     weather = loader.get_weather_summary(year, track)
     if weather is None:
-        logger.warning("index_race: no weather returned for %s %s — storing empty dict", year, track)
+        logger.warning("index_race: no weather for %s %s — storing empty dict", year, track)
         weather = {}
 
     stints = loader.get_stint_data(year, track)
@@ -85,19 +91,89 @@ def index_race(year: int, track: str) -> bool:
         logger.warning("index_race: no stint data for %s %s — storing empty dict", year, track)
         stints = {}
 
+    _write_index(race_dir, results, weather, stints)
+    return True
+
+
+def _index_race_historical(year: int, track: str) -> bool:
+    """Index a race using Jolpica + OpenMeteo + compound_lookup (≤2017 path)."""
+    race_dir = _race_dir(year, track)
+
+    # Step 1: Find the round number for this track name
+    schedule = loader.get_season_schedule(year)
+    if schedule is None:
+        logger.warning("index_race_historical: no schedule for %s", year)
+        return False
+
+    race_info = None
+    for event in schedule:
+        if event["name"] == track:
+            race_info = event
+            break
+
+    if race_info is None:
+        logger.warning("index_race_historical: '%s' not found in %s schedule", track, year)
+        return False
+
+    round_num = race_info["round"]
+
+    # Step 2: Results from Jolpica
+    results = jolpica_loader.get_race_results(year, round_num)
+    if results is None:
+        logger.warning("index_race_historical: no results for %s %s — skipping", year, track)
+        return False
+
+    # Step 3: Weather from OpenMeteo (using circuit GPS from schedule)
+    lat = race_info.get("lat", 0)
+    lon = race_info.get("lon", 0)
+    date = race_info.get("date", "")
+    if lat and lon and date:
+        weather = openmeteo_loader.get_race_weather(date, lat, lon)
+        if weather is None:
+            logger.warning("index_race_historical: no weather for %s %s — storing empty dict", year, track)
+            weather = {}
+    else:
+        logger.warning("index_race_historical: missing GPS/date for %s %s — skipping weather", year, track)
+        weather = {}
+
+    # Step 4: Build stints from Jolpica pit stops + compound lookup
+    pit_stops = jolpica_loader.get_pit_stops(year, round_num)
+    stints: dict = {}
+
+    if pit_stops:
+        for driver_code, stops in pit_stops.items():
+            # Find total laps for this driver from results
+            driver_result = next((r for r in results if r["driver"] == driver_code), None)
+            total_laps = (driver_result or {}).get("total_laps") or 0
+
+            pit_laps = [s["lap"] for s in stops]
+            grid = (driver_result or {}).get("grid_position")
+
+            compounds = compound_lookup.assign_stint_compounds(
+                pit_laps, total_laps, grid, year, round_num, driver_code
+            )
+            driver_stints = compound_lookup.build_stints(pit_laps, compounds, total_laps)
+            if driver_stints:
+                stints[driver_code] = driver_stints
+
+    _write_index(race_dir, results, weather, stints)
+    return True
+
+
+def _write_index(race_dir: Path, results: list, weather: dict, stints: dict):
+    """Write the three JSON files to the race index directory."""
     race_dir.mkdir(parents=True, exist_ok=True)
 
-    with open(results_path, "w") as f:
+    with open(race_dir / "race_results.json", "w") as f:
         json.dump(results, f, indent=2)
 
-    with open(weather_path, "w") as f:
+    with open(race_dir / "weather.json", "w") as f:
         json.dump(weather, f, indent=2)
 
-    with open(stints_path, "w") as f:
+    with open(race_dir / "stints.json", "w") as f:
         json.dump(stints, f, indent=2)
 
-    logger.info("Indexed %s %s → %s", year, track, race_dir)
-    return True
+    logger.info("Indexed → %s", race_dir)
 
 
 def is_indexed(year: int, track: str) -> bool:
