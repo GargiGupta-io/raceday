@@ -1,395 +1,401 @@
-# Phase 4B — Facts & Theories Sidebar
+# Phase 4B — Facts & Theories Sidebar (Built)
 
-> How Raceday pulls live F1 journalism, fan theories, and race narratives from RSS feeds and the Reddit API to build a "did you know" sidebar alongside race results.
+> How Raceday pulls F1 journalism from RSS feeds, fan discussion from Reddit, and auto-generates race stats — then displays them in a sidebar alongside race results. Plus: background indexing so all data is ready before anyone visits.
 
 ---
 
 ## In Plain English
 
-Right now, Raceday shows you the facts of a race: who won, what tyres they used, how many positions they gained. What it doesn't tell you is the *story* — the context, the drama, the opinions. Why did Rosberg's wing fail? What did Hamilton say about the strategy call? What are fans arguing about in the comments?
+Before Phase 4B, Raceday showed you the facts of a race: who won, what tyres they used, how many positions they gained. But it didn't tell you the *story* — the context, the drama, the opinions. Why did Rosberg's wing fail? What did Hamilton say about the strategy call? What are fans arguing about online?
 
-Phase 4B adds a sidebar to every race page that brings in three types of content: professional journalism from The Race and Autosport (the best F1 writing on the internet), fan theories and hot takes from Reddit, and auto-generated "did you know" stats pulled from the race data we already have.
+Phase 4B adds a sidebar to every race page that brings in three types of content: professional journalism from The Race and Autosport (two of the best F1 publications), fan discussion from Reddit's r/formula1 (9+ million members), and auto-generated "did you know" stats pulled from the race data we already have. The result: a race page that feels alive, not just a data table.
 
-Think of RSS feeds like a newspaper's home delivery service — except the newspaper sends you a structured list of headlines and summaries rather than a physical paper, and you choose which newspapers to subscribe to. Reddit's API is just Reddit's way of letting programs access the same posts and comments you'd see on the website. We don't scrape Reddit — we ask it politely through its official API.
-
-The result: a race page that feels alive, not just a data table. You see the podium, the strategy, and right alongside it — what journalists wrote about the race, and what fans were discussing. For historical races, the Reddit posts won't be from that race weekend, but they will be from fans discussing the race retrospectively, which is often even more interesting.
+We also fixed a major gap: the championship page showed "could not load standings" for years where no races had been individually visited. The fix was background indexing — when the server starts, it automatically downloads and indexes every race from 2010 to 2024 in a background thread, so all data is ready before anyone visits any page.
 
 ---
 
-## The Three Content Streams
+## What We Built
 
-### Stream 1: RSS Feeds (The Race + Autosport)
+### Overview
 
-**In plain English:** RSS is a technology that websites use to publish a list of their latest articles in a machine-readable format. It's been around since 1999 and is still widely used by news sites. Instead of us visiting The Race or Autosport, loading ads, and scraping their HTML, they give us a clean, structured list of their articles in a format called XML. We read that list and pick out anything related to the race we're looking at.
+Five new backend modules, one new frontend component, and updates to three existing files. The sidebar loads independently from the main tab content — the race results, standings, and strategy appear instantly while the sidebar fills in a moment later.
 
-**Technical view:** RSS (Really Simple Syndication) is an XML format. A typical entry looks like:
-
-```xml
-<item>
-  <title>Hamilton dominates Australian Grand Prix as Rosberg retires</title>
-  <link>https://www.the-race.com/formula-1/2014/hamilton-dominates-australia</link>
-  <description>Lewis Hamilton took a dominant victory at the season opener...</description>
-  <pubDate>Sun, 16 Mar 2014 17:45:00 GMT</pubDate>
-  <category>Formula 1</category>
-</item>
+```
+Race Detail Page (new layout)
+┌──────────────────────────────┬────────────────────┐
+│                              │   Did you know     │
+│   Tabs: Results / Standings  │   ────────────     │
+│         / Strategy           │   * PER gained 9   │
+│                              │   * 4 strategies   │
+│   [Tab content here]         │                    │
+│                              │   Fan discussion   │
+│                              │   ────────────     │
+│                              │   Race Thread 730↑ │
+│                              │   VER wins...  4k↑ │
+│                              │   RIC test...  4k↑ │
+└──────────────────────────────┴────────────────────┘
+         flex-1                      w-72 (lg only)
 ```
 
-We parse this using the `feedparser` library in Python. feedparser handles the XML parsing, date conversion, and encoding quirks automatically.
+---
 
-**The Race RSS:** `https://the-race.com/feed/`
-**Autosport RSS:** `https://www.autosport.com/rss/news/all/`
+## Source 1: RSS Feed Fetcher (What Was Built)
 
-**How we filter for a specific race:**
+**In plain English:** RSS is a technology where news sites publish a machine-readable list of their latest articles. Instead of scraping their website, we read this structured list and pick out anything about the race we're looking at.
 
-RSS feeds return the latest 20–50 articles across all topics. To find articles about "the 2014 Australian Grand Prix", we:
-1. Fetch the feed
-2. Check each article's `title` and `description` for keywords: the race name ("Australian"), the year ("2014"), and F1 terms ("Grand Prix", "Hamilton", "race")
-3. Keep articles that match; discard the rest
+### `backend/core/rss_fetcher.py`
 
-For historical races, the live RSS feed won't have 10-year-old articles — it only shows recent ones. So for historical races we do a slightly different approach: we search for articles that *reference* that race (e.g. retrospectives, "10 years ago today" pieces, historical analysis).
-
-**For current/recent races:** The RSS approach works perfectly. We cache the articles we find so we don't re-fetch them every time someone loads the page.
-
-#### feedparser in practice
-
-feedparser is a Python library that turns any RSS/Atom feed into a Python object:
+**Two feeds configured:**
 
 ```python
-import feedparser
-
-feed = feedparser.parse("https://the-race.com/feed/")
-
-for entry in feed.entries:
-    print(entry.title)        # "Hamilton dominates Australian GP"
-    print(entry.link)         # "https://the-race.com/..."
-    print(entry.summary)      # First paragraph of the article
-    print(entry.published)    # "2014-03-16T17:45:00"
-    print(entry.tags)         # [{"term": "Formula 1"}, {"term": "Race"}]
-```
-
-feedparser handles:
-- RSS 0.9, RSS 1.0, RSS 2.0, Atom — all the different versions
-- Malformed XML (very common on the real web)
-- Date formats in 12 different standards
-- HTML entities in text (`&amp;` → `&`)
-
-#### Autosport vs The Race — Content Differences
-
-| Source | Tone | Strength | Volume |
-|--------|------|----------|--------|
-| The Race | Technical, in-depth | Strategy analysis, team radio | ~5-8 articles/day |
-| Autosport | News-focused, fast | Breaking news, driver quotes | ~15-20 articles/day |
-
-We show both because they complement each other. The Race gives depth; Autosport gives breadth.
-
----
-
-### Stream 2: Reddit API (r/formula1)
-
-**In plain English:** Reddit is a forum where fans post discussions, opinions, race threads, and analysis. r/formula1 has over 9 million members and generates thousands of posts per race weekend. Reddit offers a free, official API that lets us read posts and comments without scraping.
-
-**Technical view:** Reddit's API uses OAuth2 for authentication, but for read-only access to public subreddits, we can use their "script" app type which is dead simple to set up. The base URL is `https://www.reddit.com/` and you can get JSON from any public page by adding `.json`:
-
-```
-GET https://www.reddit.com/r/formula1/search.json
-  ?q=2014+Australian+Grand+Prix
-  &sort=top
-  &t=all
-  &limit=10
-```
-
-**Headers required:** Reddit blocks requests without a proper User-Agent. You must include:
-```
-User-Agent: Raceday/1.0 (by /u/YourUsername)
-```
-
-**Response structure:**
-
-```json
-{
-  "data": {
-    "children": [
-      {
-        "data": {
-          "title": "Race Thread: 2014 Australian Grand Prix",
-          "score": 4821,
-          "url": "https://reddit.com/r/formula1/...",
-          "selftext": "Full post text here...",
-          "num_comments": 1893,
-          "created_utc": 1394989200,
-          "permalink": "/r/formula1/comments/...",
-          "author": "formula1_mod"
-        }
-      }
-    ]
-  }
+_FEEDS = {
+    "The Race": "https://the-race.com/feed/",
+    "Autosport": "https://www.autosport.com/rss/feed/all",
 }
 ```
 
-**What we fetch for each race:**
-1. **Race Thread** — the official mega-thread posted before/during the race. Contains thousands of live reactions. We search for it using `"Race Thread: {year} {race_name}"`.
-2. **Top fan theories** — posts tagged as "Discussion" or "Analysis" that got high upvotes. These are usually the most interesting takes.
-3. **Notable comments** — top comments from the race thread (a separate API call to the thread's comment endpoint).
+**How article matching works:**
 
-**Rate limits:** Reddit's free API allows 60 requests per minute for unauthenticated read-only access, or 100/minute with a free OAuth token. For our use case (index once, cache forever), this is more than enough.
+The tricky part is filtering. An RSS feed has 15-50 recent articles on all topics. To find articles about "the 2023 British Grand Prix", we:
 
-**Authentication options:**
-
-Option A — No auth (simplest): Use the `.json` trick on public URLs. Rate limit: 60/min. No registration needed.
+1. Extract the distinctive keyword from the race name: "British Grand Prix" → "british"
+2. Check each article's title and summary for that keyword
+3. Verify the year matches — either the article's publication date is in the same year, or the year string appears in the text
 
 ```python
-resp = requests.get(
-    "https://www.reddit.com/r/formula1/search.json?q=2014+Australian+GP&sort=top&t=all",
-    headers={"User-Agent": "Raceday/1.0 (by /u/raceday_app)"}
-)
-data = resp.json()
+def _matches_race(entry, race_name, year):
+    race_keyword = name_words[0]  # "british", "australian", "monaco"
+    if race_keyword not in text:
+        return False
+    # Check if article date is in the same year
+    if published and published.tm_year == year:
+        return True
+    # Or if year string appears in text
+    if year_str in text:
+        return True
+    return False
 ```
 
-Option B — Script OAuth (recommended): Register a free "script" app at reddit.com/prefs/apps. Get a client_id and secret. Gives higher rate limits and more stable access.
+**Important limitation:** RSS feeds only keep the latest 15-50 articles. For a 2023 race in 2026, the feed won't have anything. The sidebar handles this by hiding the "From the press" section when empty.
 
-We'll start with Option A and upgrade if needed.
+**feedparser library:** Handles all RSS versions (RSS 0.9, 1.0, 2.0, Atom), malformed XML, 12 different date formats, and HTML entities automatically. We don't need to worry about any of that.
 
-**Moderation note:** r/formula1 posts are moderated, so the content is generally high quality. Obvious spam and rule-breaking is removed quickly. We only show the top-scored posts/comments, which tends to surface the best analysis.
+### Test results
+
+```
+The Race: 15 entries in feed
+Autosport: 50 entries in feed
+2023 British GP: 0 matches (expected — articles are from 2026)
+```
 
 ---
 
-### Stream 3: Auto-Generated Stats ("Did You Know")
+## Source 2: Reddit Fetcher (What Was Built)
 
-**In plain English:** This is content we generate ourselves from data we already have — no external API needed. We look at the race data and generate interesting observations automatically. "Hamilton gained 8 positions in this race — his highest grid gain of the 2014 season." Or "This was the first wet race at Albert Park since 2010." These feel like journalism but are actually just clever calculations on our indexed data.
+**In plain English:** Reddit's r/formula1 has 9+ million members and generates thousands of posts per race weekend. We search for a specific race and pull back the official race thread plus the most-upvoted fan discussions.
 
-**Technical view:** This is implemented in `insights.py` as a new function: `get_did_you_know(year, track)`. It runs a series of small calculations against the indexed race data and returns a list of notable observations.
+### `backend/core/reddit_fetcher.py`
 
-Examples of auto-stats we can generate:
+**No authentication needed.** We use the `.json` trick — append `.json` to any public Reddit URL and get structured data back. A proper User-Agent header is required:
 
 ```python
-def get_did_you_know(year: str, track: str) -> list[str]:
-    facts = []
-
-    # Biggest mover
-    max_gain = max(r["positions_delta"] for r in standings if r["positions_delta"])
-    driver = [r for r in standings if r["positions_delta"] == max_gain][0]["driver"]
-    if max_gain >= 5:
-        facts.append(f"{driver} gained {max_gain} positions — the biggest climb of the race.")
-
-    # Retirements unusual?
-    retirements = len([r for r in results if r["status"] == "Retired"])
-    if retirements >= 5:
-        facts.append(f"{retirements} retirements — an unusually chaotic race.")
-
-    # Strategy variety
-    unique_stops = len(set(d["stops"] for d in strategy if d["stops"] is not None))
-    if unique_stops >= 3:
-        facts.append(f"Drivers tried {unique_stops} different pit stop strategies.")
-
-    return facts
+_SESSION.headers.update({
+    "User-Agent": "Raceday/1.0 (F1 fan intelligence platform, by /u/raceday_app)",
+})
 ```
 
-This doesn't require any network calls, which makes it fast and reliable.
+**The search precision problem (and fix):**
 
----
+The initial Reddit search for `british grand prix 2023` returned the most popular r/formula1 posts of all time — Verstappen winning Abu Dhabi 2021, Gasly winning Monza 2020 — because Reddit matched on "grand prix" globally and sorted by score.
 
-## The Sidebar Architecture
+**Fix:** Exact phrase matching + client-side filtering:
 
-**In plain English:** On the race detail page, the sidebar sits to the right of the main content (or below on mobile). It's divided into three sections with clear labels: "From the press", "Fan discussion", and "Did you know". Each section is populated by one of the three streams.
+```python
+# Quoted phrases force Reddit to match the whole phrase
+query = f'"british" "grand prix" 2023'
+params = {"q": query, "sort": "relevance", ...}
 
-**Technical view:** The sidebar is a React component (`FactsSidebar`) that receives pre-fetched data as props. On the race page, we fetch all three streams in parallel using `Promise.all()` — same pattern as the Results/Standings/Strategy tabs already do.
-
-```
-Race page (races/[year]/[track]/page.tsx)
-│
-├── Fetches in parallel:
-│   ├── /races/{year}/{track}/results  → ResultsCard
-│   ├── /races/{year}/{track}/standings → StandingsTable
-│   ├── /races/{year}/{track}/strategy  → StrategyPanel
-│   └── /races/{year}/{track}/sidebar   → FactsSidebar  ← NEW
-│
-└── Layout:
-    ┌──────────────────────┬──────────────────┐
-    │  Tabs (Results /     │   Did you know   │
-    │  Standings /         │   ─────────────  │
-    │  Strategy)           │   From the press │
-    │                      │   ─────────────  │
-    │                      │   Fan discussion │
-    └──────────────────────┴──────────────────┘
+# Client-side filter: title must contain BOTH the race keyword AND the year
+posts = [
+    p for p in posts
+    if race_kw_lower in p["title"].lower() and year_str in p["title"]
+    and p["score"] > 10
+]
 ```
 
-**New API endpoint:** `GET /races/{year}/{track}/sidebar`
+After the fix, the 2023 British GP correctly returns:
+- Race thread: "2023 British Grand Prix - Day After Devries" (730 pts, 341 comments)
+- VER takes pole (8,225 pts)
+- VER wins the race (4,238 pts)
+- Ricciardo's Pirelli test at Silverstone (4,447 pts)
+- Clarkson arrives at Silverstone (3,505 pts)
 
-This endpoint in `api.py` calls a new insights function `get_sidebar_content(year, track)` which:
-1. Calls the RSS fetcher with the race name + year
-2. Calls the Reddit fetcher with the race name + year
-3. Calls `get_did_you_know(year, track)`
-4. Returns all three as a single JSON object
+**Two separate search functions:**
 
-**Caching strategy:**
-- Did-you-know: computed from indexed data, always fast, no caching needed
-- RSS articles: fetched once per race and saved to `data/index/{year}/{track}/sidebar_rss.json`
-- Reddit posts: fetched once and saved to `data/index/{year}/{track}/sidebar_reddit.json`
+`get_race_thread()` — specifically looks for the official moderator-posted race thread by searching for "Race Thread" or "Post Race Discussion" in the title.
 
-This means after the first load, the sidebar is as fast as any other tab.
+`search_race_posts()` — broader search for all highly-upvoted posts about the race.
 
----
+`get_race_posts()` — combines both and deduplicates (removes the race thread from general posts if it appeared in both searches).
 
-## Data Flow for the Sidebar
+### Rate limiting
 
-```
-User loads race page for 2014 Australian GP
-         │
-    Frontend calls GET /races/2014/Australian%20Grand%20Prix/sidebar
-         │
-    api.py → insights.get_sidebar_content(2014, "Australian Grand Prix")
-         │
-         ├── Check cache: sidebar_rss.json exists? → load it
-         │     If not:
-         │       rss_fetcher.get_race_articles("Australian Grand Prix", 2014)
-         │         → fetch The Race feed + Autosport feed
-         │         → filter articles mentioning "Australian" + "2014"
-         │         → save to sidebar_rss.json
-         │
-         ├── Check cache: sidebar_reddit.json exists? → load it
-         │     If not:
-         │       reddit_fetcher.get_race_posts("Australian Grand Prix", 2014)
-         │         → search r/formula1 for "2014 Australian Grand Prix"
-         │         → fetch top 5 posts + top comments from race thread
-         │         → save to sidebar_reddit.json
-         │
-         └── insights.get_did_you_know(2014, "Australian Grand Prix")
-               → calculate facts from already-indexed race data
-               → return list of strings (no caching needed, it's fast)
-         │
-    Return combined JSON:
-    {
-      "articles": [{"title": "...", "url": "...", "source": "The Race"}, ...],
-      "reddit_posts": [{"title": "...", "score": 4821, "url": "..."}, ...],
-      "did_you_know": ["Hamilton gained 8 positions — ...", ...]
-    }
-         │
-    Frontend renders FactsSidebar component
+Reddit allows ~60 requests/minute without auth. We handle 429 (rate limited) responses by reading the `Retry-After` header:
+
+```python
+if resp.status_code == 429:
+    wait = int(resp.headers.get("Retry-After", 5))
+    time.sleep(wait)
+    continue
 ```
 
 ---
 
-## New Files in Phase 4B
+## Source 3: Did-You-Know Auto-Stats (What Was Built)
 
-| File | What it does |
-|------|-------------|
-| `backend/core/rss_fetcher.py` | Fetches and filters articles from The Race + Autosport RSS feeds |
-| `backend/core/reddit_fetcher.py` | Queries Reddit API for race threads + fan discussions |
-| `backend/api.py` | Modified: adds `/races/{year}/{track}/sidebar` endpoint |
-| `backend/core/insights.py` | Modified: adds `get_sidebar_content()` and `get_did_you_know()` |
-| `frontend/app/components/FactsSidebar.tsx` | New sidebar component |
-| `frontend/app/races/[year]/[track]/page.tsx` | Modified: fetch sidebar data, render FactsSidebar |
+**In plain English:** These are interesting facts we generate ourselves from the race data — no external API needed. The code scans results for 8 different patterns and produces plain-English observations.
+
+### `insights.py: get_did_you_know(year, track)`
+
+**Patterns detected:**
+
+| Pattern | Example output |
+|---------|---------------|
+| Mass retirements (5+) | "8 drivers retired — an unusually chaotic race." |
+| Zero retirements | "Every driver finished the race — a clean day." |
+| Biggest position gain (5+) | "PER gained 9 positions — the biggest climb of the race." |
+| Biggest position loss (5+) | "GAS lost 8 positions from the grid." |
+| Winner from far back (P5+) | "HAM won from P5 — a proper fightback victory." |
+| Strategy variety (3+ strategies) | "Drivers used 4 different pit stop strategies." |
+| Wet/damp weather | "A wet race — rain played a major role." |
+| Extreme temperature | "Scorching 38°C air temperature." |
+| Podium from outside top 10 | "BOT made the podium from P15." |
+
+**The Jolpica retirement bug:**
+
+During testing, the 2014 Australian GP (8 retirements) showed "Every driver finished" — clearly wrong. The cause: Jolpica assigns finish positions even to retired drivers (they get positions 15-22 at the end of the classification). The original check `finish_position is None` missed them.
+
+Fix: use status-based detection instead:
+
+```python
+# Before (broken for Jolpica data):
+retired = [r for r in results if r["finish_position"] is None and ...]
+
+# After (works for both FastF1 and Jolpica):
+retired = [r for r in results if r["status"] not in ("Finished",)
+           and not r["status"].startswith("+")]
+```
+
+### Test results
+
+```
+2023 British GP: 3 facts (PER +9, GAS -8, 4 strategies)
+2014 Australian GP: 5 facts (8 retirements, BOT +10, RIC -20, 3 strategies, damp)
+```
 
 ---
 
-## Edge Cases & Gotchas
+## The Sidebar Pipeline (How It All Connects)
 
-**1. RSS feeds change format**
-In plain English: The Race or Autosport might change how their RSS feed is structured, breaking our parser.
-Technical cause: RSS has multiple versions (RSS 2.0, Atom) and sites sometimes switch between them or add custom fields.
-How to avoid: feedparser handles all RSS versions automatically. Cache what we fetch — if the feed breaks tomorrow, we still have the cached articles from when it worked.
+### `insights.py: get_sidebar_content(year, track)`
 
-**2. No articles for old races**
-In plain English: The Race RSS feed only goes back a few years. For a 2014 race, there probably aren't any articles in their current feed.
-Technical cause: RSS is a live feed, not an archive. Sites only publish recent articles via RSS.
-How to avoid: For historical races, fall back to The Race's URL-based search (if they have one) or show the "did you know" section and Reddit only. The sidebar gracefully hides sections with no content.
+This function ties all three sources together with disk caching:
 
-**3. Reddit search returns wrong race**
-In plain English: Searching "Australian Grand Prix 2014" might surface posts about the 2015 or 2019 race if those posts reference 2014.
-Technical cause: Reddit's search doesn't do exact phrase matching by default.
-How to avoid: Filter results by date range (posts from within 2 weeks of the race date for current races, or requiring the year in the title for historical). Always rank by score so the most relevant posts appear first.
+```python
+def get_sidebar_content(year, track):
+    # RSS — cached to sidebar_rss.json
+    if rss_cache.exists():
+        articles = load from cache
+    else:
+        articles = rss_fetcher.get_race_articles(track, year)
+        save to rss_cache
 
-**4. Reddit API flakiness**
-In plain English: Reddit's API occasionally returns 503 errors or rate-limit responses.
-Technical cause: Reddit throttles heavily during traffic spikes and has aggressive rate limiting.
-How to avoid: Same retry pattern as Jolpica (3 attempts, exponential backoff). If Reddit fails completely, return an empty `reddit_posts: []` — the sidebar still shows articles and did-you-know.
+    # Reddit — cached to sidebar_reddit.json
+    if reddit_cache.exists():
+        reddit = load from cache
+    else:
+        reddit = reddit_fetcher.get_race_posts(track, year)
+        save to reddit_cache
 
-**5. Sidebar slowing down the race page**
-In plain English: If the sidebar takes 3 seconds to fetch Reddit, the whole page feels slow.
-Technical cause: Network calls take time, especially if the API is slow.
-How to avoid: Fetch the sidebar data independently from the tab data — the tabs render immediately, and the sidebar loads in parallel or even lazily (shows a spinner until ready). Cache aggressively so only the first load is slow.
+    # Did-you-know — computed on the fly (fast, reads local data)
+    did_you_know = get_did_you_know(year, track)
+
+    return {"articles": articles, "reddit": reddit, "did_you_know": did_you_know}
+```
+
+Cache files are saved in the same race index directory: `data/index/2023/British Grand Prix/sidebar_rss.json` and `sidebar_reddit.json`. After the first fetch, subsequent loads read from disk instantly.
+
+### API endpoint
+
+```
+GET /races/{year}/{track}/sidebar
+→ {"articles": [...], "reddit": {"race_thread": {...}, "posts": [...]}, "did_you_know": [...]}
+```
+
+### Frontend integration
+
+The race page fetches sidebar data independently from tab data:
+
+```typescript
+// Tab data (blocks render)
+Promise.all([results, standings, strategy]).then(...)
+
+// Sidebar data (loads independently, doesn't block tabs)
+fetch(`${base}/sidebar`).then(data => setSidebar(data)).catch(() => {});
+```
+
+Layout changed from single-column `max-w-3xl` to two-column `max-w-5xl`:
+- Left: `flex-1 min-w-0` — main content (tabs)
+- Right: `hidden lg:block w-72 shrink-0` — sidebar (hidden on mobile)
+
+### `FactsSidebar.tsx`
+
+Three sections in dark zinc cards:
+- **Did you know** — yellow `*` bullet markers, plain text facts
+- **From the press** — clickable headlines linking to The Race / Autosport, with source and date
+- **Fan discussion** — Reddit race thread in a highlighted card, then top posts with upvote counts and comment numbers
+
+Empty sections are hidden automatically — if no articles exist for an old race, that section simply disappears.
 
 ---
 
-## What RSS Is (Deep Dive)
+## Background Indexing (What Was Added)
 
-RSS stands for Really Simple Syndication. Here's the full picture of how it works:
+**In plain English:** The championship page was broken for every year except those where someone had manually visited individual race pages. The fix: when the server starts, it automatically downloads all race data for every season from 2010 to 2024 in the background.
 
-**The publish side (website):** When The Race publishes an article, their CMS automatically updates their RSS feed — an XML file at a fixed URL. This file always contains the latest 20–50 articles with their titles, summaries, dates, and links.
+### The problem
 
-**The subscribe side (us):** We request that XML file using a regular HTTP GET. feedparser parses it into Python objects.
+Raceday used on-demand indexing — data only downloaded when a specific race page was visited. The championship page reads `indexer.list_indexed()` to find all indexed races for a year, sums up points, and returns standings. If no races were indexed for a year, it returned 404.
 
-**Why RSS is better than scraping the website:**
-- The feed is designed for machines to read — no need to find content buried in HTML
-- The format is stable and predictable
-- The site *wants* you to use it (it's why they publish it)
-- No JavaScript rendering issues
-- Much less likely to be blocked
+### The fix
 
-**Why RSS still has limitations:**
-- Only the latest articles — no archive
-- Summary text only, not full articles (we show headlines and link to the full piece)
-- No search by topic — we have to filter ourselves
+**`backend/api.py`** — FastAPI lifespan event launches a daemon thread:
+
+```python
+SEASONS_TO_INDEX = list(range(2010, 2025))  # 2010–2024
+
+def _background_index_all():
+    for year in SEASONS_TO_INDEX:
+        result = indexer.index_season(year)
+        # logs progress, updates _indexing_status dict
+
+@asynccontextmanager
+async def lifespan(app):
+    thread = threading.Thread(target=_background_index_all, daemon=True)
+    thread.start()
+    yield
+
+app = FastAPI(lifespan=lifespan)
+```
+
+Key design decisions:
+- **Daemon thread** — dies automatically when the server shuts down, no cleanup needed
+- **`index_season()` skips already-indexed races** — so restarts are fast (seconds, not minutes)
+- **Server is usable immediately** — the thread runs in the background while the API serves requests
+- **Progress tracking** — `GET /indexing/status` returns live progress:
+
+```json
+{
+  "running": true,
+  "current_year": 2014,
+  "completed_years": [2010, 2011, 2012, 2013],
+  "total_indexed": 58,
+  "total_skipped": 2,
+  "total_failed": 0
+}
+```
+
+### Year-aware routing in action
+
+For 2010-2017, `index_season()` calls the Jolpica + OpenMeteo + compound_lookup pipeline built in Phase 4A. For 2018-2024, it uses FastF1. The indexer routes automatically based on the year — the background thread doesn't need to know about any of this.
+
+First full run: ~15-30 minutes (downloads ~300 races). Every restart after that: seconds (all races already on disk, skipped instantly).
+
+---
+
+## Files Created and Modified
+
+| File | Status | What it does |
+|------|--------|-------------|
+| `backend/core/rss_fetcher.py` | **Created** | Fetches + filters articles from The Race and Autosport RSS feeds |
+| `backend/core/reddit_fetcher.py` | **Created** | Searches r/formula1 for race threads and fan posts |
+| `frontend/app/components/FactsSidebar.tsx` | **Created** | Three-section sidebar component |
+| `backend/requirements.txt` | **Modified** | Added feedparser + requests |
+| `backend/core/insights.py` | **Modified** | Added get_did_you_know() + get_sidebar_content() |
+| `backend/api.py` | **Modified** | Added /sidebar route, /indexing/status route, background indexer |
+| `frontend/app/races/[year]/[track]/page.tsx` | **Modified** | Two-column layout, independent sidebar fetch |
+
+---
+
+## Edge Cases & Gotchas (Discovered During Build)
+
+**1. Reddit search too broad**
+In plain English: Searching "british grand prix 2023" returned Abu Dhabi 2021 and Monza 2020 — the most popular posts ever on r/formula1 that happened to contain "grand prix."
+Fix: Exact phrase matching (`"british" "grand prix"`) plus client-side filtering requiring both the race keyword AND the year in the title.
+
+**2. Jolpica retirement detection**
+In plain English: The "Every driver finished" fact fired for the 2014 Australian GP which had 8 retirements.
+Cause: Jolpica assigns finish positions (P15-P22) even to retired drivers. The check `finish_position is None` missed them.
+Fix: Use status-based detection — check if status is not "Finished" and doesn't start with "+".
+
+**3. RSS feeds empty for old races**
+In plain English: RSS only keeps the latest 15-50 articles. A 2023 race viewed in 2026 won't have any matching articles.
+Impact: The "From the press" section simply doesn't appear. Not a bug — working as designed.
+
+**4. Championship page 404 for unvisited years**
+In plain English: The championship page needs all races indexed to calculate points, but on-demand indexing meant most years had zero data.
+Fix: Background indexing on server start — indexes all 2010-2024 seasons automatically.
+
+**5. feedparser SystemError on Windows**
+In plain English: A `SystemError: bad argument to internal function` appears in terminal after feedparser finishes.
+Cause: Known Python/Windows cleanup bug in dict objects during interpreter shutdown.
+Impact: Cosmetic only — doesn't affect data or functionality.
 
 ---
 
 ## Quick Reference
 
-### RSS endpoints
+### RSS feed URLs
 | Source | Feed URL |
 |--------|----------|
 | The Race | `https://the-race.com/feed/` |
-| Autosport | `https://www.autosport.com/rss/news/all/` |
+| Autosport | `https://www.autosport.com/rss/feed/all` |
 
-### feedparser basics
-```python
-import feedparser
-
-feed = feedparser.parse(url)
-for entry in feed.entries:
-    title     = entry.title
-    link      = entry.link
-    summary   = entry.get("summary", "")
-    published = entry.get("published", "")
-```
-
-### Reddit search endpoint
+### Reddit search
 ```
 GET https://www.reddit.com/r/formula1/search.json
-    ?q={race_name}+{year}
-    &sort=top
-    &t=all
-    &limit=10
-    &restrict_sr=1
+    ?q="british" "grand prix" 2023
+    &sort=relevance&t=all&limit=25&restrict_sr=1
 ```
 
 ### Sidebar JSON shape
 ```json
 {
-  "articles": [
-    {"title": "...", "url": "...", "source": "The Race", "published": "2014-03-16"}
-  ],
-  "reddit_posts": [
-    {"title": "...", "url": "...", "score": 4821, "num_comments": 1893}
-  ],
-  "did_you_know": [
-    "Hamilton gained 8 positions — the biggest climb of the race."
-  ]
+  "articles": [{"title": "", "url": "", "source": "The Race", "published": "2026-03-16"}],
+  "reddit": {
+    "race_thread": {"title": "", "url": "", "score": 730, "num_comments": 341},
+    "posts": [{"title": "", "url": "", "score": 8225, "num_comments": 500}]
+  },
+  "did_you_know": ["PER gained 9 positions — the biggest climb of the race."]
 }
+```
+
+### Indexing status
+```
+GET /indexing/status
+→ {"running": true, "current_year": 2014, "completed_years": [...], "total_indexed": 58}
 ```
 
 ### Key Terms
 | Term | Plain English | Technical meaning |
 |------|---------------|-------------------|
-| RSS | A website's automatic article list | XML feed at a fixed URL, updated when content is published |
-| feedparser | Tool that reads RSS feeds | Python library that handles all RSS/Atom versions |
-| Subreddit | A topic-specific forum on Reddit | `/r/formula1` — 9M members, F1-focused |
-| Reddit API | Reddit's official data access service | REST API, free, read-only public data |
-| OAuth2 | The login system Reddit uses for API apps | Token-based auth; we use "script" type for simplicity |
-| Race Thread | The official live discussion post for each race | Posted by moderators, gets thousands of comments |
-| Sidebar | The column next to the main content | FactsSidebar component, rendered right of the tabs |
-| Cache | Saving fetched data to disk | `sidebar_rss.json` / `sidebar_reddit.json` in the race index folder |
+| RSS | A website's automatic article list | XML feed at a fixed URL, parsed by feedparser |
+| .json trick | Getting data from Reddit without an account | Append .json to any public Reddit URL |
+| Sidebar caching | Save fetched articles/posts to disk | sidebar_rss.json + sidebar_reddit.json in race index dir |
+| Background indexing | Download all race data when server starts | Daemon thread calling index_season() for 2010-2024 |
+| Daemon thread | A background worker that dies when the server stops | `threading.Thread(daemon=True)` |
+| Lifespan event | Code that runs on server start/stop | FastAPI's `@asynccontextmanager` lifespan pattern |
 
 ---
 
-*Generated: 2026-03-16 | Project: Raceday | Covers: Phase 4B pre-build — RSS feeds, Reddit API, facts sidebar architecture*
+*Updated: 2026-03-16 | Project: Raceday | Phase 4B complete | Files: rss_fetcher.py, reddit_fetcher.py, FactsSidebar.tsx, insights.py, api.py*
