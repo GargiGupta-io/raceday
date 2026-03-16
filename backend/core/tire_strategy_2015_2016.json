@@ -1,0 +1,5717 @@
+{
+  "2015_1": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 33
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 37
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 33
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 33
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "MEDIUM",
+        "laps": 38
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 27
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 0
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      }
+    ]
+  },
+  "2015_2": {
+    "Sebastian Vettel": [
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "HARD",
+        "laps": 19
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "HARD",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "HARD",
+        "laps": 22
+      },
+      {
+        "compound": "HARD",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 2
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "HARD",
+        "laps": 22
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      },
+      {
+        "compound": "HARD",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 23
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      },
+      {
+        "compound": "HARD",
+        "laps": 21
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      },
+      {
+        "compound": "HARD",
+        "laps": 21
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 2
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 10
+      },
+      {
+        "compound": "HARD",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "HARD",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 11
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "MEDIUM",
+        "laps": 5
+      },
+      {
+        "compound": "HARD",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "HARD",
+        "laps": 14
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "HARD",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 6
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "HARD",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "MEDIUM",
+        "laps": 3
+      }
+    ]
+  },
+  "2015_3": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 9
+      }
+    ]
+  },
+  "2015_4": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 6
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 4
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      }
+    ]
+  },
+  "2015_5": {
+    "Nico Rosberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      },
+      {
+        "compound": "HARD",
+        "laps": 21
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "HARD",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      },
+      {
+        "compound": "HARD",
+        "laps": 26
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      },
+      {
+        "compound": "HARD",
+        "laps": 23
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "HARD",
+        "laps": 25
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 28
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "HARD",
+        "laps": 27
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "HARD",
+        "laps": 28
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "HARD",
+        "laps": 26
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "HARD",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "HARD",
+        "laps": 20
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "HARD",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      },
+      {
+        "compound": "HARD",
+        "laps": 2
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "HARD",
+        "laps": 5
+      }
+    ]
+  },
+  "2015_6": {
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 37
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 36
+      },
+      {
+        "compound": "SOFT",
+        "laps": 42
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 38
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 50
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 36
+      },
+      {
+        "compound": "SOFT",
+        "laps": 29
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 37
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 36
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      },
+      {
+        "compound": "SUPER",
+        "laps": 14
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 35
+      },
+      {
+        "compound": "SOFT",
+        "laps": 29
+      },
+      {
+        "compound": "SUPER",
+        "laps": 14
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 46
+      },
+      {
+        "compound": "SUPER",
+        "laps": 14
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 66
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "SUPER",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 47
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 61
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SUPER",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SUPER",
+        "laps": 31
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SUPER",
+        "laps": 42
+      },
+      {
+        "compound": "SUPER",
+        "laps": 22
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 38
+      },
+      {
+        "compound": "SUPER",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 15
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 35
+      },
+      {
+        "compound": "SUPER",
+        "laps": 41
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 33
+      },
+      {
+        "compound": "SUPER",
+        "laps": 43
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 29
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SUPER",
+        "laps": 16
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 32
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SUPER",
+        "laps": 5
+      }
+    ]
+  },
+  "2015_7": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 29
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 40
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 42
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SUPER",
+        "laps": 30
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 35
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 37
+      },
+      {
+        "compound": "SUPER",
+        "laps": 33
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SUPER",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 53
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 27
+      },
+      {
+        "compound": "SOFT",
+        "laps": 42
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 27
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 45
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 27
+      },
+      {
+        "compound": "SOFT",
+        "laps": 42
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 46
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SUPER",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 39
+      },
+      {
+        "compound": "SUPER",
+        "laps": 30
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 42
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 34
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 19
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 35
+      },
+      {
+        "compound": "SUPER",
+        "laps": 22
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 44
+      },
+      {
+        "compound": "SUPER",
+        "laps": 10
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SUPER",
+        "laps": 31
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ]
+  },
+  "2015_8": {
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 33
+      },
+      {
+        "compound": "SOFT",
+        "laps": 38
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 35
+      },
+      {
+        "compound": "SOFT",
+        "laps": 36
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 34
+      },
+      {
+        "compound": "SOFT",
+        "laps": 37
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 36
+      },
+      {
+        "compound": "SOFT",
+        "laps": 35
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 45
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 46
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SOFT",
+        "laps": 37
+      },
+      {
+        "compound": "SUPER",
+        "laps": 33
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 44
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 38
+      },
+      {
+        "compound": "SUPER",
+        "laps": 32
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 50
+      },
+      {
+        "compound": "SUPER",
+        "laps": 20
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 46
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 44
+      },
+      {
+        "compound": "SUPER",
+        "laps": 25
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SUPER",
+        "laps": 2
+      },
+      {
+        "compound": "SOFT",
+        "laps": 43
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SUPER",
+        "laps": 34
+      },
+      {
+        "compound": "SOFT",
+        "laps": 34
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 3
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "SOFT",
+        "laps": 2
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      }
+    ]
+  },
+  "2015_9": {
+    "Lewis Hamilton": [
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 9
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 29
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 9
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "HARD",
+        "laps": 23
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 26
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "HARD",
+        "laps": 25
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 25
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 9
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 4
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 7
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 14
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "HARD",
+        "laps": 14
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 9
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "MEDIUM",
+        "laps": 36
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 5
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "MEDIUM",
+        "laps": 36
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 9
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 4
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      },
+      {
+        "compound": "HARD",
+        "laps": 19
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "HARD",
+        "laps": 9
+      },
+      {
+        "compound": "HARD",
+        "laps": 1
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "HARD",
+        "laps": 3
+      }
+    ]
+  },
+  "2015_10": {
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 36
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 26
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 37
+      },
+      {
+        "compound": "SOFT",
+        "laps": 0
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 0
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 5
+      }
+    ]
+  },
+  "2015_11": {},
+  "2015_12": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 31
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 28
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 27
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      }
+    ]
+  },
+  "2015_13": {
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SUPER",
+        "laps": 25
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SUPER",
+        "laps": 24
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SUPER",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      },
+      {
+        "compound": "SUPER",
+        "laps": 7
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 33
+      }
+    ],
+    "Alexander Rossi": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 23
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SUPER",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 22
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 4
+      },
+      {
+        "compound": "SUPER",
+        "laps": 11
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 2
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      }
+    ]
+  },
+  "2015_14": {
+    "Lewis Hamilton": [
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "HARD",
+        "laps": 22
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "HARD",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 17
+      },
+      {
+        "compound": "HARD",
+        "laps": 23
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 25
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "HARD",
+        "laps": 21
+      },
+      {
+        "compound": "HARD",
+        "laps": 22
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "MEDIUM",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "HARD",
+        "laps": 20
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "HARD",
+        "laps": 17
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 9
+      },
+      {
+        "compound": "HARD",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 25
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "MEDIUM",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "HARD",
+        "laps": 24
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "HARD",
+        "laps": 17
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      },
+      {
+        "compound": "HARD",
+        "laps": 16
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      },
+      {
+        "compound": "HARD",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 14
+      },
+      {
+        "compound": "HARD",
+        "laps": 18
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "HARD",
+        "laps": 26
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "HARD",
+        "laps": 23
+      },
+      {
+        "compound": "HARD",
+        "laps": 28
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "HARD",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      },
+      {
+        "compound": "HARD",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      }
+    ],
+    "Alexander Rossi": [
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "HARD",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "HARD",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "MEDIUM",
+        "laps": 10
+      },
+      {
+        "compound": "HARD",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ]
+  },
+  "2015_15": {
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 32
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 30
+      },
+      {
+        "compound": "SUPER",
+        "laps": 23
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 33
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 34
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SOFT",
+        "laps": 30
+      },
+      {
+        "compound": "SUPER",
+        "laps": 23
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 31
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 41
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 29
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 40
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 26
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 39
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SUPER",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "SUPER",
+        "laps": 34
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 35
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 33
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 7
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 0
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 0
+      }
+    ]
+  },
+  "2015_16": {
+    "Lewis Hamilton": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ],
+    "Nico Rosberg": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 2
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 6
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 30
+      }
+    ],
+    "Alexander Rossi": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 3
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 8
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "SOFT",
+        "laps": 6
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "INTERMEDIATE",
+        "laps": 1
+      }
+    ]
+  },
+  "2015_17": {
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 28
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 45
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 31
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 43
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 43
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 53
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 41
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 42
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Alexander Rossi": [
+      {
+        "compound": "SOFT",
+        "laps": 27
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 32
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 6
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "MEDIUM",
+        "laps": 1
+      }
+    ]
+  },
+  "2015_18": {
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 34
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 30
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 35
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 29
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 31
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      }
+    ],
+    "Pastor Maldonado": [
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 31
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Alexander Rossi": [
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ]
+  },
+  "2015_19": {
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 30
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 16
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 28
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 29
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 31
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 29
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 5
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 30
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 16
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 27
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 25
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 26
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 10
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 30
+      },
+      {
+        "compound": "SUPER",
+        "laps": 6
+      }
+    ],
+    "Will Stevens": [
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Roberto Merhi": [
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SUPER",
+        "laps": 28
+      }
+    ]
+  },
+  "2016_1": {
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 6
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 39
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 41
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 22
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 24
+      },
+      {
+        "compound": "SUPER",
+        "laps": 15
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 7
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 39
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 39
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 41
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 40
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Jolyon Palmer": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 6
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 39
+      }
+    ],
+    "Kevin Magnussen": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 39
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 41
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 3
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 38
+      }
+    ],
+    "Pascal Wehrlein": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 7
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 7
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 5
+      }
+    ],
+    "Rio Haryanto": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 5
+      }
+    ],
+    "Esteban Gutierrez": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 4
+      }
+    ]
+  },
+  "2016_2": {
+    "Nico Rosberg": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 6
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SUPER",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "SUPER",
+        "laps": 11
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 10
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SUPER",
+        "laps": 7
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 22
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      },
+      {
+        "compound": "SOFT",
+        "laps": 22
+      }
+    ],
+    "Stoffel Vandoorne": [
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 15
+      }
+    ],
+    "Kevin Magnussen": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 14
+      },
+      {
+        "compound": "SUPER",
+        "laps": 18
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Pascal Wehrlein": [
+      {
+        "compound": "SOFT",
+        "laps": 11
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SUPER",
+        "laps": 15
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SUPER",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 5
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 2
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 23
+      },
+      {
+        "compound": "SUPER",
+        "laps": 19
+      }
+    ],
+    "Rio Haryanto": [
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SOFT",
+        "laps": 2
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      }
+    ],
+    "Esteban Gutierrez": [
+      {
+        "compound": "SUPER",
+        "laps": 8
+      },
+      {
+        "compound": "SUPER",
+        "laps": 1
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 6
+      }
+    ]
+  },
+  "2016_3": {
+    "Nico Rosberg": [
+      {
+        "compound": "SOFT",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Sebastian Vettel": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SUPER",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 21
+      }
+    ],
+    "Daniil Kvyat": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 21
+      }
+    ],
+    "Daniel Ricciardo": [
+      {
+        "compound": "SUPER",
+        "laps": 3
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      }
+    ],
+    "Kimi Raikkonen": [
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      }
+    ],
+    "Felipe Massa": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 25
+      }
+    ],
+    "Lewis Hamilton": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 4
+      },
+      {
+        "compound": "SUPER",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Max Verstappen": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      }
+    ],
+    "Carlos Sainz Jnr": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      }
+    ],
+    "Valtteri Bottas": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 17
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 26
+      }
+    ],
+    "Sergio Perez": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 28
+      }
+    ],
+    "Fernando Alonso": [
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 16
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      }
+    ],
+    "Jenson Button": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 23
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Esteban Gutierrez": [
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Nico Hulkenberg": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SOFT",
+        "laps": 9
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      }
+    ],
+    "Marcus Ericsson": [
+      {
+        "compound": "SOFT",
+        "laps": 4
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 24
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 27
+      }
+    ],
+    "Kevin Magnussen": [
+      {
+        "compound": "SUPER",
+        "laps": 4
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      }
+    ],
+    "Pascal Wehrlein": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "SOFT",
+        "laps": 16
+      },
+      {
+        "compound": "SUPER",
+        "laps": 12
+      }
+    ],
+    "Romain Grosjean": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "SOFT",
+        "laps": 19
+      },
+      {
+        "compound": "SOFT",
+        "laps": 13
+      },
+      {
+        "compound": "SUPER",
+        "laps": 11
+      },
+      {
+        "compound": "SUPER",
+        "laps": 11
+      }
+    ],
+    "Felipe Nasr": [
+      {
+        "compound": "SOFT",
+        "laps": 1
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 19
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 20
+      },
+      {
+        "compound": "SOFT",
+        "laps": 15
+      }
+    ],
+    "Rio Haryanto": [
+      {
+        "compound": "SOFT",
+        "laps": 18
+      },
+      {
+        "compound": "SOFT",
+        "laps": 10
+      },
+      {
+        "compound": "SOFT",
+        "laps": 12
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 15
+      }
+    ],
+    "Jolyon Palmer": [
+      {
+        "compound": "SOFT",
+        "laps": 15
+      },
+      {
+        "compound": "SUPER",
+        "laps": 9
+      },
+      {
+        "compound": "SOFT",
+        "laps": 14
+      },
+      {
+        "compound": "MEDIUM",
+        "laps": 17
+      }
+    ]
+  }
+}
