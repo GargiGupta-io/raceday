@@ -280,6 +280,105 @@ def get_championship_standings(year: int) -> list[dict] | None:
     ]
 
 
+def get_did_you_know(year: int, track: str) -> list[str]:
+    """
+    Generate interesting facts about a race from indexed data.
+
+    Scans results, standings, weather, and strategy for notable observations
+    and returns a list of plain-English fact strings.
+
+    Returns an empty list if the race cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return []
+
+    results = data["results"]
+    weather = data["weather"]
+    stints = data.get("stints") or {}
+
+    facts = []
+
+    # --- Finishers and retirements ---
+    # Use status-based check (not finish_position) because Jolpica assigns
+    # positions even to retired drivers
+    finished = [r for r in results if r["finish_position"] is not None]
+    retired = [r for r in results if r["status"] not in ("Finished",)
+               and not r["status"].startswith("+")]
+
+    if len(retired) >= 5:
+        facts.append(f"{len(retired)} drivers retired — an unusually chaotic race.")
+    elif len(retired) == 0 and len(finished) > 15:
+        facts.append("Every driver finished the race — a clean day.")
+
+    # --- Biggest mover ---
+    deltas = []
+    for r in finished:
+        grid = r.get("grid_position")
+        finish = r["finish_position"]
+        if grid is not None and finish is not None:
+            deltas.append((r["driver"], r["team"], grid - finish))
+
+    if deltas:
+        best_gain = max(deltas, key=lambda x: x[2])
+        if best_gain[2] >= 5:
+            facts.append(
+                f"{best_gain[0]} ({best_gain[1]}) gained {best_gain[2]} positions "
+                f"— the biggest climb of the race."
+            )
+
+        worst_loss = min(deltas, key=lambda x: x[2])
+        if worst_loss[2] <= -5:
+            facts.append(
+                f"{worst_loss[0]} ({worst_loss[1]}) lost {abs(worst_loss[2])} positions "
+                f"from the grid."
+            )
+
+    # --- Winner from far back ---
+    winner = next((r for r in results if r["finish_position"] == 1), None)
+    if winner and winner.get("grid_position") and winner["grid_position"] >= 5:
+        facts.append(
+            f"{winner['driver']} won from P{winner['grid_position']} on the grid "
+            f"— a proper fightback victory."
+        )
+
+    # --- Strategy variety ---
+    if stints:
+        stop_counts = set()
+        for driver_stints in stints.values():
+            if driver_stints:
+                stop_counts.add(len(driver_stints) - 1)
+        if len(stop_counts) >= 3:
+            facts.append(
+                f"Drivers used {len(stop_counts)} different pit stop strategies "
+                f"— from {min(stop_counts)}-stop to {max(stop_counts)}-stop."
+            )
+
+    # --- Weather ---
+    condition = weather.get("condition", "")
+    if condition == "wet":
+        facts.append("A wet race — rain played a major role in the outcome.")
+    elif condition == "damp":
+        facts.append("Mixed conditions — some rain during the race weekend.")
+
+    temp = weather.get("avg_air_temp")
+    if temp is not None:
+        if temp >= 35:
+            facts.append(f"Scorching {temp}°C air temperature — one of the hottest races of the season.")
+        elif temp <= 12:
+            facts.append(f"Just {temp}°C air temperature — a cold race by F1 standards.")
+
+    # --- Podium from outside top 10 ---
+    for r in finished[:3]:
+        grid = r.get("grid_position")
+        if grid and grid > 10:
+            facts.append(
+                f"{r['driver']} made the podium from P{grid} — starting outside the top 10."
+            )
+
+    return facts
+
+
 # ---------------------------------------------------------------------------
 # Manual test
 # ---------------------------------------------------------------------------

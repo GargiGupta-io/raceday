@@ -540,6 +540,64 @@ The 2014 Australian Grand Prix was successfully indexed through the new historic
 
 ---
 
+# Phase 4B — Facts & Theories Sidebar
+
+## ✅ Step 1 (4B) — Install feedparser
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/requirements.txt` — added feedparser and requests dependencies
+
+**In plain English**
+Installed feedparser, a Python library that reads RSS news feeds (like a newspaper's article list in machine-readable format). Also added requests to the requirements file so all dependencies are tracked. These are the building blocks for fetching F1 journalism articles from The Race and Autosport.
+
+**Files changed**
+~ modified: backend/requirements.txt
+
+---
+
+## ✅ Step 2 (4B) — RSS Feed Fetcher
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/rss_fetcher.py` — fetches and filters articles from The Race + Autosport RSS feeds
+
+**In plain English**
+Raceday can now read the latest articles from two top F1 journalism sites — The Race and Autosport. It downloads their article feeds, then searches through headlines and summaries for mentions of a specific race (e.g. "British Grand Prix 2023"). Matching articles are returned with their title, link, and publication date. For older races the feed won't have articles (RSS only keeps recent ones), which the sidebar handles by hiding that section.
+
+**Files changed**
++ created: backend/core/rss_fetcher.py
+
+---
+
+## ✅ Step 3 (4B) — Reddit Fetcher
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/reddit_fetcher.py` — searches r/formula1 for race threads and fan discussion posts
+
+**In plain English**
+Raceday can now pull fan discussions from Reddit's r/formula1 subreddit. It searches for a specific race by name and year, finds the official race discussion thread (the mega-thread where thousands of fans comment live during the race), and also finds the top-voted fan posts about that race. It uses Reddit's free public API — no account or login needed — and handles rate limiting automatically.
+
+**Files changed**
++ created: backend/core/reddit_fetcher.py
+
+---
+
+## ✅ Step 4 (4B) — Test RSS + Reddit Loaders
+*Completed: 2026-03-16*
+
+**What was built**
+- Ran both loaders against live APIs
+
+**In plain English**
+Both loaders were tested against real data. RSS feeds returned 15 entries from The Race and 50 from Autosport — no matches for 2025 British GP which hasn't happened yet (expected). Reddit returned 8 relevant posts for the 2023 British GP, including the official race thread (730 upvotes), Verstappen's pole position post (8225 upvotes), and the race win announcement. Initial Reddit search was too broad (matching any "grand prix" post), fixed by adding exact phrase matching and client-side filtering.
+
+**Files changed**
+~ modified: backend/core/reddit_fetcher.py (search fix)
+
+---
+
 ## ✅ Step 5 (4A) — OpenMeteo Weather Test
 *Completed: 2026-03-16*
 
