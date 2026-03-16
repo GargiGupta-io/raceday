@@ -65,14 +65,22 @@ def get_race_summary(year: int, track: str) -> dict | None:
     finished = [r for r in results if r["finish_position"] is not None]
     finished_sorted = sorted(finished, key=lambda r: r["finish_position"])
 
-    podium = [r["driver"] for r in finished_sorted[:3]]
-    winner = podium[0] if podium else None
+    podium = [
+        {"position": r["finish_position"], "driver": r["driver"], "team": r["team"]}
+        for r in finished_sorted[:3]
+    ]
+    winner = podium[0]["driver"] if podium else None
+    winner_team = podium[0]["team"] if podium else None
 
-    retirements = [r["driver"] for r in results if r["status"] not in ("Finished",) and
-                   not r["status"].startswith("+")]
+    retirements = [
+        {"driver": r["driver"], "team": r["team"]}
+        for r in results
+        if r["status"] not in ("Finished",) and not r["status"].startswith("+")
+    ]
 
     return {
         "winner": winner,
+        "winner_team": winner_team,
         "podium": podium,
         "retirements": retirements,
         "weather": weather.get("condition"),

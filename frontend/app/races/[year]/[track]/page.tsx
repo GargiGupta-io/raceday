@@ -19,12 +19,11 @@ interface RaceSummary {
 }
 
 interface StandingEntry {
-  position: number;
+  position: number | null;
   driver: string;
   team: string;
-  finish_position: number | null;
-  grid_position: number | null;
-  positions_gained: number | null;
+  grid: number | null;
+  positions_delta: number | null;
   status: string;
 }
 

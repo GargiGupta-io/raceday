@@ -1,10 +1,9 @@
 interface StandingEntry {
-  position: number;
+  position: number | null;
   driver: string;
   team: string;
-  finish_position: number | null;
-  grid_position: number | null;
-  positions_gained: number | null;
+  grid: number | null;
+  positions_delta: number | null;
   status: string;
 }
 
@@ -32,7 +31,7 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
           >
             {/* Finish position */}
             <span className="text-sm font-mono text-right text-zinc-400">
-              {entry.finish_position ?? "—"}
+              {entry.position ?? "—"}
             </span>
 
             {/* Driver + team */}
@@ -43,12 +42,12 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
 
             {/* Grid position */}
             <span className="text-xs text-zinc-500 text-center font-mono">
-              {entry.grid_position ?? "—"}
+              {entry.grid ?? "—"}
             </span>
 
             {/* Delta */}
             <div className="flex justify-end">
-              <DeltaBadge delta={entry.positions_gained} />
+              <DeltaBadge delta={entry.positions_delta} />
             </div>
           </div>
         ))}
@@ -73,7 +72,7 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
                 <p className="text-xs text-zinc-500">{entry.team}</p>
               </div>
               <span className="text-xs text-zinc-600 text-center font-mono">
-                {entry.grid_position ?? "—"}
+                {entry.grid ?? "—"}
               </span>
               <span className="text-xs text-zinc-600 text-right">DNF</span>
             </div>
