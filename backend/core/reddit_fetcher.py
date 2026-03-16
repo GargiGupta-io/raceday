@@ -80,16 +80,16 @@ def search_race_posts(race_name: str, year: int, limit: int = 8) -> list[dict]:
 
     Returns an empty list on failure or no results.
     """
-    # Build search query — use the distinctive part of the race name
+    # Build search query with quotes for exact phrase matching
     race_keyword = race_name.lower().replace("grand prix", "").strip()
-    query = f"{race_keyword} grand prix {year}"
+    query = f'"{race_keyword}" "grand prix" {year}'
 
     url = f"https://www.reddit.com/r/{_SUBREDDIT}/search.json"
     params = {
         "q": query,
-        "sort": "top",
+        "sort": "relevance",
         "t": "all",
-        "limit": limit,
+        "limit": 25,
         "restrict_sr": 1,
     }
 
@@ -100,10 +100,20 @@ def search_race_posts(race_name: str, year: int, limit: int = 8) -> list[dict]:
     children = data.get("data", {}).get("children", [])
     posts = [_extract_post(c) for c in children]
 
-    # Filter out very low-score posts (noise)
-    posts = [p for p in posts if p["score"] > 10]
+    # Client-side filter: title must contain the race keyword AND the year
+    race_kw_lower = race_keyword.lower()
+    year_str = str(year)
+    posts = [
+        p for p in posts
+        if race_kw_lower in p["title"].lower() and year_str in p["title"]
+        and p["score"] > 10
+    ]
 
-    logger.info("Reddit search '%s': %d posts found", query, len(posts))
+    # Sort by score and trim to limit
+    posts.sort(key=lambda p: p["score"], reverse=True)
+    posts = posts[:limit]
+
+    logger.info("Reddit search '%s': %d posts matched", query, len(posts))
     return posts
 
 
@@ -118,13 +128,13 @@ def get_race_thread(race_name: str, year: int) -> dict | None:
     race_keyword = race_name.lower().replace("grand prix", "").strip()
 
     for thread_type in ["Race Thread", "Post Race Discussion"]:
-        query = f'{thread_type} {race_keyword} {year}'
+        query = f'"{thread_type}" "{race_keyword}" {year}'
         url = f"https://www.reddit.com/r/{_SUBREDDIT}/search.json"
         params = {
             "q": query,
-            "sort": "top",
+            "sort": "relevance",
             "t": "all",
-            "limit": 3,
+            "limit": 5,
             "restrict_sr": 1,
         }
 
