@@ -679,3 +679,54 @@ The weather loader was tested against two real races. The 2014 Australian GP cam
 
 **Files changed**
 (none — verification only)
+
+---
+
+# Phase 4C — Supabase Accounts & Discussion
+
+## ✅ Steps 1-4 (4C) — Full Supabase Integration
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/lib/supabase.ts` — Supabase client singleton
+- `frontend/.env.local` — project URL + anon key (gitignored)
+- `frontend/app/components/AuthButton.tsx` — guest/email/Google auth with modal
+- `frontend/app/components/DiscussionPanel.tsx` — theories, comments, upvotes, real-time
+- SQL schema: theories, comments, upvotes tables with RLS policies
+- Real-time enabled on all three tables
+
+**In plain English**
+Raceday now has user accounts and a discussion section. Users can browse as a guest, sign up with email, or log in with Google. On every race page there's a new "Discussion" tab where registered users can post theories, reply with comments, and upvote. Everything updates in real-time — if someone posts a theory while you're on the page, it appears instantly. The entire social layer runs through Supabase (cloud database + auth) while race data still comes from FastAPI. Zero backend Python changes were needed.
+
+**Files changed**
++ created: frontend/lib/supabase.ts
++ created: frontend/.env.local
++ created: frontend/app/components/AuthButton.tsx
++ created: frontend/app/components/DiscussionPanel.tsx
+~ modified: frontend/app/components/Navbar.tsx
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+~ modified: .gitignore
+
+---
+
+# Phase 4D — Polish & Bug Fixes
+
+## ✅ Steps 1-3 (4D) — Year Range, Google OAuth, Mobile UX
+*Completed: 2026-03-17*
+
+**What was built**
+- Year selectors extended from 2018-2024 to 2010-2024
+- Auth modal fixed with createPortal (was clipped by navbar stacking context)
+- Google OAuth sign-in button added
+- Sidebar visible on mobile (below tabs instead of hidden)
+- Loading skeleton for sidebar
+- Scrollable tab bar on narrow screens
+
+**In plain English**
+The finishing touches. Year selectors now show all 15 seasons of data. The sign-in popup works properly (it was getting cut off before). Users can sign in with Google. On phones, the sidebar with race facts and Reddit posts shows below the tabs instead of disappearing. While the sidebar loads, grey animated bars show where the content will appear. The four tabs scroll sideways on very narrow screens instead of cramming together.
+
+**Files changed**
+~ modified: frontend/app/page.tsx
+~ modified: frontend/app/components/Navbar.tsx
+~ modified: frontend/app/components/AuthButton.tsx
+~ modified: frontend/app/races/[year]/[track]/page.tsx
