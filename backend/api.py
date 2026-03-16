@@ -120,6 +120,11 @@ def indexing_status():
     return _indexing_status
 
 
+@app.get("/seasons/summary")
+def all_season_summaries():
+    return insights.get_all_season_summaries()
+
+
 @app.get("/races/{year}")
 def season_races(year: int):
     data = insights.get_season_races(year)

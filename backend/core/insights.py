@@ -289,6 +289,68 @@ def get_championship_standings(year: int) -> list[dict] | None:
     ]
 
 
+def get_season_summary(year: int) -> dict | None:
+    """
+    Return a high-level summary of a season for the home page year cards.
+
+    Returns a dict:
+        year     — the season year
+        champion — driver code of the champion (or leader)
+        team     — champion's team name
+        wins     — number of wins
+        races    — number of indexed races
+        tagline  — auto-generated one-liner about the season
+    """
+    standings = get_championship_standings(year)
+    if not standings:
+        return None
+
+    leader = standings[0]
+    wins = leader["wins"]
+    races = leader["races"]
+    driver = leader["driver"]
+    team = leader["team"]
+
+    # Auto-generate a tagline based on dominance
+    if wins >= races * 0.8:
+        tagline = "dominant season"
+    elif wins >= races * 0.6:
+        tagline = f"{wins} wins"
+    elif wins >= 10:
+        tagline = f"{wins} wins"
+    elif wins >= 1:
+        tagline = f"{wins} win{'s' if wins > 1 else ''}"
+    else:
+        tagline = f"led with {leader['points']} pts"
+
+    # Check if it was a close fight
+    if len(standings) >= 2:
+        gap = leader["points"] - standings[1]["points"]
+        if gap <= 10 and races >= 10:
+            tagline = "title decided last race"
+        elif gap <= 25 and races >= 10:
+            tagline = "tight championship battle"
+
+    return {
+        "year": year,
+        "champion": driver,
+        "team": team,
+        "wins": wins,
+        "races": races,
+        "tagline": tagline,
+    }
+
+
+def get_all_season_summaries() -> list[dict]:
+    """Return season summaries for all years 2010–2024."""
+    summaries = []
+    for year in range(2024, 2009, -1):
+        s = get_season_summary(year)
+        if s:
+            summaries.append(s)
+    return summaries
+
+
 def get_did_you_know(year: int, track: str) -> list[str]:
     """
     Generate interesting facts about a race from indexed data.

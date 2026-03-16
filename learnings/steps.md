@@ -730,3 +730,24 @@ The finishing touches. Year selectors now show all 15 seasons of data. The sign-
 ~ modified: frontend/app/components/Navbar.tsx
 ~ modified: frontend/app/components/AuthButton.tsx
 ~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+# Phase 5 — UI Redesign & Insights Engine
+
+## What each phase does
+
+**Phase 5A — Home Page Redesign**
+Right now the home page is a plain list of race names. We're turning it into something that looks like the mockup — a row of year cards at the top showing who won the championship that year ("2024 — Verstappen, 9 wins"), and below that a grid of race cards showing the circuit name, who won, whether it was wet or dry, and how many laps. You can filter by weather (show me only wet races). It's the difference between a file browser and a magazine cover.
+
+**Phase 5B — Strategy Story/Data**
+The Strategy tab currently shows a table of compounds per driver. We're splitting it into two views. "Story" mode reads like commentary — "Verstappen was the first to pit on lap 12, undercutting Pérez who stayed out until lap 18. The early stop gamble paid off — he emerged ahead and never looked back." "Data" mode keeps the existing technical breakdown with a compound key panel and race stats on the side. Same data, two ways to consume it.
+
+**Phase 5C — Results Tab Redesign**
+Results currently shows who won, the podium, and retirements. We're adding "key moments" cards that automatically spot the interesting things — "Hamilton undercut Leclerc on lap 22 and took P3", "Alonso gained 8 positions — the biggest climb of the race", "Pérez and Norris finished 0.2 seconds apart — the closest battle." These are auto-detected from the data, not written by hand.
+
+**Phase 5D — Standings Becomes Season Story**
+Instead of a points table (which the official F1 app already does), this becomes a season narrative with three sections. A momentum chart showing who's hot right now (points in the last 5 races, not total). Turning point cards marking the moments that decided the championship ("Verstappen's DNF in Austria let Norris close to 20 points"). And a constructor battle showing how team standings shifted round by round — you'd literally see McLaren overtaking Red Bull mid-season.
+
+**Phase 5E — Season Insights**
+Auto-generated end-of-season awards and stats. "Best starter: Russell (most positions gained lap 1)", "Most consistent: Verstappen (18/24 races in top 3)", "Worst luck: Sainz (3 mechanical DNFs)". Plus teammate head-to-head records — "Norris beat Piastri 15-9 in qualifying." All calculated from the indexed data, no manual input needed.
