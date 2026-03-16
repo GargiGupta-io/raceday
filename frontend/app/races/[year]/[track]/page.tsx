@@ -6,6 +6,7 @@ import ResultsCard from "@/app/components/ResultsCard";
 import StandingsTable from "@/app/components/StandingsTable";
 import StrategyPanel from "@/app/components/StrategyPanel";
 import FactsSidebar from "@/app/components/FactsSidebar";
+import DiscussionPanel from "@/app/components/DiscussionPanel";
 
 const API = "http://localhost:8080";
 
@@ -44,7 +45,7 @@ interface SidebarData {
   did_you_know: string[];
 }
 
-type Tab = "results" | "standings" | "strategy";
+type Tab = "results" | "standings" | "strategy" | "discussion";
 
 export default function RacePage({
   params,
@@ -116,7 +117,7 @@ export default function RacePage({
             <div className="flex-1 min-w-0">
               {/* Tab bar */}
               <div className="mb-6 flex gap-1 border-b border-zinc-800 pb-0">
-                {(["results", "standings", "strategy"] as Tab[]).map((t) => (
+                {(["results", "standings", "strategy", "discussion"] as Tab[]).map((t) => (
                   <button
                     key={t}
                     onClick={() => setTab(t)}
@@ -140,6 +141,9 @@ export default function RacePage({
               )}
               {tab === "strategy" && strategy && (
                 <StrategyPanel data={strategy} />
+              )}
+              {tab === "discussion" && (
+                <DiscussionPanel raceYear={parseInt(year)} raceTrack={trackName} />
               )}
             </div>
 
