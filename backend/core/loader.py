@@ -144,6 +144,10 @@ def get_season_schedule(year: int) -> list[dict] | None:
     """
     Return the list of race events for a given F1 season.
 
+    Year-aware routing:
+        2018+ → FastF1 (rich data, sprint detection)
+        ≤2017 → Jolpica API (basic schedule with GPS coords)
+
     Each dict contains:
         round       — round number (int, 1-based)
         name        — event name (e.g. 'British Grand Prix')
@@ -152,9 +156,14 @@ def get_season_schedule(year: int) -> list[dict] | None:
         date        — event date as ISO string (YYYY-MM-DD)
         format      — 'conventional', 'sprint', etc.
 
+    Jolpica responses also include: circuit_id, lat, lon (used by indexer).
     Excludes pre-season testing (round 0).
     Returns None if the schedule cannot be fetched.
     """
+    if year <= 2017:
+        from backend.core import jolpica_loader
+        return jolpica_loader.get_season_schedule(year)
+
     try:
         schedule = fastf1.get_event_schedule(year, include_testing=False)
     except Exception as exc:
