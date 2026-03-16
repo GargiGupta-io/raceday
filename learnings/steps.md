@@ -390,13 +390,18 @@ The frontend exists now. Running `npm run dev` inside frontend/ starts a web ser
 **Files changed**
 + created: frontend/ (entire Next.js scaffold)
 
-*Completed: 2026-03-15*
+---
+
+# Phase 4A — Historical Data (2010–2017)
+
+## ✅ Step 1 (4A) — Jolpica Loader Core
+*Completed: 2026-03-16*
 
 **What was built**
-- `backend/api.py` — CORSMiddleware allowing localhost:3000
+- `backend/core/jolpica_loader.py` — HTTP helper, season schedule, circuit coords, race results
 
 **In plain English**
-Browsers block JavaScript from calling an API on a different port unless the API explicitly says "that's allowed". Without this, the Next.js frontend on port 3000 would be silently blocked from reaching the FastAPI backend on port 8001. One middleware registration fixes it — GET requests from localhost:3000 are now permitted.
+Raceday can now talk to the Jolpica API — a free, open database of every F1 race since 1950. The new loader knows how to fetch a full season calendar (every race name, date, and circuit GPS coordinates), look up a circuit's location, and pull the full finishing order for any race. It handles flaky network connections by retrying up to 3 times with increasing waits. This is the foundation that lets us reach back to the 2010s for race data that FastF1 can't cover.
 
 **Files changed**
-~ modified: backend/api.py
++ created: backend/core/jolpica_loader.py
