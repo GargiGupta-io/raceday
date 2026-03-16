@@ -162,6 +162,97 @@ def get_race_results(year: int, round_num: int) -> list[dict] | None:
     return rows if rows else None
 
 
+def _get_driver_id_to_code(year: int, round_num: int) -> dict[str, str]:
+    """
+    Fetch the driverId → 3-letter code mapping for a given race from Jolpica.
+
+    Jolpica pit stops use slugs ('hamilton') while results use codes ('HAM').
+    This hits the results endpoint to build an authoritative lookup.
+
+    Returns e.g. {"hamilton": "HAM", "vettel": "VET", "rosberg": "ROS"}
+    Returns empty dict on failure.
+    """
+    data = _get(f"{year}/{round_num}/results.json?limit=100")
+    if data is None:
+        return {}
+
+    races = data.get("MRData", {}).get("RaceTable", {}).get("Races", [])
+    if not races:
+        return {}
+
+    mapping = {}
+    for r in races[0].get("Results", []):
+        driver = r.get("Driver", {})
+        driver_id = driver.get("driverId", "")
+        code = driver.get("code") or driver_id[:3].upper()
+        if driver_id:
+            mapping[driver_id] = code
+
+    return mapping
+
+
+def get_pit_stops(year: int, round_num: int) -> dict | None:
+    """
+    Return per-driver pit stop data for the given round from Jolpica.
+
+    Returns a dict keyed by 3-letter driver code, each value being a sorted
+    list of pit stop dicts:
+        stop     — stop number (int, 1-based)
+        lap      — lap the pit stop occurred (int)
+        duration — pit stop duration in seconds (float or None)
+
+    Example:
+        {"HAM": [{"stop": 1, "lap": 18, "duration": 23.5},
+                 {"stop": 2, "lap": 38, "duration": 24.1}],
+         "VET": [...]}
+
+    Returns None if the API call fails.
+    Returns an empty dict if the API returns no pit stop data (pre-2012 races
+    don't have pit stop timing in the Ergast/Jolpica database).
+    """
+    data = _get(f"{year}/{round_num}/pitstops.json?limit=100")
+    if data is None:
+        return None
+
+    races = data.get("MRData", {}).get("RaceTable", {}).get("Races", [])
+    if not races:
+        logger.info("get_pit_stops: no pit stop data for %s round %s", year, round_num)
+        return {}
+
+    pit_stops_raw = races[0].get("PitStops", [])
+    if not pit_stops_raw:
+        return {}
+
+    # Build driverId → code mapping from the results endpoint
+    id_to_code = _get_driver_id_to_code(year, round_num)
+
+    stops_by_driver: dict[str, list[dict]] = {}
+    for ps in pit_stops_raw:
+        driver_id = ps.get("driverId", "")
+        code = id_to_code.get(driver_id, driver_id[:3].upper())
+
+        lap = ps.get("lap", "")
+        stop = ps.get("stop", "")
+        duration = ps.get("duration", "")
+
+        try:
+            dur_float = float(duration) if duration else None
+        except (ValueError, TypeError):
+            dur_float = None
+
+        stops_by_driver.setdefault(code, []).append({
+            "stop":     int(stop) if str(stop).isdigit() else 0,
+            "lap":      int(lap) if str(lap).isdigit() else 0,
+            "duration": dur_float,
+        })
+
+    # Sort each driver's stops by stop number
+    for driver in stops_by_driver:
+        stops_by_driver[driver].sort(key=lambda s: s["stop"])
+
+    return stops_by_driver
+
+
 # ---------------------------------------------------------------------------
 # Manual test
 # ---------------------------------------------------------------------------
@@ -194,3 +285,14 @@ if __name__ == "__main__":
             )
     else:
         print("  Failed to load results.")
+
+    print(f"\n=== R01 Pit Stops ===\n")
+    pit_stops = get_pit_stops(year, 1)
+    if pit_stops:
+        for code, stops in sorted(pit_stops.items()):
+            laps = ", ".join(f"lap {s['lap']}" for s in stops)
+            print(f"  {code:<5} {len(stops)} stop(s): {laps}")
+    elif pit_stops is not None:
+        print("  No pit stop data available for this race.")
+    else:
+        print("  Failed to load pit stops.")
