@@ -49,6 +49,7 @@ export default function Home() {
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [weatherFilter, setWeatherFilter] = useState<string>("ALL");
 
   useEffect(() => {
     if (urlYear) setYear(parseInt(urlYear));
@@ -110,14 +111,29 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Season header */}
-        <div className="flex items-baseline justify-between mb-6">
+        {/* Season header + weather filter */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <h2 className="text-xl font-bold text-white">
             {year} Season <span className="text-zinc-500 font-normal">— {races.length} Races</span>
           </h2>
+          <div className="flex gap-1.5">
+            {["ALL", "DRY", "WET", "MIXED"].map((f) => (
+              <button
+                key={f}
+                onClick={() => setWeatherFilter(f)}
+                className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                  weatherFilter === f
+                    ? "bg-zinc-700 text-white"
+                    : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Race list */}
+        {/* Race grid */}
         {loading && (
           <p className="text-zinc-500 text-sm">Loading {year} season...</p>
         )}
@@ -126,13 +142,23 @@ export default function Home() {
           <p className="text-red-400 text-sm">Could not load season — is the backend running?</p>
         )}
 
-        {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {races.map((race) => (
-              <RaceCard key={race.round} race={race} year={year} />
-            ))}
-          </div>
-        )}
+        {!loading && !error && (() => {
+          const weatherMap: Record<string, string> = { DRY: "dry", WET: "wet", MIXED: "damp" };
+          const filtered = weatherFilter === "ALL"
+            ? races
+            : races.filter((r) => r.weather === weatherMap[weatherFilter]);
+          return filtered.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {filtered.map((race) => (
+                <RaceCard key={race.round} race={race} year={year} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-zinc-600 text-sm text-center py-8">
+              No {weatherFilter.toLowerCase()} races in the {year} season.
+            </p>
+          );
+        })()}
 
       </div>
     </div>
