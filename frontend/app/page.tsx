@@ -127,22 +127,9 @@ export default function Home() {
         )}
 
         {!loading && !error && (
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {races.map((race) => (
-              <div key={race.round}>
-                {race.indexed ? (
-                  <Link
-                    href={`/races/${year}/${encodeURIComponent(race.name)}`}
-                    className="flex items-center justify-between rounded-lg bg-zinc-900 px-5 py-4 hover:bg-zinc-800 transition-colors"
-                  >
-                    <RaceRow race={race} />
-                  </Link>
-                ) : (
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-900 px-5 py-4 opacity-40 cursor-default">
-                    <RaceRow race={race} />
-                  </div>
-                )}
-              </div>
+              <RaceCard key={race.round} race={race} year={year} />
             ))}
           </div>
         )}
@@ -158,41 +145,61 @@ const WEATHER_BADGE: Record<string, { bg: string; text: string; label: string }>
   damp:  { bg: "bg-cyan-900/60",  text: "text-cyan-400",  label: "MIXED" },
 };
 
-function RaceRow({ race }: { race: Race }) {
+function RaceCard({ race, year }: { race: Race; year: number }) {
   const weather = WEATHER_BADGE[race.weather || ""] || null;
 
-  return (
-    <>
-      <div className="flex items-center gap-4">
-        <span className="w-8 text-right text-xs text-zinc-600 font-mono">R{race.round}</span>
-        <div>
-          <p className="text-sm font-medium text-zinc-100">{race.name}</p>
-          <p className="text-xs text-zinc-500">{race.location}, {race.country}</p>
+  const content = (
+    <div className="rounded-lg bg-zinc-900 p-5 h-full flex flex-col">
+      {/* Top row: round + name */}
+      <div className="flex items-start gap-3 mb-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-1">
+            Round {race.round}
+          </p>
+          <p className="text-base font-semibold text-zinc-100 leading-tight">{race.name}</p>
+          <p className="text-xs text-zinc-500 mt-0.5">{race.location}, {race.country}</p>
         </div>
       </div>
-      <div className="flex items-center gap-3">
+
+      {/* Bottom row: winner + badges */}
+      <div className="mt-auto flex items-center gap-2 flex-wrap">
         {race.winner && (
           <span className="text-xs text-zinc-300">
-            <span className="text-emerald-400 mr-1">P1</span>
+            <span className="text-emerald-400 font-semibold mr-1">P1</span>
             {race.winner}
           </span>
         )}
-        {weather && (
-          <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${weather.bg} ${weather.text}`}>
-            {weather.label}
-          </span>
-        )}
-        {race.total_laps && (
-          <span className="text-[10px] text-zinc-600 border border-zinc-800 rounded px-1.5 py-0.5">
-            {race.total_laps} LAPS
-          </span>
-        )}
-        {race.format === "sprint" && (
-          <span className="rounded px-1.5 py-0.5 text-[10px] font-bold bg-yellow-900/60 text-yellow-400">
-            SPRINT
-          </span>
-        )}
+        <div className="flex items-center gap-1.5 ml-auto">
+          {weather && (
+            <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${weather.bg} ${weather.text}`}>
+              {weather.label}
+            </span>
+          )}
+          {race.total_laps && (
+            <span className="text-[10px] text-zinc-600 border border-zinc-800 rounded px-1.5 py-0.5">
+              {race.total_laps} LAPS
+            </span>
+          )}
+          {race.format === "sprint" && (
+            <span className="rounded px-1.5 py-0.5 text-[10px] font-bold bg-yellow-900/60 text-yellow-400">
+              SPRINT
+            </span>
+          )}
+        </div>
       </div>
-    </>
+    </div>
   );
+
+  if (race.indexed) {
+    return (
+      <Link
+        href={`/races/${year}/${encodeURIComponent(race.name)}`}
+        className="block hover:scale-[1.02] transition-transform"
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className="opacity-40 cursor-default">{content}</div>;
 }
