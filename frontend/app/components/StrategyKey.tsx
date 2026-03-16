@@ -14,7 +14,7 @@ const COMPOUND_INFO: Record<string, { color: string; desc: string }> = {
 
 interface StrategyStats {
   most_common: string;
-  strategies: number;
+  strategy_breakdown: { strategy: string; count: number }[];
   first_to_pit: { driver: string; team: string; lap: number } | null;
   last_to_pit: { driver: string; team: string; lap: number } | null;
   longest_stint: { driver: string; team: string; compound: string; laps: number } | null;
@@ -73,8 +73,23 @@ export default function StrategyKey({
             Race Stats
           </p>
           <div className="space-y-3">
-            <StatRow label="Most common" value={stats.most_common} />
-            <StatRow label="Strategies used" value={String(stats.strategies)} />
+            <StatRow label="Most popular" value={stats.most_common} />
+
+            {/* Strategy breakdown */}
+            <div>
+              <span className="text-xs text-zinc-500">Pit stop strategies</span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {stats.strategy_breakdown.map((s) => (
+                  <span
+                    key={s.strategy}
+                    className="text-[10px] bg-zinc-800 text-zinc-300 rounded px-2 py-0.5"
+                  >
+                    {s.strategy}: {s.count}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             {stats.first_to_pit && (
               <StatRow
                 label="First to pit"

@@ -249,13 +249,47 @@ def get_strategy_breakdown(year: int, track: str) -> list[dict] | None:
     return breakdown
 
 
-def get_strategy_narrative(year: int, track: str) -> list[str] | None:
-    """
-    Auto-generate a race strategy narrative from stint data.
+# Driver code → full name mapping (2010–2024)
+_DRIVER_NAMES: dict[str, str] = {
+    "AIT": "Jack Aitken", "ALB": "Alexander Albon", "ALG": "Jaime Alguersuari",
+    "ALO": "Fernando Alonso", "ANT": "Kimi Antonelli", "BAR": "Rubens Barrichello",
+    "BEA": "Oliver Bearman", "BIA": "Jules Bianchi", "BOT": "Valtteri Bottas",
+    "BUE": "Sebastien Buemi", "BUT": "Jenson Button", "CHA": "Karun Chandhok",
+    "CHI": "Max Chilton", "COL": "Franco Colapinto", "DEV": "Nyck de Vries",
+    "DIR": "Paul di Resta", "DOO": "Jack Doohan", "ERI": "Marcus Ericsson",
+    "FIT": "Pietro Fittipaldi", "GAS": "Pierre Gasly", "GIO": "Antonio Giovinazzi",
+    "GLO": "Timo Glock", "GRO": "Romain Grosjean", "GUT": "Esteban Gutierrez",
+    "HAM": "Lewis Hamilton", "HAR": "Brendon Hartley", "HEI": "Nick Heidfeld",
+    "HUL": "Nico Hulkenberg", "KAR": "Narain Karthikeyan", "KOB": "Kamui Kobayashi",
+    "KOV": "Heikki Kovalainen", "KUB": "Robert Kubica", "KVY": "Daniil Kvyat",
+    "LAT": "Nicholas Latifi", "LAW": "Liam Lawson", "LEC": "Charles Leclerc",
+    "MAG": "Kevin Magnussen", "MAL": "Pastor Maldonado", "MAS": "Felipe Massa",
+    "MAZ": "Nikita Mazepin", "MER": "Roberto Merhi", "MSC": "Mick Schumacher",
+    "NAS": "Felipe Nasr", "NOR": "Lando Norris", "OCO": "Esteban Ocon",
+    "PAL": "Jolyon Palmer", "PER": "Sergio Perez", "PET": "Vitaly Petrov",
+    "PIA": "Oscar Piastri", "PIC": "Charles Pic", "RAI": "Kimi Raikkonen",
+    "RIC": "Daniel Ricciardo", "ROS": "Nico Rosberg", "RUS": "George Russell",
+    "SAI": "Carlos Sainz", "SAR": "Logan Sargeant", "SEN": "Bruno Senna",
+    "SIR": "Sergey Sirotkin", "STE": "Will Stevens", "STR": "Lance Stroll",
+    "SUT": "Adrian Sutil", "TRU": "Jarno Trulli", "TSU": "Yuki Tsunoda",
+    "VAN": "Stoffel Vandoorne", "VER": "Max Verstappen", "VET": "Sebastian Vettel",
+    "WEB": "Mark Webber", "WEH": "Pascal Wehrlein", "ZHO": "Guanyu Zhou",
+}
 
-    Returns a list of prose paragraphs describing the strategy story:
-    who pitted first, undercuts, overcuts, contrasting strategies,
-    and how strategy affected the result.
+
+def _dn(code: str) -> str:
+    """Return 'Full Name (CODE)' for a driver code."""
+    name = _DRIVER_NAMES.get(code, code)
+    return f"{name} ({code})" if name != code else code
+
+
+def get_strategy_narrative(year: int, track: str) -> list[dict] | None:
+    """
+    Auto-generate a structured race strategy narrative from stint data.
+
+    Returns a list of section dicts, each with:
+        heading  — section title (e.g. "The Opening Gambit")
+        body     — prose paragraph with full driver names
 
     Returns None if the race cannot be loaded.
     """
@@ -268,7 +302,7 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
     weather = data.get("weather", {})
 
     if not stints_by_driver:
-        return ["No detailed stint data available for this race."]
+        return [{"heading": "Strategy", "body": "No detailed stint data available for this race."}]
 
     # Build a lookup: driver → finish position, team, grid
     driver_info: dict[str, dict] = {}
@@ -288,22 +322,22 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
             first_stops.append((driver, first_pit_lap))
 
     first_stops.sort(key=lambda x: x[1])
-    paragraphs = []
+    sections = []
 
-    # --- Opening: race conditions ---
+    # --- Section 1: Race Conditions ---
     condition = weather.get("condition", "dry")
     temp = weather.get("avg_air_temp")
     if condition == "wet":
-        opener = "Rain played a defining role in this race, forcing strategic gambles from the pit wall."
+        body = "Rain played a defining role in this race, forcing strategic gambles from the pit wall."
     elif condition == "damp":
-        opener = "Mixed conditions kept teams guessing, with the threat of rain hanging over strategy calls."
+        body = "Mixed conditions kept teams guessing, with the threat of rain hanging over every strategy call."
     else:
-        opener = "In dry conditions, tyre management and pit stop timing were everything."
+        body = "Under clear skies, this race came down to tyre management and pit stop timing."
     if temp:
-        opener += f" Track temperatures hovered around {temp}°C."
-    paragraphs.append(opener)
+        body += f" Air temperatures sat around {temp}°C."
+    sections.append({"heading": "Race Conditions", "body": body})
 
-    # --- Who pitted first and why it mattered ---
+    # --- Section 2: The Opening Gambit ---
     if first_stops:
         first_driver, first_lap = first_stops[0]
         first_info = driver_info.get(first_driver, {})
@@ -313,18 +347,21 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
         last_driver, last_lap = first_stops[-1]
         last_info = driver_info.get(last_driver, {})
 
-        p = f"{first_driver} ({first_team}) was the first to blink, pitting on lap {first_lap}."
+        body = f"{_dn(first_driver)} was the first to pit, diving in on lap {first_lap}."
         if first_finish and first_finish <= 3:
-            p += f" The early stop paid off — {first_driver} finished P{first_finish}."
+            body += f" The early call was a masterstroke — {_DRIVER_NAMES.get(first_driver, first_driver)} came home in P{first_finish}."
         elif first_finish and first_finish > 10:
-            p += f" It didn't work out — {first_driver} ended up P{first_finish}."
+            body += f" It was a gamble that didn't pay off — {_DRIVER_NAMES.get(first_driver, first_driver)} ended up in P{first_finish}."
 
         if last_lap - first_lap >= 8:
-            p += f" {last_driver} ({last_info.get('team', '')}) stayed out until lap {last_lap}, stretching the first stint {last_lap - first_lap} laps longer."
+            body += (
+                f" At the other end of the spectrum, {_dn(last_driver)} stretched their first stint all the way to lap {last_lap} "
+                f"— {last_lap - first_lap} laps longer on the same rubber."
+            )
 
-        paragraphs.append(p)
+        sections.append({"heading": "The Opening Gambit", "body": body})
 
-    # --- Detect undercuts (pitted earlier, finished ahead of someone who started behind) ---
+    # --- Section 3: The Key Move (undercut detection) ---
     undercuts = []
     for i, (d1, lap1) in enumerate(first_stops):
         for d2, lap2 in first_stops[i+1:]:
@@ -334,23 +371,23 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
             grid2 = info2.get("grid")
             fin1 = info1.get("finish")
             fin2 = info2.get("finish")
-            # d1 pitted before d2. If d1 started behind d2 but finished ahead = undercut
             if (grid1 and grid2 and fin1 and fin2
                     and grid1 > grid2 and fin1 < fin2 and lap1 < lap2):
                 undercuts.append((d1, d2, lap1, lap2, fin1))
 
     if undercuts:
-        # Show the most impactful undercut (highest position gained)
         best = min(undercuts, key=lambda x: x[4])
         d1, d2, lap1, lap2, fin1 = best
-        info1 = driver_info.get(d1, {})
-        paragraphs.append(
-            f"{d1} ({info1.get('team', '')}) pulled off a textbook undercut on {d2}, "
-            f"pitting on lap {lap1} while {d2} waited until lap {lap2}. "
-            f"{d1} emerged ahead and held the position to finish P{fin1}."
+        body = (
+            f"{_dn(d1)} pulled off a textbook undercut on {_dn(d2)}. "
+            f"{_DRIVER_NAMES.get(d1, d1)} pitted on lap {lap1} while "
+            f"{_DRIVER_NAMES.get(d2, d2)} stayed out until lap {lap2}. "
+            f"The fresh rubber gave {_DRIVER_NAMES.get(d1, d1)} the edge — "
+            f"emerging ahead and holding the position to finish P{fin1}."
         )
+        sections.append({"heading": "The Key Move", "body": body})
 
-    # --- Contrasting strategies ---
+    # --- Section 4: Strategy Split ---
     stop_counts: dict[int, list[str]] = {}
     for driver, stints in stints_by_driver.items():
         stops = len(stints) - 1
@@ -362,29 +399,40 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
         most_stops, most_drivers = sorted_strategies[-1]
 
         if most_stops - fewest_stops >= 1:
-            # Find a notable example from each group
             few_example = fewest_drivers[0]
             many_example = most_drivers[0]
             few_info = driver_info.get(few_example, {})
             many_info = driver_info.get(many_example, {})
 
-            p = (
-                f"Strategy variety split the field. "
-                f"{few_example} ({few_info.get('team', '')}) committed to a {fewest_stops}-stop, "
-                f"while {many_example} ({many_info.get('team', '')}) went aggressive with {most_stops} stops."
+            body = (
+                f"The field split on strategy. "
+                f"{_dn(few_example)} took the conservative route with a {fewest_stops}-stop, "
+                f"while {_dn(many_example)} went aggressive on {most_stops} stops."
             )
 
             few_finish = few_info.get("finish")
             many_finish = many_info.get("finish")
             if few_finish and many_finish:
                 if few_finish < many_finish:
-                    p += f" The conservative call worked — {few_example} finished P{few_finish} ahead of {many_example} in P{many_finish}."
+                    body += (
+                        f" The patience paid off — {_DRIVER_NAMES.get(few_example, few_example)} finished P{few_finish}, "
+                        f"ahead of {_DRIVER_NAMES.get(many_example, many_example)} in P{many_finish}."
+                    )
                 elif many_finish < few_finish:
-                    p += f" The aggressive approach won out — {many_example} finished P{many_finish}, ahead of {few_example} in P{few_finish}."
+                    body += (
+                        f" The aggression paid off — {_DRIVER_NAMES.get(many_example, many_example)} finished P{many_finish}, "
+                        f"ahead of {_DRIVER_NAMES.get(few_example, few_example)} in P{few_finish}."
+                    )
 
-            paragraphs.append(p)
+            # Add breakdown of how many drivers per strategy
+            breakdown = ", ".join(f"{count} on a {stops}-stop" for stops, count in sorted(
+                [(s, len(d)) for s, d in stop_counts.items()]
+            ))
+            body += f" Across the grid: {breakdown}."
 
-    # --- Winner's strategy summary ---
+            sections.append({"heading": "Strategy Split", "body": body})
+
+    # --- Section 5: The Winning Formula ---
     winner = next((r for r in results if r.get("finish_position") == 1), None)
     if winner:
         w_driver = winner["driver"]
@@ -392,14 +440,18 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
         if w_stints:
             compounds = [_COMPOUND_LABELS.get(s["compound"], s["compound"]) for s in w_stints]
             stops = len(w_stints) - 1
-            compound_seq = " then ".join(compounds)
+            compound_seq = " followed by ".join(compounds)
             grid = winner.get("grid_position")
-            p = f"{w_driver} ({winner['team']}) took the win on a {stops}-stop strategy: {compound_seq}."
-            if grid and grid > 3:
-                p += f" Starting from P{grid}, the strategy was key to climbing through the field."
-            paragraphs.append(p)
+            body = f"{_dn(w_driver)} took the chequered flag on a {stops}-stop strategy: {compound_seq}."
+            if grid and grid <= 2:
+                body += f" Starting from P{grid}, track position was never in doubt."
+            elif grid and grid <= 5:
+                body += f" Starting from P{grid}, a clean strategy kept {_DRIVER_NAMES.get(w_driver, w_driver)} in the fight."
+            elif grid and grid > 5:
+                body += f" Starting from P{grid}, the strategy was instrumental in climbing through the field."
+            sections.append({"heading": "The Winning Formula", "body": body})
 
-    return paragraphs
+    return sections
 
 
 def get_strategy_stats(year: int, track: str) -> dict | None:
@@ -477,9 +529,15 @@ def get_strategy_stats(year: int, track: str) -> dict | None:
         if s.get("compound") and s["compound"] != "UNKNOWN"
     ))
 
+    # Strategy breakdown: "1-stop: 13, 2-stop: 5, 0-stop: 1, 3-stop: 1"
+    strategy_breakdown = [
+        {"strategy": f"{stops}-stop", "count": count}
+        for stops, count in sorted(stop_counts.items())
+    ]
+
     return {
         "most_common": f"{most_common_stops}-stop ({most_common_count} drivers)",
-        "strategies": len(stop_counts),
+        "strategy_breakdown": strategy_breakdown,
         "first_to_pit": first_pit,
         "last_to_pit": last_pit,
         "longest_stint": longest,
