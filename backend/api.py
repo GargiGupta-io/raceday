@@ -157,6 +157,22 @@ def race_strategy(year: int, track: str):
     return data
 
 
+@app.get("/races/{year}/{track}/strategy/narrative")
+def strategy_narrative(year: int, track: str):
+    data = insights.get_strategy_narrative(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
+@app.get("/races/{year}/{track}/strategy/stats")
+def strategy_stats(year: int, track: str):
+    data = insights.get_strategy_stats(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
 @app.get("/races/{year}/{track}/sidebar")
 def race_sidebar(year: int, track: str):
     data = insights.get_sidebar_content(year, track)
