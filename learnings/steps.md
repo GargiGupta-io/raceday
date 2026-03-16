@@ -405,3 +405,17 @@ Raceday can now talk to the Jolpica API — a free, open database of every F1 ra
 
 **Files changed**
 + created: backend/core/jolpica_loader.py
+
+---
+
+## ✅ Step 2 (4A) — get_pit_stops()
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/jolpica_loader.py` — get_pit_stops(year, round_num) + _get_driver_id_to_code() helper
+
+**In plain English**
+The Jolpica loader now knows when each driver made a pit stop during a race. It fetches the pit stop list from the API, but since the API uses long driver names (like "hamilton") while Raceday uses 3-letter codes (like "HAM"), it also fetches the code mapping from the results endpoint and translates automatically. Ask for the 2014 Australian GP pit stops and you get back something like: HAM had 2 stops (lap 18 and lap 38), VET had 2 stops (lap 15 and lap 33), etc.
+
+**Files changed**
+~ modified: backend/core/jolpica_loader.py
