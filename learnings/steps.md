@@ -508,6 +508,38 @@ The loader now decides which data source to use based on the year. Ask for the 2
 
 ---
 
+## ✅ Step 9 (4A) — Year-Aware Indexer
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/indexer.py` — index_race() routes by year, full historical pipeline for ≤2017
+
+**In plain English**
+The indexer now decides how to fetch and save race data based on the year. For 2018+ it uses FastF1 as before. For 2017 and earlier, it chains Jolpica (results + pit stops), OpenMeteo (weather), and the compound lookup (tyre assignments). Output on disk is identical — three JSON files per race — so nothing downstream changes.
+
+**Files changed**
+~ modified: backend/core/indexer.py
+
+---
+
+## ✅ Step 10 (4A) — Smoke Test
+*Completed: 2026-03-16*
+
+**What was built**
+- Full end-to-end test: index 2014 Australian GP via historical pipeline
+
+**In plain English**
+The 2014 Australian Grand Prix was successfully indexed through the new historical pipeline. All three JSON files were written: 22 drivers in results (Rosberg P1, Magnussen P2, Button P3), weather at 18°C marked "damp", and 18 drivers with tyre stint data. The insights layer reads it all back correctly — season list shows 1/19 races indexed, race summary shows the right winner and 8 retirements, strategy tab shows compound labels for all 22 drivers.
+
+**Files changed**
+(none — verification only)
+
+---
+
+## Phase 4A COMPLETE — Historical Data (2010–2017)
+
+---
+
 ## ✅ Step 5 (4A) — OpenMeteo Weather Test
 *Completed: 2026-03-16*
 
