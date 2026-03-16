@@ -3,19 +3,90 @@ api.py — Raceday FastAPI Application
 
 Entry point for the Raceday backend REST API.
 Routes are thin — all business logic lives in backend/core/.
+
+On startup, a background thread indexes all seasons (2010–2024)
+so that every page has data ready when a user visits.
 """
 
 import logging
+import threading
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from backend.core import insights
+from backend.core import indexer, insights
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Raceday", description="F1 Fan Intelligence Platform")
+# ---------------------------------------------------------------------------
+# Background indexer
+# ---------------------------------------------------------------------------
+
+SEASONS_TO_INDEX = list(range(2010, 2025))  # 2010–2024
+
+_indexing_status = {
+    "running": False,
+    "current_year": None,
+    "completed_years": [],
+    "total_indexed": 0,
+    "total_skipped": 0,
+    "total_failed": 0,
+}
+
+
+def _background_index_all():
+    """Index all seasons in a background thread. Skips already-indexed races."""
+    _indexing_status["running"] = True
+    logger.info("Background indexer started — seasons %d to %d",
+                SEASONS_TO_INDEX[0], SEASONS_TO_INDEX[-1])
+
+    for year in SEASONS_TO_INDEX:
+        _indexing_status["current_year"] = year
+        logger.info("Indexing %d...", year)
+        try:
+            result = indexer.index_season(year)
+            _indexing_status["total_indexed"] += result["indexed"]
+            _indexing_status["total_skipped"] += result["skipped"]
+            _indexing_status["total_failed"] += result["failed"]
+            _indexing_status["completed_years"].append(year)
+            logger.info(
+                "  %d done: %d indexed, %d skipped, %d failed",
+                year, result["indexed"], result["skipped"], result["failed"],
+            )
+        except Exception as exc:
+            logger.error("  %d error: %s", year, exc)
+            _indexing_status["completed_years"].append(year)
+
+    _indexing_status["running"] = False
+    _indexing_status["current_year"] = None
+    logger.info(
+        "Background indexer complete — %d indexed, %d skipped, %d failed",
+        _indexing_status["total_indexed"],
+        _indexing_status["total_skipped"],
+        _indexing_status["total_failed"],
+    )
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: launch background indexer thread
+    thread = threading.Thread(target=_background_index_all, daemon=True)
+    thread.start()
+    yield
+    # Shutdown: nothing to clean up (daemon thread dies with process)
+
+
+# ---------------------------------------------------------------------------
+# App setup
+# ---------------------------------------------------------------------------
+
+app = FastAPI(
+    title="Raceday",
+    description="F1 Fan Intelligence Platform",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,9 +105,19 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     )
 
 
+# ---------------------------------------------------------------------------
+# Routes
+# ---------------------------------------------------------------------------
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/indexing/status")
+def indexing_status():
+    return _indexing_status
 
 
 @app.get("/races/{year}")
