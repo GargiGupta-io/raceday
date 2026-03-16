@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import AuthButton from "@/app/components/AuthButton";
 
-const YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018];
+const YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
 
 export default function Navbar() {
   const pathname = usePathname();
