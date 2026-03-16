@@ -249,6 +249,159 @@ def get_strategy_breakdown(year: int, track: str) -> list[dict] | None:
     return breakdown
 
 
+def get_strategy_narrative(year: int, track: str) -> list[str] | None:
+    """
+    Auto-generate a race strategy narrative from stint data.
+
+    Returns a list of prose paragraphs describing the strategy story:
+    who pitted first, undercuts, overcuts, contrasting strategies,
+    and how strategy affected the result.
+
+    Returns None if the race cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    stints_by_driver = data.get("stints") or {}
+    weather = data.get("weather", {})
+
+    if not stints_by_driver:
+        return ["No detailed stint data available for this race."]
+
+    # Build a lookup: driver → finish position, team, grid
+    driver_info: dict[str, dict] = {}
+    for r in results:
+        driver_info[r["driver"]] = {
+            "team": r["team"],
+            "finish": r.get("finish_position"),
+            "grid": r.get("grid_position"),
+            "status": r["status"],
+        }
+
+    # Find first pit stop per driver (lap number)
+    first_stops: list[tuple[str, int]] = []
+    for driver, stints in stints_by_driver.items():
+        if len(stints) >= 2:
+            first_pit_lap = stints[0].get("lap_end", 0)
+            first_stops.append((driver, first_pit_lap))
+
+    first_stops.sort(key=lambda x: x[1])
+    paragraphs = []
+
+    # --- Opening: race conditions ---
+    condition = weather.get("condition", "dry")
+    temp = weather.get("avg_air_temp")
+    if condition == "wet":
+        opener = "Rain played a defining role in this race, forcing strategic gambles from the pit wall."
+    elif condition == "damp":
+        opener = "Mixed conditions kept teams guessing, with the threat of rain hanging over strategy calls."
+    else:
+        opener = "In dry conditions, tyre management and pit stop timing were everything."
+    if temp:
+        opener += f" Track temperatures hovered around {temp}°C."
+    paragraphs.append(opener)
+
+    # --- Who pitted first and why it mattered ---
+    if first_stops:
+        first_driver, first_lap = first_stops[0]
+        first_info = driver_info.get(first_driver, {})
+        first_team = first_info.get("team", "")
+        first_finish = first_info.get("finish")
+
+        last_driver, last_lap = first_stops[-1]
+        last_info = driver_info.get(last_driver, {})
+
+        p = f"{first_driver} ({first_team}) was the first to blink, pitting on lap {first_lap}."
+        if first_finish and first_finish <= 3:
+            p += f" The early stop paid off — {first_driver} finished P{first_finish}."
+        elif first_finish and first_finish > 10:
+            p += f" It didn't work out — {first_driver} ended up P{first_finish}."
+
+        if last_lap - first_lap >= 8:
+            p += f" {last_driver} ({last_info.get('team', '')}) stayed out until lap {last_lap}, stretching the first stint {last_lap - first_lap} laps longer."
+
+        paragraphs.append(p)
+
+    # --- Detect undercuts (pitted earlier, finished ahead of someone who started behind) ---
+    undercuts = []
+    for i, (d1, lap1) in enumerate(first_stops):
+        for d2, lap2 in first_stops[i+1:]:
+            info1 = driver_info.get(d1, {})
+            info2 = driver_info.get(d2, {})
+            grid1 = info1.get("grid")
+            grid2 = info2.get("grid")
+            fin1 = info1.get("finish")
+            fin2 = info2.get("finish")
+            # d1 pitted before d2. If d1 started behind d2 but finished ahead = undercut
+            if (grid1 and grid2 and fin1 and fin2
+                    and grid1 > grid2 and fin1 < fin2 and lap1 < lap2):
+                undercuts.append((d1, d2, lap1, lap2, fin1))
+
+    if undercuts:
+        # Show the most impactful undercut (highest position gained)
+        best = min(undercuts, key=lambda x: x[4])
+        d1, d2, lap1, lap2, fin1 = best
+        info1 = driver_info.get(d1, {})
+        paragraphs.append(
+            f"{d1} ({info1.get('team', '')}) pulled off a textbook undercut on {d2}, "
+            f"pitting on lap {lap1} while {d2} waited until lap {lap2}. "
+            f"{d1} emerged ahead and held the position to finish P{fin1}."
+        )
+
+    # --- Contrasting strategies ---
+    stop_counts: dict[int, list[str]] = {}
+    for driver, stints in stints_by_driver.items():
+        stops = len(stints) - 1
+        stop_counts.setdefault(stops, []).append(driver)
+
+    if len(stop_counts) >= 2:
+        sorted_strategies = sorted(stop_counts.items())
+        fewest_stops, fewest_drivers = sorted_strategies[0]
+        most_stops, most_drivers = sorted_strategies[-1]
+
+        if most_stops - fewest_stops >= 1:
+            # Find a notable example from each group
+            few_example = fewest_drivers[0]
+            many_example = most_drivers[0]
+            few_info = driver_info.get(few_example, {})
+            many_info = driver_info.get(many_example, {})
+
+            p = (
+                f"Strategy variety split the field. "
+                f"{few_example} ({few_info.get('team', '')}) committed to a {fewest_stops}-stop, "
+                f"while {many_example} ({many_info.get('team', '')}) went aggressive with {most_stops} stops."
+            )
+
+            few_finish = few_info.get("finish")
+            many_finish = many_info.get("finish")
+            if few_finish and many_finish:
+                if few_finish < many_finish:
+                    p += f" The conservative call worked — {few_example} finished P{few_finish} ahead of {many_example} in P{many_finish}."
+                elif many_finish < few_finish:
+                    p += f" The aggressive approach won out — {many_example} finished P{many_finish}, ahead of {few_example} in P{few_finish}."
+
+            paragraphs.append(p)
+
+    # --- Winner's strategy summary ---
+    winner = next((r for r in results if r.get("finish_position") == 1), None)
+    if winner:
+        w_driver = winner["driver"]
+        w_stints = stints_by_driver.get(w_driver, [])
+        if w_stints:
+            compounds = [_COMPOUND_LABELS.get(s["compound"], s["compound"]) for s in w_stints]
+            stops = len(w_stints) - 1
+            compound_seq = " then ".join(compounds)
+            grid = winner.get("grid_position")
+            p = f"{w_driver} ({winner['team']}) took the win on a {stops}-stop strategy: {compound_seq}."
+            if grid and grid > 3:
+                p += f" Starting from P{grid}, the strategy was key to climbing through the field."
+            paragraphs.append(p)
+
+    return paragraphs
+
+
 # F1 points awarded per finishing position (standard system, no fastest lap)
 _POINTS_TABLE = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
