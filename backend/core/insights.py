@@ -402,6 +402,92 @@ def get_strategy_narrative(year: int, track: str) -> list[str] | None:
     return paragraphs
 
 
+def get_strategy_stats(year: int, track: str) -> dict | None:
+    """
+    Return race-level strategy statistics for the Data mode side panel.
+
+    Returns a dict:
+        most_common   — most popular stop count and how many drivers used it
+        strategies    — number of distinct stop strategies used
+        first_to_pit  — {driver, team, lap}
+        last_to_pit   — {driver, team, lap}
+        longest_stint — {driver, team, compound, laps}
+        shortest_stint — {driver, team, compound, laps}
+        compounds_used — list of unique compounds used in the race
+
+    Returns None if the race cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    stints_by_driver = data.get("stints") or {}
+
+    if not stints_by_driver:
+        return None
+
+    # Driver info lookup
+    driver_info: dict[str, dict] = {}
+    for r in results:
+        driver_info[r["driver"]] = {"team": r["team"]}
+
+    # Stop counts
+    stop_counts: dict[int, int] = {}
+    for driver, stints in stints_by_driver.items():
+        stops = len(stints) - 1
+        stop_counts[stops] = stop_counts.get(stops, 0) + 1
+
+    most_common_stops = max(stop_counts, key=stop_counts.get) if stop_counts else 1
+    most_common_count = stop_counts.get(most_common_stops, 0)
+
+    # First and last to pit
+    first_pit = None
+    last_pit = None
+    for driver, stints in stints_by_driver.items():
+        if len(stints) >= 2:
+            pit_lap = stints[0].get("lap_end", 0)
+            info = driver_info.get(driver, {})
+            entry = {"driver": driver, "team": info.get("team", ""), "lap": pit_lap}
+            if first_pit is None or pit_lap < first_pit["lap"]:
+                first_pit = entry
+            if last_pit is None or pit_lap > last_pit["lap"]:
+                last_pit = entry
+
+    # Longest and shortest stint
+    longest = None
+    shortest = None
+    for driver, stints in stints_by_driver.items():
+        info = driver_info.get(driver, {})
+        for s in stints:
+            lap_count = s.get("lap_count", 0)
+            compound = _COMPOUND_LABELS.get(s.get("compound", ""), s.get("compound", ""))
+            entry = {"driver": driver, "team": info.get("team", ""), "compound": compound, "laps": lap_count}
+            if lap_count > 0:
+                if longest is None or lap_count > longest["laps"]:
+                    longest = entry
+                if shortest is None or lap_count < shortest["laps"]:
+                    shortest = entry
+
+    # Unique compounds
+    compounds_used = sorted(set(
+        _COMPOUND_LABELS.get(s.get("compound", ""), s.get("compound", ""))
+        for stints in stints_by_driver.values()
+        for s in stints
+        if s.get("compound") and s["compound"] != "UNKNOWN"
+    ))
+
+    return {
+        "most_common": f"{most_common_stops}-stop ({most_common_count} drivers)",
+        "strategies": len(stop_counts),
+        "first_to_pit": first_pit,
+        "last_to_pit": last_pit,
+        "longest_stint": longest,
+        "shortest_stint": shortest,
+        "compounds_used": compounds_used,
+    }
+
+
 # F1 points awarded per finishing position (standard system, no fastest lap)
 _POINTS_TABLE = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
