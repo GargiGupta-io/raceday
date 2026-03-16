@@ -419,3 +419,31 @@ The Jolpica loader now knows when each driver made a pit stop during a race. It 
 
 **Files changed**
 ~ modified: backend/core/jolpica_loader.py
+
+---
+
+## ✅ Step 3 (4A) — Jolpica Loader Test
+*Completed: 2026-03-16*
+
+**What was built**
+- Ran the __main__ test block against the 2014 Australian GP
+
+**In plain English**
+All three Jolpica functions passed a live test. The season schedule returned all 19 races with GPS coordinates. The race results showed Rosberg winning from P3 with Hamilton retiring from pole (engine failure) — matching real history. Pit stops came back keyed by 3-letter codes: ROS had 2 stops (lap 12 and 38), ALO had 2 stops (lap 12 and 35). The driverId→code mapping worked correctly for all 22 drivers.
+
+**Files changed**
+(none — verification only)
+
+---
+
+## ✅ Step 4 (4A) — OpenMeteo Weather Loader
+*Completed: 2026-03-16*
+
+**What was built**
+- `backend/core/openmeteo_loader.py` — get_race_weather(date, lat, lon)
+
+**In plain English**
+Raceday can now look up what the weather was like on any race day going back decades. Give it a date and a circuit's GPS coordinates and it asks the OpenMeteo archive for hourly temperature and rainfall. It focuses on the 10am–6pm local time window (when races actually happen), averages the temperature, and figures out if the race was dry, damp, or wet using the same thresholds as the FastF1 loader. The output format is identical to what we already use for 2018+ races, so nothing downstream needs to change.
+
+**Files changed**
++ created: backend/core/openmeteo_loader.py
