@@ -34,10 +34,41 @@ def get_season_races(year: int) -> list[dict] | None:
         logger.warning("get_season_races: no schedule for %s", year)
         return None
 
-    return [
-        {**event, "indexed": indexer.is_indexed(year, event["name"])}
-        for event in schedule
-    ]
+    races = []
+    for event in schedule:
+        track = event["name"]
+        entry = {**event, "indexed": indexer.is_indexed(year, track)}
+
+        # Add race details for indexed races
+        if entry["indexed"]:
+            data = indexer.load_race_index(year, track)
+            if data:
+                results = data["results"]
+                weather = data["weather"]
+                finished = sorted(
+                    [r for r in results if r["finish_position"] is not None],
+                    key=lambda r: r["finish_position"],
+                )
+                if finished:
+                    entry["winner"] = finished[0]["driver"]
+                    entry["winner_team"] = finished[0]["team"]
+                # Get total laps: try total_laps field (Jolpica), then stint data
+                total_laps = 0
+                for r in results:
+                    tl = r.get("total_laps")
+                    if tl and tl > total_laps:
+                        total_laps = tl
+                if total_laps == 0 and data.get("stints"):
+                    for driver_stints in data["stints"].values():
+                        if driver_stints:
+                            last = driver_stints[-1]
+                            total_laps = max(total_laps, last.get("lap_end", 0))
+                entry["total_laps"] = total_laps if total_laps > 0 else None
+                entry["weather"] = weather.get("condition")
+
+        races.append(entry)
+
+    return races
 
 
 def get_race_summary(year: int, track: str) -> dict | None:
