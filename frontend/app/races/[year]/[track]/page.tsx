@@ -5,6 +5,8 @@ import { use } from "react";
 import ResultsCard from "@/app/components/ResultsCard";
 import StandingsTable from "@/app/components/StandingsTable";
 import StrategyPanel from "@/app/components/StrategyPanel";
+import StrategyStory from "@/app/components/StrategyStory";
+import StrategyKey from "@/app/components/StrategyKey";
 import FactsSidebar from "@/app/components/FactsSidebar";
 import DiscussionPanel from "@/app/components/DiscussionPanel";
 
@@ -61,6 +63,7 @@ export default function RacePage({
   const [sidebar, setSidebar] = useState<SidebarData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [strategyMode, setStrategyMode] = useState<"story" | "data">("story");
 
   useEffect(() => {
     const base = `${API}/races/${year}/${encodeURIComponent(trackName)}`;
@@ -138,8 +141,42 @@ export default function RacePage({
               {tab === "standings" && standings && (
                 <StandingsTable data={standings} />
               )}
-              {tab === "strategy" && strategy && (
-                <StrategyPanel data={strategy} />
+              {tab === "strategy" && (
+                <div>
+                  {/* Story / Data sub-tabs */}
+                  <div className="flex gap-2 mb-5">
+                    {(["story", "data"] as const).map((mode) => (
+                      <button
+                        key={mode}
+                        onClick={() => setStrategyMode(mode)}
+                        className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
+                          strategyMode === mode
+                            ? "bg-zinc-700 text-white"
+                            : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
+                        }`}
+                      >
+                        {mode}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Story mode */}
+                  {strategyMode === "story" && (
+                    <StrategyStory year={year} track={trackName} />
+                  )}
+
+                  {/* Data mode — table + key side panel */}
+                  {strategyMode === "data" && strategy && (
+                    <div className="flex flex-col lg:flex-row gap-6">
+                      <div className="flex-1 min-w-0">
+                        <StrategyPanel data={strategy} />
+                      </div>
+                      <div className="w-full lg:w-56 shrink-0">
+                        <StrategyKey year={year} track={trackName} />
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
               {tab === "discussion" && (
                 <DiscussionPanel raceYear={parseInt(year)} raceTrack={trackName} />
