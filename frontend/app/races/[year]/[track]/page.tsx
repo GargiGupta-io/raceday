@@ -8,6 +8,7 @@ import StrategyPanel from "@/app/components/StrategyPanel";
 import StrategyStory from "@/app/components/StrategyStory";
 import StrategyKey from "@/app/components/StrategyKey";
 import FactsSidebar from "@/app/components/FactsSidebar";
+import KeyMoments from "@/app/components/KeyMoments";
 import DiscussionPanel from "@/app/components/DiscussionPanel";
 
 const API = "http://localhost:8080";
@@ -136,7 +137,10 @@ export default function RacePage({
 
               {/* Tab content */}
               {tab === "results" && results && (
-                <ResultsCard data={results} />
+                <div className="space-y-6">
+                  <ResultsCard data={results} />
+                  <KeyMoments year={year} track={trackName} />
+                </div>
               )}
               {tab === "standings" && standings && (
                 <StandingsTable data={standings} />
