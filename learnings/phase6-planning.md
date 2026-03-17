@@ -83,7 +83,6 @@ No more tabs. One page, one scroll. A beginner reads top to bottom and understan
 │  ▸ Season standings at this point            │
 │  ▸ Team championship                         │
 │  ▸ Season awards & teammate battles          │
-│  ▸ Discussion                                │
 │                                              │
 └─────────────────────────────────────────────┘
 ```
@@ -192,13 +191,23 @@ No more tabs. One page, one scroll. A beginner reads top to bottom and understan
 
 ---
 
-### Discussion → GO DEEPER: Discussion
+### Discussion → REMOVED
 
-**Before:** Its own tab with Supabase theories and comments.
+**Before:** Its own tab with Supabase-powered theories and comments.
 
-**After:** Last item under "Go Deeper." Still available but not a top-level tab competing with the story.
+**After:** Removed entirely. Empty for 99% of races, requires login, zero engagement with no user base. If Raceday grows and users want social features, add it back later.
 
-**What changes:** Move into collapsible section.
+**What changes:** Remove DiscussionPanel component from race page. Supabase tables can stay (no harm), but the UI surface is gone.
+
+---
+
+### Sidebar → "Race Intelligence" (Did You Know only)
+
+**Before:** FactsSidebar with three sections — RSS articles, Reddit posts, Did You Know facts. RSS is empty for older races, Reddit is hit-or-miss.
+
+**After:** Stripped down to just the auto-generated "Did You Know" facts from `get_did_you_know()`. Renamed to "Race Intelligence." This is the strongest part — unique content generated from indexed data, works for every race 2010-2024.
+
+**What changes:** Remove RSS fetcher and Reddit fetcher calls from sidebar endpoint. Remove those sections from FactsSidebar component. Rename to "Race Intelligence." Keep the compact panel format — on desktop it can stay as a sidebar, on the scrollable race page it becomes a small section in the main flow.
 
 ---
 
@@ -206,6 +215,9 @@ No more tabs. One page, one scroll. A beginner reads top to bottom and understan
 
 | Feature | Why it's cut |
 |---------|-------------|
+| **Discussion panel** | Empty for most races, requires login, no user base. Dead weight. |
+| **RSS articles in sidebar** | Empty for any race older than a few weeks. Feeds only keep recent articles. |
+| **Reddit posts in sidebar** | Hit-or-miss results, inconsistent quality. |
 | **Momentum card (Hot Right Now)** | Redundant with season story. Points in last 5 races isn't meaningful to beginners. |
 | **Strategy Simulator (Sim tab)** | Too complex, too niche. Doesn't serve learning. Save for a future phase after core is solid. |
 | **Search bar as major feature** | Keep simple race-name search on home page. Not worth a full phase. |
@@ -224,9 +236,10 @@ The biggest change. Kill the tabs. Build the scrollable story layout with "Go De
 2. Build compact podium header (slim ResultsCard)
 3. Move KeyMoments below podium
 4. Build "Go Deeper" accordion wrapper component
-5. Move Strategy Data, StandingsTable, SeasonStory, SeasonInsights, Discussion into accordions
-6. Remove MomentumCard
-7. Visual test
+5. Move Strategy Data, StandingsTable, SeasonStory, SeasonInsights into accordions
+6. Remove MomentumCard and DiscussionPanel
+7. Strip sidebar to "Race Intelligence" (Did You Know only, remove RSS + Reddit)
+8. Visual test
 
 ---
 
@@ -359,6 +372,7 @@ RACE PAGE (6A — the big redesign)
   ├── MAIN FLOW (beginner-friendly, always visible)
   │     ├── Race header + circuit outline
   │     ├── THE RESULT — compact podium
+  │     ├── RACE INTELLIGENCE — "Did You Know" facts (sidebar → inline)
   │     ├── THE RACE STORY — unified narrative (6D)
   │     ├── KEY MOMENTS — auto-detected highlights
   │     ├── WHAT HISTORY TELLS US — pattern matcher (6E)
@@ -370,8 +384,7 @@ RACE PAGE (6A — the big redesign)
         ├── Full finishing order (P1-P20 grid)
         ├── Season standings (turning points + championship)
         ├── Team championship (constructor bars)
-        ├── Season awards & teammate H2H
-        └── Discussion (theories + comments)
+        └── Season awards & teammate H2H
 ```
 
 ---
