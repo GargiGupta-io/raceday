@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { use } from "react";
 
-const API = "http://localhost:8080";
+const API = "http://localhost:8888";
 
 interface StandingEntry {
   position: number;

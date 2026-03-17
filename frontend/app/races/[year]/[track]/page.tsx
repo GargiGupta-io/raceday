@@ -13,7 +13,7 @@ import SeasonStory from "@/app/components/SeasonStory";
 import SeasonInsights from "@/app/components/SeasonInsights";
 import DiscussionPanel from "@/app/components/DiscussionPanel";
 
-const API = "http://localhost:8080";
+const API = "http://localhost:8888";
 
 interface RaceSummary {
   winner: string;

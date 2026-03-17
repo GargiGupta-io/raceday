@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const API = "http://localhost:8080";
+const API = "http://localhost:8888";
 
 interface SeasonSummary {
   year: number;

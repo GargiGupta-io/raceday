@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import MomentumCard from "./MomentumCard";
 
-const API = "http://localhost:8080";
+const API = "http://localhost:8888";
 
 interface TurningPoint {
   race: string;
