@@ -197,6 +197,14 @@ def race_sidebar(year: int, track: str):
     return data
 
 
+@app.get("/seasons/{year}/insights")
+def season_insights(year: int):
+    data = insights.get_season_insights(year)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"Not enough indexed races for {year}")
+    return data
+
+
 @app.get("/championship/{year}/drivers")
 def championship_standings(year: int):
     data = insights.get_championship_standings(year)
