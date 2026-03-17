@@ -751,3 +751,89 @@ Instead of a points table (which the official F1 app already does), this becomes
 
 **Phase 5E — Season Insights**
 Auto-generated end-of-season awards and stats. "Best starter: Russell (most positions gained lap 1)", "Most consistent: Verstappen (18/24 races in top 3)", "Worst luck: Sainz (3 mechanical DNFs)". Plus teammate head-to-head records — "Norris beat Piastri 15-9 in qualifying." All calculated from the indexed data, no manual input needed.
+
+---
+
+# Phase 5C — Results Tab Redesign
+
+## ✅ Step 1 (5C) — get_key_moments() Backend Function
+*Completed: 2026-03-17*
+
+**What was built**
+- `backend/core/insights.py` — get_key_moments(year, track) auto-detection engine
+
+**In plain English**
+The app can now automatically spot the most interesting things that happened during a race. It looks at the finishing order, starting grid, pit stop data, and retirements, and generates "key moment" cards — things like "Perez gained 9 places", "Hamilton beat Piastri despite starting behind", "Button undercut Ricciardo on lap 11", or "8 drivers retired." These aren't written by hand — they're detected from the raw data every time. Tested against 2023 British GP (5 moments) and 2014 Australian GP (5 moments) with correct, interesting results.
+
+**Files changed**
+~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 2 (5C) — /moments API Endpoint
+*Completed: 2026-03-17*
+
+**What was built**
+- `backend/api.py` — GET /races/{year}/{track}/moments endpoint
+
+**In plain English**
+The key moments data is now available over HTTP. Hit `/races/2023/British%20Grand%20Prix/moments` and you get back a JSON array of auto-detected highlights — biggest gainer, biggest loser, undercuts, close battles, and more. The frontend can now fetch this and render moment cards on the Results tab. Tested live: 2023 British GP returns 5 moments with full driver names and details.
+
+**Files changed**
+~ modified: backend/api.py
+
+---
+
+## ✅ Step 3 (5C) — KeyMoments.tsx Component
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/components/KeyMoments.tsx` — renders auto-detected moment cards with icons
+
+**In plain English**
+The frontend now has a component that fetches key moments from the API and shows them as a vertical list of cards. Each card has a coloured icon on the left matching the type of moment — a green up-arrow for biggest gainer, red down-arrow for biggest loser, a star for dominant wins, crossed swords for undercuts, and so on. Driver names are highlighted in bold white with their three-letter code in grey beside it. While loading, animated skeleton bars show where the cards will appear.
+
+**Files changed**
++ created: frontend/app/components/KeyMoments.tsx
+
+---
+
+## ✅ Step 4 (5C) — Wire KeyMoments into Results Tab
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — imported KeyMoments, rendered below ResultsCard
+
+**In plain English**
+The Results tab on every race page now shows key moments right below the winner, podium, and weather cards. When you open a race and click the Results tab, you see who won at the top, then a list of auto-detected highlights underneath — biggest gainer, close battles, undercuts, and more. Each moment has its own coloured icon. The moments load independently so they don't slow down the main results appearing.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 5 (5C) — ResultsCard Visual Refresh
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/components/ResultsCard.tsx` — full rewrite with team colours and full driver names
+
+**In plain English**
+The Results tab looks much better now. Instead of showing "VER" as the winner, it shows "Max Verstappen" with a coloured team dot and a left-border accent matching their team colour (blue for Red Bull, red for Ferrari, orange for McLaren, etc.). The podium cards (P2 and P3) have the same treatment. Even the retirements list now shows full names with team dots. The spacing is tighter and more polished overall. Supports all teams from 2010–2024 with their correct colours.
+
+**Files changed**
+~ modified: frontend/app/components/ResultsCard.tsx
+
+---
+
+## ✅ Step 6 (5C) — Visual Test
+*Completed: 2026-03-17*
+
+**What was built**
+- Full end-to-end test of Results tab redesign
+
+**In plain English**
+Both races tested successfully. The 2023 British GP shows Max Verstappen as winner with a blue Red Bull accent, Lando Norris P2 (orange McLaren), Lewis Hamilton P3 (emerald Mercedes), plus 5 key moments including Perez's 9-place gain, Verstappen's pole-to-win, and Hamilton beating Piastri. The 2014 Australian GP shows Nico Rosberg winning with an emerald Mercedes accent, 5 key moments including Bottas's 10-place comeback from P15 to P5, Button's undercut on Ricciardo, and 8 retirements. Frontend pages compile cleanly and load at 200 for both races.
+
+**Files changed**
+(none — verification only)
