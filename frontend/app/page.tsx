@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
@@ -41,7 +41,15 @@ const TEAM_COLOR: Record<string, string> = {
   "Brawn": "bg-lime-400",
 };
 
-export default function Home() {
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-zinc-950" />}>
+      <Home />
+    </Suspense>
+  );
+}
+
+function Home() {
   const searchParams = useSearchParams();
   const urlYear = searchParams.get("year");
   const [year, setYear] = useState(urlYear ? parseInt(urlYear) : 2024);
