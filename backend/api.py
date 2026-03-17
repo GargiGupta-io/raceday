@@ -181,6 +181,14 @@ def race_moments(year: int, track: str):
     return data
 
 
+@app.get("/races/{year}/{track}/season-story")
+def season_story(year: int, track: str):
+    data = insights.get_season_story(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
 @app.get("/races/{year}/{track}/sidebar")
 def race_sidebar(year: int, track: str):
     data = insights.get_sidebar_content(year, track)
