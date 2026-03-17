@@ -892,6 +892,229 @@ def get_season_story(year: int, track: str) -> dict | None:
     }
 
 
+def get_season_insights(year: int) -> dict | None:
+    """
+    Auto-generate end-of-season awards and teammate head-to-head records.
+
+    Scans all indexed races for the given year and computes:
+        awards     — list of auto-detected awards (best gainer, most consistent, etc.)
+        h2h        — teammate head-to-head finishing records per team
+
+    Returns None if fewer than 3 races are indexed.
+    """
+    indexed = [r for r in indexer.list_indexed() if r["year"] == year]
+    if len(indexed) < 3:
+        return None
+
+    # Get chronological order from schedule
+    schedule = loader.get_season_schedule(year)
+    if not schedule:
+        return None
+    race_names_in_order = [s["name"] for s in schedule]
+
+    # Load all indexed race results in calendar order
+    all_results: list[tuple[str, list[dict]]] = []
+    for track_name in race_names_in_order:
+        if not indexer.is_indexed(year, track_name):
+            continue
+        data = indexer.load_race_index(year, track_name)
+        if data:
+            all_results.append((track_name, data["results"]))
+
+    if not all_results:
+        return None
+
+    num_races = len(all_results)
+
+    # --- Per-driver stats across the season ---
+    driver_stats: dict[str, dict] = {}
+    for race_name, results in all_results:
+        for r in results:
+            drv = r["driver"]
+            if drv not in driver_stats:
+                driver_stats[drv] = {
+                    "team": r["team"],
+                    "finishes": [],
+                    "grids": [],
+                    "gains": [],
+                    "top3": 0,
+                    "top10": 0,
+                    "wins": 0,
+                    "dnfs": 0,
+                    "races": 0,
+                }
+            s = driver_stats[drv]
+            s["team"] = r["team"]
+            s["races"] += 1
+            pos = r.get("finish_position")
+            grid = r.get("grid_position")
+            status = r["status"]
+
+            is_retired = status not in ("Finished",) and not status.startswith("+")
+
+            if is_retired:
+                s["dnfs"] += 1
+                s["finishes"].append(None)
+            else:
+                s["finishes"].append(pos)
+                if pos and pos <= 3:
+                    s["top3"] += 1
+                if pos and pos <= 10:
+                    s["top10"] += 1
+                if pos == 1:
+                    s["wins"] += 1
+
+            if grid is not None:
+                s["grids"].append(grid)
+
+            if pos is not None and grid is not None and not is_retired:
+                s["gains"].append(grid - pos)
+
+    awards = []
+
+    # --- Best Starter: most total positions gained ---
+    best_gainer = None
+    best_gain_total = 0
+    for drv, s in driver_stats.items():
+        if s["races"] >= 3 and s["gains"]:
+            total_gain = sum(g for g in s["gains"] if g > 0)
+            if total_gain > best_gain_total:
+                best_gain_total = total_gain
+                best_gainer = drv
+
+    if best_gainer:
+        s = driver_stats[best_gainer]
+        avg = round(best_gain_total / len(s["gains"]), 1)
+        awards.append({
+            "title": "Best Starter",
+            "driver": best_gainer,
+            "full_name": _DRIVER_NAMES.get(best_gainer, best_gainer),
+            "team": s["team"],
+            "stat": f"+{best_gain_total} positions gained",
+            "detail": f"Gained positions in {len([g for g in s['gains'] if g > 0])} races, avg +{avg} per race",
+        })
+
+    # --- Most Consistent: most top-3 finishes ---
+    most_consistent = max(driver_stats.items(), key=lambda x: x[1]["top3"], default=None)
+    if most_consistent and most_consistent[1]["top3"] >= 2:
+        drv, s = most_consistent
+        awards.append({
+            "title": "Most Consistent",
+            "driver": drv,
+            "full_name": _DRIVER_NAMES.get(drv, drv),
+            "team": s["team"],
+            "stat": f"{s['top3']}/{s['races']} races in top 3",
+            "detail": f"{s['wins']} wins, {s['top3']} podiums from {s['races']} starts",
+        })
+
+    # --- Worst Luck: most DNFs ---
+    worst_luck = max(driver_stats.items(), key=lambda x: x[1]["dnfs"], default=None)
+    if worst_luck and worst_luck[1]["dnfs"] >= 2:
+        drv, s = worst_luck
+        awards.append({
+            "title": "Worst Luck",
+            "driver": drv,
+            "full_name": _DRIVER_NAMES.get(drv, drv),
+            "team": s["team"],
+            "stat": f"{s['dnfs']} DNFs",
+            "detail": f"Failed to finish {s['dnfs']} out of {s['races']} races",
+        })
+
+    # --- Points Machine: most points-scoring finishes (top 10) ---
+    points_machine = max(driver_stats.items(), key=lambda x: x[1]["top10"], default=None)
+    if points_machine:
+        drv, s = points_machine
+        # Only show if different from most consistent
+        if drv != (most_consistent[0] if most_consistent else None):
+            awards.append({
+                "title": "Points Machine",
+                "driver": drv,
+                "full_name": _DRIVER_NAMES.get(drv, drv),
+                "team": s["team"],
+                "stat": f"{s['top10']}/{s['races']} races in the points",
+                "detail": f"Scored points in {round(s['top10'] / s['races'] * 100)}% of starts",
+            })
+
+    # --- Best Qualifier: lowest average grid position ---
+    best_qualifier = None
+    best_avg_grid = 99.0
+    for drv, s in driver_stats.items():
+        if len(s["grids"]) >= 3:
+            avg_grid = sum(s["grids"]) / len(s["grids"])
+            if avg_grid < best_avg_grid:
+                best_avg_grid = avg_grid
+                best_qualifier = drv
+
+    if best_qualifier:
+        s = driver_stats[best_qualifier]
+        poles = sum(1 for g in s["grids"] if g == 1)
+        awards.append({
+            "title": "Best Qualifier",
+            "driver": best_qualifier,
+            "full_name": _DRIVER_NAMES.get(best_qualifier, best_qualifier),
+            "team": s["team"],
+            "stat": f"Avg grid P{best_avg_grid:.1f}",
+            "detail": f"{poles} pole{'s' if poles != 1 else ''} from {len(s['grids'])} qualifying sessions",
+        })
+
+    # --- Teammate Head-to-Head ---
+    # Group drivers by team, only teams with exactly 2 drivers
+    from collections import defaultdict
+    team_drivers: dict[str, list[str]] = defaultdict(list)
+    for drv, s in driver_stats.items():
+        if s["races"] >= 3:
+            team_drivers[s["team"]].append(drv)
+
+    h2h = []
+    for team, drivers in sorted(team_drivers.items()):
+        if len(drivers) != 2:
+            continue
+        d1, d2 = sorted(drivers)
+
+        d1_ahead = 0
+        d2_ahead = 0
+        for race_name, results in all_results:
+            pos1 = None
+            pos2 = None
+            for r in results:
+                if r["driver"] == d1:
+                    status1 = r["status"]
+                    if status1 in ("Finished",) or status1.startswith("+"):
+                        pos1 = r.get("finish_position")
+                elif r["driver"] == d2:
+                    status2 = r["status"]
+                    if status2 in ("Finished",) or status2.startswith("+"):
+                        pos2 = r.get("finish_position")
+
+            if pos1 is not None and pos2 is not None:
+                if pos1 < pos2:
+                    d1_ahead += 1
+                elif pos2 < pos1:
+                    d2_ahead += 1
+
+        if d1_ahead + d2_ahead > 0:
+            # Put the winner first
+            if d2_ahead > d1_ahead:
+                d1, d2 = d2, d1
+                d1_ahead, d2_ahead = d2_ahead, d1_ahead
+
+            h2h.append({
+                "team": team,
+                "driver1": d1,
+                "name1": _DRIVER_NAMES.get(d1, d1),
+                "score1": d1_ahead,
+                "driver2": d2,
+                "name2": _DRIVER_NAMES.get(d2, d2),
+                "score2": d2_ahead,
+            })
+
+    return {
+        "awards": awards,
+        "h2h": h2h,
+        "races_counted": num_races,
+    }
+
+
 def get_championship_standings(year: int) -> list[dict] | None:
     """
     Return driver championship standings built from all indexed races in a season.
