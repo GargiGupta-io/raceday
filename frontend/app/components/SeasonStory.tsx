@@ -100,7 +100,6 @@ export default function SeasonStory({
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-lg bg-zinc-900 p-5 h-48" />
         <div className="rounded-lg bg-zinc-900 p-5 h-32" />
         <div className="rounded-lg bg-zinc-900 p-5 h-32" />
       </div>
@@ -117,9 +116,6 @@ export default function SeasonStory({
       <p className="text-xs text-zinc-600">
         Round {data.race_round} of {data.total_rounds}
       </p>
-
-      {/* Momentum */}
-      <MomentumCard data={data.momentum} />
 
       {/* Turning Points */}
       {data.turning_points.length > 0 && (
@@ -151,10 +147,13 @@ export default function SeasonStory({
         </div>
       )}
 
-      {/* Constructor Battle */}
+      {/* Team Standings */}
       <div className="rounded-lg bg-zinc-900 p-5">
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
-          Constructor Battle
+        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">
+          Team Championship
+        </p>
+        <p className="text-xs text-zinc-600 mb-4">
+          Combined points from both drivers per team, up to this race
         </p>
         <div className="space-y-2.5">
           {data.constructor_battle.map((c, i) => {

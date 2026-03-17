@@ -144,9 +144,8 @@ export default function RacePage({
                   <KeyMoments year={year} track={trackName} />
                 </div>
               )}
-              {tab === "standings" && standings && (
+              {tab === "standings" && (
                 <div className="space-y-6">
-                  <StandingsTable data={standings} />
                   <SeasonStory year={year} track={trackName} />
                   <SeasonInsights year={year} />
                 </div>
