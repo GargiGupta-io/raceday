@@ -737,4 +737,307 @@ Every feature feeds into the core loop: browse → learn → interact → come b
 
 ---
 
-*Generated: 2026-03-17 | Project: Raceday | Phase 6 planning | All features discussed in session*
+## Phase 6I — Pattern Matcher (The Original Hook)
+
+### What it does
+
+The feature that doesn't exist anywhere in consumer-facing F1. The pattern matcher scans all 380+ indexed races and finds historical precedents for any situation. "Last time it rained at Silverstone with a driver starting P5 on intermediates, here's what happened." It cross-references weather, circuit, grid position, strategy, and driver to surface the races that look most like the one you're viewing.
+
+Two surfaces:
+1. **Auto-generated precedents on every race page** — a "Historical Precedents" section that runs automatically
+2. **Standalone Pattern Finder page** — build your own query, explore freely
+
+### Why this matters
+
+- **F1 official app** — shows live timing, no historical cross-referencing
+- **StatsF1** — has the data but you manually open each race to compare
+- **FastF1/data tools** — raw data, write your own scripts
+- **Betting sites** — do pattern matching internally, never show their work
+
+Nobody has wrapped historical pattern matching in a UI where a casual fan can see "here's what happened last time this situation occurred." The data already exists in our index. This is the gap.
+
+### Surface 1 — Auto Precedents on Race Page
+
+A section on the Results tab (or its own "Patterns" tab) that automatically finds similar races:
+
+```
+HISTORICAL PRECEDENTS
+
+Similar races to this one:
+  🔵 2016 British GP (wet, similar grid spread)
+     → Rosberg won from P3, early slick switch was decisive
+  🔵 2012 British GP (wet start, dry finish)
+     → Webber won from P2, 6 drivers retired from the wet start
+
+What history suggests:
+  → Wet Silverstone races average 4.2 retirements
+  → P5 starters in the wet gain 2.3 positions on average
+  → 1-stop strategies worked 60% of the time in mixed conditions
+```
+
+This runs automatically when you open any race. The matcher compares the current race's features (circuit, weather, grid spread, retirement count) against all other indexed races and surfaces the closest matches.
+
+### Surface 2 — Standalone Pattern Finder
+
+A dedicated page where users build custom queries:
+
+```
+┌─────────────────────────────────────────┐
+│  PATTERN FINDER                         │
+│                                         │
+│  Circuit:    [Silverstone ▼]  [Any ▼]   │
+│  Weather:    [Wet ▼]                    │
+│  Grid pos:   [P4] to [P7]              │
+│  Driver:     [Any ▼]                   │
+│  Strategy:   [Any ▼]                   │
+│                                         │
+│  [Find Patterns]                        │
+├─────────────────────────────────────────┤
+│                                         │
+│  4 matching races found                 │
+│                                         │
+│  2016 British GP                        │
+│    Rosberg P3→P1, 2-stop, wet→dry       │
+│    Hamilton P1→P3, stuck behind traffic │
+│                                         │
+│  2014 British GP                        │
+│    Hamilton P6→P1, early slick switch   │
+│    Bottas P14→P5, biggest gainer        │
+│                                         │
+│  AGGREGATE STATS                        │
+│  Avg position gain: +2.3               │
+│  Most common strategy: 2-stop (75%)    │
+│  Retirement rate: 21% (vs 12% avg)     │
+│  Winner started from: P3 (median)      │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+### How the matching engine works
+
+Every indexed race is a bag of features. The matcher scores similarity across multiple dimensions:
+
+```python
+def find_similar_races(query: dict) -> list[dict]:
+    matches = []
+    for year, track, data in all_indexed_races():
+        score = 0
+        reasons = []
+
+        # Circuit match (strongest signal)
+        if query.get("circuit") and circuit_matches(track, query["circuit"]):
+            score += 3
+            reasons.append("same circuit")
+
+        # Weather match
+        if query.get("weather") and query["weather"] == data["weather"]["condition"]:
+            score += 2
+            reasons.append(f"{query['weather']} conditions")
+
+        # Grid position match (for a specific driver or any driver)
+        if query.get("grid_range"):
+            lo, hi = query["grid_range"]
+            matching_drivers = [
+                r for r in data["results"]
+                if r.get("grid_position") and lo <= r["grid_position"] <= hi
+            ]
+            if matching_drivers:
+                score += 2
+                reasons.append(f"driver(s) started P{lo}-P{hi}")
+
+        # Driver match
+        if query.get("driver"):
+            driver_result = next(
+                (r for r in data["results"] if r["driver"] == query["driver"]),
+                None
+            )
+            if driver_result:
+                score += 1
+                reasons.append(f"{query['driver']} raced")
+
+        # Strategy match
+        if query.get("strategy"):
+            stints = data.get("stints") or {}
+            stop_counts = [len(s) - 1 for s in stints.values() if s]
+            if stop_counts:
+                most_common = max(set(stop_counts), key=stop_counts.count)
+                if str(most_common) == query["strategy"].replace("-stop", ""):
+                    score += 1
+                    reasons.append(f"{query['strategy']} dominant")
+
+        if score >= 3:  # minimum relevance
+            matches.append({
+                "year": year,
+                "track": track,
+                "score": score,
+                "reasons": reasons,
+                "data": data,
+            })
+
+    return sorted(matches, key=lambda x: -x["score"])[:8]
+```
+
+**Scoring weights:**
+- Same circuit: +3 (strongest — track characteristics dominate)
+- Same weather: +2 (rain completely changes a race)
+- Similar grid position: +2 (starting position is the biggest predictor of finish)
+- Same driver: +1 (driver tendencies matter but less than conditions)
+- Same strategy type: +1 (confirms the pattern)
+
+A score of 3+ means the match is relevant enough to show. Scores of 5+ are strong matches.
+
+### Aggregate statistics
+
+After finding matching races, the engine computes aggregates:
+
+```python
+def compute_pattern_stats(matches: list[dict], query: dict) -> dict:
+    position_gains = []
+    strategies = []
+    retirements = []
+
+    for m in matches:
+        results = m["data"]["results"]
+
+        # Position gain for drivers in the queried grid range
+        if query.get("grid_range"):
+            lo, hi = query["grid_range"]
+            for r in results:
+                grid = r.get("grid_position")
+                finish = r.get("finish_position")
+                if grid and finish and lo <= grid <= hi:
+                    position_gains.append(grid - finish)
+
+        # Dominant strategy
+        stints = m["data"].get("stints") or {}
+        for driver_stints in stints.values():
+            if driver_stints:
+                strategies.append(len(driver_stints) - 1)
+
+        # Retirements
+        retired = [r for r in results
+                   if r["status"] not in ("Finished",)
+                   and not r["status"].startswith("+")]
+        retirements.append(len(retired))
+
+    return {
+        "avg_position_gain": round(sum(position_gains) / len(position_gains), 1) if position_gains else 0,
+        "most_common_strategy": f"{max(set(strategies), key=strategies.count)}-stop" if strategies else "unknown",
+        "avg_retirements": round(sum(retirements) / len(retirements), 1) if retirements else 0,
+        "sample_size": len(matches),
+    }
+```
+
+### Auto-precedent generation for race pages
+
+When viewing any race, the auto-matcher builds a query from that race's features:
+
+```python
+def get_auto_precedents(year: int, track: str) -> dict:
+    data = indexer.load_race_index(year, track)
+    weather = data["weather"]["condition"]
+
+    # Find similar races (same circuit + same weather, excluding this race)
+    similar = find_similar_races({
+        "circuit": track,
+        "weather": weather,
+    })
+    # Remove the current race from results
+    similar = [m for m in similar if not (m["year"] == year and m["track"] == track)]
+
+    # Compute aggregate stats
+    stats = compute_pattern_stats(similar, {"circuit": track, "weather": weather})
+
+    return {
+        "similar_races": similar[:5],
+        "stats": stats,
+        "query_description": f"{weather} races at {track}",
+    }
+```
+
+### API endpoints
+
+```
+GET /races/{year}/{track}/precedents
+    → Auto-generated historical precedents for this race
+
+POST /patterns/search
+    Body: {circuit: "Silverstone", weather: "wet", grid_range: [4, 7]}
+    → Matching races + aggregate stats
+```
+
+### Frontend components
+
+**PatternPrecedents.tsx** — renders on the race page:
+- "Historical Precedents" heading
+- List of similar races with summary cards
+- Aggregate stats box ("What history suggests")
+
+**PatternFinder.tsx** — standalone page at `/patterns`:
+- Query builder form (dropdowns for circuit, weather, grid range, driver)
+- Results grid showing matching races
+- Aggregate statistics panel
+
+### What we already have
+
+Everything needed is already indexed:
+- Circuit names (from schedule)
+- Weather conditions (from weather data)
+- Grid positions (from results)
+- Finish positions (from results)
+- Tyre strategy (from stints)
+- Retirements (from results status)
+
+No new data sources needed. This is pure query logic over existing data.
+
+### Data coverage
+
+| Years | Races | Circuit | Weather | Grid | Strategy |
+|-------|-------|---------|---------|------|----------|
+| 2010-2024 | 380+ | All | All | All | 2012+ full, 2010-2011 partial |
+
+380+ races is enough for meaningful patterns. Even filtering to "wet races at Silverstone" yields 3-5 matches across 15 years.
+
+---
+
+## Updated Phase 6 Summary
+
+```
+Phase 6A — Landing page + year bar styling
+Phase 6B — Circuit outlines on race cards
+Phase 6C — Search bar
+Phase 6D — 2010-2011 data gap fix
+Phase 6E — Strategy tab cleanup
+Phase 6F — Radio Sentiment + audio playback
+Phase 6G — Predictions / Test Your Knowledge
+Phase 6H — Strategy Simulator (Sim tab)
+Phase 6I — Pattern Matcher (auto precedents + standalone finder)
+```
+
+## Updated Feature Map
+
+```
+Landing Page (6A) → explains what Raceday does
+     │
+     ├── Circuit Outlines (6B) → make race cards visual
+     ├── Search Bar (6C) → find any race fast
+     ├── Pattern Finder (6I) → standalone query page
+     │
+     └── Race Page
+           ├── Results tab (existing + 5C key moments)
+           │     └── Historical Precedents (6I) ← auto-generated patterns
+           ├── Standings tab (existing + 5D/5E season story)
+           ├── Strategy tab
+           │     ├── Story mode (existing)
+           │     ├── Data mode (existing)
+           │     └── Sim mode (6H) ← interactive strategy simulator
+           ├── Radio tab (6F) ← sentiment-tagged transcripts + audio
+           ├── Predict tab (6G) ← quiz/prediction mode
+           └── Discussion tab (existing)
+```
+
+Every feature feeds into the core loop: browse → learn → interact → come back.
+
+---
+
+*Updated: 2026-03-17 | Project: Raceday | Phase 6 planning | All features discussed in session*
