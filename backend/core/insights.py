@@ -733,6 +733,165 @@ def get_key_moments(year: int, track: str) -> list[dict] | None:
 _POINTS_TABLE = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
 
+def get_season_story(year: int, track: str) -> dict | None:
+    """
+    Return season-level story context for a specific race.
+
+    Calculates everything relative to the given race's position in the calendar:
+    only races up to and including this one contribute to the numbers.
+
+    Returns a dict:
+        momentum        — top 5 drivers by points in the last 5 races
+        turning_points  — races where the championship lead changed or gap swung big
+        constructor_battle — team standings at this point in the season
+        race_round      — which round this race is (e.g. 10 of 22)
+        total_rounds    — total races in the season
+
+    Returns None if the race is not indexed or season schedule unavailable.
+    """
+    if not indexer.is_indexed(year, track):
+        return None
+
+    schedule = loader.get_season_schedule(year)
+    if not schedule:
+        return None
+
+    # Find this race's round number and build chronological list up to this race
+    race_names_in_order = [s["name"] for s in schedule]
+    if track not in race_names_in_order:
+        return None
+
+    race_index = race_names_in_order.index(track)
+    total_rounds = len(race_names_in_order)
+    races_so_far = race_names_in_order[: race_index + 1]
+
+    # Collect results for all indexed races up to this point
+    race_results: list[tuple[str, dict]] = []  # (track_name, {driver: finish_pos})
+    for t in races_so_far:
+        if not indexer.is_indexed(year, t):
+            continue
+        data = indexer.load_race_index(year, t)
+        if data is None:
+            continue
+        race_results.append((t, data["results"]))
+
+    if not race_results:
+        return None
+
+    # --- Momentum: points in the last 5 races ---
+    recent = race_results[-5:]
+    momentum_tally: dict[str, dict] = {}  # driver -> {points, team, results}
+    for race_name, results in recent:
+        for r in results:
+            drv = r["driver"]
+            pos = r.get("finish_position")
+            pts = _POINTS_TABLE.get(pos, 0) if pos else 0
+            if drv not in momentum_tally:
+                momentum_tally[drv] = {"points": 0, "team": r["team"], "results": []}
+            momentum_tally[drv]["points"] += pts
+            momentum_tally[drv]["team"] = r["team"]
+            momentum_tally[drv]["results"].append({"race": race_name, "position": pos, "points": pts})
+
+    momentum = sorted(
+        [
+            {"driver": drv, "full_name": _DRIVER_NAMES.get(drv, drv), "team": info["team"],
+             "points": info["points"], "results": info["results"]}
+            for drv, info in momentum_tally.items()
+        ],
+        key=lambda x: -x["points"],
+    )[:5]
+
+    # --- Championship standings at this point ---
+    season_tally: dict[str, dict] = {}
+    for race_name, results in race_results:
+        for r in results:
+            drv = r["driver"]
+            pos = r.get("finish_position")
+            pts = _POINTS_TABLE.get(pos, 0) if pos else 0
+            if drv not in season_tally:
+                season_tally[drv] = {"points": 0, "wins": 0, "team": r["team"]}
+            season_tally[drv]["points"] += pts
+            season_tally[drv]["wins"] += 1 if pos == 1 else 0
+            season_tally[drv]["team"] = r["team"]
+
+    # --- Turning points: detect lead changes and big swings ---
+    turning_points = []
+    prev_leader = None
+    prev_gap = 0
+    running_tally: dict[str, int] = {}
+
+    for race_name, results in race_results:
+        for r in results:
+            drv = r["driver"]
+            pos = r.get("finish_position")
+            pts = _POINTS_TABLE.get(pos, 0) if pos else 0
+            running_tally[drv] = running_tally.get(drv, 0) + pts
+
+        if not running_tally:
+            continue
+
+        sorted_drivers = sorted(running_tally.items(), key=lambda x: -x[1])
+        leader = sorted_drivers[0][0]
+        leader_pts = sorted_drivers[0][1]
+        second_pts = sorted_drivers[1][1] if len(sorted_drivers) > 1 else 0
+        gap = leader_pts - second_pts
+
+        # Lead change
+        if prev_leader and leader != prev_leader:
+            turning_points.append({
+                "race": race_name,
+                "type": "lead_change",
+                "headline": f"{_dn(leader)} takes the championship lead",
+                "detail": f"{_DRIVER_NAMES.get(leader, leader)} overtook "
+                          f"{_DRIVER_NAMES.get(prev_leader, prev_leader)} in the standings "
+                          f"after the {race_name}. Gap: {gap} points.",
+            })
+
+        # Big swing (gap changed by 15+ points in one race)
+        elif prev_leader and leader == prev_leader and abs(gap - prev_gap) >= 15:
+            if gap > prev_gap:
+                turning_points.append({
+                    "race": race_name,
+                    "type": "gap_extension",
+                    "headline": f"{_dn(leader)} extends lead to {gap} points",
+                    "detail": f"The gap grew by {gap - prev_gap} points after the {race_name}.",
+                })
+            else:
+                second = sorted_drivers[1][0] if len(sorted_drivers) > 1 else None
+                if second:
+                    turning_points.append({
+                        "race": race_name,
+                        "type": "gap_closing",
+                        "headline": f"{_dn(second)} closes to {gap} points",
+                        "detail": f"The gap shrank by {prev_gap - gap} points after the {race_name}.",
+                    })
+
+        prev_leader = leader
+        prev_gap = gap
+
+    # --- Constructor battle: team standings at this point ---
+    team_tally: dict[str, int] = {}
+    for race_name, results in race_results:
+        for r in results:
+            team = r["team"]
+            pos = r.get("finish_position")
+            pts = _POINTS_TABLE.get(pos, 0) if pos else 0
+            team_tally[team] = team_tally.get(team, 0) + pts
+
+    constructor_battle = sorted(
+        [{"team": team, "points": pts} for team, pts in team_tally.items()],
+        key=lambda x: -x["points"],
+    )[:5]
+
+    return {
+        "momentum": momentum,
+        "turning_points": turning_points[-5:],  # last 5 most relevant
+        "constructor_battle": constructor_battle,
+        "race_round": race_index + 1,
+        "total_rounds": total_rounds,
+    }
+
+
 def get_championship_standings(year: int) -> list[dict] | None:
     """
     Return driver championship standings built from all indexed races in a season.
