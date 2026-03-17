@@ -36,6 +36,9 @@ No more tabs. One page, one scroll. A beginner reads top to bottom and understan
 │  Silverstone · Round 10 · Dry · 52 laps     │
 │  ╭──╮  ← circuit outline                   │
 │  ╰──╯                                       │
+│                                              │
+│  "A masterclass from lights to flag"         │ ← tagline (auto-generated)
+│                                              │
 ├─────────────────────────────────────────────┤
 │                                              │
 │  THE RESULT                                  │
@@ -266,16 +269,29 @@ Small circuit layout SVGs on each race card. Visual identity at a glance.
 
 ---
 
-### Phase 6D — Unified Race Story Engine
+### Phase 6D — Unified Race Story Engine + Race Tagline
 
 Merge the strategy narrative, race summary, and key moments into one cohesive `get_race_story()` function. The story should read like race commentary, not like three separate data dumps stitched together.
 
+Also generates a **one-line tagline** — a film-poster hook that sits above THE RESULT and frames the entire page. Auto-generated from race data:
+
+- Winner from pole with huge gap → "A masterclass from lights to flag"
+- Winner from far back on the grid → "The day Hamilton defied a grid penalty"
+- 5+ retirements → "The race nobody finished"
+- Wet conditions → "Rain rewrote the script at Silverstone"
+- Lead change in championship → "The moment the title fight changed"
+- Close battle between rivals → "Settled by seconds between Norris and Piastri"
+- Dominant team 1-2 finish → "Red Bull's day, and everyone else was racing for third"
+
+One sentence. Zero effort to read. Sets the emotional tone before you even know who won.
+
 **Steps:**
 1. Build `get_race_story()` in insights.py — merges narrative + summary + weather
-2. Add `/races/{year}/{track}/story` endpoint
-3. Build `RaceStory.tsx` component
-4. Wire into the new race page layout
-5. Visual test
+2. Build `generate_race_tagline()` — one-line hook from race data
+3. Add `/races/{year}/{track}/story` endpoint (returns tagline + narrative)
+4. Build `RaceStory.tsx` component with tagline
+5. Wire into the new race page layout
+6. Visual test
 
 ---
 
@@ -370,7 +386,7 @@ PATTERN FINDER PAGE (6E)
 RACE PAGE (6A — the big redesign)
   │
   ├── MAIN FLOW (beginner-friendly, always visible)
-  │     ├── Race header + circuit outline
+  │     ├── Race header + circuit outline + tagline
   │     ├── THE RESULT — compact podium
   │     ├── RACE INTELLIGENCE — "Did You Know" facts (sidebar → inline)
   │     ├── THE RACE STORY — unified narrative (6D)
@@ -396,12 +412,12 @@ RACE PAGE (6A — the big redesign)
 | 1 | **6A** | Race page redesign | Everything else slots into this layout |
 | 2 | **6B** | Landing page + year bar | First impression matters |
 | 3 | **6C** | Circuit outlines | Quick visual win |
-| 4 | **6D** | Unified race story | The centrepiece content |
+| 4 | **6D** | Unified race story + tagline | The centrepiece content + emotional hook |
 | 5 | **6E** | Pattern Matcher | The original hook, the differentiator |
-| 6 | **6F** | 2010-2011 data fix | Data quality |
-| 7 | **6G** | Strategy cleanup | Data quality |
-| 8 | **6H** | Radio Sentiment | Big feature, needs ML dependencies |
-| 9 | **6I** | Test Your Knowledge | Engagement/retention feature |
+| 6 | **6G** | Strategy cleanup | Fix ? markers before users see them |
+| 7 | **6H** | Radio Sentiment | Big feature, needs ML dependencies |
+| 8 | **6I** | Test Your Knowledge | Engagement/retention feature |
+| 9 | **6F** | 2010-2011 data fix | Low priority — only 5% of users will look at pre-2012 races. Fix when users ask for it. |
 
 ---
 
