@@ -923,3 +923,19 @@ Both races tested successfully. The 2023 British GP (Round 10 of 22) shows Verst
 
 **Files changed**
 (none --- verification only)
+
+---
+
+# Phase 5E --- Season Insights
+
+## ✅ Step 1 (5E) --- get_season_insights() Backend Function
+*Completed: 2026-03-17*
+
+**What was built**
+- `backend/core/insights.py` --- get_season_insights(year) computing awards and teammate head-to-head
+
+**In plain English**
+The backend can now auto-generate season awards and teammate battles. Awards: Best Starter (most positions gained), Most Consistent (most podiums), Worst Luck (most DNFs), Points Machine (most points finishes), Best Qualifier (lowest avg grid). H2H counts teammate finishing order. 2023: Verstappen 21/22 podiums, Albon 8-0 Sargeant. 2014: Alonso 15-1 Raikkonen.
+
+**Files changed**
+~ modified: backend/core/insights.py
