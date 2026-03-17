@@ -836,4 +836,90 @@ The Results tab looks much better now. Instead of showing "VER" as the winner, i
 Both races tested successfully. The 2023 British GP shows Max Verstappen as winner with a blue Red Bull accent, Lando Norris P2 (orange McLaren), Lewis Hamilton P3 (emerald Mercedes), plus 5 key moments including Perez's 9-place gain, Verstappen's pole-to-win, and Hamilton beating Piastri. The 2014 Australian GP shows Nico Rosberg winning with an emerald Mercedes accent, 5 key moments including Bottas's 10-place comeback from P15 to P5, Button's undercut on Ricciardo, and 8 retirements. Frontend pages compile cleanly and load at 200 for both races.
 
 **Files changed**
-(none — verification only)
+(none --- verification only)
+
+---
+
+# Phase 5D --- Standings Becomes Season Story
+
+## ✅ Step 1 (5D) --- get_season_story() Backend Function
+*Completed: 2026-03-17*
+
+**What was built**
+- `backend/core/insights.py` --- get_season_story(year, track) computing momentum, turning points, constructor battle
+
+**In plain English**
+The backend can now tell you the season story up to any given race. It calculates three things: who's on the hottest form right now (points in the last 5 races), what moments shifted the championship (lead changes, big gap swings), and how the constructor battle stands. All computed from indexed data, only counting races up to the one you're viewing.
+
+**Files changed**
+~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 2 (5D) --- /season-story API Endpoint
+*Completed: 2026-03-17*
+
+**What was built**
+- `backend/api.py` --- GET /races/{year}/{track}/season-story endpoint
+
+**In plain English**
+The season story data is now available over HTTP. Hit the endpoint and get back momentum (top 5 drivers by recent form with per-race breakdowns), turning points (lead changes and gap swings), and constructor battle (team standings). Tested live on 2023 British GP --- Verstappen 125 pts in last 5 races, all wins.
+
+**Files changed**
+~ modified: backend/api.py
+
+---
+
+## ✅ Step 3 (5D) --- MomentumCard.tsx Component
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/components/MomentumCard.tsx` --- driver form card with points bars and mini position badges
+
+**In plain English**
+A new component shows who's on the hottest form. Each of the top 5 drivers gets a row with their full name, team colour dot, a horizontal bar showing their recent points relative to the leader, and tiny coloured badges showing their finishing position in each of the last 5 races (gold for P1, silver for podium, grey for midfield). Hover over any badge to see which race it was.
+
+**Files changed**
++ created: frontend/app/components/MomentumCard.tsx
+
+---
+
+## ✅ Step 4 (5D) --- SeasonStory.tsx Component
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/components/SeasonStory.tsx` --- fetches and renders all three season story sections
+
+**In plain English**
+A new component brings together the full season picture below the race standings. It fetches the season story from the API and renders three sections: the momentum card (who's hot right now), championship turning points (lead changes and big gap swings with directional arrow icons), and the constructor battle (team standings as coloured horizontal bars matching each team's livery). Shows round number (e.g. "Round 10 of 22") at the top.
+
+**Files changed**
++ created: frontend/app/components/SeasonStory.tsx
+
+---
+
+## ✅ Step 5 (5D) --- Wire SeasonStory into Standings Tab
+*Completed: 2026-03-17*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` --- imported SeasonStory, rendered below StandingsTable
+
+**In plain English**
+The Standings tab on every race page now shows the season story right below the race finishing order. When you click Standings, you see the individual race results table at the top, then the momentum card (who's hot), championship turning points, and constructor battle underneath. The season data loads independently so it doesn't slow down the race standings appearing.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 6 (5D) --- Visual Test
+*Completed: 2026-03-17*
+
+**What was built**
+- Full end-to-end test of Season Story feature
+
+**In plain English**
+Both races tested successfully. The 2023 British GP (Round 10 of 22) shows Verstappen leading momentum with 125 pts from 5 wins in 5 races, 4 turning points (all gap extensions), and Red Bull leading constructors with 375 pts vs Mercedes 193. The 2014 Australian GP (Round 1 of 19) shows Rosberg leading with 25 pts, no turning points (Round 1), and McLaren leading constructors with 33 pts. Both frontend pages load at 200.
+
+**Files changed**
+(none --- verification only)
