@@ -546,6 +546,189 @@ def get_strategy_stats(year: int, track: str) -> dict | None:
     }
 
 
+def get_key_moments(year: int, track: str) -> list[dict] | None:
+    """
+    Auto-detect interesting race moments from results, standings, and stint data.
+
+    Returns a list of moment dicts, each with:
+        type     — moment category (e.g. 'biggest_gainer', 'undercut', 'close_battle')
+        headline — short summary (e.g. 'Hamilton gained 4 places')
+        detail   — longer explanation
+        driver   — primary driver code involved
+
+    Returns None if the race cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    stints_by_driver = data.get("stints") or {}
+
+    # Build lookups
+    driver_info: dict[str, dict] = {}
+    for r in results:
+        driver_info[r["driver"]] = {
+            "team": r["team"],
+            "finish": r.get("finish_position"),
+            "grid": r.get("grid_position"),
+            "status": r["status"],
+        }
+
+    finishers = sorted(
+        [r for r in results if r["finish_position"] is not None],
+        key=lambda r: r["finish_position"],
+    )
+    retired = [r for r in results
+               if r["status"] not in ("Finished",) and not r["status"].startswith("+")]
+
+    moments = []
+
+    # --- Biggest gainer ---
+    best_gain = None
+    for r in finishers:
+        grid = r.get("grid_position")
+        finish = r["finish_position"]
+        if grid is not None and finish is not None:
+            delta = grid - finish
+            if delta >= 3 and (best_gain is None or delta > best_gain[1]):
+                best_gain = (r, delta)
+
+    if best_gain:
+        r, delta = best_gain
+        moments.append({
+            "type": "biggest_gainer",
+            "headline": f"{_dn(r['driver'])} gained {delta} places",
+            "detail": (
+                f"Started P{r['grid_position']}, finished P{r['finish_position']}. "
+                f"The biggest forward charge of the race for {r['team']}."
+            ),
+            "driver": r["driver"],
+        })
+
+    # --- Biggest loser (excl. retirements) ---
+    worst_loss = None
+    for r in finishers:
+        grid = r.get("grid_position")
+        finish = r["finish_position"]
+        status = r["status"]
+        if (grid is not None and finish is not None
+                and status in ("Finished",) or status.startswith("+")):
+            delta = grid - finish  # negative = lost places
+            if delta <= -3 and (worst_loss is None or delta < worst_loss[1]):
+                worst_loss = (r, delta)
+
+    if worst_loss:
+        r, delta = worst_loss
+        moments.append({
+            "type": "biggest_loser",
+            "headline": f"{_dn(r['driver'])} dropped {abs(delta)} places",
+            "detail": (
+                f"Started P{r['grid_position']} but fell to P{r['finish_position']}. "
+                f"A tough afternoon for {r['team']}."
+            ),
+            "driver": r["driver"],
+        })
+
+    # --- Comeback drive (started outside top 10, finished top 5) ---
+    for r in finishers[:5]:
+        grid = r.get("grid_position")
+        finish = r["finish_position"]
+        if grid and grid > 10 and finish and finish <= 5:
+            moments.append({
+                "type": "comeback",
+                "headline": f"{_dn(r['driver'])} stormed from P{grid} to P{finish}",
+                "detail": (
+                    f"Starting outside the top 10, {_DRIVER_NAMES.get(r['driver'], r['driver'])} "
+                    f"carved through the field to finish in the top 5 for {r['team']}."
+                ),
+                "driver": r["driver"],
+            })
+
+    # --- Dominant win (pole to victory, no position lost) ---
+    if finishers:
+        winner = finishers[0]
+        grid = winner.get("grid_position")
+        if grid == 1:
+            moments.append({
+                "type": "dominant_win",
+                "headline": f"{_dn(winner['driver'])} converted pole to victory",
+                "detail": (
+                    f"Led from lights out to chequered flag. "
+                    f"A commanding performance by {winner['team']}."
+                ),
+                "driver": winner["driver"],
+            })
+
+    # --- Undercut detection (reusing logic from strategy narrative) ---
+    first_stops: list[tuple[str, int]] = []
+    for driver, stints in stints_by_driver.items():
+        if len(stints) >= 2:
+            first_pit_lap = stints[0].get("lap_end", 0)
+            first_stops.append((driver, first_pit_lap))
+    first_stops.sort(key=lambda x: x[1])
+
+    undercuts = []
+    for i, (d1, lap1) in enumerate(first_stops):
+        for d2, lap2 in first_stops[i + 1:]:
+            info1 = driver_info.get(d1, {})
+            info2 = driver_info.get(d2, {})
+            grid1, grid2 = info1.get("grid"), info2.get("grid")
+            fin1, fin2 = info1.get("finish"), info2.get("finish")
+            if (grid1 and grid2 and fin1 and fin2
+                    and grid1 > grid2 and fin1 < fin2 and lap1 < lap2):
+                undercuts.append((d1, d2, lap1, lap2, fin1))
+
+    if undercuts:
+        best = min(undercuts, key=lambda x: x[4])  # best finishing position
+        d1, d2, lap1, lap2, fin1 = best
+        moments.append({
+            "type": "undercut",
+            "headline": f"{_dn(d1)} undercut {_dn(d2)}",
+            "detail": (
+                f"{_DRIVER_NAMES.get(d1, d1)} pitted on lap {lap1}, "
+                f"{_DRIVER_NAMES.get(d2, d2)} waited until lap {lap2}. "
+                f"The early stop worked — {_DRIVER_NAMES.get(d1, d1)} finished P{fin1}."
+            ),
+            "driver": d1,
+        })
+
+    # --- Close battle (consecutive finishers, different teams) ---
+    for i in range(len(finishers) - 1):
+        r1 = finishers[i]
+        r2 = finishers[i + 1]
+        if r1["team"] != r2["team"] and r1["finish_position"] <= 10:
+            grid1 = r1.get("grid_position")
+            grid2 = r2.get("grid_position")
+            # Detect when a driver from behind on the grid fought past
+            if grid1 and grid2 and grid1 > grid2:
+                moments.append({
+                    "type": "close_battle",
+                    "headline": f"{_dn(r1['driver'])} beat {_dn(r2['driver'])} in a grid-defying fight",
+                    "detail": (
+                        f"{_DRIVER_NAMES.get(r1['driver'], r1['driver'])} started P{grid1} behind "
+                        f"{_DRIVER_NAMES.get(r2['driver'], r2['driver'])} (P{grid2}) but finished ahead — "
+                        f"P{r1['finish_position']} vs P{r2['finish_position']}."
+                    ),
+                    "driver": r1["driver"],
+                })
+                break  # only show the best one
+
+    # --- High retirement count ---
+    if len(retired) >= 5:
+        moments.append({
+            "type": "attrition",
+            "headline": f"{len(retired)} drivers retired",
+            "detail": (
+                f"A race of attrition — {len(retired)} out of {len(results)} starters "
+                f"failed to see the chequered flag."
+            ),
+            "driver": retired[0]["driver"] if retired else None,
+        })
+
+    return moments
+
+
 # F1 points awarded per finishing position (standard system, no fastest lap)
 _POINTS_TABLE = {1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1}
 
