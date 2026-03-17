@@ -9,6 +9,7 @@ import StrategyStory from "@/app/components/StrategyStory";
 import StrategyKey from "@/app/components/StrategyKey";
 import FactsSidebar from "@/app/components/FactsSidebar";
 import KeyMoments from "@/app/components/KeyMoments";
+import SeasonStory from "@/app/components/SeasonStory";
 import DiscussionPanel from "@/app/components/DiscussionPanel";
 
 const API = "http://localhost:8080";
@@ -143,7 +144,10 @@ export default function RacePage({
                 </div>
               )}
               {tab === "standings" && standings && (
-                <StandingsTable data={standings} />
+                <div className="space-y-6">
+                  <StandingsTable data={standings} />
+                  <SeasonStory year={year} track={trackName} />
+                </div>
               )}
               {tab === "strategy" && (
                 <div>
