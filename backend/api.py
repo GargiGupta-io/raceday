@@ -206,6 +206,14 @@ def race_story(year: int, track: str):
     return {"tagline": tagline, **story}
 
 
+@app.get("/races/{year}/{track}/precedents")
+def race_precedents(year: int, track: str):
+    data = insights.get_auto_precedents(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
 @app.get("/seasons/{year}/insights")
 def season_insights(year: int):
     data = insights.get_season_insights(year)
