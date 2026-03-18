@@ -197,6 +197,15 @@ def race_sidebar(year: int, track: str):
     return data
 
 
+@app.get("/races/{year}/{track}/story")
+def race_story(year: int, track: str):
+    tagline = insights.generate_race_tagline(year, track)
+    story = insights.get_race_story(year, track)
+    if story is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return {"tagline": tagline, **story}
+
+
 @app.get("/seasons/{year}/insights")
 def season_insights(year: int):
     data = insights.get_season_insights(year)
