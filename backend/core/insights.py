@@ -1401,6 +1401,158 @@ def get_sidebar_content(year: int, track: str) -> dict | None:
 # Manual test
 # ---------------------------------------------------------------------------
 
+def get_race_story(year: int, track: str) -> dict | None:
+    """
+    Build a unified race narrative merging weather, results, strategy, and key moments.
+
+    Returns a dict with:
+        narrative   — list of paragraphs (strings) telling the race story
+        weather     — condition string
+        retirements — count of retirements
+        laps        — total laps
+
+    Returns None if race data cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    weather = data.get("weather", {})
+    stints_by_driver = data.get("stints") or {}
+
+    condition = weather.get("condition", "dry")
+    temp = weather.get("avg_air_temp")
+
+    finished = [r for r in results if r.get("finish_position") is not None]
+    finished_sorted = sorted(finished, key=lambda r: r["finish_position"])
+    retirements = [r for r in results if r["status"] not in ("Finished",) and not r["status"].startswith("+")]
+
+    if not finished_sorted:
+        return None
+
+    winner = finished_sorted[0]
+    podium = finished_sorted[:3]
+
+    paragraphs = []
+
+    # --- Paragraph 1: The headline — who won and how ---
+    w_name = _dn(winner["driver"])
+    w_grid = winner.get("grid_position")
+    w_team = winner["team"]
+
+    if w_grid and w_grid == 1:
+        opener = f"{w_name} converted pole position into victory"
+    elif w_grid and w_grid <= 3:
+        opener = f"{w_name} took the win from P{w_grid} on the grid"
+    elif w_grid and w_grid > 5:
+        opener = f"{w_name} stormed from P{w_grid} to win"
+    else:
+        opener = f"{w_name} claimed victory"
+
+    opener += f" for {w_team}."
+
+    # Add podium context
+    if len(podium) >= 3:
+        p2 = _dn(podium[1]["driver"])
+        p3 = _dn(podium[2]["driver"])
+        opener += f" {p2} finished second with {p3} completing the podium."
+
+    paragraphs.append(opener)
+
+    # --- Paragraph 2: Weather and conditions ---
+    if condition == "wet":
+        weather_line = "Rain was the story of the day, reshaping strategies and punishing mistakes."
+    elif condition == "damp":
+        weather_line = "Changeable conditions kept everyone guessing throughout the race."
+    else:
+        weather_line = "Under dry conditions, tyre management was the name of the game."
+
+    if temp:
+        weather_line += f" Track temperatures hovered around {temp:.0f}°C."
+
+    if len(retirements) >= 5:
+        weather_line += f" It was a brutal day for reliability — {len(retirements)} drivers failed to reach the finish."
+    elif len(retirements) >= 2:
+        ret_names = " and ".join(_dn(r["driver"]) for r in retirements[:2])
+        weather_line += f" {ret_names} were among {len(retirements)} retirements."
+
+    paragraphs.append(weather_line)
+
+    # --- Paragraph 3: The biggest mover ---
+    biggest_gain = None
+    biggest_gain_delta = 0
+    for r in finished_sorted:
+        grid = r.get("grid_position")
+        pos = r["finish_position"]
+        if grid and pos:
+            delta = grid - pos
+            if delta > biggest_gain_delta:
+                biggest_gain = r
+                biggest_gain_delta = delta
+
+    if biggest_gain and biggest_gain_delta >= 4:
+        bg_name = _dn(biggest_gain["driver"])
+        bg_grid = biggest_gain["grid_position"]
+        bg_fin = biggest_gain["finish_position"]
+        paragraphs.append(
+            f"The drive of the day belonged to {bg_name}, who climbed from "
+            f"P{bg_grid} to P{bg_fin} — gaining {biggest_gain_delta} places through the field."
+        )
+
+    # --- Paragraph 4: Strategy story (if stint data exists) ---
+    if stints_by_driver:
+        # Winner's strategy
+        w_stints = stints_by_driver.get(winner["driver"], [])
+        if w_stints:
+            stops = len(w_stints) - 1
+            compounds = [_COMPOUND_LABELS.get(s.get("compound", ""), s.get("compound", "")) for s in w_stints]
+            compound_seq = " then ".join(compounds)
+
+            strat_line = f"{_DRIVER_NAMES.get(winner['driver'], winner['driver'])} ran a {stops}-stop strategy on {compound_seq}."
+
+            # Did anyone use a notably different strategy?
+            stop_counts: dict[int, int] = {}
+            for d, sts in stints_by_driver.items():
+                sc = len(sts) - 1
+                stop_counts[sc] = stop_counts.get(sc, 0) + 1
+
+            if len(stop_counts) >= 2:
+                strategies = sorted(stop_counts.keys())
+                if strategies[-1] - strategies[0] >= 1:
+                    strat_line += f" The grid split between {strategies[0]}-stop and {strategies[-1]}-stop strategies."
+
+            paragraphs.append(strat_line)
+
+    # --- Paragraph 5: Close battle or dominant win ---
+    if len(finished_sorted) >= 2:
+        p1_driver = finished_sorted[0]["driver"]
+        p2_driver = finished_sorted[1]["driver"]
+        # Check if it was a dominant season moment (win streak, etc.)
+        p2_grid = finished_sorted[1].get("grid_position")
+        p1_grid = winner.get("grid_position")
+
+        if p1_grid and p1_grid == 1 and len(retirements) <= 1:
+            paragraphs.append(
+                f"It was a controlled race from the front for {_DRIVER_NAMES.get(p1_driver, p1_driver)}, "
+                f"managing the gap to {_dn(p2_driver)} throughout."
+            )
+
+    # Calculate total laps
+    total_laps = 0
+    for r in results:
+        tl = r.get("total_laps", 0)
+        if tl and tl > total_laps:
+            total_laps = tl
+
+    return {
+        "narrative": paragraphs,
+        "weather": condition,
+        "retirements": len(retirements),
+        "laps": total_laps if total_laps > 0 else None,
+    }
+
+
 if __name__ == "__main__":
     # Run as: python3 -m backend.core.insights  (from the raceday/ root)
     import logging
