@@ -11,6 +11,7 @@ import KeyMoments from "@/app/components/KeyMoments";
 import SeasonStory from "@/app/components/SeasonStory";
 import SeasonInsights from "@/app/components/SeasonInsights";
 import GoDeeper, { GoDeeperItem } from "@/app/components/GoDeeper";
+import RaceStory from "@/app/components/RaceStory";
 
 const API = "http://localhost:8888";
 
@@ -124,6 +125,9 @@ export default function RacePage({
 
               {/* KEY MOMENTS */}
               <KeyMoments year={year} track={trackName} />
+
+              {/* THE RACE STORY */}
+              <RaceStory year={year} track={trackName} />
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <GoDeeper>
