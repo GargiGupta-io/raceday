@@ -1398,8 +1398,81 @@ def get_sidebar_content(year: int, track: str) -> dict | None:
 
 
 # ---------------------------------------------------------------------------
-# Manual test
+# Race tagline + story
 # ---------------------------------------------------------------------------
+
+def generate_race_tagline(year: int, track: str) -> str | None:
+    """
+    Generate a one-line tagline for a race — a film-poster hook.
+
+    Rules (checked in priority order):
+    - 5+ retirements  → chaos tagline
+    - Wet conditions   → rain tagline
+    - Winner from P6+  → comeback tagline
+    - Winner from pole with few retirements → dominance tagline
+    - Close P1/P2 battle (same team)        → team battle tagline
+    - Team 1-2 finish  → team dominance tagline
+    - Fallback         → generic winner tagline
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    weather = data.get("weather", {})
+    condition = weather.get("condition", "dry")
+
+    finished = [r for r in results if r.get("finish_position") is not None]
+    finished_sorted = sorted(finished, key=lambda r: r["finish_position"])
+    dnf = [r for r in results
+           if r["status"] not in ("Finished", "Lapped")
+           and not r["status"].startswith("+")]
+
+    if not finished_sorted:
+        return None
+
+    winner = finished_sorted[0]
+    w_name = _DRIVER_NAMES.get(winner["driver"], winner["driver"])
+    w_grid = winner.get("grid_position")
+    w_team = winner["team"]
+
+    # Check for team 1-2
+    team_12 = (
+        len(finished_sorted) >= 2
+        and finished_sorted[0]["team"] == finished_sorted[1]["team"]
+    )
+
+    # Chaos race
+    if len(dnf) >= 5:
+        return "The race nobody finished unscathed"
+
+    # Wet race
+    if condition == "wet":
+        return f"Rain rewrote the script at {track.replace(' Grand Prix', '')}"
+
+    # Big comeback win
+    if w_grid and w_grid >= 6:
+        return f"The day {w_name} defied a P{w_grid} start"
+
+    # Dominant pole-to-win
+    if w_grid and w_grid == 1 and len(dnf) <= 2:
+        return "A masterclass from lights to flag"
+
+    # Team 1-2
+    if team_12:
+        return f"{w_team}'s day — and everyone else was racing for third"
+
+    # Damp / mixed conditions
+    if condition == "damp":
+        return f"Changeable skies shook up the order at {track.replace(' Grand Prix', '')}"
+
+    # Winner from P2-P5 (overtook for the lead)
+    if w_grid and 2 <= w_grid <= 5:
+        return f"{w_name} made the decisive move from P{w_grid}"
+
+    # Fallback
+    return f"{w_name} took the victory"
+
 
 def get_race_story(year: int, track: str) -> dict | None:
     """
