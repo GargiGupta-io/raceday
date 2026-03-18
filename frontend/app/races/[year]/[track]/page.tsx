@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { use } from "react";
 import ResultsCard from "@/app/components/ResultsCard";
-import StandingsTable from "@/app/components/StandingsTable";
 import StrategyPanel from "@/app/components/StrategyPanel";
 import StrategyStory from "@/app/components/StrategyStory";
 import StrategyKey from "@/app/components/StrategyKey";
@@ -49,8 +48,6 @@ interface SidebarData {
   did_you_know: string[];
 }
 
-type Tab = "results" | "standings" | "strategy" | "discussion";
-
 export default function RacePage({
   params,
 }: {
@@ -59,7 +56,6 @@ export default function RacePage({
   const { year, track } = use(params);
   const trackName = decodeURIComponent(track);
 
-  const [tab, setTab] = useState<Tab>("results");
   const [results, setResults] = useState<RaceSummary | null>(null);
   const [standings, setStandings] = useState<StandingEntry[] | null>(null);
   const [strategy, setStrategy] = useState<StrategyEntry[] | null>(null);
@@ -118,78 +114,60 @@ export default function RacePage({
         {!loading && !error && (
           <div className="flex flex-col lg:flex-row gap-8">
 
-            {/* Main content — tabs */}
-            <div className="flex-1 min-w-0">
-              {/* Tab bar */}
-              <div className="mb-6 flex gap-1 border-b border-zinc-800 pb-0 overflow-x-auto">
-                {(["results", "standings", "strategy", "discussion"] as Tab[]).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setTab(t)}
-                    className={`px-4 py-2 text-sm font-medium capitalize transition-colors border-b-2 -mb-px whitespace-nowrap ${
-                      tab === t
-                        ? "border-red-500 text-white"
-                        : "border-transparent text-zinc-500 hover:text-zinc-300"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
+            {/* Main content — single scroll, no tabs */}
+            <div className="flex-1 min-w-0 space-y-8">
+
+              {/* THE RESULT */}
+              {results && (
+                <ResultsCard data={results} />
+              )}
+
+              {/* KEY MOMENTS */}
+              <KeyMoments year={year} track={trackName} />
+
+              {/* STRATEGY */}
+              <div>
+                <div className="flex gap-2 mb-5">
+                  {(["story", "data"] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      onClick={() => setStrategyMode(mode)}
+                      className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
+                        strategyMode === mode
+                          ? "bg-zinc-700 text-white"
+                          : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
+                      }`}
+                    >
+                      {mode}
+                    </button>
+                  ))}
+                </div>
+
+                {strategyMode === "story" && (
+                  <StrategyStory year={year} track={trackName} />
+                )}
+
+                {strategyMode === "data" && strategy && (
+                  <div className="flex flex-col lg:flex-row gap-6">
+                    <div className="flex-1 min-w-0">
+                      <StrategyPanel data={strategy} />
+                    </div>
+                    <div className="w-full lg:w-56 shrink-0">
+                      <StrategyKey year={year} track={trackName} />
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Tab content */}
-              {tab === "results" && results && (
-                <div className="space-y-6">
-                  <ResultsCard data={results} />
-                  <KeyMoments year={year} track={trackName} />
-                </div>
-              )}
-              {tab === "standings" && (
-                <div className="space-y-6">
-                  <SeasonStory year={year} track={trackName} />
-                  <SeasonInsights year={year} />
-                </div>
-              )}
-              {tab === "strategy" && (
-                <div>
-                  {/* Story / Data sub-tabs */}
-                  <div className="flex gap-2 mb-5">
-                    {(["story", "data"] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={() => setStrategyMode(mode)}
-                        className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
-                          strategyMode === mode
-                            ? "bg-zinc-700 text-white"
-                            : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
-                        }`}
-                      >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
+              {/* STANDINGS */}
+              <div className="space-y-6">
+                <SeasonStory year={year} track={trackName} />
+                <SeasonInsights year={year} />
+              </div>
 
-                  {/* Story mode */}
-                  {strategyMode === "story" && (
-                    <StrategyStory year={year} track={trackName} />
-                  )}
+              {/* DISCUSSION (will be removed in Step 6) */}
+              <DiscussionPanel raceYear={parseInt(year)} raceTrack={trackName} />
 
-                  {/* Data mode — table + key side panel */}
-                  {strategyMode === "data" && strategy && (
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      <div className="flex-1 min-w-0">
-                        <StrategyPanel data={strategy} />
-                      </div>
-                      <div className="w-full lg:w-56 shrink-0">
-                        <StrategyKey year={year} track={trackName} />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              {tab === "discussion" && (
-                <DiscussionPanel raceYear={parseInt(year)} raceTrack={trackName} />
-              )}
             </div>
 
             {/* Sidebar — below tabs on mobile, right column on desktop */}
