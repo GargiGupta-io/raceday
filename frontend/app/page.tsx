@@ -202,10 +202,10 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
 
   const content = (
     <div className="rounded-lg bg-zinc-900 p-5 h-full flex flex-col relative overflow-hidden">
-      {/* Circuit outline — faint background element */}
+      {/* Circuit outline */}
       {circuitSvg && (
-        <div className="absolute top-2 right-2 w-16 h-11 opacity-[0.07]">
-          <Image src={circuitSvg} alt="" width={64} height={44} className="invert" />
+        <div className="absolute top-3 right-3 w-14 h-10 opacity-[0.15]">
+          <Image src={circuitSvg} alt="" width={56} height={40} className="invert" />
         </div>
       )}
 
