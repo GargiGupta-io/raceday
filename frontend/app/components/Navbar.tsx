@@ -15,7 +15,8 @@ export default function Navbar() {
   const activeYear = yearMatch ? parseInt(yearMatch[1]) : 2023;
 
   const isChampionship = pathname.startsWith("/championship");
-  const isRaces = pathname === "/" || pathname.startsWith("/races");
+  const isPatterns = pathname.startsWith("/patterns");
+  const isRaces = !isChampionship && !isPatterns;
 
   return (
     <nav className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur">
@@ -50,6 +51,16 @@ export default function Navbar() {
             }`}
           >
             Championship
+          </Link>
+          <Link
+            href="/patterns"
+            className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+              isPatterns
+                ? "bg-zinc-800 text-white"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            Patterns
           </Link>
         </div>
 
