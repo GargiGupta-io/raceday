@@ -1474,6 +1474,172 @@ def generate_race_tagline(year: int, track: str) -> str | None:
     return f"{w_name} took the victory"
 
 
+# ---------------------------------------------------------------------------
+# Pattern Matcher — find similar historical races
+# ---------------------------------------------------------------------------
+
+def _extract_race_profile(year: int, track: str) -> dict | None:
+    """Extract a compact profile of a race for similarity matching."""
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    weather = data.get("weather", {})
+    stints = data.get("stints") or {}
+
+    finished = [r for r in results if r.get("finish_position") is not None]
+    finished_sorted = sorted(finished, key=lambda r: r["finish_position"])
+    dnf = [r for r in results
+           if r["status"] not in ("Finished", "Lapped")
+           and not r["status"].startswith("+")]
+
+    if not finished_sorted:
+        return None
+
+    winner = finished_sorted[0]
+    w_grid = winner.get("grid_position") or 1
+
+    # Biggest position gain
+    max_gain = 0
+    for r in finished_sorted:
+        g = r.get("grid_position")
+        f = r["finish_position"]
+        if g and f:
+            max_gain = max(max_gain, g - f)
+
+    # Dominant strategy (most common stop count)
+    stop_counts: dict[int, int] = {}
+    for d, sts in stints.items():
+        sc = len(sts) - 1
+        stop_counts[sc] = stop_counts.get(sc, 0) + 1
+    dominant_stops = max(stop_counts, key=stop_counts.get) if stop_counts else 1
+
+    # Circuit name (strip "Grand Prix" variants to get base circuit)
+    circuit = track.replace(" Grand Prix", "")
+
+    return {
+        "year": year,
+        "track": track,
+        "circuit": circuit,
+        "condition": weather.get("condition", "dry"),
+        "winner": winner["driver"],
+        "winner_team": winner["team"],
+        "winner_grid": w_grid,
+        "dnf_count": len(dnf),
+        "max_gain": max_gain,
+        "dominant_stops": dominant_stops,
+        "pole_won": w_grid == 1,
+        "team_12": (
+            len(finished_sorted) >= 2
+            and finished_sorted[0]["team"] == finished_sorted[1]["team"]
+        ),
+    }
+
+
+def find_similar_races(year: int, track: str, max_results: int = 5) -> list[dict] | None:
+    """
+    Find historically similar races based on shared characteristics.
+
+    Scoring: each shared trait adds points. Races with higher scores are more similar.
+    Excludes the input race itself.
+
+    Returns a list of dicts with:
+        year, track, score, reasons (list of why it matched)
+    """
+    target = _extract_race_profile(year, track)
+    if target is None:
+        return None
+
+    all_races = indexer.list_indexed()
+    candidates = []
+
+    for race in all_races:
+        ry, rt = race["year"], race["track"]
+        if ry == year and rt == track:
+            continue  # skip self
+
+        profile = _extract_race_profile(ry, rt)
+        if profile is None:
+            continue
+
+        score = 0
+        reasons = []
+
+        # Same circuit (strongest signal)
+        if profile["circuit"] == target["circuit"]:
+            score += 5
+            reasons.append(f"Same circuit ({profile['circuit']})")
+
+        # Same weather conditions
+        if profile["condition"] == target["condition"]:
+            score += 2
+            if profile["condition"] != "dry":
+                reasons.append(f"Also {profile['condition']} conditions")
+        elif profile["condition"] != "dry" and target["condition"] != "dry":
+            score += 1
+            reasons.append("Also ran in mixed/wet conditions")
+
+        # Similar winner grid position (comeback vs dominance)
+        grid_diff = abs(profile["winner_grid"] - target["winner_grid"])
+        if grid_diff <= 1:
+            score += 3
+            if target["winner_grid"] >= 6:
+                reasons.append(f"Winner also started P{profile['winner_grid']}")
+            elif target["winner_grid"] == 1:
+                reasons.append("Also a pole-to-win")
+        elif grid_diff <= 3:
+            score += 1
+
+        # Same winner
+        if profile["winner"] == target["winner"]:
+            score += 2
+            reasons.append(f"{_DRIVER_NAMES.get(target['winner'], target['winner'])} also won")
+
+        # Same winning team
+        if profile["winner_team"] == target["winner_team"]:
+            score += 1
+
+        # Similar chaos level (DNFs)
+        dnf_diff = abs(profile["dnf_count"] - target["dnf_count"])
+        if target["dnf_count"] >= 5 and profile["dnf_count"] >= 5:
+            score += 3
+            reasons.append(f"Also high attrition ({profile['dnf_count']} DNFs)")
+        elif dnf_diff <= 1:
+            score += 1
+
+        # Both team 1-2 finishes
+        if profile["team_12"] and target["team_12"]:
+            score += 2
+            reasons.append(f"{profile['winner_team']} also finished 1-2")
+
+        # Similar biggest mover
+        gain_diff = abs(profile["max_gain"] - target["max_gain"])
+        if target["max_gain"] >= 6 and profile["max_gain"] >= 6 and gain_diff <= 2:
+            score += 2
+            reasons.append(f"Also had a big comeback ({profile['max_gain']}+ places)")
+
+        # Similar strategy
+        if profile["dominant_stops"] == target["dominant_stops"]:
+            score += 1
+
+        # Only include meaningful matches
+        if score >= 4 and reasons:
+            candidates.append({
+                "year": ry,
+                "track": rt,
+                "score": score,
+                "reasons": reasons,
+                "winner": profile["winner"],
+                "winner_name": _DRIVER_NAMES.get(profile["winner"], profile["winner"]),
+                "condition": profile["condition"],
+            })
+
+    # Sort by score descending, then by year descending (most recent first)
+    candidates.sort(key=lambda c: (-c["score"], -c["year"]))
+    return candidates[:max_results]
+
+
 def get_race_story(year: int, track: str) -> dict | None:
     """
     Build a unified race narrative merging weather, results, strategy, and key moments.
