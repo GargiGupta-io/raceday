@@ -1640,6 +1640,114 @@ def find_similar_races(year: int, track: str, max_results: int = 5) -> list[dict
     return candidates[:max_results]
 
 
+def get_auto_precedents(year: int, track: str) -> dict | None:
+    """
+    Generate a "What History Tells Us" section for a race page.
+
+    Analyzes similar races to produce 2-3 short insight sentences
+    and a list of matching races as references.
+
+    Returns a dict with:
+        insights  — list of plain-English insight strings
+        matches   — list of {year, track, winner_name, reasons}
+    """
+    similar = find_similar_races(year, track, max_results=6)
+    if not similar:
+        return None
+
+    target = _extract_race_profile(year, track)
+    if target is None:
+        return None
+
+    insights = []
+
+    # --- Insight 1: Same circuit history ---
+    circuit = target["circuit"]
+    same_circuit = [m for m in similar if circuit in " ".join(m["reasons"]) and "Same circuit" in " ".join(m["reasons"])]
+    if same_circuit:
+        pole_wins = sum(1 for m in same_circuit if _extract_race_profile(m["year"], m["track"]) and (_extract_race_profile(m["year"], m["track"]) or {}).get("pole_won", False))
+        total = len(same_circuit)
+        if pole_wins > 0:
+            insights.append(
+                f"In {total} previous {'race' if total == 1 else 'races'} at {circuit}, "
+                f"pole sitters won {pole_wins} {'time' if pole_wins == 1 else 'times'}."
+            )
+
+    # --- Insight 2: Weather pattern ---
+    cond = target["condition"]
+    if cond != "dry":
+        wet_matches = [m for m in similar if m["condition"] == cond or (m["condition"] != "dry" and cond != "dry")]
+        if wet_matches:
+            comeback_count = sum(1 for m in wet_matches
+                                if (_extract_race_profile(m["year"], m["track"]) or {}).get("max_gain", 0) >= 5)
+            if comeback_count > 0:
+                insights.append(
+                    f"In similar {cond} conditions, {comeback_count} of {len(wet_matches)} races "
+                    f"saw major position gains of 5+ places."
+                )
+    else:
+        # Dry race — talk about strategy
+        same_strat = [m for m in similar
+                      if (_extract_race_profile(m["year"], m["track"]) or {}).get("dominant_stops") == target["dominant_stops"]]
+        if len(same_strat) >= 2:
+            insights.append(
+                f"A {target['dominant_stops']}-stop strategy was dominant in "
+                f"{len(same_strat)} of the {len(similar)} closest comparisons."
+            )
+
+    # --- Insight 3: Winner pattern ---
+    if target["winner_grid"] == 1:
+        pole_total = sum(1 for m in similar
+                         if (_extract_race_profile(m["year"], m["track"]) or {}).get("pole_won", False))
+        if pole_total >= 2:
+            insights.append(
+                f"Pole sitters converted in {pole_total} of {len(similar)} similar races — "
+                f"front row starts carry a clear advantage here."
+            )
+    elif target["winner_grid"] >= 6:
+        comeback_total = sum(1 for m in similar
+                             if (_extract_race_profile(m["year"], m["track"]) or {}).get("winner_grid", 1) >= 5)
+        if comeback_total >= 1:
+            insights.append(
+                f"Comeback wins aren't unheard of — "
+                f"{comeback_total} similar {'race' if comeback_total == 1 else 'races'} also saw winners from P5 or further back."
+            )
+
+    # --- Insight 4: Chaos pattern ---
+    if target["dnf_count"] >= 5:
+        chaos_total = sum(1 for m in similar
+                          if (_extract_race_profile(m["year"], m["track"]) or {}).get("dnf_count", 0) >= 4)
+        if chaos_total >= 1:
+            insights.append(
+                f"High-attrition races like this one aren't rare — "
+                f"{chaos_total} similar races also had 4+ retirements."
+            )
+
+    if not insights:
+        # Fallback: generic comparison
+        insights.append(
+            f"The closest historical comparison is the "
+            f"{similar[0]['year']} {similar[0]['track']}, "
+            f"won by {similar[0]['winner_name']}."
+        )
+
+    # Build match list for display
+    matches = [
+        {
+            "year": m["year"],
+            "track": m["track"],
+            "winner_name": m["winner_name"],
+            "reasons": m["reasons"][:2],  # top 2 reasons only
+        }
+        for m in similar[:3]  # top 3 matches
+    ]
+
+    return {
+        "insights": insights,
+        "matches": matches,
+    }
+
+
 def get_race_story(year: int, track: str) -> dict | None:
     """
     Build a unified race narrative merging weather, results, strategy, and key moments.
