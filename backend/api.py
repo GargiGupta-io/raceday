@@ -214,6 +214,78 @@ def race_precedents(year: int, track: str):
     return data
 
 
+@app.post("/patterns/search")
+def pattern_search(filters: dict):
+    """
+    Search for races matching user-defined criteria.
+
+    Accepted filter keys (all optional):
+        circuit   — circuit name substring (e.g. "British", "Monza")
+        condition — "dry", "wet", or "damp"
+        winner    — driver code (e.g. "VER") or full name substring
+        team      — team name substring (e.g. "Red Bull")
+        min_grid  — minimum winner grid position (e.g. 5 = P5 or worse)
+        max_dnf   — minimum DNF count (e.g. 5 = chaotic races)
+        year_from — earliest year (inclusive)
+        year_to   — latest year (inclusive)
+
+    Returns list of matching races sorted by year descending.
+    """
+    all_races = indexer.list_indexed()
+    results = []
+
+    circuit_q = (filters.get("circuit") or "").lower()
+    condition_q = (filters.get("condition") or "").lower()
+    winner_q = (filters.get("winner") or "").upper()
+    team_q = (filters.get("team") or "").lower()
+    min_grid = filters.get("min_grid")
+    max_dnf = filters.get("max_dnf")
+    year_from = filters.get("year_from", 2010)
+    year_to = filters.get("year_to", 2025)
+
+    for race in all_races:
+        ry, rt = race["year"], race["track"]
+
+        if ry < year_from or ry > year_to:
+            continue
+
+        profile = insights._extract_race_profile(ry, rt)
+        if profile is None:
+            continue
+
+        # Apply filters
+        if circuit_q and circuit_q not in profile["circuit"].lower():
+            continue
+        if condition_q and profile["condition"] != condition_q:
+            continue
+        if winner_q:
+            name_match = winner_q in profile["winner"]
+            full_name = insights._DRIVER_NAMES.get(profile["winner"], "").upper()
+            if not name_match and winner_q not in full_name:
+                continue
+        if team_q and team_q not in profile["winner_team"].lower():
+            continue
+        if min_grid and profile["winner_grid"] < min_grid:
+            continue
+        if max_dnf and profile["dnf_count"] < max_dnf:
+            continue
+
+        results.append({
+            "year": ry,
+            "track": rt,
+            "winner": profile["winner"],
+            "winner_name": insights._DRIVER_NAMES.get(profile["winner"], profile["winner"]),
+            "winner_team": profile["winner_team"],
+            "winner_grid": profile["winner_grid"],
+            "condition": profile["condition"],
+            "dnf_count": profile["dnf_count"],
+            "max_gain": profile["max_gain"],
+        })
+
+    results.sort(key=lambda r: (-r["year"], r["track"]))
+    return {"count": len(results), "races": results}
+
+
 @app.get("/seasons/{year}/insights")
 def season_insights(year: int):
     data = insights.get_season_insights(year)
