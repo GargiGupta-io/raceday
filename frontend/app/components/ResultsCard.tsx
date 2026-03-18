@@ -69,17 +69,10 @@ const TEAM_DOT: Record<string, string> = {
   "Brawn": "bg-lime-400",
 };
 
-const POSITION_STYLES: Record<number, { badge: string; label: string }> = {
-  1: { badge: "bg-yellow-500 text-black", label: "P1" },
-  2: { badge: "bg-zinc-400 text-black",   label: "P2" },
-  3: { badge: "bg-amber-700 text-white",  label: "P3" },
-};
-
-const WEATHER_ICON: Record<string, string> = {
-  dry:   "\u2600\uFE0F",
-  wet:   "\uD83C\uDF27\uFE0F",
-  damp:  "\u26C5",
-  mixed: "\u26C5",
+const POSITION_MEDAL: Record<number, string> = {
+  1: "\uD83E\uDD47",
+  2: "\uD83E\uDD48",
+  3: "\uD83E\uDD49",
 };
 
 function dn(code: string): string {
@@ -87,84 +80,28 @@ function dn(code: string): string {
 }
 
 export default function ResultsCard({ data }: { data: RaceSummary }) {
-  const weatherKey = data.weather?.toLowerCase() ?? "";
-  const weatherIcon = WEATHER_ICON[weatherKey] ?? "\u2014";
-  const winnerAccent = TEAM_ACCENT[data.winner_team] || "border-zinc-700";
-  const winnerDot = TEAM_DOT[data.winner_team] || "bg-zinc-500";
-
   return (
-    <div className="space-y-3">
-
-      {/* Winner */}
-      <div className={`rounded-lg bg-zinc-900 border-l-4 ${winnerAccent} p-5`}>
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Race winner</p>
-            <p className="text-2xl font-bold text-white tracking-tight">{dn(data.winner)}</p>
-            <div className="flex items-center gap-1.5 mt-1">
-              <span className={`w-2 h-2 rounded-full ${winnerDot}`} />
-              <p className="text-sm text-zinc-400">{data.winner_team}</p>
-            </div>
-          </div>
-          <span className="rounded-full bg-yellow-500 px-3 py-1 text-xs font-bold text-black">
-            P1
-          </span>
-        </div>
-      </div>
-
-      {/* Podium P2 + P3 */}
-      <div className="grid grid-cols-2 gap-3">
-        {data.podium.filter((p) => p.position > 1).map((p) => {
-          const style = POSITION_STYLES[p.position];
-          const accent = TEAM_ACCENT[p.team] || "border-zinc-700";
+    <div>
+      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">The Result</p>
+      <div className="rounded-lg bg-zinc-900 divide-y divide-zinc-800">
+        {data.podium.map((p) => {
           const dot = TEAM_DOT[p.team] || "bg-zinc-500";
+          const medal = POSITION_MEDAL[p.position] ?? `P${p.position}`;
           return (
-            <div key={p.position} className={`rounded-lg bg-zinc-900 border-l-4 ${accent} p-4`}>
-              <div className="flex items-center justify-between mb-1">
-                <p className="text-xs text-zinc-500 uppercase tracking-widest">
-                  {style?.label ?? `P${p.position}`}
+            <div key={p.position} className="flex items-center gap-3 px-4 py-3">
+              <span className="text-lg w-7 text-center">{medal}</span>
+              <div className="flex-1 min-w-0">
+                <p className={`font-semibold text-zinc-100 ${p.position === 1 ? "text-base" : "text-sm"}`}>
+                  {dn(p.driver)}
                 </p>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${style?.badge ?? "bg-zinc-700 text-white"}`}>
-                  {style?.label ?? `P${p.position}`}
-                </span>
               </div>
-              <p className="text-base font-semibold text-zinc-100">{dn(p.driver)}</p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className={`w-1.5 h-1.5 rounded-full ${dot}`} />
+              <div className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${dot}`} />
                 <p className="text-xs text-zinc-500">{p.team}</p>
               </div>
             </div>
           );
         })}
-      </div>
-
-      {/* Weather + Retirements row */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Weather */}
-        <div className="rounded-lg bg-zinc-900 p-4">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Conditions</p>
-          <p className="text-xl">{weatherIcon}</p>
-          <p className="text-sm text-zinc-300 mt-1 capitalize">{data.weather ?? "Unknown"}</p>
-        </div>
-
-        {/* Retirements */}
-        <div className="rounded-lg bg-zinc-900 p-4">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">
-            Retirements ({data.retirements.length})
-          </p>
-          {data.retirements.length === 0 ? (
-            <p className="text-sm text-zinc-600">None</p>
-          ) : (
-            <ul className="space-y-1">
-              {data.retirements.map((r, i) => (
-                <li key={r.driver ?? i} className="text-sm text-zinc-500 flex items-center gap-1.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${TEAM_DOT[r.team] || "bg-zinc-600"}`} />
-                  {dn(r.driver)}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
       </div>
     </div>
   );
