@@ -12,6 +12,7 @@ import SeasonStory from "@/app/components/SeasonStory";
 import SeasonInsights from "@/app/components/SeasonInsights";
 import GoDeeper, { GoDeeperItem } from "@/app/components/GoDeeper";
 import RaceStory from "@/app/components/RaceStory";
+import PatternPrecedents from "@/app/components/PatternPrecedents";
 
 const API = "http://localhost:8888";
 
@@ -128,6 +129,9 @@ export default function RacePage({
 
               {/* THE RACE STORY */}
               <RaceStory year={year} track={trackName} />
+
+              {/* WHAT HISTORY TELLS US */}
+              <PatternPrecedents year={year} track={trackName} />
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <GoDeeper>
