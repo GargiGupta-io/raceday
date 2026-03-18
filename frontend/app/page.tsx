@@ -94,26 +94,24 @@ function Home() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-8">
 
-        {/* Year cards — scrollable row */}
-        <div className="mb-8 overflow-x-auto pb-2 -mx-6 px-6">
-          <div className="flex gap-3 min-w-max">
+        {/* Year selector — compact scrollable row */}
+        <div className="mb-8 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
+          <div className="flex gap-1.5 min-w-max">
             {seasons.map((s) => (
               <button
                 key={s.year}
                 onClick={() => setYear(s.year)}
-                className={`shrink-0 rounded-lg px-5 py-4 text-left transition-all ${
+                className={`shrink-0 rounded px-4 py-2.5 text-left transition-all border-b-2 ${
                   s.year === year
-                    ? "bg-zinc-900 border-2 border-red-500 shadow-lg shadow-red-500/10"
-                    : "bg-zinc-900 border-2 border-transparent hover:border-zinc-700"
+                    ? "bg-zinc-800/80 border-red-500 text-white"
+                    : "bg-transparent border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50"
                 }`}
-                style={{ minWidth: "160px" }}
               >
-                <p className="text-2xl font-bold text-white tracking-tight">{s.year}</p>
-                <div className="flex items-center gap-1.5 mt-1.5">
-                  <span className={`w-2 h-2 rounded-full ${TEAM_COLOR[s.team] || "bg-zinc-400"}`} />
-                  <span className="text-sm text-zinc-300">{s.champion}</span>
+                <p className="text-sm font-bold tracking-tight">{s.year}</p>
+                <div className="flex items-center gap-1.5 mt-1">
+                  <span className={`w-1.5 h-1.5 rounded-full ${TEAM_COLOR[s.team] || "bg-zinc-400"}`} />
+                  <span className="text-xs text-zinc-400">{s.champion}</span>
                 </div>
-                <p className="text-xs text-zinc-500 mt-0.5">{s.tagline}</p>
               </button>
             ))}
           </div>
