@@ -10,7 +10,7 @@ import FactsSidebar from "@/app/components/FactsSidebar";
 import KeyMoments from "@/app/components/KeyMoments";
 import SeasonStory from "@/app/components/SeasonStory";
 import SeasonInsights from "@/app/components/SeasonInsights";
-import DiscussionPanel from "@/app/components/DiscussionPanel";
+import GoDeeper, { GoDeeperItem } from "@/app/components/GoDeeper";
 
 const API = "http://localhost:8888";
 
@@ -125,48 +125,49 @@ export default function RacePage({
               {/* KEY MOMENTS */}
               <KeyMoments year={year} track={trackName} />
 
-              {/* STRATEGY */}
-              <div>
-                <div className="flex gap-2 mb-5">
-                  {(["story", "data"] as const).map((mode) => (
-                    <button
-                      key={mode}
-                      onClick={() => setStrategyMode(mode)}
-                      className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
-                        strategyMode === mode
-                          ? "bg-zinc-700 text-white"
-                          : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
-                      }`}
-                    >
-                      {mode}
-                    </button>
-                  ))}
-                </div>
-
-                {strategyMode === "story" && (
-                  <StrategyStory year={year} track={trackName} />
-                )}
-
-                {strategyMode === "data" && strategy && (
-                  <div className="flex flex-col lg:flex-row gap-6">
-                    <div className="flex-1 min-w-0">
-                      <StrategyPanel data={strategy} />
+              {/* GO DEEPER — expandable sections for hardcore fans */}
+              <GoDeeper>
+                <GoDeeperItem title="Strategy breakdown">
+                  <div className="space-y-4">
+                    <div className="flex gap-2 mb-2">
+                      {(["story", "data"] as const).map((mode) => (
+                        <button
+                          key={mode}
+                          onClick={() => setStrategyMode(mode)}
+                          className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
+                            strategyMode === mode
+                              ? "bg-zinc-700 text-white"
+                              : "bg-zinc-800 text-zinc-500 hover:text-zinc-300"
+                          }`}
+                        >
+                          {mode}
+                        </button>
+                      ))}
                     </div>
-                    <div className="w-full lg:w-56 shrink-0">
-                      <StrategyKey year={year} track={trackName} />
-                    </div>
+                    {strategyMode === "story" && (
+                      <StrategyStory year={year} track={trackName} />
+                    )}
+                    {strategyMode === "data" && strategy && (
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="flex-1 min-w-0">
+                          <StrategyPanel data={strategy} />
+                        </div>
+                        <div className="w-full lg:w-56 shrink-0">
+                          <StrategyKey year={year} track={trackName} />
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </GoDeeperItem>
 
-              {/* STANDINGS */}
-              <div className="space-y-6">
-                <SeasonStory year={year} track={trackName} />
-                <SeasonInsights year={year} />
-              </div>
+                <GoDeeperItem title="Season standings at this point">
+                  <SeasonStory year={year} track={trackName} />
+                </GoDeeperItem>
 
-              {/* DISCUSSION (will be removed in Step 6) */}
-              <DiscussionPanel raceYear={parseInt(year)} raceTrack={trackName} />
+                <GoDeeperItem title="Season awards & teammate battles">
+                  <SeasonInsights year={year} />
+                </GoDeeperItem>
+              </GoDeeper>
 
             </div>
 
