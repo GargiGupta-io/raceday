@@ -3,6 +3,8 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { getCircuitSvg } from "@/app/lib/circuits";
 
 const API = "http://localhost:8888";
 
@@ -196,9 +198,17 @@ const WEATHER_BADGE: Record<string, { bg: string; text: string; label: string }>
 
 function RaceCard({ race, year }: { race: Race; year: number }) {
   const weather = WEATHER_BADGE[race.weather || ""] || null;
+  const circuitSvg = getCircuitSvg(race.name);
 
   const content = (
-    <div className="rounded-lg bg-zinc-900 p-5 h-full flex flex-col">
+    <div className="rounded-lg bg-zinc-900 p-5 h-full flex flex-col relative overflow-hidden">
+      {/* Circuit outline — faint background element */}
+      {circuitSvg && (
+        <div className="absolute top-2 right-2 w-16 h-11 opacity-[0.07]">
+          <Image src={circuitSvg} alt="" width={64} height={44} className="invert" />
+        </div>
+      )}
+
       {/* Top row: round + name */}
       <div className="flex items-start gap-3 mb-3">
         <div className="flex-1 min-w-0">
