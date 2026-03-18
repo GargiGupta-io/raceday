@@ -939,3 +939,150 @@ The backend can now auto-generate season awards and teammate battles. Awards: Be
 
 **Files changed**
 ~ modified: backend/core/insights.py
+
+---
+
+# Phase 6A — Race Page Redesign (Story-First)
+
+## ✅ Step 1 (6A) — Remove Tab Navigation
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — removed tab system, single scroll layout
+
+**In plain English**
+The race page no longer has tabs. Before, you had to click between Results, Standings, Strategy, and Discussion to see different parts of the race. Now everything is stacked on one page — scroll down and you see it all: the result, key moments, strategy, season story, and discussion. This is the structural foundation for the story-first redesign. The strategy story/data toggle still works within its section. Future steps will reorganize and polish the layout.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 2 (6A) — Compact Podium Header
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/components/ResultsCard.tsx` — slimmed to compact three-row podium
+
+**In plain English**
+The big winner card, two podium cards, weather box, and retirements list are gone. In their place is a single compact card with three rows — gold medal, silver medal, bronze medal — each showing the driver's full name, team colour dot, and team name. It takes up a fraction of the space it used to. Weather and retirements will be woven into the race story narrative later (Phase 6D) instead of being standalone boxes.
+
+**Files changed**
+~ modified: frontend/app/components/ResultsCard.tsx
+
+---
+
+## ✅ Step 3 (6A) — KeyMoments Below Podium
+*Completed: 2026-03-18*
+
+**In plain English**
+No code changes needed — KeyMoments was already positioned directly below the podium when tabs were removed in Step 1.
+
+**Files changed**
+(none — already correct)
+
+---
+
+## ✅ Step 4 (6A) — Go Deeper Accordion Component
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/components/GoDeeper.tsx` — accordion wrapper + expandable item
+
+**In plain English**
+A new reusable component for the "Go Deeper" sections at the bottom of the race page. It has a centered divider header that says "GO DEEPER" and below it, a list of expandable sections. Each section shows a title with a triangle arrow — click it and the content slides open. Click again and it collapses. This is where strategy breakdowns, full standings, season data, and teammate battles will live — visible only when a fan wants to dig in.
+
+**Files changed**
++ created: frontend/app/components/GoDeeper.tsx
+
+---
+
+## ✅ Step 5 (6A) — Move Sections Into Accordions
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — strategy, season standings, and season insights wrapped in Go Deeper
+
+**In plain English**
+The strategy breakdown (with its story/data toggle), season standings, and season awards are now hidden behind expandable "Go Deeper" sections at the bottom of the race page. A beginner scrolling through sees the podium, key moments, and then a clean "GO DEEPER" divider with three collapsible items. Only fans who want more detail click to expand them. Discussion panel was also removed from the page since it's being cut in the redesign.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 6 (6A) — Remove MomentumCard and DiscussionPanel
+*Completed: 2026-03-18*
+
+**What was built**
+- Deleted `MomentumCard.tsx`, removed unused import from `SeasonStory.tsx`
+- DiscussionPanel was already removed from the race page in Step 5
+
+**In plain English**
+Two components that no longer fit the story-first vision are gone from the race page. MomentumCard (the "who's hot right now" points chart) was redundant with the season story — it showed recent form data that didn't help beginners understand a single race. The Discussion panel (community theories and comments) was empty for most races and required login. Both removed from rendering.
+
+**Files changed**
+- deleted: frontend/app/components/MomentumCard.tsx
+~ modified: frontend/app/components/SeasonStory.tsx
+
+---
+
+## ✅ Step 7 (6A) — Strip Sidebar to Race Intelligence
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/components/FactsSidebar.tsx` — stripped to Did You Know facts only, renamed to "Race Intelligence"
+
+**In plain English**
+The sidebar used to show three things: RSS news articles, Reddit fan posts, and auto-generated "Did You Know" facts. RSS was empty for any race older than a few weeks. Reddit was hit-or-miss. Only the Did You Know facts worked reliably for every race 2010-2024. So the sidebar now shows just those facts under a new "Race Intelligence" heading. Cleaner, more consistent, and always has content.
+
+**Files changed**
+~ modified: frontend/app/components/FactsSidebar.tsx
+
+---
+
+# Phase 6B — Landing Page + Year Bar Styling
+
+## ✅ Step 9 (6B) — Welcome Section on Home Page
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/page.tsx` — welcome section below race grid
+
+**In plain English**
+The home page now has a short "What is Raceday?" section below the race cards. It explains in two paragraphs what the site does — turns every F1 race into a story, no jargon, covering 2010-2024. First-time visitors now understand what they're looking at before clicking a race. It's centered, compact, and uses muted text so it doesn't compete with the race cards above.
+
+**Files changed**
+~ modified: frontend/app/page.tsx
+
+---
+
+## ✅ Step 10 (6B) — Restyle Year Selector
+*Completed: 2026-03-18*
+
+**What was built**
+- `frontend/app/page.tsx` — compact year pills with bottom-border accent
+- `frontend/app/globals.css` — scrollbar-hide utility class
+
+**In plain English**
+The year selector went from chunky 160px cards with thick red borders and shadow glow to slim compact pills. The active year has a subtle red bottom border instead of a full border glow. Inactive years are transparent and only show on hover. The tagline line was removed — just the year number and champion name remain. The scrollbar is now invisible (but still scrollable) for a cleaner look.
+
+**Files changed**
+~ modified: frontend/app/page.tsx
+~ modified: frontend/app/globals.css
+
+---
+
+# Phase 6C — Circuit Outlines
+
+## ✅ Step 12 (6C) — Circuit SVG Files
+*Completed: 2026-03-18*
+
+**What was built**
+- 34 SVG files in `frontend/public/circuits/` — one per unique F1 circuit (2010-2024)
+
+**In plain English**
+Every F1 circuit that has hosted a race between 2010 and 2024 now has a small outline drawing saved as an SVG file. These are simplified but recognizable shapes — Silverstone's flowing bends, Monaco's tight hairpins, Suzuka's figure-8 crossover. They use `currentColor` for the stroke so they automatically match whatever text colour the page uses (white on dark theme). 34 circuits covering all 40 race names (some names share the same circuit, like "Mexican Grand Prix" and "Mexico City Grand Prix").
+
+**Files changed**
++ created: frontend/public/circuits/*.svg (34 files)
