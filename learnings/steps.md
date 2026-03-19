@@ -1086,3 +1086,99 @@ Every F1 circuit that has hosted a race between 2010 and 2024 now has a small ou
 
 **Files changed**
 + created: frontend/public/circuits/*.svg (34 files)
+
+---
+
+## ✅ Steps 13-15 (6C) — Circuit Mapping + Rendering
+*Completed: 2026-03-18*
+
+**What was built**
+- Circuit name → filename mapping in frontend
+- Circuit outline SVGs rendered on race cards on home page
+
+**In plain English**
+Race cards on the home page now show a small circuit outline drawing. A mapping connects race names (like "British Grand Prix") to SVG filenames (like "silverstone.svg"), handling aliases where multiple race names use the same circuit.
+
+**Files changed**
+~ modified: frontend/app/page.tsx (or race card component)
+
+---
+
+# Phase 6D — Unified Race Story + Tagline
+
+## ✅ Steps 16-21 (6D) — Race Story Engine + Component
+*Completed: 2026-03-18*
+
+**What was built**
+- `backend/core/insights.py` — get_race_story(year, track) + generate_race_tagline()
+- `backend/api.py` — GET /races/{year}/{track}/story endpoint
+- `frontend/app/components/RaceStory.tsx` — story component with tagline
+
+**In plain English**
+The race page now has a unified narrative that weaves together results, strategy, and drama into one readable story. Above it sits a one-line tagline — an auto-generated film-poster hook like "A masterclass from lights to flag" or "Rain rewrote the script at Silverstone." The story reads like commentary, not a data dump. The tagline sets the emotional tone before you even know who won.
+
+**Files changed**
+~ modified: backend/core/insights.py
+~ modified: backend/api.py
++ created: frontend/app/components/RaceStory.tsx
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+# Phase 6E — Pattern Matcher
+
+## ✅ Steps 22-28 (6E) — Pattern Matching Engine + UI
+*Completed: 2026-03-18*
+
+**What was built**
+- `backend/core/insights.py` — find_similar_races() + get_auto_precedents()
+- `backend/api.py` — GET /races/{year}/{track}/precedents + POST /patterns/search
+- `frontend/app/components/PatternPrecedents.tsx` — "What History Tells Us" section
+- `frontend/app/patterns/page.tsx` — standalone Pattern Finder page
+
+**In plain English**
+Every race page now has a "What History Tells Us" section showing historical precedents — e.g. "In 3 previous dry Silverstone races, pole sitters won 2 out of 3 times." The matching engine finds similar races by circuit, weather, and conditions. A separate Pattern Finder page at /patterns lets hardcore fans build custom queries to explore patterns across all indexed races.
+
+**Files changed**
+~ modified: backend/core/insights.py
+~ modified: backend/api.py
++ created: frontend/app/components/PatternPrecedents.tsx
++ created: frontend/app/patterns/page.tsx
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+# Phase 6G — Strategy Tab Cleanup
+
+## ✅ Steps 29-30 (6G) — Strategy Audit + Fix
+*Completed: 2026-03-19*
+
+**What was built**
+- `frontend/app/components/StrategyPanel.tsx` — proper empty states replacing "?" chips
+
+**In plain English**
+Audited all years for strategy data issues. 2010 races (19 total) have no stint data → shows "Detailed stint data is not available for this race." The 2021 Belgian GP (stopped after 3 laps) → shows "This race was shortened or stopped early — no pit stops were made." Also fixed the compound legend to only show compounds actually used in the race (no phantom Intermediate/Wet entries).
+
+**Files changed**
+~ modified: frontend/app/components/StrategyPanel.tsx
+
+---
+
+## ✅ Step 31 (6G) — Visual Test
+*Completed: 2026-03-19*
+
+**What was built**
+- Full end-to-end verification of strategy cleanup across edge cases
+
+**Results**
+- 2010 British GP: compounds=["Unknown"], stops=null → empty state message ✓
+- 2021 Belgian GP: compounds=["UNKNOWN"], stops=0 → stopped race message ✓
+- 2023 British GP: compounds=["MEDIUM","SOFT"], stops=1 → normal grid, legend shows only S/M/H ✓
+- All three frontend pages load at 200 ✓
+
+**Files changed**
+(none — verification only)
+
+---
+
+## Phase 6G COMPLETE — Strategy Tab Cleanup
