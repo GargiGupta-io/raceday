@@ -1434,3 +1434,15 @@ All 2010 races now show real tyre strategy instead of "Data not available." The 
 ---
 
 # Phase 6I (v2) — Strategy Simulator ("What If?")
+
+## ✅ Step 47 (6I-v2) — Compound Performance Model + Simulation Engine
+*Completed: 2026-03-20*
+
+**What was built**
+- `backend/core/strategy_sim.py` — compound deltas, degradation curves, lap time estimation, simulate_strategy(), get_simulation_context()
+
+**In plain English**
+The backend now has a strategy prediction engine. It models how each tyre compound performs — Softs are 0.7s/lap faster than Mediums but degrade 0.08s per lap, Hards are 0.4s slower but only degrade 0.03s/lap. Give it an alternate strategy (e.g., "what if Verstappen did 2 stops with Soft→Medium→Soft?") and it calculates the total race time under that strategy vs what actually happened. For the 2023 British GP, a 2-stop S→M→S is estimated +1.6s slower than VER's actual 1-stop M→S — "roughly the same outcome." It also provides a simulation context endpoint with all drivers, their actual stints, and available compounds.
+
+**Files changed**
++ created: backend/core/strategy_sim.py
