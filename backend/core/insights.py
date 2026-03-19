@@ -2000,6 +2000,172 @@ def get_radio_moments(year: int, track: str, top_n: int = 5) -> dict | None:
     return result
 
 
+# ---------------------------------------------------------------------------
+# Race quiz (Test Your Knowledge)
+# ---------------------------------------------------------------------------
+
+import random as _random
+
+
+def generate_race_quiz(year: int, track: str) -> dict | None:
+    """
+    Generate a set of multiple-choice quiz questions from race data.
+
+    Returns a dict:
+        race     — "{year} {track}"
+        questions — list of question dicts, each with:
+            id       — question number (1-based)
+            question — the question text
+            options  — list of 4 answer strings
+            answer   — index of the correct option (0-based)
+            category — 'result', 'strategy', 'grid', 'weather', 'drama'
+
+    Returns None if the race cannot be loaded.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    weather = data["weather"]
+    stints = data.get("stints") or {}
+
+    finished = sorted(
+        [r for r in results if r["finish_position"] is not None],
+        key=lambda r: r["finish_position"],
+    )
+    retired = [r for r in results
+               if r["status"] not in ("Finished",) and not r["status"].startswith("+")]
+
+    if len(finished) < 3:
+        return None
+
+    winner = finished[0]
+    p2 = finished[1]
+    p3 = finished[2]
+    all_drivers = [r["driver"] for r in finished]
+
+    questions = []
+
+    # --- Q: Who won? ---
+    wrong = _random.sample([d for d in all_drivers if d != winner["driver"]], min(3, len(all_drivers) - 1))
+    options = [_DRIVER_NAMES.get(winner["driver"], winner["driver"])] + \
+              [_DRIVER_NAMES.get(d, d) for d in wrong]
+    _random.shuffle(options)
+    questions.append({
+        "question": f"Who won the {year} {track}?",
+        "options": options,
+        "answer": options.index(_DRIVER_NAMES.get(winner["driver"], winner["driver"])),
+        "category": "result",
+    })
+
+    # --- Q: Who finished on the podium? ---
+    podium_set = {winner["driver"], p2["driver"], p3["driver"]}
+    non_podium = [d for d in all_drivers if d not in podium_set]
+    if len(non_podium) >= 1:
+        intruder = _random.choice(non_podium)
+        q_text = "Which of these drivers was NOT on the podium?"
+        opts = [_DRIVER_NAMES.get(intruder, intruder)]
+        podium_sample = _random.sample(list(podium_set), min(3, len(podium_set)))
+        opts += [_DRIVER_NAMES.get(d, d) for d in podium_sample]
+        _random.shuffle(opts)
+        questions.append({
+            "question": q_text,
+            "options": opts,
+            "answer": opts.index(_DRIVER_NAMES.get(intruder, intruder)),
+            "category": "result",
+        })
+
+    # --- Q: What grid position did the winner start from? ---
+    winner_grid = winner.get("grid_position")
+    if winner_grid is not None:
+        wrong_grids = [g for g in [1, 2, 3, 5, 7, 10] if g != winner_grid]
+        wrong_grids = _random.sample(wrong_grids, min(3, len(wrong_grids)))
+        opts = [f"P{winner_grid}"] + [f"P{g}" for g in wrong_grids]
+        _random.shuffle(opts)
+        questions.append({
+            "question": f"What grid position did {_DRIVER_NAMES.get(winner['driver'], winner['driver'])} start from?",
+            "options": opts,
+            "answer": opts.index(f"P{winner_grid}"),
+            "category": "grid",
+        })
+
+    # --- Q: Weather ---
+    condition = weather.get("condition", "dry") if weather else "dry"
+    cond_label = {"dry": "Dry", "damp": "Damp", "wet": "Wet"}.get(condition, "Dry")
+    opts = ["Dry", "Damp", "Wet", "Mixed conditions"]
+    if cond_label not in opts:
+        opts[3] = cond_label
+    _random.shuffle(opts)
+    questions.append({
+        "question": "What were the weather conditions during the race?",
+        "options": opts,
+        "answer": opts.index(cond_label),
+        "category": "weather",
+    })
+
+    # --- Q: How many drivers retired? ---
+    dnf_count = len(retired)
+    wrong_counts = [c for c in [0, 1, 2, 3, 5, 7, 8, 10] if c != dnf_count]
+    wrong_counts = _random.sample(wrong_counts, min(3, len(wrong_counts)))
+    opts = [str(dnf_count)] + [str(c) for c in wrong_counts]
+    _random.shuffle(opts)
+    questions.append({
+        "question": "How many drivers retired from the race?",
+        "options": opts,
+        "answer": opts.index(str(dnf_count)),
+        "category": "drama",
+    })
+
+    # --- Q: Strategy (if stint data available) ---
+    winner_stints = stints.get(winner["driver"])
+    if winner_stints and len(winner_stints) > 0:
+        stops = len(winner_stints) - 1
+        opts = ["0-stop", "1-stop", "2-stop", "3-stop"]
+        correct = f"{stops}-stop"
+        if correct in opts:
+            _random.shuffle(opts)
+            questions.append({
+                "question": f"How many pit stops did the race winner make?",
+                "options": opts,
+                "answer": opts.index(correct),
+                "category": "strategy",
+            })
+
+    # --- Q: Biggest mover ---
+    best_gain = None
+    for r in finished:
+        grid = r.get("grid_position")
+        fin = r["finish_position"]
+        if grid is not None and fin is not None:
+            delta = grid - fin
+            if delta >= 3 and (best_gain is None or delta > best_gain[1]):
+                best_gain = (r, delta)
+
+    if best_gain:
+        r, delta = best_gain
+        wrong_drivers = _random.sample([d for d in all_drivers if d != r["driver"]], min(3, len(all_drivers) - 1))
+        opts = [_DRIVER_NAMES.get(r["driver"], r["driver"])] + \
+               [_DRIVER_NAMES.get(d, d) for d in wrong_drivers]
+        _random.shuffle(opts)
+        questions.append({
+            "question": f"Which driver gained the most positions during the race?",
+            "options": opts,
+            "answer": opts.index(_DRIVER_NAMES.get(r["driver"], r["driver"])),
+            "category": "drama",
+        })
+
+    # Number them
+    for i, q in enumerate(questions):
+        q["id"] = i + 1
+
+    return {
+        "race": f"{year} {track}",
+        "total_questions": len(questions),
+        "questions": questions,
+    }
+
+
 if __name__ == "__main__":
     # Run as: python3 -m backend.core.insights  (from the raceday/ root)
     import logging
