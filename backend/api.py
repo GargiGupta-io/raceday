@@ -214,6 +214,14 @@ def race_radio(year: int, track: str):
     return data
 
 
+@app.get("/races/{year}/{track}/quiz")
+def race_quiz(year: int, track: str):
+    data = insights.generate_race_quiz(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
 @app.get("/races/{year}/{track}/precedents")
 def race_precedents(year: int, track: str):
     data = insights.get_auto_precedents(year, track)
