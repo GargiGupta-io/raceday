@@ -283,9 +283,12 @@ def get_lap_times(year: int, track: str) -> dict | None:
         lap_num = int(row["LapNumber"])
 
         # Extract lap time in seconds
+        import pandas as pd
         lap_time = row.get("LapTime")
-        if lap_time is not None and hasattr(lap_time, "total_seconds"):
+        if lap_time is not None and pd.notna(lap_time) and hasattr(lap_time, "total_seconds"):
             time_sec = lap_time.total_seconds()
+            if time_sec != time_sec:  # NaN check
+                continue
         else:
             continue  # skip laps without timing
 

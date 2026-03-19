@@ -267,50 +267,37 @@ def get_simulation_context(year: int, track: str) -> dict | None:
 
 def _build_circuit_model(lap_data: dict) -> dict:
     """
-    Build a data-driven compound performance model from real lap times.
+    Build an ML regression model from real lap times at this circuit.
 
-    Analyzes all drivers' lap times grouped by compound to extract:
-        - Base lap time per compound (median of clean laps)
-        - Degradation rate per compound (slope of lap time vs stint age)
-        - Average pit stop duration
+    For each compound, fits a polynomial regression:
+        lap_time = f(stint_age, race_lap)
+
+    This captures:
+        - Non-linear tyre degradation (the "cliff" effect)
+        - Fuel correction (cars get lighter = faster)
+        - Circuit-specific compound behaviour
+        - Per-compound base pace from real data
 
     Returns a dict:
-        compound_base  — {compound: median_lap_time}
-        compound_deg   — {compound: seconds_per_lap_degradation}
-        pit_stop_avg   — average pit stop time loss (seconds)
-        base_lap       — overall median clean lap time
+        compound_models — {compound: numpy polynomial coefficients}
+        compound_stats  — {compound: {count, base, cliff_lap, deg_rate}}
+        pit_stop_avg    — average pit stop time loss (seconds)
+        base_lap        — median clean lap time across all compounds
+        data_driven     — True
     """
+    import numpy as np
+
     meta = lap_data.get("_meta", {})
 
-    # Collect clean laps by compound
-    compound_laps: dict[str, list[tuple[int, float]]] = {}  # compound → [(stint_age, time)]
+    # ---- Step 1: Collect clean training data per compound ----
+    # Each sample: (stint_age, race_lap, lap_time)
+    compound_samples: dict[str, list[tuple[int, int, float]]] = {}
 
     for key, driver_laps in lap_data.items():
         if key == "_meta" or not isinstance(driver_laps, list):
             continue
-        for lap in driver_laps:
-            time = lap.get("time", 0)
-            compound = lap.get("compound", "UNKNOWN").upper()
-            stint = lap.get("stint", 1)
 
-            # Skip outlier laps (pit in/out, safety cars, first lap)
-            if time < 60 or time > 180:
-                continue
-            if lap.get("lap", 0) == 1:
-                continue  # first lap is always slow (grid start)
-            if lap.get("pit_stop", False):
-                continue  # pit laps are slow
-
-            # Calculate stint age (laps since last stop)
-            # Group by driver+stint to find stint start
-            compound_laps.setdefault(compound, [])
-
-    # Second pass with stint age calculation
-    for key, driver_laps in lap_data.items():
-        if key == "_meta" or not isinstance(driver_laps, list):
-            continue
-
-        # Group laps by stint
+        # Group this driver's laps by stint
         stints: dict[int, list[dict]] = {}
         for lap in driver_laps:
             s = lap.get("stint", 1)
@@ -319,68 +306,152 @@ def _build_circuit_model(lap_data: dict) -> dict:
         for stint_num, stint_laps in stints.items():
             stint_laps.sort(key=lambda x: x["lap"])
             for i, lap in enumerate(stint_laps):
-                time = lap.get("time", 0)
+                time_sec = lap.get("time", 0)
                 compound = lap.get("compound", "UNKNOWN").upper()
+                race_lap = lap.get("lap", 0)
 
-                # Filter outliers
-                if time < 60 or time > 180 or lap.get("lap", 0) == 1 or lap.get("pit_stop", False):
+                # Filter outliers: pit laps, safety car laps, lap 1, extreme times
+                if time_sec < 60 or time_sec > 180:
+                    continue
+                if race_lap <= 1:
+                    continue
+                if lap.get("pit_stop", False):
                     continue
 
-                compound_laps.setdefault(compound, []).append((i, time))
+                compound_samples.setdefault(compound, []).append(
+                    (i, race_lap, time_sec)  # stint_age, race_lap, time
+                )
 
-    # Calculate base time and degradation per compound
-    compound_base: dict[str, float] = {}
-    compound_deg: dict[str, float] = {}
+    # ---- Step 2: Remove NaN values and statistical outliers ----
+    for compound in list(compound_samples.keys()):
+        # First: remove any NaN values (from missing lap times in source data)
+        compound_samples[compound] = [
+            (a, r, t) for a, r, t in compound_samples[compound]
+            if not (np.isnan(t) or np.isnan(a) or np.isnan(r))
+        ]
 
-    for compound, laps_list in compound_laps.items():
-        if len(laps_list) < 5:
+        samples = compound_samples[compound]
+        if len(samples) < 10:
             continue
 
-        times = [t for _, t in laps_list]
-        compound_base[compound] = statistics.median(times)
+        # IQR outlier removal for safety car laps and anomalies
+        times = np.array([t for _, _, t in samples])
+        q1, q3 = float(np.percentile(times, 25)), float(np.percentile(times, 75))
+        iqr = q3 - q1
+        lower = q1 - 1.5 * iqr
+        upper = q3 + 1.5 * iqr
+        compound_samples[compound] = [
+            (a, r, t) for a, r, t in samples if lower <= t <= upper
+        ]
 
-        # Estimate degradation: compare early stint laps vs late stint laps
-        early = [t for age, t in laps_list if age < 5]
-        late = [t for age, t in laps_list if age >= 10]
+    # ---- Step 3: Fit polynomial regression per compound ----
+    # Model: lap_time = c0 + c1*stint_age + c2*stint_age^2 + c3*race_lap
+    # The quadratic stint_age term captures the "cliff" (non-linear degradation)
+    compound_models: dict[str, list[float]] = {}
+    compound_stats: dict[str, dict] = {}
 
-        if early and late:
-            early_median = statistics.median(early)
-            late_median = statistics.median(late)
-            avg_age_diff = 10  # approximate difference in stint age
-            deg = max(0, (late_median - early_median) / avg_age_diff)
-            compound_deg[compound] = round(deg, 4)
-        else:
-            compound_deg[compound] = COMPOUND_DEGRADATION.get(compound, 0.05)
+    all_clean_times = []
 
-    # Overall base lap time
-    all_times = [t for laps_list in compound_laps.values() for _, t in laps_list]
-    base_lap = statistics.median(all_times) if all_times else 90.0
+    for compound, samples in compound_samples.items():
+        if len(samples) < 15:  # need enough data for a reliable fit
+            continue
 
-    # Pit stop duration from real data
+        stint_ages = np.array([a for a, _, _ in samples])
+        race_laps = np.array([r for _, r, _ in samples])
+        times = np.array([t for _, _, t in samples])
+
+        all_clean_times.extend(times.tolist())
+
+        # Build feature matrix: [stint_age, stint_age^2, race_lap, 1]
+        X = np.column_stack([
+            stint_ages,
+            stint_ages ** 2,
+            race_laps,
+            np.ones(len(samples)),
+        ])
+
+        # Least squares regression
+        coeffs, residuals, _, _ = np.linalg.lstsq(X, times, rcond=None)
+
+        compound_models[compound] = coeffs.tolist()
+
+        # Extract human-readable stats
+        base_time = float(coeffs[3])  # intercept = fresh tyre, race start
+        linear_deg = float(coeffs[0])  # linear degradation per stint lap
+        quad_deg = float(coeffs[1])    # quadratic (cliff) component
+        fuel_effect = float(coeffs[2])  # fuel correction per race lap
+
+        # Estimate "cliff lap" — where degradation accelerates
+        # d(time)/d(stint_age) = c1 + 2*c2*stint_age
+        # Cliff = where second derivative dominates, roughly at stint_age = -c1/(2*c2)
+        cliff_lap = None
+        if quad_deg > 0.001:
+            cliff_est = -linear_deg / (2 * quad_deg)
+            if 5 < cliff_est < 50:
+                cliff_lap = round(cliff_est)
+
+        compound_stats[compound] = {
+            "count": len(samples),
+            "base": round(base_time, 3),
+            "linear_deg": round(linear_deg, 4),
+            "quad_deg": round(quad_deg, 5),
+            "fuel_effect": round(fuel_effect, 4),
+            "cliff_lap": cliff_lap,
+            "r_squared": round(1 - (np.sum((times - X @ coeffs)**2) /
+                                     np.sum((times - np.mean(times))**2)), 4)
+                         if len(samples) > 4 else None,
+        }
+
+        logger.info(
+            "  %s: %d samples, base=%.1fs, deg=%.3f+%.5f*age^2, fuel=%.4f, cliff=%s, R2=%s",
+            compound, len(samples), base_time, linear_deg, quad_deg,
+            fuel_effect, cliff_lap, compound_stats[compound].get("r_squared"),
+        )
+
+    # Overall base lap
+    base_lap = float(np.median(all_clean_times)) if all_clean_times else 90.0
+
+    # Pit stop duration
     pit_durations = meta.get("pit_stop_durations", [])
     pit_avg = statistics.median(pit_durations) if pit_durations else PIT_STOP_LOSS
 
     return {
-        "compound_base": compound_base,
-        "compound_deg": compound_deg,
+        "compound_models": compound_models,
+        "compound_stats": compound_stats,
         "pit_stop_avg": round(pit_avg, 2),
         "base_lap": round(base_lap, 3),
         "data_driven": True,
     }
 
 
-def estimate_total_race_time_datadriven(
+def _predict_lap_time_ml(model: dict, compound: str, stint_age: int, race_lap: int) -> float:
+    """Predict a single lap time using the fitted regression model."""
+    coeffs = model["compound_models"].get(compound.upper())
+    if coeffs is None:
+        # Fallback to physics model for unknown compounds
+        base = model["base_lap"]
+        delta = COMPOUND_DELTA.get(compound.upper(), 0)
+        deg = COMPOUND_DEGRADATION.get(compound.upper(), 0.05)
+        return base + delta + (deg * stint_age) + (FUEL_CORRECTION_PER_LAP * race_lap)
+
+    # coeffs = [c1_stint_age, c2_stint_age^2, c3_race_lap, c0_intercept]
+    return (coeffs[0] * stint_age +
+            coeffs[1] * stint_age ** 2 +
+            coeffs[2] * race_lap +
+            coeffs[3])
+
+
+def estimate_total_race_time_ml(
     model: dict,
     total_laps: int,
     pit_stop_laps: list[int],
     compounds: list[str],
 ) -> dict:
     """
-    Estimate total race time using a data-driven circuit model.
-    Same interface as estimate_total_race_time but uses real degradation curves.
+    Estimate total race time using ML regression model.
+    Predicts each lap individually using the fitted polynomial.
     """
     num_stops = len(pit_stop_laps)
-    base_lap = model["base_lap"]
     pit_loss = model["pit_stop_avg"]
 
     # Build stint boundaries
@@ -401,17 +472,9 @@ def estimate_total_race_time_datadriven(
         compound = compounds[stint_idx].upper()
         stint_total = 0.0
 
-        # Use real compound base time if available, else estimate from delta
-        comp_base = model["compound_base"].get(compound)
-        if comp_base is None:
-            comp_base = base_lap + COMPOUND_DELTA.get(compound, 0)
-
-        comp_deg = model["compound_deg"].get(compound, COMPOUND_DEGRADATION.get(compound, 0.05))
-
         for race_lap in range(start, end + 1):
-            lap_in_stint = race_lap - start
-            fuel = FUEL_CORRECTION_PER_LAP * race_lap
-            lt = comp_base + (comp_deg * lap_in_stint) + fuel
+            stint_age = race_lap - start
+            lt = _predict_lap_time_ml(model, compound, stint_age, race_lap)
             lap_times.append({"lap": race_lap, "time": round(lt, 3), "compound": compound})
             stint_total += lt
 
@@ -433,8 +496,9 @@ def estimate_total_race_time_datadriven(
         "num_stops": num_stops,
         "stint_times": stint_times,
         "lap_times": lap_times,
-        "model": "data-driven",
+        "model": "ml-regression",
         "pit_stop_duration": pit_loss,
+        "compound_stats": model.get("compound_stats", {}),
     }
 
 
@@ -505,9 +569,9 @@ def simulate_strategy(
         if lap_data:
             circuit_model = _build_circuit_model(lap_data)
             logger.info(
-                "Using data-driven model for %s %s: base=%.1fs, pit=%.1fs, compounds=%s",
+                "Using ML model for %s %s: base=%.1fs, pit=%.1fs, compounds=%s",
                 year, track, circuit_model["base_lap"], circuit_model["pit_stop_avg"],
-                list(circuit_model["compound_deg"].keys()),
+                list(circuit_model.get("compound_models", {}).keys()),
             )
 
     # Build actual strategy from stints data
@@ -523,12 +587,12 @@ def simulate_strategy(
         actual_pit_laps = estimate_pit_stop_laps(total_laps, 2)
         actual_compounds = ["MEDIUM", "MEDIUM", "MEDIUM"]
 
-    # Run simulation — data-driven or physics model
+    # Run simulation — ML regression or physics model
     if circuit_model:
-        actual_result = estimate_total_race_time_datadriven(
+        actual_result = estimate_total_race_time_ml(
             circuit_model, total_laps, actual_pit_laps, actual_compounds
         )
-        alternate_result = estimate_total_race_time_datadriven(
+        alternate_result = estimate_total_race_time_ml(
             circuit_model, total_laps, pit_stop_laps, compounds
         )
     else:
