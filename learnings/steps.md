@@ -1212,3 +1212,17 @@ The system can now download radio MP3 files from Formula 1's servers and transcr
 
 **Files changed**
 + created: backend/core/radio_transcriber.py
+
+---
+
+## ✅ Step 34 (6H) — Sentiment Tagger
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/radio_sentiment.py` — keyword-based sentiment scoring + timing proximity scoring
+
+**In plain English**
+The system can now figure out which radio clips are the most interesting. It uses two methods: if a transcript is available, it scans for emotional words (celebrations like "YES!", frustrations like "ridiculous!", strategy calls like "box box") and scores them. Even without transcripts, it scores clips based on when they happened — clips during lap 1, the final laps, or right after key moments (overtakes, retirements) get higher scores. It also limits each driver to 2 clips max so the top 5 aren't all from one person. Tested with mock data: "LET'S GOOOOO! P1!" scores 23, "Okay." scores 0.
+
+**Files changed**
++ created: backend/core/radio_sentiment.py
