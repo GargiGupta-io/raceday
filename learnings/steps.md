@@ -1226,3 +1226,17 @@ The system can now figure out which radio clips are the most interesting. It use
 
 **Files changed**
 + created: backend/core/radio_sentiment.py
+
+---
+
+## ✅ Step 35 (6H) — get_radio_moments()
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/insights.py` — get_radio_moments(year, track) orchestrating the full pipeline
+
+**In plain English**
+The three radio modules are now wired together into one function. Call get_radio_moments(2023, "British Grand Prix") and it fetches 118 radio clips from OpenF1, transcribes them (if an API key is configured), scores each one for emotional intensity, and returns the top 5. Results are cached to disk so subsequent loads are instant. Pre-2023 races return a clean "not available" message. The 2023 British GP returns Perez and Hamilton clips near key race moments even without transcripts — with transcripts it'll find the actual celebrations and frustrations.
+
+**Files changed**
+~ modified: backend/core/insights.py
