@@ -1446,3 +1446,17 @@ The backend now has a strategy prediction engine. It models how each tyre compou
 
 **Files changed**
 + created: backend/core/strategy_sim.py
+
+---
+
+## ✅ Step 48 (6I-v2) — API Endpoints
+*Completed: 2026-03-20*
+
+**What was built**
+- `backend/api.py` — GET /races/{year}/{track}/sim-context + POST /races/{year}/{track}/simulate
+
+**In plain English**
+The strategy simulator is now available over HTTP. The sim-context endpoint returns everything the frontend needs to set up the simulator — drivers, their actual strategies, available compounds, and total race laps. The simulate endpoint accepts a driver code, pit stop laps, and compounds, runs the ML model (2018+) or physics model (pre-2018), and returns the time delta, predicted position, and a verdict. CORS was updated to allow POST requests from the frontend.
+
+**Files changed**
+~ modified: backend/api.py
