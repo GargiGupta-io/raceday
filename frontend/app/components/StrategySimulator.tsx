@@ -343,8 +343,8 @@ export default function StrategySimulator({
                     </span>
                   )}
                 </p>
-                <div className="flex gap-1">
-                  {context.compounds_available.map((c) => (
+                <div className="flex gap-1 flex-wrap">
+                  {["SOFT", "MEDIUM", "HARD", "INTERMEDIATE", "WET"].map((c) => (
                     <CompoundButton
                       key={c}
                       compound={c}

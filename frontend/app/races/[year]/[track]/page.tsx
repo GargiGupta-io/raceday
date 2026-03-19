@@ -115,7 +115,7 @@ export default function RacePage({
         {loading && <p className="text-zinc-500 text-sm">Loading race data...</p>}
         {error && <p className="text-red-400 text-sm">Could not load race data.</p>}
 
-        {!loading && !error && (
+        {!loading && !error && (<>
           <div className="flex flex-col lg:flex-row gap-8">
 
             {/* Main content — single scroll, no tabs */}
@@ -137,9 +137,6 @@ export default function RacePage({
 
               {/* TEAM RADIO (2023+ only) */}
               <RadioMoments year={year} track={trackName} />
-
-              {/* STRATEGY SIMULATOR */}
-              <StrategySimulator year={year} track={trackName} />
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <GoDeeper>
@@ -204,6 +201,12 @@ export default function RacePage({
             </div>
 
           </div>
+
+          {/* STRATEGY SIMULATOR — full width, below main + sidebar */}
+          <div className="mt-8">
+            <StrategySimulator year={year} track={trackName} />
+          </div>
+        </>
         )}
 
       </div>
