@@ -13,6 +13,7 @@ import SeasonInsights from "@/app/components/SeasonInsights";
 import GoDeeper, { GoDeeperItem } from "@/app/components/GoDeeper";
 import RaceStory from "@/app/components/RaceStory";
 import PatternPrecedents from "@/app/components/PatternPrecedents";
+import RadioMoments from "@/app/components/RadioMoments";
 
 const API = "http://localhost:8888";
 
@@ -132,6 +133,9 @@ export default function RacePage({
 
               {/* WHAT HISTORY TELLS US */}
               <PatternPrecedents year={year} track={trackName} />
+
+              {/* TEAM RADIO (2023+ only) */}
+              <RadioMoments year={year} track={trackName} />
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <GoDeeper>
