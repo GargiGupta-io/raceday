@@ -315,7 +315,7 @@ frontend/
 ### Adding a New Circuit
 
 ```bash
-# 1. Create the SVG (120x80 viewBox, currentColor stroke)
+# 1. Create the SVG (500x500 viewBox, currentColor stroke)
 #    Save to frontend/public/circuits/new-circuit.svg
 
 # 2. Add mapping entry to frontend/app/lib/circuits.ts:
@@ -326,4 +326,55 @@ frontend/
 
 ---
 
-*Generated: 2026-03-18 | Project: Raceday | Phase 6C complete | Files: circuits.ts, page.tsx, 35 SVG files*
+## Post-Launch Fix: Accurate Circuit SVGs (2026-03-19)
+
+### What went wrong
+
+The original 35 SVGs were hand-drawn bezier curves — rough approximations of circuit shapes. While some were recognizable (Spa's triangle, Suzuka's figure-8), most were inaccurate enough that F1 fans would notice immediately. Monaco looked like a generic rectangle. Silverstone's complex Maggots-Becketts section was just a smooth curve. The shapes were "inspired by" the real tracks rather than traced from them.
+
+### What was fixed
+
+All 35 SVGs were replaced with accurate track outlines sourced from [julesr0y/f1-circuits-svg](https://github.com/julesr0y/f1-circuits-svg), a community-maintained GitHub repo with real circuit layouts traced from official track maps. The repo covers every F1 circuit from 1950 to present, with multiple layout variants per circuit (e.g., `silverstone-1.svg` through `silverstone-8.svg` for each major track reconfiguration).
+
+A Python download script was used to:
+1. Fetch the latest layout variant for each of our 35 circuits from the repo's `white-outline` folder
+2. Extract the SVG `<path>` data and original `viewBox`
+3. Replace the stroke with `currentColor` for theme compatibility
+4. Scale the `stroke-width` proportionally to the viewBox size
+
+### Key technical changes
+
+**ViewBox fix:** The original SVGs used `viewBox="0 0 120 80"` but the downloaded paths have coordinates in the hundreds (e.g., Silverstone's path has points at x=500, y=400). The fix preserves the original `viewBox="0 0 500 500"` from the source repo, so the path coordinates match the coordinate space.
+
+**Stroke width scaling:** With a 500x500 viewBox, a `stroke-width="2"` would be invisibly thin at thumbnail size. The download script now calculates `stroke_w = max(3, round(vb_width / 100))`, giving a stroke width of 5 for the 500x500 viewBoxes — visible even at 56x40px render size.
+
+**Opacity increase:** Bumped from `opacity-[0.07]` (7%) to `opacity-[0.15]` (15%) on the race cards. The original 7% was barely visible — the accurate outlines deserve to be seen.
+
+### Source mapping
+
+Each of our filenames maps to a specific variant from the repo:
+
+| Our filename | Repo source | Why this variant |
+|-------------|-------------|-----------------|
+| silverstone.svg | silverstone-8.svg | Current layout (post-2010 reconfiguration) |
+| monza.svg | monza-7.svg | Current layout with chicanes |
+| monaco.svg | monaco-6.svg | Current layout |
+| spa.svg | spa-francorchamps-4.svg | Current layout |
+| suzuka.svg | suzuka-2.svg | Current layout |
+| red-bull-ring.svg | spielberg-3.svg | Current short layout |
+| barcelona.svg | catalunya-6.svg | Current layout (modified Turn 10) |
+| singapore.svg | marina-bay-4.svg | Current layout |
+| mexico-city.svg | mexico-city-3.svg | Current layout |
+| ... | ... | (35 total — all using latest variant) |
+
+### Hydration error fix (same commit)
+
+A Next.js hydration error was also fixed in this commit. The Grammarly browser extension was injecting `data-new-gr-c-s-check-loaded` and `data-gr-ext-installed` attributes onto the `<body>` tag at runtime. These attributes didn't exist in the server-rendered HTML, causing a hydration mismatch. The fix: added `suppressHydrationWarning` to the `<body>` tag in `layout.tsx` (it was already on `<html>` but doesn't propagate to children).
+
+### Remaining work
+
+Some circuits may still have minor inaccuracies — the repo's SVGs are community-contributed and some tracks may use older layout variants. A visual audit against current track maps would catch these. Low priority since the outlines are at 15% opacity and thumbnail size.
+
+---
+
+*Updated: 2026-03-19 | Project: Raceday | Phase 6C + fix | Source: github.com/julesr0y/f1-circuits-svg*
