@@ -1385,3 +1385,21 @@ Every race page now has a quiz at the bottom of the main story flow. After readi
 ---
 
 ## Phase 6I COMPLETE — Test Your Knowledge (Quiz Mode)
+
+---
+
+# Phase 6F — 2010-2011 Data Gap Fix
+
+## ✅ Step 45 (6F) — Bridgestone Compound Table + Pit Stop Estimation
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/compound_lookup.py` — 2010 Bridgestone nominations (19 races) + estimate_pit_stop_laps() function + equal-length heuristic fix
+- `backend/core/indexer.py` — fallback to estimated 2-stop strategy when Jolpica has no pit stop data
+
+**In plain English**
+The original plan was to scrape formula1.com for 2010 pit stop data, but the site is fully JavaScript-rendered and can't be scraped without a headless browser. Instead, we added two things: a Bridgestone compound table (what two tyre types were available at each 2010 race) and a pit stop estimator (assume 2 evenly-spaced stops when no real data exists). The indexer now detects when Jolpica has no pit stop data but compound nominations exist, and fills in estimated stints. Also fixed a bug where evenly-spaced stints all got assigned the same compound — now they properly alternate (Soft → Hard → Soft).
+
+**Files changed**
+~ modified: backend/core/compound_lookup.py
+~ modified: backend/core/indexer.py
