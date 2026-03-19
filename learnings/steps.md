@@ -1182,3 +1182,19 @@ Audited all years for strategy data issues. 2010 races (19 total) have no stint 
 ---
 
 ## Phase 6G COMPLETE — Strategy Tab Cleanup
+
+---
+
+# Phase 6H — Radio Sentiment + Audio Playback
+
+## ✅ Step 32 (6H) — OpenF1 Radio Fetcher
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/openf1_radio.py` — OpenF1 API client with session mapping, driver resolution, and radio clip fetching
+
+**In plain English**
+Raceday can now fetch every team radio recording from any race 2023 onwards. Give it a year and GP name (like "British Grand Prix") and it finds the matching race in the OpenF1 database, downloads the list of radio clips, and pairs each clip with the driver's name, code, and team. It also estimates which lap each message was on based on elapsed time. The 2023 British GP returned 118 clips across all drivers, with Norris having the most (14 clips). Pre-2023 races correctly return nothing since OpenF1 only covers the modern era.
+
+**Files changed**
++ created: backend/core/openf1_radio.py
