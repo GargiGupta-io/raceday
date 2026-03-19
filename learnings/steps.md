@@ -1349,3 +1349,17 @@ The race page now has an interactive quiz section. It starts collapsed with a "T
 
 **Files changed**
 + created: frontend/app/components/PredictionQuiz.tsx
+
+---
+
+## ✅ Step 43 (6I) — Wire PredictionQuiz Into Race Page
+*Completed: 2026-03-19*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — imported PredictionQuiz, rendered between RadioMoments and Go Deeper
+
+**In plain English**
+Every race page now has a quiz at the bottom of the main story flow. After reading the race story, key moments, historical precedents, and hearing radio clips, users see a "Take the quiz" prompt. The full page flow is now: Podium → Key Moments → Race Story → History → Team Radio → Test Your Knowledge → Go Deeper.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
