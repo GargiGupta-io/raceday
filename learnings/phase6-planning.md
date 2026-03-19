@@ -356,18 +356,22 @@ OpenF1 audio → Whisper transcription → sentiment tagging → top 3-5 clips p
 
 ---
 
-### Phase 6I — Test Your Knowledge (Quiz Mode)
+### Phase 6I — Strategy Simulator ("What If?")
 
-Prediction form for any race. Historical races → instant scoring. Upcoming → locked until indexed.
+Interactive strategy sandbox where users build alternate pit strategies and see predicted outcomes. Pick a driver, choose how many stops (0-4), place pit laps on a timeline, select compounds for each stint, and get a prediction: "Switching to Soft on lap 30 would cost ~1.2s/lap in degradation. Estimated finish: P4 (-1 place)." The prediction engine uses compound performance deltas and degradation curves to estimate total race time under the alternate strategy vs actual. This is active learning through experimentation — users understand WHY teams make certain choices, not just WHAT happened.
+
+*Replaces the original MCQ quiz, which was too passive — recall-based trivia instead of strategic thinking.*
 
 **Steps:**
-1. Create `predictions` table in Supabase
-2. Build scoring engine in insights.py
-3. Add `/races/{year}/{track}/score-predictions` endpoint
-4. Build `PredictionQuiz.tsx` component (form + reveal)
-5. Wire into race page (bottom of story section)
-6. Build simple leaderboard
-7. Visual test
+1. Build compound performance model (base pace + degradation) → `strategy_sim.py`
+2. Build `simulate_strategy()` — compute alternate race time vs actual
+3. Build `get_simulation_context()` + API endpoints (`/simulate`, `/sim-context`)
+4. Backend test
+5. Build `StrategySimulator.tsx` — driver picker, stop count, pit lap inputs, compound selectors
+6. Build lap timeline + prediction result display
+7. Replace PredictionQuiz with StrategySimulator in race page
+8. Remove old quiz code
+9. Visual test
 
 ---
 
@@ -393,7 +397,7 @@ RACE PAGE (6A — the big redesign)
   │     ├── KEY MOMENTS — auto-detected highlights
   │     ├── WHAT HISTORY TELLS US — pattern matcher (6E)
   │     ├── RADIO — top 3-5 emotional clips (6H, 2023+)
-  │     └── TEST YOUR KNOWLEDGE — quiz prompt (6I)
+  │     └── STRATEGY SIMULATOR — "What If?" sandbox (6I)
   │
   └── GO DEEPER (expandable, for hardcore fans)
         ├── Strategy breakdown (compound table)
@@ -416,7 +420,7 @@ RACE PAGE (6A — the big redesign)
 | 5 | **6E** | Pattern Matcher | The original hook, the differentiator |
 | 6 | **6G** | Strategy cleanup | Fix ? markers before users see them |
 | 7 | **6H** | Radio Sentiment | Big feature, needs ML dependencies |
-| 8 | **6I** | Test Your Knowledge | Engagement/retention feature |
+| 8 | **6I** | Strategy Simulator | Interactive "what if" — the feature that makes Raceday unique |
 | 9 | **6F** | 2010-2011 data fix | Low priority — only 5% of users will look at pre-2012 races. Fix when users ask for it. |
 
 ---

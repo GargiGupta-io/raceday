@@ -1308,9 +1308,11 @@ The race page now shows team radio highlights for 2023+ races. Scroll down past 
 
 ---
 
-# Phase 6I — Test Your Knowledge (Quiz Mode)
+# Phase 6I — Test Your Knowledge (Quiz Mode) — SUPERSEDED
 
-## ✅ Step 40 (6I) — Quiz Question Generator
+*The MCQ quiz was replaced by the Strategy Simulator (see below). Steps 40-44 are kept for history but the code was removed.*
+
+## ~~Step 40 (6I) — Quiz Question Generator~~
 *Completed: 2026-03-19*
 
 **What was built**
@@ -1384,7 +1386,7 @@ Every race page now has a quiz at the bottom of the main story flow. After readi
 
 ---
 
-## Phase 6I COMPLETE — Test Your Knowledge (Quiz Mode)
+## Phase 6I (v1) COMPLETE — Quiz Mode (SUPERSEDED by Strategy Simulator below)
 
 ---
 
@@ -1428,3 +1430,7 @@ All 2010 races now show real tyre strategy instead of "Data not available." The 
 ---
 
 ## Phase 6F COMPLETE — 2010-2011 Data Gap Fix
+
+---
+
+# Phase 6I (v2) — Strategy Simulator ("What If?")
