@@ -1240,3 +1240,17 @@ The three radio modules are now wired together into one function. Call get_radio
 
 **Files changed**
 ~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 36 (6H) — /radio API Endpoint
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/api.py` — GET /races/{year}/{track}/radio
+
+**In plain English**
+The radio data is now available over HTTP. Hit `/races/2023/British%20Grand%20Prix/radio` and get back the top 5 most interesting radio clips with driver names, lap numbers, audio URLs, sentiment labels, and transcripts (when available). Pre-2023 races return a clean "not available" message with a reason instead of a 404. Non-existent races still 404 properly.
+
+**Files changed**
+~ modified: backend/api.py
