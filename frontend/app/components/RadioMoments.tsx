@@ -150,15 +150,18 @@ export default function RadioMoments({
       </p>
       {data.clips.map((clip, i) => {
         const style = SENTIMENT_STYLE[clip.sentiment] || SENTIMENT_STYLE.unknown;
+        const showIcon = clip.sentiment !== "unknown" && clip.sentiment !== "neutral";
         return (
           <div key={i} className="rounded-lg bg-zinc-900 p-4">
             <div className="flex gap-3 items-start">
-              {/* Sentiment icon */}
-              <span
-                className={`w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-sm shrink-0 ${style.color}`}
-              >
-                {style.icon}
-              </span>
+              {/* Sentiment icon — only show when we have real sentiment */}
+              {showIcon && (
+                <span
+                  className={`w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-sm shrink-0 ${style.color}`}
+                >
+                  {style.icon}
+                </span>
+              )}
 
               <div className="min-w-0 flex-1">
                 {/* Driver name + lap */}
@@ -196,11 +199,6 @@ export default function RadioMoments({
           </div>
         );
       })}
-      {!data.has_transcripts && (
-        <p className="text-[10px] text-zinc-700 text-center mt-1">
-          Transcripts unavailable — listen to the audio clips directly
-        </p>
-      )}
     </div>
   );
 }
