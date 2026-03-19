@@ -155,6 +155,23 @@ def _index_race_historical(year: int, track: str) -> bool:
             driver_stints = compound_lookup.build_stints(pit_laps, compounds, total_laps)
             if driver_stints:
                 stints[driver_code] = driver_stints
+    elif compound_lookup.get_race_compounds(year, round_num) is not None:
+        # No pit stop data from API but we have compound nominations (e.g. 2010).
+        # Estimate pit stops assuming 2-stop strategy with evenly-spaced stints.
+        logger.info("No pit stop data for %s R%d — estimating 2-stop strategy", year, round_num)
+        for r in results:
+            driver_code = r["driver"]
+            total_laps = r.get("total_laps") or 0
+            if total_laps < 10:
+                continue  # retired too early
+            grid = r.get("grid_position")
+            pit_laps = compound_lookup.estimate_pit_stop_laps(total_laps, num_stops=2)
+            compounds = compound_lookup.assign_stint_compounds(
+                pit_laps, total_laps, grid, year, round_num, driver_code
+            )
+            driver_stints = compound_lookup.build_stints(pit_laps, compounds, total_laps)
+            if driver_stints:
+                stints[driver_code] = driver_stints
 
     _write_index(race_dir, results, weather, stints)
     return True

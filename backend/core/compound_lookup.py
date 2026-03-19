@@ -117,6 +117,30 @@ def get_csv_stint_compounds(year: int, round_num: int, driver_code: str) -> list
 # ---------------------------------------------------------------------------
 
 _NOMINATIONS: dict[int, dict[int, tuple[str, str]]] = {
+    # 2010: Bridgestone era — Option (softer) / Prime (harder)
+    # Bridgestone nominated two dry compounds per race, same as Pirelli later.
+    # Sources: Bridgestone press releases, Wikipedia 2010 season articles
+    2010: {
+        1: ("SOFT", "HARD"),        # Bahrain
+        2: ("SOFT", "HARD"),        # Australia
+        3: ("SOFT", "HARD"),        # Malaysia
+        4: ("SOFT", "HARD"),        # China
+        5: ("SOFT", "HARD"),        # Spain
+        6: ("SUPERSOFT", "SOFT"),   # Monaco
+        7: ("SOFT", "HARD"),        # Turkey
+        8: ("SUPERSOFT", "SOFT"),   # Canada
+        9: ("SOFT", "HARD"),        # Europe (Valencia)
+        10: ("SOFT", "HARD"),       # Britain
+        11: ("SOFT", "HARD"),       # Germany
+        12: ("SUPERSOFT", "SOFT"),  # Hungary
+        13: ("SOFT", "MEDIUM"),     # Belgium
+        14: ("SOFT", "MEDIUM"),     # Italy
+        15: ("SUPERSOFT", "SOFT"),  # Singapore
+        16: ("SOFT", "HARD"),       # Japan
+        17: ("SOFT", "HARD"),       # Korea
+        18: ("SOFT", "HARD"),       # Brazil
+        19: ("SUPERSOFT", "SOFT"),  # Abu Dhabi
+    },
     2011: {
         1: ("SOFT", "HARD"),        # Australia
         2: ("SOFT", "HARD"),        # Malaysia
@@ -276,6 +300,19 @@ _NOMINATIONS: dict[int, dict[int, tuple[str, str]]] = {
 # ---------------------------------------------------------------------------
 
 
+def estimate_pit_stop_laps(total_laps: int, num_stops: int = 2) -> list[int]:
+    """
+    Estimate pit stop laps when real data is unavailable.
+
+    Divides the race into roughly equal stints. For a 52-lap race with
+    2 stops, returns [17, 35] (pitting at ~1/3 and ~2/3 distance).
+    """
+    if num_stops <= 0 or total_laps <= 0:
+        return []
+    interval = total_laps / (num_stops + 1)
+    return [round(interval * (i + 1)) for i in range(num_stops)]
+
+
 def get_race_compounds(year: int, round_num: int) -> tuple[str, str] | None:
     """
     Return the (option, prime) compound pair for a given race.
@@ -309,6 +346,11 @@ def _assign_by_stint_length(
 
     if not stint_lengths:
         return [option]
+
+    # If all stints are roughly the same length (e.g. estimated stops),
+    # use simple alternation instead of a meaningless median split
+    if max(stint_lengths) - min(stint_lengths) <= 2:
+        return _assign_simple(len(stint_lengths), option, prime)
 
     # Find median length — stints shorter than median get option (soft),
     # stints at or above median get prime (hard)
