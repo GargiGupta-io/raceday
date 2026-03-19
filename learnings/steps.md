@@ -1460,3 +1460,21 @@ The strategy simulator is now available over HTTP. The sim-context endpoint retu
 
 **Files changed**
 ~ modified: backend/api.py
+
+---
+
+## ✅ Steps 50-54 (6I-v2) — StrategySimulator Component + Wire In + Cleanup
+*Completed: 2026-03-20*
+
+**What was built**
+- `frontend/app/components/StrategySimulator.tsx` — full interactive strategy simulator
+- `frontend/app/races/[year]/[track]/page.tsx` — swapped PredictionQuiz for StrategySimulator
+- Deleted `PredictionQuiz.tsx`
+
+**In plain English**
+The race page now has an interactive strategy sandbox instead of the old MCQ quiz. Click "Open simulator" and you get a driver dropdown, a 0-4 pit stop selector, lap sliders for each pit stop, and compound buttons (Soft/Medium/Hard) for each stint. Two horizontal bars show the actual strategy vs yours side by side. Hit "Simulate" and the ML model runs — you see a time delta (e.g., "+22.3s"), a predicted position change (P1 -> P5), and a verdict explaining why. Green means faster, red means slower.
+
+**Files changed**
++ created: frontend/app/components/StrategySimulator.tsx
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+- deleted: frontend/app/components/PredictionQuiz.tsx
