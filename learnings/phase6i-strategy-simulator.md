@@ -156,13 +156,20 @@ predicted_pos = max(1, min(len(finishers), actual_pos + pos_change))
 
 ### Frontend: StrategySimulator.tsx
 
+**Position on page:** Lives in the right sidebar column, directly below Race Intelligence (the "Did You Know" facts). This keeps it visible alongside the main content as users scroll through the race story, rather than hidden at the bottom of the page.
+
 The component has five interactive elements:
 
 1. **Driver picker** — dropdown of all 20 drivers, sorted by finish position
 2. **Stop count** — 5 buttons (0-4), click to select
 3. **Pit lap sliders** — HTML range inputs, one per stop, constrained to valid ranges
-4. **Compound buttons** — for each stint, click to cycle through available compounds
+4. **Compound buttons** — all 5 compounds always shown: Soft, Medium, Hard, Intermediate, Wet. Users can test any compound on any stint regardless of what was actually used in the race (e.g., "what if they'd used Wets on a dry race?"). The ML model will show the time penalty.
 5. **Stint bars** — horizontal coloured bars comparing actual vs user strategy
+
+The compound buttons show all options because:
+- Users might want to explore "what if it rained?" scenarios
+- Wet/Intermediate tyres have their own degradation curves in the physics model
+- For 2018+ races, if the compound wasn't used, the prediction falls back to physics model constants for that compound while using ML for the others
 
 State machine:
 ```
