@@ -1268,3 +1268,17 @@ The frontend now has a component that shows team radio highlights. Each clip app
 
 **Files changed**
 + created: frontend/app/components/RadioMoments.tsx
+
+---
+
+## ✅ Step 38 (6H) — Wire RadioMoments Into Race Page
+*Completed: 2026-03-19*
+
+**What was built**
+- `frontend/app/races/[year]/[track]/page.tsx` — imported RadioMoments, rendered between PatternPrecedents and Go Deeper
+
+**In plain English**
+The race page now shows team radio highlights for 2023+ races. Scroll down past the key moments and historical precedents and you'll see "Team Radio" with 5 audio clips you can play directly. For older races (2010-2022), the section simply doesn't appear — no empty space, no "not available" message, it's invisible. The page layout is: Podium → Key Moments → Race Story → What History Tells Us → Team Radio → Go Deeper.
+
+**Files changed**
+~ modified: frontend/app/races/[year]/[track]/page.tsx
