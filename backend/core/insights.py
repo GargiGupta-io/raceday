@@ -1900,6 +1900,106 @@ def get_race_story(year: int, track: str) -> dict | None:
     }
 
 
+# ---------------------------------------------------------------------------
+# Radio moments (2023+ only)
+# ---------------------------------------------------------------------------
+
+
+def get_radio_moments(year: int, track: str, top_n: int = 5) -> dict | None:
+    """
+    Return the top N most interesting team radio clips for a race.
+
+    Fetches clips from OpenF1, optionally transcribes them, scores by
+    sentiment + timing proximity to key moments, and returns the best ones.
+
+    Returns a dict:
+        available     — True if radio data exists for this race
+        has_transcripts — True if transcription backend is configured
+        clips         — list of top N clips, each with:
+            driver_code, driver_name, team, team_colour,
+            lap, recording_url, transcript, score, sentiment, tags
+
+    Returns None if the race doesn't exist or year < 2023.
+    """
+    if year < 2023:
+        return {"available": False, "has_transcripts": False, "clips": [],
+                "reason": "Team radio data is only available for 2023 onwards."}
+
+    # Check race exists in index
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    # Check for cached radio moments on disk
+    cache_path = indexer._race_dir(year, track) / "radio_moments.json"
+    if cache_path.exists():
+        try:
+            cached = json.loads(cache_path.read_text(encoding="utf-8"))
+            logger.info("Loaded cached radio moments for %s %s", year, track)
+            return cached
+        except (json.JSONDecodeError, OSError):
+            pass
+
+    # Fetch clips from OpenF1
+    from backend.core import openf1_radio, radio_transcriber, radio_sentiment
+
+    clips = openf1_radio.get_team_radio(year, track)
+    if clips is None or len(clips) == 0:
+        result = {"available": False, "has_transcripts": False, "clips": [],
+                  "reason": "No team radio recordings found for this race."}
+        # Cache the empty result
+        try:
+            cache_path.write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
+        except OSError:
+            pass
+        return result
+
+    # Transcribe (if backend available)
+    clips = radio_transcriber.transcribe_clips(clips)
+    backend_status = radio_transcriber.get_backend_status()
+
+    # Get key moments for timing-based scoring
+    moments = get_key_moments(year, track)
+
+    # Score and select top N
+    top_clips = radio_sentiment.score_clips(clips, moments, top_n=top_n)
+
+    # Clean up output — remove internal fields, keep what the frontend needs
+    clean_clips = []
+    for c in top_clips:
+        clean_clips.append({
+            "driver_code": c.get("driver_code", "???"),
+            "driver_name": c.get("driver_name", "Unknown"),
+            "team": c.get("team", "Unknown"),
+            "team_colour": c.get("team_colour", "666666"),
+            "lap": c.get("lap"),
+            "recording_url": c.get("recording_url", ""),
+            "transcript": c.get("transcript"),
+            "score": c.get("score", 0),
+            "sentiment": c.get("sentiment", "neutral"),
+            "tags": c.get("tags", []),
+        })
+
+    result = {
+        "available": True,
+        "has_transcripts": backend_status.get("has_transcription", False),
+        "total_clips": len(clips),
+        "clips": clean_clips,
+    }
+
+    # Cache to disk
+    try:
+        cache_path.write_text(
+            json.dumps(result, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        logger.info("Cached radio moments for %s %s (%d clips)", year, track, len(clean_clips))
+    except OSError as exc:
+        logger.warning("Failed to cache radio moments: %s", exc)
+
+    return result
+
+
 if __name__ == "__main__":
     # Run as: python3 -m backend.core.insights  (from the raceday/ root)
     import logging
