@@ -92,6 +92,17 @@ def _index_race_fastf1(year: int, track: str) -> bool:
         stints = {}
 
     _write_index(race_dir, results, weather, stints)
+
+    # Save lap-by-lap timing data for strategy simulation (2018+ only)
+    laps_path = race_dir / "laps.json"
+    if not laps_path.exists():
+        lap_data = loader.get_lap_times(year, track)
+        if lap_data:
+            with open(laps_path, "w") as f:
+                json.dump(lap_data, f)
+            logger.info("Saved lap timing data for %s %s (%d drivers)",
+                        year, track, lap_data.get("_meta", {}).get("drivers", 0))
+
     return True
 
 
@@ -234,6 +245,31 @@ def load_race_index(year: int, track: str) -> dict | None:
             stints = json.load(f)
 
     return {"results": results, "weather": weather, "stints": stints}
+
+
+def load_lap_data(year: int, track: str) -> dict | None:
+    """
+    Load lap-by-lap timing data from disk (2018+ only).
+    Returns the lap data dict or None if not available.
+    Auto-indexes if the race is indexed but laps.json is missing.
+    """
+    race_dir = _race_dir(year, track)
+    laps_path = race_dir / "laps.json"
+
+    if laps_path.exists():
+        with open(laps_path) as f:
+            return json.load(f)
+
+    # Try to generate it if race is indexed but laps aren't saved yet
+    if year >= 2018 and is_indexed(year, track):
+        lap_data = loader.get_lap_times(year, track)
+        if lap_data:
+            with open(laps_path, "w") as f:
+                json.dump(lap_data, f)
+            logger.info("Generated lap data for %s %s on demand", year, track)
+            return lap_data
+
+    return None
 
 
 def list_indexed() -> list[dict]:

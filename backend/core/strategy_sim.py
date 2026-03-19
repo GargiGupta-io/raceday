@@ -5,15 +5,16 @@ Predicts race outcomes under alternate pit strategies.
 Users choose a driver, set pit stop laps and compounds,
 and the engine estimates total race time vs actual.
 
-The model uses:
-  - Base lap time derived from the driver's actual race
-  - Compound performance deltas (seconds per lap vs Medium)
-  - Tyre degradation curves (seconds lost per lap on worn tyres)
-  - Pit stop time loss (~22 seconds per stop)
-  - Fuel correction (cars get ~0.06s/lap faster as fuel burns)
+Two models:
+  2018+ (data-driven): Uses real lap times from FastF1 to build
+      per-circuit degradation curves, actual pit stop durations,
+      and compound-specific performance deltas.
+  Pre-2018 (physics model): Hardcoded compound deltas and degradation
+      rates — approximate but the best we can do without lap timing.
 """
 
 import logging
+import statistics
 from backend.core import indexer
 
 logger = logging.getLogger(__name__)
@@ -259,6 +260,189 @@ def get_simulation_context(year: int, track: str) -> dict | None:
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Data-driven model (2018+ with real lap times)
+# ---------------------------------------------------------------------------
+
+
+def _build_circuit_model(lap_data: dict) -> dict:
+    """
+    Build a data-driven compound performance model from real lap times.
+
+    Analyzes all drivers' lap times grouped by compound to extract:
+        - Base lap time per compound (median of clean laps)
+        - Degradation rate per compound (slope of lap time vs stint age)
+        - Average pit stop duration
+
+    Returns a dict:
+        compound_base  — {compound: median_lap_time}
+        compound_deg   — {compound: seconds_per_lap_degradation}
+        pit_stop_avg   — average pit stop time loss (seconds)
+        base_lap       — overall median clean lap time
+    """
+    meta = lap_data.get("_meta", {})
+
+    # Collect clean laps by compound
+    compound_laps: dict[str, list[tuple[int, float]]] = {}  # compound → [(stint_age, time)]
+
+    for key, driver_laps in lap_data.items():
+        if key == "_meta" or not isinstance(driver_laps, list):
+            continue
+        for lap in driver_laps:
+            time = lap.get("time", 0)
+            compound = lap.get("compound", "UNKNOWN").upper()
+            stint = lap.get("stint", 1)
+
+            # Skip outlier laps (pit in/out, safety cars, first lap)
+            if time < 60 or time > 180:
+                continue
+            if lap.get("lap", 0) == 1:
+                continue  # first lap is always slow (grid start)
+            if lap.get("pit_stop", False):
+                continue  # pit laps are slow
+
+            # Calculate stint age (laps since last stop)
+            # Group by driver+stint to find stint start
+            compound_laps.setdefault(compound, [])
+
+    # Second pass with stint age calculation
+    for key, driver_laps in lap_data.items():
+        if key == "_meta" or not isinstance(driver_laps, list):
+            continue
+
+        # Group laps by stint
+        stints: dict[int, list[dict]] = {}
+        for lap in driver_laps:
+            s = lap.get("stint", 1)
+            stints.setdefault(s, []).append(lap)
+
+        for stint_num, stint_laps in stints.items():
+            stint_laps.sort(key=lambda x: x["lap"])
+            for i, lap in enumerate(stint_laps):
+                time = lap.get("time", 0)
+                compound = lap.get("compound", "UNKNOWN").upper()
+
+                # Filter outliers
+                if time < 60 or time > 180 or lap.get("lap", 0) == 1 or lap.get("pit_stop", False):
+                    continue
+
+                compound_laps.setdefault(compound, []).append((i, time))
+
+    # Calculate base time and degradation per compound
+    compound_base: dict[str, float] = {}
+    compound_deg: dict[str, float] = {}
+
+    for compound, laps_list in compound_laps.items():
+        if len(laps_list) < 5:
+            continue
+
+        times = [t for _, t in laps_list]
+        compound_base[compound] = statistics.median(times)
+
+        # Estimate degradation: compare early stint laps vs late stint laps
+        early = [t for age, t in laps_list if age < 5]
+        late = [t for age, t in laps_list if age >= 10]
+
+        if early and late:
+            early_median = statistics.median(early)
+            late_median = statistics.median(late)
+            avg_age_diff = 10  # approximate difference in stint age
+            deg = max(0, (late_median - early_median) / avg_age_diff)
+            compound_deg[compound] = round(deg, 4)
+        else:
+            compound_deg[compound] = COMPOUND_DEGRADATION.get(compound, 0.05)
+
+    # Overall base lap time
+    all_times = [t for laps_list in compound_laps.values() for _, t in laps_list]
+    base_lap = statistics.median(all_times) if all_times else 90.0
+
+    # Pit stop duration from real data
+    pit_durations = meta.get("pit_stop_durations", [])
+    pit_avg = statistics.median(pit_durations) if pit_durations else PIT_STOP_LOSS
+
+    return {
+        "compound_base": compound_base,
+        "compound_deg": compound_deg,
+        "pit_stop_avg": round(pit_avg, 2),
+        "base_lap": round(base_lap, 3),
+        "data_driven": True,
+    }
+
+
+def estimate_total_race_time_datadriven(
+    model: dict,
+    total_laps: int,
+    pit_stop_laps: list[int],
+    compounds: list[str],
+) -> dict:
+    """
+    Estimate total race time using a data-driven circuit model.
+    Same interface as estimate_total_race_time but uses real degradation curves.
+    """
+    num_stops = len(pit_stop_laps)
+    base_lap = model["base_lap"]
+    pit_loss = model["pit_stop_avg"]
+
+    # Build stint boundaries
+    stint_starts = [1] + [lap + 1 for lap in pit_stop_laps]
+    stint_ends = pit_stop_laps + [total_laps]
+
+    total_time = 0.0
+    pit_time_total = num_stops * pit_loss
+    stint_times = []
+    lap_times = []
+
+    for stint_idx in range(len(stint_starts)):
+        if stint_idx >= len(compounds):
+            break
+
+        start = stint_starts[stint_idx]
+        end = stint_ends[stint_idx]
+        compound = compounds[stint_idx].upper()
+        stint_total = 0.0
+
+        # Use real compound base time if available, else estimate from delta
+        comp_base = model["compound_base"].get(compound)
+        if comp_base is None:
+            comp_base = base_lap + COMPOUND_DELTA.get(compound, 0)
+
+        comp_deg = model["compound_deg"].get(compound, COMPOUND_DEGRADATION.get(compound, 0.05))
+
+        for race_lap in range(start, end + 1):
+            lap_in_stint = race_lap - start
+            fuel = FUEL_CORRECTION_PER_LAP * race_lap
+            lt = comp_base + (comp_deg * lap_in_stint) + fuel
+            lap_times.append({"lap": race_lap, "time": round(lt, 3), "compound": compound})
+            stint_total += lt
+
+        stint_times.append({
+            "stint": stint_idx + 1,
+            "compound": compound,
+            "lap_start": start,
+            "lap_end": end,
+            "laps": end - start + 1,
+            "stint_time": round(stint_total, 2),
+        })
+        total_time += stint_total
+
+    total_time += pit_time_total
+
+    return {
+        "total_time": round(total_time, 2),
+        "pit_time_total": round(pit_time_total, 2),
+        "num_stops": num_stops,
+        "stint_times": stint_times,
+        "lap_times": lap_times,
+        "model": "data-driven",
+        "pit_stop_duration": pit_loss,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Main simulation — compare alternate strategy vs actual
+# ---------------------------------------------------------------------------
+
+
 def simulate_strategy(
     year: int,
     track: str,
@@ -309,44 +493,52 @@ def simulate_strategy(
     if total_laps < 10:
         return {"error": "Driver completed too few laps for simulation."}
 
-    # Calculate base lap time from total race laps
-    # Use the winner's total laps as race distance
     finishers = sorted(
         [r for r in results if r["finish_position"] is not None],
         key=lambda r: r["finish_position"],
     )
-    race_laps = finishers[0].get("total_laps", total_laps) if finishers else total_laps
 
-    # Estimate a base lap time — we use a neutral baseline
-    # Real race times aren't in the index, so we use a nominal value
-    # and the relative comparison still holds
-    base_lap = 90.0  # nominal baseline, cancels out in delta comparison
+    # Try data-driven model for 2018+ (uses real lap times)
+    circuit_model = None
+    if year >= 2018:
+        lap_data = indexer.load_lap_data(year, track)
+        if lap_data:
+            circuit_model = _build_circuit_model(lap_data)
+            logger.info(
+                "Using data-driven model for %s %s: base=%.1fs, pit=%.1fs, compounds=%s",
+                year, track, circuit_model["base_lap"], circuit_model["pit_stop_avg"],
+                list(circuit_model["compound_deg"].keys()),
+            )
 
     # Build actual strategy from stints data
-    driver_stints = stints_by_driver.get(driver_code, [])
+    actual_pit_laps = []
+    actual_compounds = []
     if driver_stints:
-        actual_pit_laps = []
-        actual_compounds = []
         for i, s in enumerate(driver_stints):
             actual_compounds.append(s.get("compound", "MEDIUM"))
             if i > 0:
                 actual_pit_laps.append(s.get("lap_start", 0) - 1)
+    else:
+        from backend.core.compound_lookup import estimate_pit_stop_laps
+        actual_pit_laps = estimate_pit_stop_laps(total_laps, 2)
+        actual_compounds = ["MEDIUM", "MEDIUM", "MEDIUM"]
 
+    # Run simulation — data-driven or physics model
+    if circuit_model:
+        actual_result = estimate_total_race_time_datadriven(
+            circuit_model, total_laps, actual_pit_laps, actual_compounds
+        )
+        alternate_result = estimate_total_race_time_datadriven(
+            circuit_model, total_laps, pit_stop_laps, compounds
+        )
+    else:
+        base_lap = 90.0  # nominal baseline, cancels out in delta comparison
         actual_result = estimate_total_race_time(
             base_lap, total_laps, actual_pit_laps, actual_compounds
         )
-    else:
-        # No stint data — estimate a 2-stop Medium strategy
-        from backend.core.compound_lookup import estimate_pit_stop_laps
-        est_pits = estimate_pit_stop_laps(total_laps, 2)
-        actual_result = estimate_total_race_time(
-            base_lap, total_laps, est_pits, ["MEDIUM", "MEDIUM", "MEDIUM"]
+        alternate_result = estimate_total_race_time(
+            base_lap, total_laps, pit_stop_laps, compounds
         )
-
-    # Simulate alternate strategy
-    alternate_result = estimate_total_race_time(
-        base_lap, total_laps, pit_stop_laps, compounds
-    )
 
     # Time delta
     delta_seconds = alternate_result["total_time"] - actual_result["total_time"]
@@ -399,6 +591,7 @@ def simulate_strategy(
         "predicted_position": predicted_pos,
         "position_change": pos_change,
         "verdict": verdict,
+        "model_used": "data-driven" if circuit_model else "physics",
     }
 
 

@@ -243,6 +243,96 @@ def get_stint_data(year: int, track: str) -> dict | None:
     return stints_by_driver
 
 
+def get_lap_times(year: int, track: str) -> dict | None:
+    """
+    Return per-driver lap-by-lap timing data for strategy simulation.
+
+    Returns a dict keyed by driver abbreviation, each value being a list
+    of lap dicts sorted by lap number:
+        lap        — lap number (int)
+        time       — lap time in seconds (float)
+        compound   — tyre compound used
+        stint      — stint number (int)
+        pit_stop   — True if this lap included a pit stop
+
+    Also returns aggregate data:
+        _meta:
+            pit_stop_durations — list of actual pit stop durations (seconds)
+            total_laps — race distance
+
+    Returns None if the session cannot be loaded.
+    Only available for 2018+ (FastF1 data).
+    """
+    if year < 2018:
+        return None
+
+    session = get_session(year, track, "R")
+    if session is None:
+        return None
+
+    laps = session.laps
+    laps = laps.dropna(subset=["LapNumber"])
+    if laps.empty:
+        return None
+
+    result: dict = {}
+    pit_durations: list[float] = []
+
+    for _, row in laps.iterrows():
+        driver = str(row.get("Driver", "???"))
+        lap_num = int(row["LapNumber"])
+
+        # Extract lap time in seconds
+        lap_time = row.get("LapTime")
+        if lap_time is not None and hasattr(lap_time, "total_seconds"):
+            time_sec = lap_time.total_seconds()
+        else:
+            continue  # skip laps without timing
+
+        # Skip outlier laps (pit in/out, safety cars) — over 150% of a normal lap
+        # We'll filter these when building the model, not here
+
+        compound = str(row.get("Compound", "UNKNOWN"))
+        stint = int(row.get("Stint", 1)) if row.get("Stint") is not None else 1
+
+        # Detect pit stops — PitInTime is NaT for non-pit laps in pandas
+        import pandas as pd
+        pit_in_val = row.get("PitInTime")
+        pit_out_val = row.get("PitOutTime")
+        is_pit = pd.notna(pit_in_val)
+
+        # Extract pit stop duration
+        if is_pit and pd.notna(pit_out_val):
+            try:
+                if hasattr(pit_out_val, "total_seconds") and hasattr(pit_in_val, "total_seconds"):
+                    dur = pit_out_val.total_seconds() - pit_in_val.total_seconds()
+                    if 15 < dur < 60:  # reasonable pit stop range
+                        pit_durations.append(round(dur, 2))
+            except (TypeError, ValueError):
+                pass
+
+        result.setdefault(driver, []).append({
+            "lap": lap_num,
+            "time": round(time_sec, 3),
+            "compound": compound,
+            "stint": stint,
+            "pit_stop": is_pit,
+        })
+
+    # Sort each driver's laps
+    for driver in result:
+        result[driver].sort(key=lambda x: x["lap"])
+
+    # Add metadata
+    result["_meta"] = {
+        "pit_stop_durations": pit_durations,
+        "total_laps": max((lap["lap"] for d in result.values() if isinstance(d, list) for lap in d), default=0),
+        "drivers": len([k for k in result if k != "_meta"]),
+    }
+
+    return result
+
+
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
