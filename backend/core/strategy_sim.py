@@ -1,0 +1,444 @@
+"""
+strategy_sim.py — Strategy Simulator Engine
+
+Predicts race outcomes under alternate pit strategies.
+Users choose a driver, set pit stop laps and compounds,
+and the engine estimates total race time vs actual.
+
+The model uses:
+  - Base lap time derived from the driver's actual race
+  - Compound performance deltas (seconds per lap vs Medium)
+  - Tyre degradation curves (seconds lost per lap on worn tyres)
+  - Pit stop time loss (~22 seconds per stop)
+  - Fuel correction (cars get ~0.06s/lap faster as fuel burns)
+"""
+
+import logging
+from backend.core import indexer
+
+logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Compound performance model
+# ---------------------------------------------------------------------------
+
+# Delta vs MEDIUM baseline (seconds per lap, negative = faster)
+COMPOUND_DELTA: dict[str, float] = {
+    "SUPERSOFT": -1.2,
+    "SOFT":      -0.7,
+    "MEDIUM":     0.0,
+    "HARD":      +0.4,
+    "INTERMEDIATE": +2.0,
+    "WET":       +4.0,
+    "UNKNOWN":    0.0,
+}
+
+# Degradation rate (seconds lost per lap as tyres wear)
+# Softer tyres degrade faster
+COMPOUND_DEGRADATION: dict[str, float] = {
+    "SUPERSOFT": 0.12,
+    "SOFT":      0.08,
+    "MEDIUM":    0.05,
+    "HARD":      0.03,
+    "INTERMEDIATE": 0.06,
+    "WET":       0.04,
+    "UNKNOWN":   0.05,
+}
+
+# Average time lost per pit stop (seconds)
+# Includes pit lane entry, stationary time, pit lane exit
+PIT_STOP_LOSS = 22.0
+
+# Fuel effect: cars get slightly faster each lap as fuel burns off
+FUEL_CORRECTION_PER_LAP = -0.06
+
+
+# ---------------------------------------------------------------------------
+# Lap time estimation
+# ---------------------------------------------------------------------------
+
+
+def estimate_lap_time(
+    base_lap: float,
+    compound: str,
+    lap_in_stint: int,
+    race_lap: int,
+    total_laps: int,
+) -> float:
+    """
+    Estimate the time for a single lap given compound and stint age.
+
+    Args:
+        base_lap      — average lap time for this driver (seconds)
+        compound      — tyre compound name (e.g. "SOFT")
+        lap_in_stint  — how many laps since last pit stop (0-based)
+        race_lap      — which lap of the race (1-based)
+        total_laps    — total race distance
+
+    Returns estimated lap time in seconds.
+    """
+    compound_upper = compound.upper()
+
+    # Compound pace advantage/penalty
+    delta = COMPOUND_DELTA.get(compound_upper, 0.0)
+
+    # Tyre degradation — increases linearly with stint age
+    deg_rate = COMPOUND_DEGRADATION.get(compound_upper, 0.05)
+    deg = deg_rate * lap_in_stint
+
+    # Fuel correction — lighter car = faster laps
+    fuel = FUEL_CORRECTION_PER_LAP * race_lap
+
+    return base_lap + delta + deg + fuel
+
+
+def estimate_total_race_time(
+    base_lap: float,
+    total_laps: int,
+    pit_stop_laps: list[int],
+    compounds: list[str],
+) -> dict:
+    """
+    Estimate total race time for a given strategy.
+
+    Args:
+        base_lap       — driver's average lap time (seconds)
+        total_laps     — total race laps
+        pit_stop_laps  — sorted list of laps where pit stops occur
+        compounds      — compound for each stint (len = len(pit_stop_laps) + 1)
+
+    Returns a dict:
+        total_time     — estimated total race time (seconds)
+        pit_time_total — total time lost in pits (seconds)
+        stint_times    — list of per-stint time breakdowns
+        lap_times      — list of estimated lap times (for charts)
+    """
+    num_stops = len(pit_stop_laps)
+
+    # Build stint boundaries
+    stint_starts = [1] + [lap + 1 for lap in pit_stop_laps]
+    stint_ends = pit_stop_laps + [total_laps]
+
+    total_time = 0.0
+    pit_time_total = num_stops * PIT_STOP_LOSS
+    stint_times = []
+    lap_times = []
+
+    for stint_idx in range(len(stint_starts)):
+        if stint_idx >= len(compounds):
+            break
+
+        start = stint_starts[stint_idx]
+        end = stint_ends[stint_idx]
+        compound = compounds[stint_idx]
+        stint_total = 0.0
+
+        for race_lap in range(start, end + 1):
+            lap_in_stint = race_lap - start
+            lt = estimate_lap_time(base_lap, compound, lap_in_stint, race_lap, total_laps)
+            lap_times.append({"lap": race_lap, "time": round(lt, 3), "compound": compound})
+            stint_total += lt
+
+        stint_times.append({
+            "stint": stint_idx + 1,
+            "compound": compound,
+            "lap_start": start,
+            "lap_end": end,
+            "laps": end - start + 1,
+            "stint_time": round(stint_total, 2),
+        })
+        total_time += stint_total
+
+    total_time += pit_time_total
+
+    return {
+        "total_time": round(total_time, 2),
+        "pit_time_total": round(pit_time_total, 2),
+        "num_stops": num_stops,
+        "stint_times": stint_times,
+        "lap_times": lap_times,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Simulation context — data the frontend needs
+# ---------------------------------------------------------------------------
+
+
+def get_simulation_context(year: int, track: str) -> dict | None:
+    """
+    Return all data the frontend needs to set up the simulator.
+
+    Returns:
+        race        — display name
+        total_laps  — race distance
+        drivers     — list of {code, name, team, grid, finish, actual_stints}
+        compounds   — list of available compounds for this race
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    stints_by_driver = data.get("stints") or {}
+
+    # Import driver name lookup
+    from backend.core.insights import _DRIVER_NAMES
+
+    # Derive total race laps from winner's stints (last stint's lap_end)
+    race_total_laps = 0
+    finishers_sorted = sorted(
+        [r for r in results if r.get("finish_position") is not None],
+        key=lambda r: r["finish_position"],
+    )
+    if finishers_sorted:
+        winner_code = finishers_sorted[0]["driver"]
+        winner_stints = stints_by_driver.get(winner_code, [])
+        if winner_stints:
+            race_total_laps = winner_stints[-1].get("lap_end", 0)
+
+    drivers = []
+    compounds_seen = set()
+
+    for r in results:
+        code = r["driver"]
+
+        # Get actual stints
+        actual_stints = []
+        driver_stints = stints_by_driver.get(code, [])
+        driver_laps = driver_stints[-1].get("lap_end", 0) if driver_stints else 0
+
+        for s in driver_stints:
+            compound = s.get("compound", "UNKNOWN")
+            compounds_seen.add(compound.upper())
+            actual_stints.append({
+                "compound": compound,
+                "lap_start": s.get("lap_start", 0),
+                "lap_end": s.get("lap_end", 0),
+                "laps": s.get("lap_count", 0),
+            })
+
+        actual_stops = max(0, len(driver_stints) - 1) if driver_stints else None
+
+        drivers.append({
+            "code": code,
+            "name": _DRIVER_NAMES.get(code, code),
+            "team": r.get("team", "Unknown"),
+            "grid": r.get("grid_position"),
+            "finish": r.get("finish_position"),
+            "total_laps": driver_laps,
+            "status": r.get("status", "Unknown"),
+            "actual_stops": actual_stops,
+            "actual_stints": actual_stints,
+        })
+
+    # Sort by finish position (DNFs at end)
+    drivers.sort(key=lambda d: (d["finish"] is None, d["finish"] or 999))
+
+    # Available compounds — what was used + standard options
+    available = sorted(
+        compounds_seen - {"UNKNOWN"},
+        key=lambda c: COMPOUND_DELTA.get(c, 0),
+    )
+    if not available:
+        available = ["SOFT", "MEDIUM", "HARD"]
+
+    return {
+        "race": f"{year} {track}",
+        "year": year,
+        "track": track,
+        "total_laps": race_total_laps,
+        "drivers": drivers,
+        "compounds_available": available,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Main simulation — compare alternate strategy vs actual
+# ---------------------------------------------------------------------------
+
+
+def simulate_strategy(
+    year: int,
+    track: str,
+    driver_code: str,
+    pit_stop_laps: list[int],
+    compounds: list[str],
+) -> dict | None:
+    """
+    Simulate an alternate strategy for a driver and compare to actual.
+
+    Args:
+        year           — race year
+        track          — race name
+        driver_code    — 3-letter driver code
+        pit_stop_laps  — user's chosen pit stop laps (sorted)
+        compounds      — user's chosen compounds per stint
+
+    Returns:
+        driver         — driver info
+        actual         — actual strategy results
+        alternate      — simulated alternate results
+        delta_seconds  — time difference (negative = faster)
+        delta_position — estimated position change
+        verdict        — human-readable summary
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    stints_by_driver = data.get("stints") or {}
+
+    from backend.core.insights import _DRIVER_NAMES
+
+    # Find the driver
+    driver_result = None
+    for r in results:
+        if r["driver"] == driver_code:
+            driver_result = r
+            break
+
+    if driver_result is None:
+        return None
+
+    # Get total laps from stints data (not in results JSON)
+    driver_stints = stints_by_driver.get(driver_code, [])
+    total_laps = driver_stints[-1].get("lap_end", 0) if driver_stints else 0
+    if total_laps < 10:
+        return {"error": "Driver completed too few laps for simulation."}
+
+    # Calculate base lap time from total race laps
+    # Use the winner's total laps as race distance
+    finishers = sorted(
+        [r for r in results if r["finish_position"] is not None],
+        key=lambda r: r["finish_position"],
+    )
+    race_laps = finishers[0].get("total_laps", total_laps) if finishers else total_laps
+
+    # Estimate a base lap time — we use a neutral baseline
+    # Real race times aren't in the index, so we use a nominal value
+    # and the relative comparison still holds
+    base_lap = 90.0  # nominal baseline, cancels out in delta comparison
+
+    # Build actual strategy from stints data
+    driver_stints = stints_by_driver.get(driver_code, [])
+    if driver_stints:
+        actual_pit_laps = []
+        actual_compounds = []
+        for i, s in enumerate(driver_stints):
+            actual_compounds.append(s.get("compound", "MEDIUM"))
+            if i > 0:
+                actual_pit_laps.append(s.get("lap_start", 0) - 1)
+
+        actual_result = estimate_total_race_time(
+            base_lap, total_laps, actual_pit_laps, actual_compounds
+        )
+    else:
+        # No stint data — estimate a 2-stop Medium strategy
+        from backend.core.compound_lookup import estimate_pit_stop_laps
+        est_pits = estimate_pit_stop_laps(total_laps, 2)
+        actual_result = estimate_total_race_time(
+            base_lap, total_laps, est_pits, ["MEDIUM", "MEDIUM", "MEDIUM"]
+        )
+
+    # Simulate alternate strategy
+    alternate_result = estimate_total_race_time(
+        base_lap, total_laps, pit_stop_laps, compounds
+    )
+
+    # Time delta
+    delta_seconds = alternate_result["total_time"] - actual_result["total_time"]
+
+    # Estimate position change from time delta
+    # Rough heuristic: ~1 position per 5 seconds of race time difference
+    actual_pos = driver_result.get("finish_position")
+    if actual_pos is not None:
+        pos_change = round(delta_seconds / 5.0)
+        predicted_pos = max(1, min(len(finishers), actual_pos + pos_change))
+    else:
+        predicted_pos = None
+        pos_change = None
+
+    # Generate verdict
+    if abs(delta_seconds) < 2:
+        verdict = "Roughly the same outcome — your strategy matches the team's call."
+    elif delta_seconds < 0:
+        gain = abs(delta_seconds)
+        if pos_change and pos_change < 0:
+            verdict = f"Your strategy is ~{gain:.0f}s faster. Could have gained {abs(pos_change)} position{'s' if abs(pos_change) > 1 else ''}."
+        else:
+            verdict = f"Your strategy is ~{gain:.0f}s faster, but not enough to change position."
+    else:
+        loss = delta_seconds
+        if pos_change and pos_change > 0:
+            verdict = f"Your strategy is ~{loss:.0f}s slower. Would likely drop {pos_change} position{'s' if pos_change > 1 else ''}."
+        else:
+            verdict = f"Your strategy is ~{loss:.0f}s slower. The team's call was better."
+
+    return {
+        "driver": {
+            "code": driver_code,
+            "name": _DRIVER_NAMES.get(driver_code, driver_code),
+            "team": driver_result.get("team", "Unknown"),
+            "actual_finish": actual_pos,
+            "total_laps": total_laps,
+        },
+        "actual": {
+            "total_time": actual_result["total_time"],
+            "num_stops": actual_result["num_stops"],
+            "stint_times": actual_result["stint_times"],
+        },
+        "alternate": {
+            "total_time": alternate_result["total_time"],
+            "num_stops": alternate_result["num_stops"],
+            "stint_times": alternate_result["stint_times"],
+        },
+        "delta_seconds": round(delta_seconds, 1),
+        "predicted_position": predicted_pos,
+        "position_change": pos_change,
+        "verdict": verdict,
+    }
+
+
+# ---------------------------------------------------------------------------
+# __main__ test
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+
+    print("=== Simulation Context: 2023 British GP ===")
+    ctx = get_simulation_context(2023, "British Grand Prix")
+    if ctx:
+        print(f"Total laps: {ctx['total_laps']}")
+        print(f"Compounds: {ctx['compounds_available']}")
+        print(f"Drivers: {len(ctx['drivers'])}")
+        for d in ctx["drivers"][:3]:
+            stints = " > ".join(s["compound"] for s in d["actual_stints"])
+            print(f"  {d['code']} P{d['finish']} ({d['actual_stops']}-stop): {stints}")
+
+    print("\n=== Simulate: VER switches to 2-stop S>M>S ===")
+    result = simulate_strategy(
+        2023, "British Grand Prix", "VER",
+        pit_stop_laps=[15, 35],
+        compounds=["SOFT", "MEDIUM", "SOFT"],
+    )
+    if result:
+        print(f"Actual: {result['actual']['num_stops']}-stop, {result['actual']['total_time']:.0f}s")
+        print(f"Alt:    {result['alternate']['num_stops']}-stop, {result['alternate']['total_time']:.0f}s")
+        print(f"Delta:  {result['delta_seconds']:+.1f}s")
+        print(f"Verdict: {result['verdict']}")
+
+    print("\n=== Simulate: HAM tries 1-stop H ===")
+    result2 = simulate_strategy(
+        2023, "British Grand Prix", "HAM",
+        pit_stop_laps=[20],
+        compounds=["SOFT", "HARD"],
+    )
+    if result2:
+        print(f"Actual finish: P{result2['driver']['actual_finish']}")
+        print(f"Delta: {result2['delta_seconds']:+.1f}s")
+        print(f"Predicted: P{result2['predicted_position']}")
+        print(f"Verdict: {result2['verdict']}")
