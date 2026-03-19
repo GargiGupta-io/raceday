@@ -1282,3 +1282,26 @@ The race page now shows team radio highlights for 2023+ races. Scroll down past 
 
 **Files changed**
 ~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 39 (6H) — Visual Test
+*Completed: 2026-03-19*
+
+**What was built**
+- Full end-to-end verification of radio feature across all eras
+
+**Results**
+- 2023 British GP: 5 clips from 118 total, PER/VER/HAM with team colours and audio URLs ✓
+- 2024 Abu Dhabi GP: 5 clips from 53 total, LEC top clip ✓
+- 2014 Australian GP: available=false, clean reason message, 0 clips ✓
+- 2010 British GP: available=false (pre-2023) ✓
+- Audio MP3: HTTP 200, 347KB from F1 CDN ✓
+- All 4 frontend pages load at 200 ✓
+
+**Files changed**
+(none — verification only)
+
+---
+
+## Phase 6H COMPLETE — Radio Sentiment + Audio Playback
