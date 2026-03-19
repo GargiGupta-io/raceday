@@ -1478,3 +1478,27 @@ The race page now has an interactive strategy sandbox instead of the old MCQ qui
 + created: frontend/app/components/StrategySimulator.tsx
 ~ modified: frontend/app/races/[year]/[track]/page.tsx
 - deleted: frontend/app/components/PredictionQuiz.tsx
+
+---
+
+## ✅ Step 55 (6I-v2) — Visual Test
+*Completed: 2026-03-20*
+
+**What was built**
+- Full end-to-end verification of strategy simulator across all eras
+
+**Results**
+- 2023 British GP sim-context: 52 laps, 3 compounds, 20 drivers, VER 1-stop M→S ✓
+- 2023 VER 2-stop S→M→S (ML): +22.3s, P1→P5 ✓
+- 2023 HAM 0-stop Hard (ML): +5.2s, P3→P4 ✓
+- 2014 ROS 1-stop S→H (physics): -7.7s, gain 2 positions ✓
+- 2010 WEB 1-stop S→H (physics): +0.9s, same outcome ✓
+- Bad request: 400 with clean error message ✓
+- All 3 frontend pages load at 200 ✓
+
+**Files changed**
+(none — verification only)
+
+---
+
+## Phase 6I (v2) COMPLETE — Strategy Simulator ("What If?")
