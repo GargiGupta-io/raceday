@@ -1198,3 +1198,17 @@ Raceday can now fetch every team radio recording from any race 2023 onwards. Giv
 
 **Files changed**
 + created: backend/core/openf1_radio.py
+
+---
+
+## ✅ Step 33 (6H) — Whisper Transcription Pipeline
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/radio_transcriber.py` — multi-backend transcription with download caching
+
+**In plain English**
+The system can now download radio MP3 files from Formula 1's servers and transcribe them to text. It supports three transcription backends in priority order: Groq API (free and fast), OpenAI API, or local Whisper. If none are configured, it gracefully returns clips without transcripts — the audio playback still works, you just don't get text. Downloaded MP3s and transcriptions are cached to disk so each clip is only processed once. To enable transcription, add `GROQ_API_KEY=your_key` to the `.env` file.
+
+**Files changed**
++ created: backend/core/radio_transcriber.py
