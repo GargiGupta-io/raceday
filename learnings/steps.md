@@ -1321,3 +1321,17 @@ The backend can now auto-generate a multiple-choice quiz about any race. It crea
 
 **Files changed**
 ~ modified: backend/core/insights.py
+
+---
+
+## ✅ Step 41 (6I) — /quiz API Endpoint
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/api.py` — GET /races/{year}/{track}/quiz
+
+**In plain English**
+The quiz data is now available over HTTP. Hit `/races/2023/British%20Grand%20Prix/quiz` and get back 7 multiple-choice questions with 4 options each and the correct answer index. Each question is tagged by category (result, grid, weather, strategy, drama). Non-existent races return 404.
+
+**Files changed**
+~ modified: backend/api.py
