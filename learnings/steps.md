@@ -1254,3 +1254,17 @@ The radio data is now available over HTTP. Hit `/races/2023/British%20Grand%20Pr
 
 **Files changed**
 ~ modified: backend/api.py
+
+---
+
+## ✅ Step 37 (6H) — RadioMoments.tsx Component
+*Completed: 2026-03-19*
+
+**What was built**
+- `frontend/app/components/RadioMoments.tsx` — radio clip cards with audio playback
+
+**In plain English**
+The frontend now has a component that shows team radio highlights. Each clip appears as a card with a sentiment icon (party popper for celebrations, megaphone for frustration, target for strategy calls), the driver's name with their team colour dot, the lap number, and an audio player. Click the play button and you hear the actual team radio recording directly from Formula 1's servers. If transcripts are available, the text appears in italics below the driver name. For pre-2023 races, the section simply doesn't appear.
+
+**Files changed**
++ created: frontend/app/components/RadioMoments.tsx
