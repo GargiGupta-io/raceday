@@ -14,6 +14,7 @@ import GoDeeper, { GoDeeperItem } from "@/app/components/GoDeeper";
 import RaceStory from "@/app/components/RaceStory";
 import PatternPrecedents from "@/app/components/PatternPrecedents";
 import RadioMoments from "@/app/components/RadioMoments";
+import PredictionQuiz from "@/app/components/PredictionQuiz";
 
 const API = "http://localhost:8888";
 
@@ -136,6 +137,9 @@ export default function RacePage({
 
               {/* TEAM RADIO (2023+ only) */}
               <RadioMoments year={year} track={trackName} />
+
+              {/* TEST YOUR KNOWLEDGE */}
+              <PredictionQuiz year={year} track={trackName} />
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <GoDeeper>
