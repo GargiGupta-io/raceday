@@ -1305,3 +1305,19 @@ The race page now shows team radio highlights for 2023+ races. Scroll down past 
 ---
 
 ## Phase 6H COMPLETE — Radio Sentiment + Audio Playback
+
+---
+
+# Phase 6I — Test Your Knowledge (Quiz Mode)
+
+## ✅ Step 40 (6I) — Quiz Question Generator
+*Completed: 2026-03-19*
+
+**What was built**
+- `backend/core/insights.py` — generate_race_quiz(year, track)
+
+**In plain English**
+The backend can now auto-generate a multiple-choice quiz about any race. It creates 5-7 questions covering who won, who made the podium, the winner's grid position, weather, retirements, pit stop strategy, and the biggest mover. Each question has 4 options with one correct answer. Wrong answers are randomly selected from real drivers/data so they look plausible. Tested on 2023 British GP (7 questions) and 2014 Australian GP (7 questions).
+
+**Files changed**
+~ modified: backend/core/insights.py
