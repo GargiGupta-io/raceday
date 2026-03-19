@@ -184,8 +184,8 @@ export default function RacePage({
 
             </div>
 
-            {/* Sidebar — below tabs on mobile, right column on desktop */}
-            <div className="w-full lg:w-72 shrink-0">
+            {/* Sidebar — Race Intelligence + Strategy Simulator */}
+            <div className="w-full lg:w-72 shrink-0 space-y-6">
               {sidebar ? (
                 <FactsSidebar data={sidebar} />
               ) : (
@@ -198,13 +198,10 @@ export default function RacePage({
                   </div>
                 </div>
               )}
+
+              <StrategySimulator year={year} track={trackName} />
             </div>
 
-          </div>
-
-          {/* STRATEGY SIMULATOR — full width, below main + sidebar */}
-          <div className="mt-8">
-            <StrategySimulator year={year} track={trackName} />
           </div>
         </>
         )}
