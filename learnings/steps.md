@@ -1363,3 +1363,25 @@ Every race page now has a quiz at the bottom of the main story flow. After readi
 
 **Files changed**
 ~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## ✅ Step 44 (6I) — Visual Test
+*Completed: 2026-03-19*
+
+**What was built**
+- Full end-to-end verification of quiz feature across all eras
+
+**Results**
+- 2023 British GP: 7 questions, all 7 categories covered, valid structure ✓
+- 2014 Australian GP: 7 questions including strategy (has stints) ✓
+- 2010 British GP: 6 questions, no strategy Q (no stint data — correct) ✓
+- Non-existent race: 404 ✓
+- All 4 frontend pages load at 200 ✓
+
+**Files changed**
+(none — verification only)
+
+---
+
+## Phase 6I COMPLETE — Test Your Knowledge (Quiz Mode)
