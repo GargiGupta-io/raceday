@@ -1335,3 +1335,17 @@ The quiz data is now available over HTTP. Hit `/races/2023/British%20Grand%20Pri
 
 **Files changed**
 ~ modified: backend/api.py
+
+---
+
+## ✅ Step 42 (6I) — PredictionQuiz.tsx Component
+*Completed: 2026-03-19*
+
+**What was built**
+- `frontend/app/components/PredictionQuiz.tsx` — interactive quiz with answer selection and score reveal
+
+**In plain English**
+The race page now has an interactive quiz section. It starts collapsed with a "Take the quiz" button. Click it and 5-7 questions expand, each with 4 clickable options and a category icon (trophy for results, car for grid, umbrella for weather, wrench for strategy, lightning for drama). Select all answers and hit "Reveal answers" — correct answers highlight green, wrong ones red, and you get a score with feedback like "Perfect!" or "Time to re-read the race story!" You can retry as many times as you want.
+
+**Files changed**
++ created: frontend/app/components/PredictionQuiz.tsx
