@@ -12,7 +12,7 @@ export default function Navbar() {
 
   // Extract year from URL if present, default to 2023
   const yearMatch = pathname.match(/\/(\d{4})/);
-  const activeYear = yearMatch ? parseInt(yearMatch[1]) : 2023;
+  const activeYear = yearMatch ? parseInt(yearMatch[1]) : 2025;
 
   const isChampionship = pathname.startsWith("/championship");
   const isPatterns = pathname.startsWith("/patterns");

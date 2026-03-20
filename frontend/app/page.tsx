@@ -55,8 +55,7 @@ function Home() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const urlYear = searchParams.get("year");
-  const [year, setYear] = useState(urlYear ? parseInt(urlYear) : 2025);
-  const hasSelectedYear = !!urlYear;
+  const [year, setYear] = useState<number | null>(urlYear ? parseInt(urlYear) : null);
   const [seasons, setSeasons] = useState<SeasonSummary[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(false);
@@ -75,8 +74,9 @@ function Home() {
       .catch(() => {});
   }, []);
 
-  // Fetch races for selected year
+  // Fetch races for selected year (only when a year is selected)
   useEffect(() => {
+    if (year === null) return;
     setLoading(true);
     setError(null);
     fetch(`${API}/races/${year}`)
@@ -106,7 +106,7 @@ function Home() {
                 key={s.year}
                 onClick={() => { setYear(s.year); router.push(`/?year=${s.year}`); }}
                 className={`shrink-0 rounded px-4 py-2.5 text-left transition-all border-b-2 ${
-                  s.year === year
+                  year !== null && s.year === year
                     ? "bg-zinc-800/80 border-red-500 text-white"
                     : "bg-transparent border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50"
                 }`}
@@ -120,6 +120,9 @@ function Home() {
             ))}
           </div>
         </div>
+
+        {/* Season content — only after selecting a year */}
+        {year !== null && (<>
 
         {/* Season header + weather filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
@@ -170,8 +173,10 @@ function Home() {
           );
         })()}
 
+        </>)}
+
         {/* Welcome section — visible until user selects a year */}
-        {!hasSelectedYear && (
+        {year === null && (
           <div className="mt-16 mb-8 max-w-2xl mx-auto text-center">
             <h3 className="text-lg font-semibold text-zinc-300 mb-3">
               What is Raceday?
