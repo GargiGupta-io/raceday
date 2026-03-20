@@ -1237,7 +1237,7 @@ def get_season_summary(year: int) -> dict | None:
 def get_all_season_summaries() -> list[dict]:
     """Return season summaries for all years 2010–2024."""
     summaries = []
-    for year in range(2024, 2009, -1):
+    for year in range(2025, 2009, -1):
         s = get_season_summary(year)
         if s:
             summaries.append(s)
