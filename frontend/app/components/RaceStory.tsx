@@ -54,13 +54,6 @@ export default function RaceStory({
 
   return (
     <div>
-      {/* Tagline */}
-      {data.tagline && (
-        <p className="text-sm italic text-zinc-400 mb-4">
-          &ldquo;{data.tagline}&rdquo;
-        </p>
-      )}
-
       {/* Section header */}
       <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
         The Race Story

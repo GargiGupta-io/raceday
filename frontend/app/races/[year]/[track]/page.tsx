@@ -64,6 +64,7 @@ export default function RacePage({
   const [standings, setStandings] = useState<StandingEntry[] | null>(null);
   const [strategy, setStrategy] = useState<StrategyEntry[] | null>(null);
   const [sidebar, setSidebar] = useState<SidebarData | null>(null);
+  const [tagline, setTagline] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [strategyMode, setStrategyMode] = useState<"story" | "data">("story");
@@ -90,6 +91,12 @@ export default function RacePage({
         setLoading(false);
       });
 
+    // Fetch tagline independently
+    fetch(`${base}/story`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d?.tagline) setTagline(d.tagline); })
+      .catch(() => {});
+
     // Fetch sidebar independently (doesn't block tabs)
     fetch(`${base}/sidebar`)
       .then((r) => {
@@ -110,6 +117,11 @@ export default function RacePage({
         <div className="mb-8">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
           <h1 className="text-2xl font-bold text-white">{trackName}</h1>
+          {tagline && (
+            <p className="text-sm italic text-zinc-500 mt-2">
+              &ldquo;{tagline}&rdquo;
+            </p>
+          )}
         </div>
 
         {loading && <p className="text-zinc-500 text-sm">Loading race data...</p>}
