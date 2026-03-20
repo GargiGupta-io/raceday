@@ -118,8 +118,10 @@ export default function RacePage({
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
           <h1 className="text-2xl font-bold text-white">{trackName}</h1>
           {tagline && (
-            <p className="text-sm italic text-zinc-500 mt-2">
-              &ldquo;{tagline}&rdquo;
+            <p className="mt-2">
+              <span className="text-sm italic text-zinc-300 bg-zinc-800/60 px-3 py-1 rounded-md">
+                &ldquo;{tagline}&rdquo;
+              </span>
             </p>
           )}
         </div>

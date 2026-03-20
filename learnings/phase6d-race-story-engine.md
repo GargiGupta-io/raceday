@@ -253,13 +253,25 @@ export default function RaceStory({ year, track }: { year: string; track: string
 
 Technical detail: The tagline is rendered in italics with `&ldquo;` / `&rdquo;` (curly quotes) to give it a literary feel — like a quote on a movie poster. The `leading-relaxed` class on paragraphs adds extra line spacing (1.625 line-height) for readability. The badges at the bottom use `text-[10px]` (Tailwind arbitrary value for 10px font) — tiny, factual, non-intrusive.
 
-The component is placed between Key Moments and Go Deeper in the race page scroll order:
+The **tagline** is displayed in the race header, directly below the circuit name — it's the first thing a user reads before any data. It's styled as highlighted text (lighter colour on a subtle dark background pill) so it stands out from the header but doesn't compete with the race name. The tagline is fetched independently from the `/story` endpoint so it loads without blocking the main data.
+
+The **narrative** (RaceStory component) is placed between Key Moments and Go Deeper in the race page scroll order.
 
 ```
-Podium → Key Moments → RACE STORY → Go Deeper
+2024
+Bahrain Grand Prix
+"A masterclass from lights to flag"    ← tagline (highlighted, in header)
+
+THE RESULT
+...
+Key Moments
+...
+THE RACE STORY                         ← narrative (in main scroll)
+...
+Go Deeper
 ```
 
-This positions the story as the natural reading continuation: you see who won, you see the highlights, then you read the full story. If you want more detail after that, you expand Go Deeper.
+The tagline lives in `page.tsx` (race header), NOT in `RaceStory.tsx`. This separation means the tagline appears immediately at the top while the full narrative loads further down the scroll. The user reads the tagline, sees the podium, sees the highlights, THEN reads the full story — a natural reading flow.
 
 ## What We Built
 
@@ -272,8 +284,8 @@ Phase 6D added three files and modified two:
 | `insights.py` (modified) | `generate_race_tagline()` — priority-based one-line hook |
 | `insights.py` (modified) | `get_race_story()` — multi-paragraph narrative assembly |
 | `api.py` (modified) | `GET /races/{year}/{track}/story` — combined endpoint |
-| `RaceStory.tsx` (new) | Frontend component rendering tagline + narrative + badges |
-| `page.tsx` (modified) | Wired RaceStory between Key Moments and Go Deeper |
+| `RaceStory.tsx` (new) | Frontend component rendering narrative + badges (tagline removed — moved to header) |
+| `page.tsx` (modified) | Tagline in race header (highlighted pill), RaceStory between Key Moments and Go Deeper |
 
 ### Sample Outputs
 
