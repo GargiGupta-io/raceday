@@ -194,99 +194,10 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
   );
 }
 
-// Option B: Static car as background decoration, cards fade up
-function StaticCarIntro({ onStart }: { onStart: () => void }) {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100);
-    return () => clearTimeout(t);
-  }, []);
-
-  return (
-    <div className="relative overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-950/30 via-zinc-950 to-zinc-950" />
-
-      {/* Large car silhouette as background — rotated, semi-transparent */}
-      <div className="absolute -right-20 top-1/2 -translate-y-1/2 opacity-[0.04] pointer-events-none">
-        <F1CarSilhouette className="w-[600px] h-[180px] text-white -rotate-12" />
-      </div>
-
-      {/* Red glow accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-red-600/8 rounded-full blur-[100px]" />
-
-      <div className="relative max-w-5xl mx-auto px-6 py-16 sm:py-24">
-        {/* Title */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-          }`}
-        >
-          <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-white mb-4">
-            RACE
-            <span className="text-red-500">DAY</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-zinc-400 font-light max-w-md mx-auto">
-            Every race has a story. We tell it with data, strategy, and the driver&apos;s own voice.
-          </p>
-        </div>
-
-        {/* Feature cards — fade up with stagger */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-14">
-          {FEATURES.map((f, i) => (
-            <div
-              key={i}
-              className={`relative rounded-xl bg-zinc-900/60 border border-zinc-800/50 p-5 backdrop-blur transition-all duration-700 hover:border-zinc-700 hover:bg-zinc-900/90 group ${
-                visible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: `${300 + i * 150}ms` }}
-            >
-              <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${f.accent} opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none`} />
-              <span className="text-2xl mb-2 block relative">{f.icon}</span>
-              <p className="text-sm font-semibold text-zinc-100 mb-1 relative">
-                {f.title}
-              </p>
-              <p className="text-xs text-zinc-500 leading-relaxed relative">
-                {f.desc}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div
-          className={`text-center transition-all duration-700 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: "1200ms" }}
-        >
-          <button
-            onClick={onStart}
-            className="rounded-lg bg-red-600 hover:bg-red-500 text-white px-8 py-3 text-sm font-semibold transition-all shadow-lg shadow-red-600/20 hover:shadow-red-500/30"
-          >
-            Pick a season to start
-          </button>
-          <p className="text-[10px] text-zinc-600 mt-3">
-            No account needed — just explore.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function IntroHero({
   onStart,
-  variant = "animated",
 }: {
   onStart: () => void;
-  variant?: "animated" | "static";
 }) {
-  if (variant === "static") {
-    return <StaticCarIntro onStart={onStart} />;
-  }
   return <AnimatedCarIntro onStart={onStart} />;
 }

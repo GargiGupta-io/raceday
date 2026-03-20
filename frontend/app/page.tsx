@@ -179,7 +179,6 @@ function Home() {
         {/* Intro hero — visible until user selects a year */}
         {year === null && (
           <IntroHero
-            variant="static"
             onStart={() => {
               const firstYear = seasons.length > 0 ? seasons[0].year : 2025;
               setYear(firstYear);
