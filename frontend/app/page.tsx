@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getCircuitSvg } from "@/app/lib/circuits";
@@ -53,8 +53,10 @@ export default function HomePage() {
 
 function Home() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const urlYear = searchParams.get("year");
-  const [year, setYear] = useState(urlYear ? parseInt(urlYear) : 2024);
+  const [year, setYear] = useState(urlYear ? parseInt(urlYear) : 2025);
+  const hasSelectedYear = !!urlYear;
   const [seasons, setSeasons] = useState<SeasonSummary[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
   const [loading, setLoading] = useState(false);
@@ -102,7 +104,7 @@ function Home() {
             {seasons.map((s) => (
               <button
                 key={s.year}
-                onClick={() => setYear(s.year)}
+                onClick={() => { setYear(s.year); router.push(`/?year=${s.year}`); }}
                 className={`shrink-0 rounded px-4 py-2.5 text-left transition-all border-b-2 ${
                   s.year === year
                     ? "bg-zinc-800/80 border-red-500 text-white"
@@ -168,22 +170,24 @@ function Home() {
           );
         })()}
 
-        {/* Welcome section */}
-        <div className="mt-16 mb-8 max-w-2xl mx-auto text-center">
-          <h3 className="text-lg font-semibold text-zinc-300 mb-3">
-            What is Raceday?
-          </h3>
-          <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-            Raceday turns every Formula 1 race into a story. Pick a season, pick a race,
-            and read what happened — who won, what went wrong, and why it mattered.
-            No jargon, no spreadsheets. Just the race, explained.
-          </p>
-          <p className="text-sm text-zinc-500 leading-relaxed">
-            If you want to go deeper, every race has expandable sections with strategy
-            breakdowns, season standings, and teammate battles. Covering every race
-            from 2010 to 2024.
-          </p>
-        </div>
+        {/* Welcome section — visible until user selects a year */}
+        {!hasSelectedYear && (
+          <div className="mt-16 mb-8 max-w-2xl mx-auto text-center">
+            <h3 className="text-lg font-semibold text-zinc-300 mb-3">
+              What is Raceday?
+            </h3>
+            <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+              Raceday turns every Formula 1 race into a story. Pick a season, pick a race,
+              and read what happened — who won, what went wrong, and why it mattered.
+              No jargon, no spreadsheets. Just the race, explained.
+            </p>
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              If you want to go deeper, every race has expandable sections with strategy
+              breakdowns, season standings, and teammate battles. Covering every race
+              from 2010 to 2025.
+            </p>
+          </div>
+        )}
 
       </div>
     </div>

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # Background indexer
 # ---------------------------------------------------------------------------
 
-SEASONS_TO_INDEX = list(range(2010, 2025))  # 2010–2024
+SEASONS_TO_INDEX = list(range(2010, 2026))  # 2010–2025
 
 _indexing_status = {
     "running": False,
