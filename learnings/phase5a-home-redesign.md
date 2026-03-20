@@ -331,6 +331,25 @@ The "What is Raceday?" intro section at the bottom of the home page now only sho
 ### Sidebar Navigation Decision
 Evaluated adding a three-bar hamburger menu sidebar (like most dashboard sites). Decision: **not yet**. Raceday only has 3 nav items (Races, Championship, Patterns) — a sidebar would hide them behind an extra click for no benefit. Revisit when nav items exceed 6-8 (e.g., user profiles, saved strategies, history).
 
+### 2025 Season Indexing
+All 24 races of the 2025 season were indexed via FastF1 (18 fresh + 6 already cached). The `get_all_season_summaries()` function in insights.py was hardcoded to `range(2024, 2009, -1)` — updated to `range(2025, 2009, -1)` so the 2025 year pill appears. 2025 champion: Norris, 7 wins.
+
+### Animated Intro Hero (IntroHero.tsx)
+The plain text "What is Raceday?" welcome section was replaced with a full animated hero page:
+- **Red-to-black gradient background** with speed-line accents
+- **"RACEDAY" title** in Racing Sans One font (Google Fonts, motorsport style) with "DAY" in red
+- **F1 car SVG silhouette** drives right-to-left across the screen with a red trail line
+- **5 feature cards** (Race Stories, Strategy Simulator, Team Radio, Pattern Finder, 15 Seasons) slide in from the right with staggered delays, trailing behind the car
+- **Glowing red CTA button** — "Pick a season to start"
+- Year scrollbar and race cards are completely hidden until a year is selected
+- Two variants were built (animated car + static background), static was deleted after testing
+
+### Racing Font
+Added **Racing Sans One** from Google Fonts as `--font-racing` CSS variable. Used for the RACEDAY title in the intro hero. Loaded via Next.js `next/font/google` for optimal performance (self-hosted, no external requests).
+
+### Intro-First Page Flow
+The home page now shows the intro hero on first visit (no `?year=` URL param). The year scrollbar, season header, weather filter, and race cards are ALL hidden until the user clicks "Pick a season to start" or selects a year. This makes the first impression dramatic rather than dumping data immediately.
+
 ---
 
-*Updated: 2026-03-20 | Project: Raceday | Phase 5A + 6B fixes | Files: insights.py, api.py, page.tsx, Navbar.tsx*
+*Updated: 2026-03-20 | Project: Raceday | Phase 5A + 6B fixes | Files: insights.py, api.py, page.tsx, Navbar.tsx, layout.tsx, IntroHero.tsx*

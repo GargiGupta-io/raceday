@@ -487,3 +487,23 @@ The current tagline only looks at the single race. A more powerful version could
 ---
 
 *Generated: 2026-03-18 | Project: Raceday | Phase 6D complete | Files: insights.py, api.py, RaceStory.tsx, page.tsx*
+
+---
+
+## Post-Phase Updates (2026-03-20)
+
+### Tagline Moved to Race Header
+The tagline was originally rendered inside `RaceStory.tsx`, buried below Key Moments. It's now displayed **directly below the circuit name** in the race page header (`page.tsx`), styled as a highlighted pill (lighter text on `bg-zinc-800/60` rounded background). This makes it the first thing users read — setting the emotional tone before any data appears.
+
+The tagline is fetched independently from the `/story` endpoint so it loads without blocking the main data. `RaceStory.tsx` no longer renders the tagline (removed to avoid duplication).
+
+```
+2024
+Bahrain Grand Prix
+"A masterclass from lights to flag"    ← highlighted tagline
+
+THE RESULT
+...
+```
+
+*Updated: 2026-03-20 | Files: page.tsx (tagline in header), RaceStory.tsx (tagline removed)*
