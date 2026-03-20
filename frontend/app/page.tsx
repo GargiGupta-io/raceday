@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getCircuitSvg } from "@/app/lib/circuits";
+import IntroHero from "@/app/components/IntroHero";
 
 const API = "http://localhost:8888";
 
@@ -175,23 +176,16 @@ function Home() {
 
         </>)}
 
-        {/* Welcome section — visible until user selects a year */}
+        {/* Intro hero — visible until user selects a year */}
         {year === null && (
-          <div className="mt-16 mb-8 max-w-2xl mx-auto text-center">
-            <h3 className="text-lg font-semibold text-zinc-300 mb-3">
-              What is Raceday?
-            </h3>
-            <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-              Raceday turns every Formula 1 race into a story. Pick a season, pick a race,
-              and read what happened — who won, what went wrong, and why it mattered.
-              No jargon, no spreadsheets. Just the race, explained.
-            </p>
-            <p className="text-sm text-zinc-500 leading-relaxed">
-              If you want to go deeper, every race has expandable sections with strategy
-              breakdowns, season standings, and teammate battles. Covering every race
-              from 2010 to 2025.
-            </p>
-          </div>
+          <IntroHero
+            variant="animated"
+            onStart={() => {
+              const firstYear = seasons.length > 0 ? seasons[0].year : 2025;
+              setYear(firstYear);
+              router.push(`/?year=${firstYear}`);
+            }}
+          />
         )}
 
       </div>
