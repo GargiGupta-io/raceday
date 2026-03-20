@@ -121,7 +121,7 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <h1 className="text-5xl sm:text-6xl font-black tracking-tighter text-white mb-3">
+          <h1 className="text-5xl sm:text-7xl tracking-tight text-white mb-3" style={{ fontFamily: "var(--font-racing)" }}>
             RACE
             <span className="text-red-500">DAY</span>
           </h1>
