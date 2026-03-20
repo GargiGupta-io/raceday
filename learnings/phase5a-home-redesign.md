@@ -314,4 +314,23 @@ GET /races/{year}  (extended)
 
 ---
 
-*Updated: 2026-03-17 | Project: Raceday | Phase 5A complete | Files: insights.py, api.py, page.tsx*
+## Post-Phase Updates (Phase 6B Fixes, 2026-03-20)
+
+### 2025 Season Added
+The year range was extended from 2010-2024 to **2010-2025**. Three places updated:
+- `Navbar.tsx` YEARS array — dropdown now starts at 2025
+- `page.tsx` default year — home page opens on 2025 instead of 2024
+- `api.py` SEASONS_TO_INDEX — backend indexes 2025 on startup
+
+### Year Selectors Synced
+The home page year pills and the navbar dropdown were operating independently — clicking a year pill changed the home page content but didn't update the navbar dropdown, and vice versa. Fixed by making year pills navigate via URL (`router.push(/?year=2023)`) instead of just setting local state. Now both selectors read from the same URL parameter and stay in sync.
+
+### Welcome Section Behaviour
+The "What is Raceday?" intro section at the bottom of the home page now only shows when no year has been explicitly selected (first visit). Once a user clicks any year pill, the intro disappears — they've committed to browsing and don't need the explainer anymore. Detected via `!!searchParams.get("year")`.
+
+### Sidebar Navigation Decision
+Evaluated adding a three-bar hamburger menu sidebar (like most dashboard sites). Decision: **not yet**. Raceday only has 3 nav items (Races, Championship, Patterns) — a sidebar would hide them behind an extra click for no benefit. Revisit when nav items exceed 6-8 (e.g., user profiles, saved strategies, history).
+
+---
+
+*Updated: 2026-03-20 | Project: Raceday | Phase 5A + 6B fixes | Files: insights.py, api.py, page.tsx, Navbar.tsx*
