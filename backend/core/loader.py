@@ -296,7 +296,9 @@ def get_lap_times(year: int, track: str) -> dict | None:
         # We'll filter these when building the model, not here
 
         compound = str(row.get("Compound", "UNKNOWN"))
-        stint = int(row.get("Stint", 1)) if row.get("Stint") is not None else 1
+        import pandas as pd
+        stint_val = row.get("Stint")
+        stint = int(stint_val) if stint_val is not None and pd.notna(stint_val) else 1
 
         # Detect pit stops — PitInTime is NaT for non-pit laps in pandas
         import pandas as pd
