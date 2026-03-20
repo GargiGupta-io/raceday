@@ -99,8 +99,8 @@ function Home() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-8">
 
-        {/* Year selector — compact scrollable row */}
-        <div className="mb-8 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
+        {/* Year selector — only show after a year is picked */}
+        {year !== null && <div className="mb-8 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
           <div className="flex gap-1.5 min-w-max">
             {seasons.map((s) => (
               <button
@@ -120,7 +120,7 @@ function Home() {
               </button>
             ))}
           </div>
-        </div>
+        </div>}
 
         {/* Season content — only after selecting a year */}
         {year !== null && (<>
@@ -179,7 +179,7 @@ function Home() {
         {/* Intro hero — visible until user selects a year */}
         {year === null && (
           <IntroHero
-            variant="animated"
+            variant="static"
             onStart={() => {
               const firstYear = seasons.length > 0 ? seasons[0].year : 2025;
               setYear(firstYear);
