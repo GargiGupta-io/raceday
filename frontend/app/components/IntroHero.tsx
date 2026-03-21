@@ -177,7 +177,7 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
           className={`text-center transition-all duration-700 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
-          style={{ transitionDelay: "2000ms" }}
+          style={{ transitionDelay: "2800ms" }}
         >
           <button
             onClick={onStart}

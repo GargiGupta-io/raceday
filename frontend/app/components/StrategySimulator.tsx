@@ -138,12 +138,14 @@ export default function StrategySimulator({
 
   // Fetch context
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setResult(null);
     setExpanded(false);
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/sim-context`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
+        if (cancelled) return;
         setContext(d);
         if (d && d.drivers.length > 0) {
           setSelectedDriver(d.drivers[0].code);
@@ -151,9 +153,11 @@ export default function StrategySimulator({
         setLoading(false);
       })
       .catch(() => {
+        if (cancelled) return;
         setContext(null);
         setLoading(false);
       });
+    return () => { cancelled = true; };
   }, [year, track]);
 
   // Reset strategy when driver or stop count changes

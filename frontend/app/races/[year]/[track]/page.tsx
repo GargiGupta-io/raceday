@@ -120,13 +120,15 @@ export default function RacePage({
         <div className="mb-8">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
           <h1 className="text-2xl font-bold text-white">{trackName}</h1>
-          {tagline && (
-            <p className="mt-2">
-              <span className="text-sm italic text-zinc-300 bg-zinc-800/60 px-3 py-1 rounded-md">
-                &ldquo;{tagline}&rdquo;
-              </span>
-            </p>
-          )}
+          <div className="h-8 mt-2">
+            {tagline && (
+              <p className="animate-[fadeIn_0.5s_ease-in]">
+                <span className="text-sm italic text-zinc-300 bg-zinc-800/60 px-3 py-1 rounded-md">
+                  &ldquo;{tagline}&rdquo;
+                </span>
+              </p>
+            )}
+          </div>
         </div>
 
         {loading && <p className="text-zinc-500 text-sm">Loading race data...</p>}

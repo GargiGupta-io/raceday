@@ -113,6 +113,7 @@ export default function RadioMoments({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/radio`)
       .then((r) => {
@@ -120,13 +121,16 @@ export default function RadioMoments({
         return r.json();
       })
       .then((d) => {
+        if (cancelled) return;
         setData(d);
         setLoading(false);
       })
       .catch(() => {
+        if (cancelled) return;
         setData(null);
         setLoading(false);
       });
+    return () => { cancelled = true; };
   }, [year, track]);
 
   if (loading) {
