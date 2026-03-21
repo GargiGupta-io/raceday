@@ -106,23 +106,24 @@ export default function ChampionshipPage({
 
             {/* Leader card */}
             {leader && (
-              <div className="rounded-lg bg-zinc-900 border border-yellow-500/30 p-6 flex items-center justify-between">
-                <div>
+              <div className="rounded-lg bg-zinc-900 border border-yellow-500/30 p-4 sm:p-6 flex items-center justify-between gap-4">
+                <div className="min-w-0">
                   <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Championship leader</p>
-                  <p className="text-3xl font-bold text-white tracking-tight">{leader.driver}</p>
-                  <p className="mt-1 text-sm text-zinc-400">{leader.team}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight truncate">{leader.driver}</p>
+                  <p className="mt-1 text-sm text-zinc-400 truncate">{leader.team}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-3xl font-bold text-yellow-400">{leader.points}</p>
+                <div className="text-right shrink-0">
+                  <p className="text-2xl sm:text-3xl font-bold text-yellow-400">{leader.points}</p>
                   <p className="text-xs text-zinc-500 mt-1">points</p>
                 </div>
               </div>
             )}
 
             {/* Full table */}
-            <div className="rounded-lg bg-zinc-900 overflow-hidden">
+            <div className="rounded-lg bg-zinc-900 overflow-x-auto">
+              <div className="min-w-[20rem]">
               {/* Header */}
-              <div className="grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-3 px-5 py-2 border-b border-zinc-800">
+              <div className="grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 px-3 sm:px-5 py-2 border-b border-zinc-800">
                 <span className="text-xs text-zinc-600 text-right">P</span>
                 <span className="text-xs text-zinc-600">Driver</span>
                 <span className="text-xs text-zinc-600 text-right">Points</span>
@@ -133,7 +134,7 @@ export default function ChampionshipPage({
               {standings.map((entry) => (
                 <div
                   key={entry.driver}
-                  className={`grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-3 items-center px-5 py-3 border-b border-zinc-800/60 last:border-0 ${
+                  className={`grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 items-center px-3 sm:px-5 py-3 border-b border-zinc-800/60 last:border-0 ${
                     entry.position === 1 ? "bg-yellow-500/5" : ""
                   }`}
                 >
@@ -171,6 +172,7 @@ export default function ChampionshipPage({
                   <span className="text-sm text-zinc-500 text-right">{entry.races}</span>
                 </div>
               ))}
+              </div>
             </div>
 
           </div>

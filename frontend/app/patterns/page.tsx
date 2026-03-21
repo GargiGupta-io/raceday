@@ -92,7 +92,7 @@ export default function PatternFinderPage() {
 
         {/* Filter form */}
         <div className="rounded-lg bg-zinc-900 p-5 mb-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4">
             {/* Circuit */}
             <div>
               <label className="block text-xs text-zinc-500 mb-1">Circuit</label>
