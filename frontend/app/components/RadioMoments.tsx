@@ -25,21 +25,23 @@ interface RadioData {
   reason?: string;
 }
 
-const SENTIMENT_STYLE: Record<string, { icon: string; color: string; label: string }> = {
-  celebration: { icon: "\u{1F389}", color: "text-green-400", label: "Celebration" },
-  frustration: { icon: "\u{1F4E2}", color: "text-red-400", label: "Frustration" },
-  strategy:    { icon: "\u{1F3AF}", color: "text-blue-400", label: "Strategy call" },
-  tyre_deg:    { icon: "\u26A0",    color: "text-amber-400", label: "Tyre trouble" },
-  neutral:     { icon: "\u{1F3A4}", color: "text-zinc-400", label: "Team radio" },
-  unknown:     { icon: "\u{1F50A}", color: "text-zinc-400", label: "Team radio" },
+const SENTIMENT_LABEL: Record<string, string> = {
+  celebration: "Celebration",
+  frustration: "Frustration",
+  strategy: "Strategy call",
+  tyre_deg: "Tyre trouble",
+  neutral: "",
+  unknown: "",
 };
 
-function AudioPlayer({ url }: { url: string }) {
+function RadioCard({ clip }: { clip: RadioClip }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-
   const [playError, setPlayError] = useState(false);
+
+  const teamColour = `#${clip.team_colour || "666666"}`;
+  const sentimentLabel = SENTIMENT_LABEL[clip.sentiment] || "";
 
   const toggle = () => {
     const audio = audioRef.current;
@@ -78,26 +80,88 @@ function AudioPlayer({ url }: { url: string }) {
   }, []);
 
   return (
-    <div className="flex items-center gap-2 mt-2">
-      <button
-        onClick={toggle}
-        className="w-7 h-7 rounded-full bg-zinc-700 hover:bg-zinc-600 flex items-center justify-center transition-colors shrink-0"
-        title={playing ? "Pause" : "Play"}
-      >
-        {playing ? (
-          <span className="text-white text-xs">| |</span>
-        ) : (
-          <span className="text-white text-xs ml-0.5">{"\u25B6"}</span>
-        )}
-      </button>
-      <div className="flex-1 h-1.5 rounded-full bg-zinc-700 overflow-hidden">
-        <div
-          className="h-full bg-zinc-400 rounded-full transition-all duration-200"
-          style={{ width: `${progress}%` }}
-        />
+    <div
+      className="rounded-lg bg-zinc-900 overflow-hidden border border-zinc-800/50 hover:border-zinc-700/50 transition-colors"
+      style={{ borderLeftWidth: "3px", borderLeftColor: teamColour }}
+    >
+      <div className="p-4">
+        <div className="flex gap-3 items-start">
+          {/* Play button — replaces the old sentiment icon */}
+          <button
+            onClick={toggle}
+            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundColor: playing ? teamColour : "rgb(39 39 42)",
+              color: playing ? "#fff" : teamColour,
+            }}
+            title={playing ? "Pause" : "Play radio clip"}
+          >
+            {playing ? (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <rect x="2" y="1" width="3.5" height="12" rx="1" />
+                <rect x="8.5" y="1" width="3.5" height="12" rx="1" />
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <path d="M3 1.5v11l9.5-5.5z" />
+              </svg>
+            )}
+          </button>
+
+          <div className="min-w-0 flex-1">
+            {/* Driver name + code + lap */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold text-zinc-100">
+                {clip.driver_name}
+              </span>
+              <span className="text-[10px] font-mono text-zinc-500">
+                {clip.driver_code}
+              </span>
+              {sentimentLabel && (
+                <span
+                  className="text-[9px] px-1.5 py-0.5 rounded-full"
+                  style={{
+                    backgroundColor: `${teamColour}15`,
+                    color: teamColour,
+                  }}
+                >
+                  {sentimentLabel}
+                </span>
+              )}
+              {clip.lap && (
+                <span className="text-[10px] text-zinc-500 ml-auto tabular-nums">
+                  Lap {clip.lap}
+                </span>
+              )}
+            </div>
+
+            {/* Progress bar — directly below driver name */}
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex-1 h-1 rounded-full bg-zinc-800 overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-150"
+                  style={{
+                    width: `${progress}%`,
+                    backgroundColor: playing ? teamColour : "rgb(113 113 122)",
+                  }}
+                />
+              </div>
+              {playError && (
+                <span className="text-[9px] text-red-400 shrink-0">Audio unavailable</span>
+              )}
+            </div>
+
+            {/* Transcript (if available) */}
+            {clip.transcript && (
+              <p className="text-xs text-zinc-400 mt-2 italic leading-relaxed">
+                &ldquo;{clip.transcript}&rdquo;
+              </p>
+            )}
+          </div>
+        </div>
       </div>
-      <audio ref={audioRef} src={url} preload="none" />
-      {playError && <span className="text-[9px] text-red-400 ml-1">Failed</span>}
+
+      <audio ref={audioRef} src={clip.recording_url} preload="none" />
     </div>
   );
 }
@@ -139,10 +203,10 @@ export default function RadioMoments({
         <div className="h-4 w-24 bg-zinc-800 rounded" />
         {[1, 2, 3].map((i) => (
           <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3">
-            <div className="w-8 h-8 bg-zinc-800 rounded-full shrink-0" />
+            <div className="w-10 h-10 bg-zinc-800 rounded-full shrink-0" />
             <div className="flex-1 space-y-2">
               <div className="h-4 w-40 bg-zinc-800 rounded" />
-              <div className="h-3 w-full bg-zinc-800 rounded" />
+              <div className="h-1 w-full bg-zinc-800 rounded" />
             </div>
           </div>
         ))}
@@ -163,57 +227,9 @@ export default function RadioMoments({
           Audio only — transcripts unavailable for this session
         </p>
       )}
-      {data.clips.map((clip, i) => {
-        const style = SENTIMENT_STYLE[clip.sentiment] || SENTIMENT_STYLE.unknown;
-        const showIcon = clip.sentiment !== "unknown" && clip.sentiment !== "neutral";
-        return (
-          <div key={i} className="rounded-lg bg-zinc-900 p-4">
-            <div className="flex gap-3 items-start">
-              {/* Sentiment icon — only show when we have real sentiment */}
-              {showIcon && (
-                <span
-                  className={`w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-sm shrink-0 ${style.color}`}
-                >
-                  {style.icon}
-                </span>
-              )}
-
-              <div className="min-w-0 flex-1">
-                {/* Driver name + lap */}
-                <div className="flex items-center gap-2">
-                  <span
-                    className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: `#${clip.team_colour || "666666"}` }}
-                  />
-                  <span className="text-sm font-semibold text-zinc-100">
-                    {clip.driver_name}
-                  </span>
-                  <span className="text-xs text-zinc-600">
-                    {clip.driver_code}
-                  </span>
-                  {clip.lap && (
-                    <span className="text-xs text-zinc-500 ml-auto">
-                      Lap {clip.lap}
-                    </span>
-                  )}
-                </div>
-
-                {/* Transcript (if available) */}
-                {clip.transcript && (
-                  <p className="text-xs text-zinc-400 mt-1.5 italic leading-relaxed">
-                    &ldquo;{clip.transcript}&rdquo;
-                  </p>
-                )}
-
-                {/* Audio player */}
-                {clip.recording_url && (
-                  <AudioPlayer url={clip.recording_url} />
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })}
+      {data.clips.map((clip, i) => (
+        <RadioCard key={i} clip={clip} />
+      ))}
     </div>
   );
 }
