@@ -656,6 +656,114 @@ def get_car_performance_gaps(year: int, track: str) -> dict:
     }
 
 
+def get_driver_deg_profiles(year: int, track: str) -> dict:
+    """
+    Calculate tyre degradation profile for each driver at this circuit.
+
+    For each driver, computes the average degradation rate (seconds lost
+    per lap on worn tyres) across their stints. Compares to the race
+    average to produce a "tyre_saving" score:
+        negative = saves tyres (degrades slower than average)
+        positive = burns through tyres (degrades faster than average)
+
+    Only works for 2018+ races (needs laps.json with lap timing data).
+
+    Returns a dict keyed by driver code:
+        {
+            "VER": {
+                "avg_deg_rate": 0.045,      # seconds/lap degradation
+                "race_avg_deg": 0.062,       # race-wide average
+                "tyre_saving": -0.017,       # negative = gentle on tyres
+                "stints_analyzed": 2,
+                "label": "Easy on tyres"
+            },
+        }
+    """
+    import numpy as np
+
+    lap_data = indexer.load_lap_data(year, track)
+    if lap_data is None:
+        return {}
+
+    # Collect per-driver, per-stint degradation slopes
+    driver_deg_rates: dict[str, list[float]] = {}
+    all_deg_rates: list[float] = []
+
+    for driver_code, driver_laps in lap_data.items():
+        if driver_code == "_meta" or not isinstance(driver_laps, list):
+            continue
+
+        # Group laps by stint
+        stints: dict[int, list[dict]] = {}
+        for lap in driver_laps:
+            s = lap.get("stint", 1)
+            stints.setdefault(s, []).append(lap)
+
+        for stint_num, stint_laps in stints.items():
+            stint_laps.sort(key=lambda x: x["lap"])
+
+            # Need at least 5 clean laps to estimate degradation
+            clean_laps = []
+            for i, lap in enumerate(stint_laps):
+                time_sec = lap.get("time", 0)
+                if time_sec < 60 or time_sec > 180:
+                    continue
+                if lap.get("lap", 0) <= 1:
+                    continue
+                if lap.get("pit_stop", False):
+                    continue
+                if np.isnan(time_sec):
+                    continue
+                clean_laps.append((i, time_sec))
+
+            if len(clean_laps) < 5:
+                continue
+
+            # Simple linear regression: time = a + b * stint_age
+            # b = degradation rate (positive = getting slower)
+            ages = np.array([age for age, _ in clean_laps], dtype=float)
+            times = np.array([t for _, t in clean_laps])
+
+            if ages.std() < 0.1:  # all same stint age (shouldn't happen)
+                continue
+
+            # Fit: time = intercept + slope * stint_age
+            slope = float(np.polyfit(ages, times, 1)[0])
+
+            # Clamp to physical range: -0.1 to +0.3 s/lap
+            slope = max(-0.1, min(0.3, slope))
+
+            driver_deg_rates.setdefault(driver_code, []).append(slope)
+            all_deg_rates.append(slope)
+
+    if not all_deg_rates:
+        return {}
+
+    race_avg = float(np.mean(all_deg_rates))
+
+    profiles = {}
+    for driver_code, rates in driver_deg_rates.items():
+        avg_rate = float(np.mean(rates))
+        saving = avg_rate - race_avg
+
+        if saving < -0.015:
+            label = "Easy on tyres"
+        elif saving > 0.015:
+            label = "Hard on tyres"
+        else:
+            label = "Average tyre wear"
+
+        profiles[driver_code] = {
+            "avg_deg_rate": round(avg_rate, 4),
+            "race_avg_deg": round(race_avg, 4),
+            "tyre_saving": round(saving, 4),
+            "stints_analyzed": len(rates),
+            "label": label,
+        }
+
+    return profiles
+
+
 def get_swap_context(year: int, track: str) -> dict | None:
     """
     Return all data needed for the Driver Swap feature.
@@ -672,6 +780,7 @@ def get_swap_context(year: int, track: str) -> dict | None:
 
     teammate_deltas = get_teammate_deltas(year, track)
     car_gaps = get_car_performance_gaps(year, track)
+    deg_profiles = get_driver_deg_profiles(year, track)
 
     # Build team list for the dropdown
     teams: dict[str, dict] = {}
@@ -696,6 +805,7 @@ def get_swap_context(year: int, track: str) -> dict | None:
     return {
         "teammate_deltas": teammate_deltas,
         "car_gaps": car_gaps,
+        "deg_profiles": deg_profiles,
         "teams": team_list,
     }
 
