@@ -37,10 +37,10 @@ export default function Navbar() {
         </Link>
 
         {/* Nav links */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1">
           <Link
             href="/"
-            className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
               isRaces
                 ? "bg-zinc-800 text-white"
                 : "text-zinc-500 hover:text-zinc-300"
@@ -50,17 +50,18 @@ export default function Navbar() {
           </Link>
           <Link
             href={`/championship/${activeYear}`}
-            className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
               isChampionship
                 ? "bg-zinc-800 text-white"
                 : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
-            Championship
+            <span className="hidden sm:inline">Championship</span>
+            <span className="sm:hidden">Champ</span>
           </Link>
           <Link
             href="/patterns"
-            className={`rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
               isPatterns
                 ? "bg-zinc-800 text-white"
                 : "text-zinc-500 hover:text-zinc-300"

@@ -112,7 +112,7 @@ export default function RacePage({
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-5xl px-6 py-12">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Race header with circuit outline */}
         <div className="mb-8 relative">

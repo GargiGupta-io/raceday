@@ -98,7 +98,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="mx-auto max-w-5xl px-6 py-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Seasons error */}
         {seasonsError && (
