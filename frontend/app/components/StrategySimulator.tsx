@@ -52,6 +52,41 @@ interface SimResult {
   model_used: string;
 }
 
+interface SwapTeam {
+  name: string;
+  best_grid: number | null;
+  gap: number;
+  drivers: { code: string; name: string; grid: number | null; finish: number | null }[];
+}
+
+interface SwapContext {
+  teams: SwapTeam[];
+}
+
+interface SwapResult {
+  driver: { code: string; name: string; actual_team: string; actual_grid: number | null; actual_finish: number | null };
+  target_team: string;
+  target_drivers: { code: string; name: string; finish: number | null; grid: number | null }[];
+  prediction: {
+    predicted_grid: number | null;
+    predicted_finish: number | null;
+    position_change: number | null;
+    total_advantage_seconds: number;
+  };
+  factors: {
+    car_gap_per_lap: number;
+    car_total_effect: number;
+    tyre_saving_per_lap: number;
+    tyre_total_effect: number;
+    tyre_label: string;
+    quali_delta_vs_teammate: number;
+    teammate: string | null;
+  };
+  race_laps: number;
+  verdict: string;
+  model_used: string;
+}
+
 const COMPOUND_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
   SOFT:         { bg: "bg-red-600",    text: "text-white",    ring: "ring-red-600" },
   MEDIUM:       { bg: "bg-yellow-400", text: "text-black",    ring: "ring-yellow-400" },
@@ -125,17 +160,26 @@ export default function StrategySimulator({
   const [context, setContext] = useState<SimContext | null>(null);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState(false);
+  const [mode, setMode] = useState<"strategy" | "swap">("strategy");
 
-  // User inputs
+  // Strategy mode inputs
   const [selectedDriver, setSelectedDriver] = useState<string>("");
   const [numStops, setNumStops] = useState(1);
   const [pitLaps, setPitLaps] = useState<number[]>([]);
   const [compounds, setCompounds] = useState<string[]>([]);
 
-  // Simulation result
+  // Strategy result
   const [result, setResult] = useState<SimResult | null>(null);
   const [simulating, setSimulating] = useState(false);
   const [simError, setSimError] = useState<string | null>(null);
+
+  // Swap mode state
+  const [swapContext, setSwapContext] = useState<SwapContext | null>(null);
+  const [swapDriver, setSwapDriver] = useState<string>("");
+  const [targetTeam, setTargetTeam] = useState<string>("");
+  const [swapResult, setSwapResult] = useState<SwapResult | null>(null);
+  const [swapping, setSwapping] = useState(false);
+  const [swapError, setSwapError] = useState<string | null>(null);
 
   // Fetch context
   useEffect(() => {
@@ -158,6 +202,20 @@ export default function StrategySimulator({
         setContext(null);
         setLoading(false);
       });
+    // Also fetch swap context
+    fetch(`${API}/races/${year}/${encodeURIComponent(track)}/swap-context`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled) return;
+        setSwapContext(d);
+        if (d && d.teams.length > 0 && d.teams[0].drivers.length > 0) {
+          setSwapDriver(d.teams[0].drivers[0].code);
+          // Default target: second team
+          if (d.teams.length > 1) setTargetTeam(d.teams[1].name);
+        }
+      })
+      .catch(() => {});
+
     return () => { cancelled = true; };
   }, [year, track]);
 
@@ -220,6 +278,36 @@ export default function StrategySimulator({
       });
   };
 
+  // Run Driver Swap
+  const runSwap = () => {
+    if (!swapDriver || !targetTeam) return;
+    setSwapping(true);
+    setSwapResult(null);
+    setSwapError(null);
+
+    fetch(`${API}/races/${year}/${encodeURIComponent(track)}/simulate-swap`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ driver: swapDriver, target_team: targetTeam }),
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error(`Server error (${r.status})`);
+        return r.json();
+      })
+      .then((d) => {
+        if (d.error) {
+          setSwapError(d.error);
+        } else {
+          setSwapResult(d);
+        }
+        setSwapping(false);
+      })
+      .catch((e) => {
+        setSwapError(e.message || "Swap simulation failed");
+        setSwapping(false);
+      });
+  };
+
   if (loading) {
     return (
       <div className="rounded-lg bg-zinc-900 p-6 animate-pulse">
@@ -242,7 +330,7 @@ export default function StrategySimulator({
           Strategy Simulator
         </p>
         <p className="text-sm text-zinc-300 mb-4">
-          Could you have picked a better strategy? Build your own and find out.
+          Test alternate strategies or swap drivers into different cars.
         </p>
         <button
           onClick={() => setExpanded(true)}
@@ -274,6 +362,151 @@ export default function StrategySimulator({
         Strategy Simulator
       </p>
 
+      {/* Mode toggle */}
+      <div className="flex gap-1 rounded-lg bg-zinc-800 p-1">
+        {(["strategy", "swap"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => { setMode(m); setResult(null); setSwapResult(null); }}
+            className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+              mode === m
+                ? "bg-zinc-700 text-white"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            {m === "strategy" ? "Strategy" : "Driver Swap"}
+          </button>
+        ))}
+      </div>
+
+      {/* === SWAP MODE === */}
+      {mode === "swap" && swapContext && (
+        <div className="rounded-lg bg-zinc-900 p-5 space-y-5">
+          {/* Driver selector */}
+          <div>
+            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">Put this driver</label>
+            <select
+              value={swapDriver}
+              onChange={(e) => { setSwapDriver(e.target.value); setSwapResult(null); }}
+              className="w-full rounded bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
+            >
+              {context?.drivers.map((d) => (
+                <option key={d.code} value={d.code}>
+                  {d.name} ({d.code}) — {d.team}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Target team selector */}
+          <div>
+            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">In this car</label>
+            <select
+              value={targetTeam}
+              onChange={(e) => { setTargetTeam(e.target.value); setSwapResult(null); }}
+              className="w-full rounded bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
+            >
+              {swapContext.teams.map((t) => (
+                <option key={t.name} value={t.name}>
+                  {t.name} (P{t.best_grid}{t.gap > 0 ? `, +${t.gap} gap` : ", fastest"})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Current team drivers preview */}
+          {targetTeam && (() => {
+            const team = swapContext.teams.find((t) => t.name === targetTeam);
+            if (!team) return null;
+            return (
+              <div className="text-[10px] text-zinc-600">
+                Currently driven by:{" "}
+                {team.drivers.map((d) => `${d.code} (P${d.finish ?? "DNF"})`).join(", ")}
+              </div>
+            );
+          })()}
+
+          {/* Swap button */}
+          <button
+            onClick={runSwap}
+            disabled={swapping || !swapDriver || !targetTeam}
+            className={`w-full rounded-md py-2.5 text-sm font-medium transition-colors ${
+              swapping
+                ? "bg-zinc-800 text-zinc-600 cursor-wait"
+                : "bg-white text-black hover:bg-zinc-200"
+            }`}
+          >
+            {swapping ? "Predicting..." : "Swap Driver"}
+          </button>
+
+          {/* Swap result */}
+          {swapResult && (
+            <div className="rounded-md bg-zinc-800 p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-zinc-500">
+                    {swapResult.driver.name} in the {swapResult.target_team}
+                  </p>
+                  <p className={`text-2xl font-bold ${
+                    (swapResult.prediction.position_change ?? 0) > 0
+                      ? "text-green-400"
+                      : (swapResult.prediction.position_change ?? 0) < 0
+                      ? "text-red-400"
+                      : "text-zinc-300"
+                  }`}>
+                    {swapResult.prediction.total_advantage_seconds > 0 ? "+" : ""}
+                    {swapResult.prediction.total_advantage_seconds.toFixed(1)}s
+                  </p>
+                </div>
+                {swapResult.prediction.predicted_finish !== null && swapResult.driver.actual_finish !== null && (
+                  <div className="text-right">
+                    <p className="text-sm text-zinc-300">
+                      P{swapResult.driver.actual_finish}
+                      <span className="text-zinc-600 mx-1.5">&rarr;</span>
+                      <span className={
+                        (swapResult.prediction.position_change ?? 0) > 0
+                          ? "text-green-400 font-bold"
+                          : (swapResult.prediction.position_change ?? 0) < 0
+                          ? "text-red-400 font-bold"
+                          : "text-zinc-300"
+                      }>
+                        P{swapResult.prediction.predicted_finish}
+                      </span>
+                    </p>
+                    <p className="text-[10px] text-zinc-600">{swapResult.model_used}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Factor breakdown */}
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <div className="rounded bg-zinc-900 p-2">
+                  <p className="text-zinc-600">Car gap</p>
+                  <p className="text-zinc-300 font-medium">
+                    {swapResult.factors.car_gap_per_lap > 0 ? "+" : ""}
+                    {swapResult.factors.car_gap_per_lap.toFixed(2)}s/lap
+                  </p>
+                </div>
+                <div className="rounded bg-zinc-900 p-2">
+                  <p className="text-zinc-600">Tyre management</p>
+                  <p className="text-zinc-300 font-medium">{swapResult.factors.tyre_label}</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                {swapResult.verdict}
+              </p>
+            </div>
+          )}
+
+          {swapError && (
+            <p className="text-xs text-red-400 text-center">{swapError}</p>
+          )}
+        </div>
+      )}
+
+      {/* === STRATEGY MODE === */}
+      {mode === "strategy" && (
       <div className="rounded-lg bg-zinc-900 p-5 space-y-5">
         {/* Row 1: Driver + Stops */}
         <div className="flex flex-col sm:flex-row gap-4">
@@ -460,6 +693,7 @@ export default function StrategySimulator({
           <p className="text-xs text-red-400 text-center">{simError}</p>
         )}
       </div>
+      )}
     </div>
   );
 }
