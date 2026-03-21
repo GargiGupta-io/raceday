@@ -124,7 +124,21 @@ def _transcribe_openai(audio_path: Path) -> str | None:
 
 
 def _transcribe_local(audio_path: Path) -> str | None:
-    """Transcribe using local Whisper model (if installed)."""
+    """Transcribe using local Whisper model (tries faster-whisper first, then openai-whisper)."""
+    # Try faster-whisper first (lighter, uses CTranslate2)
+    try:
+        from faster_whisper import WhisperModel
+        model = WhisperModel("tiny", device="cpu", compute_type="int8")
+        segments, _ = model.transcribe(str(audio_path), language="en")
+        text = " ".join(seg.text for seg in segments).strip()
+        if text:
+            return text
+    except ImportError:
+        pass
+    except Exception as exc:
+        logger.warning("faster-whisper failed: %s", exc)
+
+    # Fall back to openai-whisper
     try:
         import whisper
         model = whisper.load_model("base")
@@ -219,12 +233,16 @@ def transcribe_clips(clips: list[dict]) -> list[dict]:
     elif _OPENAI_KEY:
         backend = "openai"
     else:
-        # Check local whisper availability
+        # Check local whisper availability (faster-whisper preferred)
         try:
-            import whisper
-            backend = "local"
+            from faster_whisper import WhisperModel
+            backend = "local-fast"
         except ImportError:
-            pass
+            try:
+                import whisper
+                backend = "local"
+            except ImportError:
+                pass
 
     if backend == "none":
         logger.info(
@@ -264,10 +282,14 @@ def get_backend_status() -> dict:
     if _OPENAI_KEY:
         available.append("openai")
     try:
-        import whisper
-        available.append("local")
+        from faster_whisper import WhisperModel
+        available.append("local-fast")
     except ImportError:
-        pass
+        try:
+            import whisper
+            available.append("local")
+        except ImportError:
+            pass
 
     return {
         "available_backends": available,

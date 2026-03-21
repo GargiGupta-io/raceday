@@ -158,6 +158,11 @@ export default function RadioMoments({
       <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
         Team Radio
       </p>
+      {!data.has_transcripts && (
+        <p className="text-[10px] text-zinc-600 -mt-1 mb-2">
+          Audio only — transcripts unavailable for this session
+        </p>
+      )}
       {data.clips.map((clip, i) => {
         const style = SENTIMENT_STYLE[clip.sentiment] || SENTIMENT_STYLE.unknown;
         const showIcon = clip.sentiment !== "unknown" && clip.sentiment !== "neutral";

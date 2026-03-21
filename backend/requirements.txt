@@ -6,3 +6,6 @@ numpy
 python-dotenv
 requests
 feedparser
+
+# Optional: radio transcription (local, no API key needed)
+# faster-whisper
