@@ -109,7 +109,7 @@ function CompoundButton({
   return (
     <button
       onClick={onClick}
-      className={`h-8 px-3 rounded-md text-xs font-bold transition-all ${style.bg} ${style.text} ${
+      className={`h-9 sm:h-8 px-3 rounded-md text-xs font-bold transition-all ${style.bg} ${style.text} ${
         selected ? `ring-2 ${style.ring} ring-offset-2 ring-offset-zinc-900 scale-105` : "opacity-60 hover:opacity-90"
       }`}
     >
@@ -130,7 +130,7 @@ function StintBar({
   return (
     <div>
       <p className="text-[10px] text-zinc-600 mb-1">{label}</p>
-      <div className="flex h-6 rounded overflow-hidden">
+      <div className="flex h-6 rounded overflow-hidden min-w-0">
         {stints.map((s, i) => {
           const width = ((s.lap_end - s.lap_start + 1) / totalLaps) * 100;
           const style = COMPOUND_COLORS[s.compound.toUpperCase()] || COMPOUND_COLORS.MEDIUM;
@@ -546,14 +546,14 @@ export default function StrategySimulator({
               ))}
             </select>
           </div>
-          <div className="w-32">
+          <div className="w-full sm:w-32">
             <label className="text-[10px] text-zinc-600 uppercase mb-1 block">Pit stops</label>
             <div className="flex gap-1">
               {[0, 1, 2, 3, 4].map((n) => (
                 <button
                   key={n}
                   onClick={() => setNumStops(n)}
-                  className={`flex-1 rounded py-2 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded py-2.5 sm:py-2 text-xs font-medium transition-colors ${
                     numStops === n
                       ? "bg-zinc-600 text-white"
                       : "bg-zinc-800 text-zinc-500 hover:text-zinc-300"
@@ -574,8 +574,8 @@ export default function StrategySimulator({
             </label>
             <div className="flex gap-3 flex-wrap">
               {pitLaps.map((lap, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-[10px] text-zinc-600">Stop {i + 1}:</span>
+                <div key={i} className="flex items-center gap-2 w-full sm:w-auto">
+                  <span className="text-[10px] text-zinc-600 shrink-0">Stop {i + 1}:</span>
                   <input
                     type="range"
                     min={i === 0 ? 2 : pitLaps[i - 1] + 2}
@@ -587,9 +587,9 @@ export default function StrategySimulator({
                       setPitLaps(newLaps);
                       setResult(null);
                     }}
-                    className="w-24 accent-zinc-500"
+                    className="flex-1 sm:w-24 sm:flex-none accent-zinc-500 h-6"
                   />
-                  <span className="text-xs text-zinc-300 w-8 text-right">{lap}</span>
+                  <span className="text-xs text-zinc-300 w-8 text-right shrink-0">{lap}</span>
                 </div>
               ))}
             </div>
