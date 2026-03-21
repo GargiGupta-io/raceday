@@ -30,6 +30,20 @@
 
 **BUG-B3 FIXED** — `get_all_season_summaries()` now uses `datetime.now().year` instead of hardcoded 2025. No manual update needed for future seasons.
 
+**BUG-8 FIXED** — Seasons summary fetch now shows "Could not load seasons — is the backend running?" on failure instead of silent empty page.
+
+**BUG-9 FIXED** — Simulate button shows error message when compounds don't match stints, or when server returns an error. No more silent failures.
+
+**BUG-10 FIXED** — Audio play errors now reset the playing state and show "Failed" text. Button no longer pretends to be playing when audio failed.
+
+**BUG-13 FIXED** — Removed unused `articles` and `reddit` fields from FactsSidebar interface. Also added empty state: "No race insights available" instead of returning null.
+
+**BUG-18 FIXED** — FactsSidebar now shows a placeholder when no facts are available (combined with BUG-13 fix).
+
+**BUG-B2 FIXED** — Retired drivers now flagged in simulation response with `retired: true` and verdict appended with "Note: this driver retired — simulation uses partial data."
+
+**BUG-B4 FIXED** — Moved `import pandas as pd` from inside the loop to the top of `get_lap_times()`. Was importing on every row iteration (1000+ times per race).
+
 ---
 
 ## Bug Audit (2026-03-21)
