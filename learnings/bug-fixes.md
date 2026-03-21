@@ -44,6 +44,22 @@
 
 **BUG-B4 FIXED** — Moved `import pandas as pd` from inside the loop to the top of `get_lap_times()`. Was importing on every row iteration (1000+ times per race).
 
+### 2026-03-21 — Round 2 (post-fix audit)
+
+**BUG-R1 FIXED** — Navbar wrapped in `<Suspense>` boundary in layout.tsx. `useSearchParams()` requires Suspense in Next.js App Router — was causing hydration mismatch.
+
+**BUG-R2 FIXED** — `HighlightedText` returns `<></>` instead of `null` for empty strings. Prevents spacing/alignment issues in parent `<p>` tags.
+
+**BUG-R3 FIXED** — `seasonsError` state moved to top of component with other state declarations. Was declared between useEffects violating React hooks ordering convention.
+
+**BUG-R4 FIXED** — `simError` state moved to top of StrategySimulator. Had duplicate declaration (one at top, one inside runSimulation). Removed duplicate.
+
+**BUG-R5 FIXED** — Tagline container changed from `h-8` to `min-h-8`. Fixed content overflow when tagline text is longer than 32px height.
+
+**BUG-R6 FIXED** — Created shared `HighlightedText` component at `frontend/app/lib/HighlightedText.tsx`. Replaces 3 separate `highlightDrivers()` functions with one safe React component. No more `dangerouslySetInnerHTML` anywhere in the codebase.
+
+**BUG-R7 FIXED** — Removed `dangerouslySetInnerHTML` from StrategyStory.tsx and SeasonStory.tsx. Both now use the shared `HighlightedText` component. Zero XSS vectors remaining.
+
 ---
 
 ## Bug Audit (2026-03-21)
