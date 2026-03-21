@@ -102,3 +102,43 @@ Checked all 35 circuit SVG files against the circuit map and all indexed race na
 (none)
 
 ---
+
+## Step 7 — Dead Code Cleanup
+*Completed: 2026-03-22*
+
+**What was built**
+- Removed `backend/core/rss_fetcher.py` and `backend/core/reddit_fetcher.py` (Discussion was killed in Phase 6)
+- Simplified `backend/core/insights.py` sidebar function — no more RSS/Reddit fetching
+- Cleaned `SidebarData` interface — removed unused `articles` and `reddit` fields
+- Removed `feedparser` from requirements.txt
+
+**In plain English**
+The Discussion section was removed back in Phase 6, but the code that fetched news articles (RSS) and Reddit posts was still sitting in the backend. Two whole files plus a library dependency that did nothing. The sidebar function was also still wiring up those results even though the frontend ignored them. All cleaned out — the sidebar now only returns "Did You Know" facts, which is all the frontend uses.
+
+**Files changed**
+- deleted: backend/core/rss_fetcher.py
+- deleted: backend/core/reddit_fetcher.py
+~ modified: backend/core/insights.py
+~ modified: backend/requirements.txt
+~ modified: frontend/app/races/[year]/[track]/page.tsx
+
+---
+
+## Step 8 — Visual Test (Phase 7A Verification)
+*Completed: 2026-03-22*
+
+**What was tested**
+5 races across different years and conditions:
+- 2010 British GP (pre-2018, dry)
+- 2015 Hungarian GP (pre-2018, dry)
+- 2019 German GP (wet, chaotic, 2018+ with ML model)
+- 2023 British GP (dry, 2023+ with radio)
+- 2025 Miami GP (damp, latest season)
+
+**Results**
+All passed. Simulator calibration fixes working — 2019 German GP correctly detects weather mismatch and clamps 7 extreme coefficients. Radio clips load for 2023+. Skeleton loaders, sidebar facts, stories, taglines, moments, precedents all functional across every era.
+
+**Files changed**
+(none — verification only)
+
+---
