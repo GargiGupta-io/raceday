@@ -238,11 +238,11 @@ export default function PatternFinderPage() {
               </p>
             ) : (
               <div className="space-y-2">
-                {results.races.map((race, i) => {
+                {results.races.map((race) => {
                   const badge = CONDITION_BADGE[race.condition];
                   return (
                     <Link
-                      key={i}
+                      key={`${race.year}-${race.track}`}
                       href={`/races/${race.year}/${encodeURIComponent(race.track)}`}
                       className="flex items-center gap-4 rounded-lg bg-zinc-900 px-4 py-3 hover:bg-zinc-800 transition-colors"
                     >

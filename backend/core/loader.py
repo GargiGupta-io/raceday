@@ -79,7 +79,7 @@ def get_race_results(year: int, track: str) -> list[dict] | None:
     # Most-used compound per driver across all laps
     compound_by_driver = (
         laps.groupby("Driver")["Compound"]
-        .agg(lambda s: s.mode().iloc[0] if not s.mode().empty else None)
+        .agg(lambda s: s.mode().iloc[0] if len(s.mode()) > 0 else None)
         .to_dict()
     )
 
@@ -217,7 +217,7 @@ def get_stint_data(year: int, track: str) -> dict | None:
     grouped = (
         laps.groupby(["Driver", "Stint"])
         .agg(
-            compound=("Compound", lambda s: s.mode().iloc[0] if not s.mode().empty else "UNKNOWN"),
+            compound=("Compound", lambda s: s.mode().iloc[0] if len(s.mode()) > 0 else "UNKNOWN"),
             lap_start=("LapNumber", "min"),
             lap_end=("LapNumber", "max"),
             lap_count=("LapNumber", "count"),

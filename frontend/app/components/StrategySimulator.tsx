@@ -453,7 +453,7 @@ export default function StrategySimulator({
         )}
 
         {result && "error" in result && (
-          <p className="text-xs text-red-400 text-center">{(result as any).error}</p>
+          <p className="text-xs text-red-400 text-center">{String((result as Record<string, unknown>).error)}</p>
         )}
 
         {simError && !result && (

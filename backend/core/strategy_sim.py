@@ -616,6 +616,9 @@ def simulate_strategy(
     if total_laps < 10:
         return {"error": "Driver completed too few laps for simulation."}
 
+    # Validate pit stop laps are within race distance
+    pit_stop_laps = [lap for lap in pit_stop_laps if 1 <= lap < total_laps]
+
     finishers = sorted(
         [r for r in results if r["finish_position"] is not None],
         key=lambda r: r["finish_position"],

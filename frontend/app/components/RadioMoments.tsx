@@ -74,6 +74,7 @@ function RadioCard({ clip }: { clip: RadioClip }) {
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("ended", onEnded);
     return () => {
+      audio.pause();
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("ended", onEnded);
     };
