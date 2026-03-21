@@ -142,3 +142,104 @@ All passed. Simulator calibration fixes working — 2019 German GP correctly det
 (none — verification only)
 
 ---
+
+## Step 9 — Extract Teammate Qualifying Deltas
+*Completed: 2026-03-22*
+
+**What was built**
+- `backend/core/strategy_sim.py` — Three new functions: `get_teammate_deltas()`, `get_car_performance_gaps()`, `get_swap_context()`
+
+**In plain English**
+The Driver Swap feature needs to know two things: how much faster is one driver than their teammate (the "driver skill" part), and how much faster is one car than another (the "car performance" part). These functions extract both from existing race data. For example, at the 2023 British GP, Verstappen qualified 14 positions ahead of Perez (same Red Bull car — that's the driver gap), and Red Bull's best qualifying was P1 while McLaren's was P2 (that's the car gap). All computed from grid positions already in the index — no new data sources needed.
+
+**Files changed**
+~ modified: backend/core/strategy_sim.py
+
+---
+
+## Step 10 — Extract Tyre Degradation Profiles Per Driver
+*Completed: 2026-03-22*
+
+**What was built**
+- `backend/core/strategy_sim.py` — `get_driver_deg_profiles()` function, integrated into `get_swap_context()`
+
+**In plain English**
+Every F1 driver treats their tyres differently. Some nurse them gently and can run longer stints. Others push hard and burn through rubber faster. This function analyses each driver's real lap times within their stints and calculates how quickly their tyres wore out compared to the race average. For example, at the 2023 British GP, Ocon saved his tyres the most (0.03s/lap better than average) while Hulkenberg was hardest on them. This data feeds into the Driver Swap prediction — if you put a tyre-saving driver in a car that usually chews through rubber, the model can estimate how that changes the strategy.
+
+**Files changed**
+~ modified: backend/core/strategy_sim.py (+110 lines)
+
+---
+
+## Step 11 — Calculate Car Performance Gap
+*Completed: 2026-03-22*
+
+**What was built**
+- `backend/core/strategy_sim.py` — Enhanced `get_car_performance_gaps()` with real lap-time-based seconds-per-lap gap
+
+**In plain English**
+Step 9 built a rough car gap estimate using grid positions (Red Bull P1, McLaren P2 = "1 position gap"). But positions don't tell you the actual speed difference. Now the function also computes the gap in seconds per lap using real race data. At Silverstone 2023, Red Bull was 0.38s/lap faster than McLaren and 0.59s faster than Ferrari. Over a 52-lap race, that's nearly 20 seconds of pure car advantage. This is critical for Driver Swap — when you put Hamilton in a Red Bull, the model needs to know the car is 0.6s/lap faster than his Mercedes, not just "5 grid positions better."
+
+**Files changed**
+~ modified: backend/core/strategy_sim.py
+
+---
+
+## Step 12 — Driver Swap Prediction Engine
+*Completed: 2026-03-22*
+
+**What was built**
+- `backend/core/strategy_sim.py` — `simulate_swap()` function (~170 lines)
+
+**In plain English**
+This is the brain of Driver Swap. You pick a driver and a different team's car, and it predicts where they'd finish. It combines three factors: car speed gap (seconds/lap), driver tyre management, and qualifying skill. Hamilton in a Red Bull at Silverstone 2023 goes from P3 to P1 (car is 0.6s/lap faster = 31s over 52 laps). Verstappen in a Williams drops from P1 to P9 (car is 1.1s/lap slower). Handles edge cases: same-team errors, pre-2018 grid-estimate fallback, tyre management commentary in verdicts.
+
+**Files changed**
+~ modified: backend/core/strategy_sim.py (+197 lines)
+
+---
+
+## Step 13 — Driver Swap API Endpoints
+*Completed: 2026-03-22*
+
+**What was built**
+- `backend/api.py` — Two new endpoints: `GET /swap-context` and `POST /simulate-swap`
+
+**In plain English**
+The prediction engine from Step 12 is now accessible via the API. The frontend can call `/swap-context` to get the list of teams, teammate deltas, car gaps, and tyre profiles for the dropdown UI. Then when the user picks a driver and car, it calls `/simulate-swap` with the driver code and target team name, and gets back the predicted finish position, time advantage, and a human-readable verdict.
+
+**Files changed**
+~ modified: backend/api.py (+22 lines)
+
+---
+
+## Step 14 — Driver Swap UI in StrategySimulator
+*Completed: 2026-03-22*
+
+**What was built**
+- `frontend/app/components/StrategySimulator.tsx` — Added mode toggle (Strategy / Driver Swap), full swap UI with team selector, factor breakdown, and prediction display
+
+**In plain English**
+The Strategy Simulator now has two modes accessible via a toggle at the top: "Strategy" (the original pit stop simulator) and "Driver Swap" (new). In swap mode, you pick a driver from a dropdown, then pick a target car from another dropdown that shows each team with their qualifying position and gap. Hit "Swap Driver" and you get a prediction card showing: the time advantage/disadvantage in seconds, position change (P3 to P1 with a green arrow), a breakdown of car gap per lap and tyre management style, and a plain-English verdict explaining the result.
+
+**Files changed**
+~ modified: frontend/app/components/StrategySimulator.tsx (+237 lines)
+
+---
+
+## Step 15 — Disclaimer + Edge Cases
+*Completed: 2026-03-22*
+
+**What was built**
+- Disclaimers on both strategy and swap results (ML vs physics model notice)
+- Pre-2018 grid-estimate notice for swap mode
+- Same-team swap prevention in frontend (button disabled + message)
+- Swap unavailable fallback when context fails to load
+
+**In plain English**
+Every prediction now has a small disclaimer: "ML regression trained on real lap data" for 2018+ or "Physics-based estimate (no lap timing data)" for older races. The Driver Swap button disables and shows "Driver is already in this team" when you pick the same team. If swap context fails to load, a clean "unavailable" message shows instead of a broken UI.
+
+**Files changed**
+~ modified: frontend/app/components/StrategySimulator.tsx
+
+---
