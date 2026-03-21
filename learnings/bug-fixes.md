@@ -4,6 +4,34 @@
 
 ---
 
+## Fix Log
+
+### 2026-03-21 — Critical + High + Medium batch
+
+**BUG-1 FIXED** — Extracted `const API` from 13 files into `frontend/app/lib/api.ts` reading from `NEXT_PUBLIC_API_URL` env var. All components now `import { API } from "@/app/lib/api"`.
+
+**BUG-2 FIXED** — Replaced `dangerouslySetInnerHTML` in KeyMoments with safe `HighlightedText` React component that parses driver names without raw HTML injection.
+
+**BUG-3 FIXED** — Navbar now reads `useSearchParams().get("year")` as fallback when no year is in the pathname. Scrollbar and dropdown stay in sync on the home page.
+
+**BUG-4 FIXED** — Added `safeFetch()` wrapper in race page that checks `r.ok` before calling `.json()`. Returns clean error message with HTTP status code.
+
+**BUG-5/B1 FIXED** — Backend `simulate_strategy()` now validates compounds against `COMPOUND_DELTA.keys()`. Unknown compounds return `{"error": "Unknown compound: ULTRASOFT"}` instead of garbage results.
+
+**BUG-6 FIXED** — Added SUPERSOFT to simulator compound buttons. All 6 dry/wet compounds now available.
+
+**BUG-7 FIXED** — Pit laps are sorted (`[...pitLaps].sort((a,b) => a-b)`) before sending to backend. Backwards ordering can't reach the API.
+
+**BUG-11 FIXED** — Team colour fallback: `clip.team_colour || "666666"` prevents `#null` in CSS.
+
+**BUG-12 FIXED** — Removed dead `tagline` field from RaceStory `StoryData` interface.
+
+**BUG-14 FIXED** — Fixed typo `GoDeperItemProps` → `GoDeeperItemProps`.
+
+**BUG-B3 FIXED** — `get_all_season_summaries()` now uses `datetime.now().year` instead of hardcoded 2025. No manual update needed for future seasons.
+
+---
+
 ## Bug Audit (2026-03-21)
 
 Full audit of frontend (25 issues) and backend (4 issues) across all components.
@@ -12,8 +40,8 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ## CRITICAL
 
-### BUG-1: Hardcoded `localhost:8888` in 13 files
-**Status:** Open
+### BUG-1 [FIXED]: Hardcoded `localhost:8888` in 13 files
+**Status:** FIXED (2026-03-21)
 **Severity:** CRITICAL
 **Files:** All components with API calls (page.tsx, StrategySimulator, RadioMoments, KeyMoments, RaceStory, StrategyKey, StrategyStory, SeasonStory, SeasonInsights, PatternPrecedents, FactsSidebar, race page)
 **Problem:** Every frontend file has `const API = "http://localhost:8888"`. Site will be completely broken when deployed.
@@ -21,8 +49,8 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-2: XSS vulnerability in KeyMoments
-**Status:** Open
+### BUG-2 [FIXED]: XSS vulnerability in KeyMoments
+**Status:** FIXED (2026-03-21)
 **Severity:** CRITICAL
 **File:** `frontend/app/components/KeyMoments.tsx:97,101`
 **Problem:** Uses `dangerouslySetInnerHTML` with `highlightDrivers()` which doesn't sanitize input. If backend is compromised, malicious HTML/JS could be injected.
@@ -30,8 +58,8 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-3: Year sync broken between navbar and home page
-**Status:** Open
+### BUG-3 [FIXED]: Year sync broken between navbar and home page
+**Status:** FIXED (2026-03-21)
 **Severity:** CRITICAL
 **File:** `frontend/app/components/Navbar.tsx:14-15`, `frontend/app/page.tsx`
 **Problem:** Navbar extracts year from URL pathname via regex (`/(\d{4})/`), but home page uses `?year=` query param. When on `/?year=2023`, navbar doesn't detect the year and defaults to 2025. Screenshot shows scrollbar on 2023, dropdown on 2025.
@@ -41,7 +69,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ## HIGH
 
-### BUG-4: No `r.ok` check before JSON parse
+### BUG-4 [FIXED]: No `r.ok` check before JSON parse
 **Status:** Open
 **Severity:** HIGH
 **File:** `frontend/app/races/[year]/[track]/page.tsx:77-80`
@@ -50,7 +78,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-5: Invalid compounds accepted by simulator backend
+### BUG-5 [FIXED]: Invalid compounds accepted by simulator backend
 **Status:** Open
 **Severity:** HIGH
 **File:** `backend/core/strategy_sim.py`
@@ -59,7 +87,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-6: SUPERSOFT missing from simulator UI
+### BUG-6 [FIXED]: SUPERSOFT missing from simulator UI
 **Status:** Open
 **Severity:** HIGH
 **File:** `frontend/app/components/StrategySimulator.tsx:347`
@@ -68,7 +96,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-7: Pit lap ordering not validated
+### BUG-7 [FIXED]: Pit lap ordering not validated
 **Status:** Open
 **Severity:** HIGH
 **File:** `frontend/app/components/StrategySimulator.tsx:310-323`
@@ -106,7 +134,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-11: Team colour not validated
+### BUG-11 [FIXED]: Team colour not validated
 **Status:** Open
 **Severity:** MEDIUM
 **File:** `frontend/app/components/RadioMoments.tsx:171`
@@ -115,7 +143,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-12: Dead tagline field in RaceStory
+### BUG-12 [FIXED]: Dead tagline field in RaceStory
 **Status:** Open
 **Severity:** MEDIUM
 **File:** `frontend/app/components/RaceStory.tsx:8`
@@ -133,7 +161,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-14: GoDeeper interface typo
+### BUG-14 [FIXED]: GoDeeper interface typo
 **Status:** Open
 **Severity:** MEDIUM
 **File:** `frontend/app/components/GoDeeper.tsx:5`
@@ -182,7 +210,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ## BACKEND BUGS
 
-### BUG-B1: Invalid compounds not rejected
+### BUG-B1 [FIXED]: Invalid compounds not rejected
 **Status:** Open
 **Severity:** HIGH
 **File:** `backend/core/strategy_sim.py`
@@ -200,7 +228,7 @@ Full audit of frontend (25 issues) and backend (4 issues) across all components.
 
 ---
 
-### BUG-B3: `get_all_season_summaries` year range will need updating every year
+### BUG-B3 [FIXED]: `get_all_season_summaries` year range will need updating every year
 **Status:** Open
 **Severity:** LOW
 **File:** `backend/core/insights.py:1240`
