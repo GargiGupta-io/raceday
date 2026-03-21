@@ -623,25 +623,35 @@ def get_car_performance_gaps(year: int, track: str) -> dict:
     """
     Estimate car performance gap between teams at a specific circuit.
 
-    Uses the best qualifying position from each team as a proxy for car
-    pace. Returns the gap in grid positions relative to the fastest team.
+    Uses grid positions as a base, then enhances with actual lap time
+    data for 2018+ races. For each team, takes the median clean lap time
+    of their best driver and computes the gap in seconds per lap.
 
     Returns a dict keyed by team name:
         {
-            "Red Bull Racing": {"best_grid": 1, "gap_positions": 0},
-            "Mercedes": {"best_grid": 3, "gap_positions": 2},
+            "Red Bull Racing": {"best_grid": 1, "gap_positions": 0,
+                                "gap_seconds": 0.0, "median_pace": 92.4},
+            "Mercedes": {"best_grid": 3, "gap_positions": 2,
+                         "gap_seconds": 0.8, "median_pace": 93.2},
         }
+
+    gap_seconds is None for pre-2018 races (no lap data).
     """
+    import numpy as np
+
     data = indexer.load_race_index(year, track)
     if data is None:
         return {}
 
     results = data["results"]
 
+    # Grid-based gaps (always available)
     team_best: dict[str, int] = {}
+    driver_teams: dict[str, str] = {}
     for r in results:
         team = r.get("team", "Unknown")
         grid = r.get("grid_position")
+        driver_teams[r["driver"]] = team
         if grid is not None:
             if team not in team_best or grid < team_best[team]:
                 team_best[team] = grid
@@ -649,11 +659,53 @@ def get_car_performance_gaps(year: int, track: str) -> dict:
     if not team_best:
         return {}
 
-    fastest = min(team_best.values())
-    return {
-        team: {"best_grid": bg, "gap_positions": bg - fastest}
-        for team, bg in team_best.items()
-    }
+    fastest_grid = min(team_best.values())
+
+    # Try lap-time-based gaps for 2018+ (more accurate)
+    team_paces: dict[str, float] = {}
+    lap_data = indexer.load_lap_data(year, track)
+    if lap_data:
+        # For each driver, compute median clean lap time
+        driver_paces: dict[str, float] = {}
+        for driver_code, driver_laps in lap_data.items():
+            if driver_code == "_meta" or not isinstance(driver_laps, list):
+                continue
+
+            clean_times = []
+            for lap in driver_laps:
+                t = lap.get("time", 0)
+                if t < 60 or t > 180:
+                    continue
+                if lap.get("lap", 0) <= 1:
+                    continue
+                if lap.get("pit_stop", False):
+                    continue
+                if np.isnan(t):
+                    continue
+                clean_times.append(t)
+
+            if len(clean_times) >= 10:
+                driver_paces[driver_code] = float(np.median(clean_times))
+
+        # Best driver pace per team
+        for driver_code, pace in driver_paces.items():
+            team = driver_teams.get(driver_code, "Unknown")
+            if team not in team_paces or pace < team_paces[team]:
+                team_paces[team] = pace
+
+    fastest_pace = min(team_paces.values()) if team_paces else None
+
+    gaps = {}
+    for team, bg in team_best.items():
+        pace = team_paces.get(team)
+        gaps[team] = {
+            "best_grid": bg,
+            "gap_positions": bg - fastest_grid,
+            "gap_seconds": round(pace - fastest_pace, 3) if pace and fastest_pace else None,
+            "median_pace": round(pace, 3) if pace else None,
+        }
+
+    return gaps
 
 
 def get_driver_deg_profiles(year: int, track: str) -> dict:
