@@ -16,8 +16,10 @@ import PatternPrecedents from "@/app/components/PatternPrecedents";
 import RadioMoments from "@/app/components/RadioMoments";
 import StrategySimulator from "@/app/components/StrategySimulator";
 
+import Image from "next/image";
 import { API } from "@/app/lib/api";
 import FadeIn from "@/app/lib/FadeIn";
+import { getCircuitSvg } from "@/app/lib/circuits";
 
 interface RaceSummary {
   winner: string;
@@ -112,8 +114,17 @@ export default function RacePage({
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-12">
 
-        {/* Race header */}
-        <div className="mb-8">
+        {/* Race header with circuit outline */}
+        <div className="mb-8 relative">
+          {/* Circuit SVG background */}
+          {(() => {
+            const svg = getCircuitSvg(trackName);
+            return svg ? (
+              <div className="absolute -top-4 right-0 w-36 h-28 opacity-[0.06] pointer-events-none select-none">
+                <Image src={svg} alt="" width={144} height={112} className="invert object-contain" />
+              </div>
+            ) : null;
+          })()}
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
           <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-racing)" }}>{trackName}</h1>
           <div className="min-h-8 mt-2">
