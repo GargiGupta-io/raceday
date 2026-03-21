@@ -74,7 +74,7 @@ export default function PatternPrecedents({
       {/* Matching races */}
       {data.matches.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs text-zinc-600 uppercase tracking-widest mb-1">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
             Similar races
           </p>
           {data.matches.map((m, i) => (

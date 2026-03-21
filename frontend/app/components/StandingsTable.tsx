@@ -57,7 +57,7 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
       {retirees.length > 0 && (
         <div className="rounded-lg bg-zinc-900 overflow-hidden">
           <div className="px-5 py-2 border-b border-zinc-800">
-            <span className="text-xs text-zinc-600 uppercase tracking-widest">
+            <span className="text-xs text-zinc-500 uppercase tracking-widest">
               Retired ({retirees.length})
             </span>
           </div>

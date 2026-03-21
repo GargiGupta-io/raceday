@@ -113,7 +113,7 @@ export default function SeasonInsights({ year }: { year: string }) {
                 <div key={a.title} className="rounded bg-zinc-800/50 p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-base">{icon}</span>
-                    <span className="text-xs text-zinc-400 font-medium uppercase tracking-wide">
+                    <span className="text-xs text-zinc-400 font-medium uppercase tracking-widest">
                       {a.title}
                     </span>
                   </div>

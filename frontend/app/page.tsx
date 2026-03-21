@@ -133,8 +133,8 @@ function Home() {
 
         {/* Season header + weather filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-          <h2 className="text-xl font-bold text-white">
-            {year} Season <span className="text-zinc-500 font-normal">— {races.length} Races</span>
+          <h2 className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-racing)" }}>
+            {year} Season <span className="text-zinc-500 font-normal text-lg">— {races.length} Races</span>
           </h2>
           <div className="flex gap-1.5">
             {["ALL", "DRY", "WET", "MIXED"].map((f) => (
