@@ -1346,54 +1346,19 @@ def get_did_you_know(year: int, track: str) -> list[str]:
 
 def get_sidebar_content(year: int, track: str) -> dict | None:
     """
-    Return combined sidebar content: articles, Reddit posts, and did-you-know facts.
-
-    Caches RSS and Reddit results to disk on first fetch so subsequent
-    loads are instant. Did-you-know is computed from indexed data (always fast).
+    Return sidebar content: did-you-know facts.
 
     Returns a dict:
-        articles    — list of article dicts from RSS feeds
-        reddit      — dict with race_thread and posts
         did_you_know — list of fact strings
 
     Returns None if the race is not indexed.
     """
-    from backend.core import rss_fetcher, reddit_fetcher
-
     if not indexer.is_indexed(year, track):
         return None
 
-    race_dir = indexer._race_dir(year, track)
-
-    # --- RSS articles (cached) ---
-    rss_cache = race_dir / "sidebar_rss.json"
-    if rss_cache.exists():
-        with open(rss_cache) as f:
-            articles = json.load(f)
-    else:
-        articles = rss_fetcher.get_race_articles(track, year)
-        race_dir.mkdir(parents=True, exist_ok=True)
-        with open(rss_cache, "w") as f:
-            json.dump(articles, f, indent=2)
-        logger.info("Cached %d RSS articles for %s %s", len(articles), year, track)
-
-    # --- Reddit posts (cached) ---
-    reddit_cache = race_dir / "sidebar_reddit.json"
-    if reddit_cache.exists():
-        with open(reddit_cache) as f:
-            reddit = json.load(f)
-    else:
-        reddit = reddit_fetcher.get_race_posts(track, year)
-        with open(reddit_cache, "w") as f:
-            json.dump(reddit, f, indent=2)
-        logger.info("Cached Reddit data for %s %s", year, track)
-
-    # --- Did you know (computed, no cache needed) ---
     did_you_know = get_did_you_know(year, track)
 
     return {
-        "articles": articles,
-        "reddit": reddit,
         "did_you_know": did_you_know,
     }
 

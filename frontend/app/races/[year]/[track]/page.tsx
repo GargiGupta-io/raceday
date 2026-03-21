@@ -44,11 +44,6 @@ interface StrategyEntry {
 }
 
 interface SidebarData {
-  articles: { title: string; url: string; summary: string; source: string; published: string }[];
-  reddit: {
-    race_thread: { title: string; url: string; score: number; num_comments: number; author: string; flair: string } | null;
-    posts: { title: string; url: string; score: number; num_comments: number; author: string; flair: string }[];
-  };
   did_you_know: string[];
 }
 
