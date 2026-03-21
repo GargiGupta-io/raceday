@@ -17,6 +17,7 @@ import RadioMoments from "@/app/components/RadioMoments";
 import StrategySimulator from "@/app/components/StrategySimulator";
 
 import { API } from "@/app/lib/api";
+import FadeIn from "@/app/lib/FadeIn";
 
 interface RaceSummary {
   winner: string;
@@ -175,22 +176,33 @@ export default function RacePage({
 
               {/* THE RESULT */}
               {results && (
-                <ResultsCard data={results} />
+                <FadeIn>
+                  <ResultsCard data={results} />
+                </FadeIn>
               )}
 
               {/* KEY MOMENTS */}
-              <KeyMoments year={year} track={trackName} />
+              <FadeIn delay={80}>
+                <KeyMoments year={year} track={trackName} />
+              </FadeIn>
 
               {/* THE RACE STORY */}
-              <RaceStory year={year} track={trackName} />
+              <FadeIn delay={120}>
+                <RaceStory year={year} track={trackName} />
+              </FadeIn>
 
               {/* WHAT HISTORY TELLS US */}
-              <PatternPrecedents year={year} track={trackName} />
+              <FadeIn delay={160}>
+                <PatternPrecedents year={year} track={trackName} />
+              </FadeIn>
 
               {/* TEAM RADIO (2023+ only) */}
-              <RadioMoments year={year} track={trackName} />
+              <FadeIn delay={200}>
+                <RadioMoments year={year} track={trackName} />
+              </FadeIn>
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
+              <FadeIn>
               <GoDeeper>
                 <GoDeeperItem title="Strategy breakdown">
                   <div className="space-y-4">
@@ -233,6 +245,7 @@ export default function RacePage({
                   <SeasonInsights year={year} />
                 </GoDeeperItem>
               </GoDeeper>
+              </FadeIn>
 
             </div>
 
