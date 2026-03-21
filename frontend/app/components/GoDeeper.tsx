@@ -15,7 +15,7 @@ function GoDeeperItem({ title, children, defaultOpen = false }: GoDeeperItemProp
     <div className="border-b border-zinc-800 last:border-b-0">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3.5 text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-all duration-150"
       >
         <span>{title}</span>
         <span
@@ -47,7 +47,7 @@ export default function GoDeeper({ children }: GoDeeperProps) {
         <p className="text-xs text-zinc-500 uppercase tracking-widest">Go Deeper</p>
         <div className="h-px flex-1 bg-zinc-800" />
       </div>
-      <div className="rounded-lg bg-zinc-900 divide-y divide-zinc-800">
+      <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 divide-y divide-zinc-800 overflow-hidden">
         {children}
       </div>
     </div>

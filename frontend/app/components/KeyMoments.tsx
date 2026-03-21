@@ -75,7 +75,7 @@ export default function KeyMoments({
       {moments.map((m, i) => {
         const style = MOMENT_STYLE[m.type] || { icon: "?", color: "text-zinc-400" };
         return (
-          <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3 items-start">
+          <div key={i} className="rounded-lg bg-zinc-900 border border-zinc-800/40 p-4 flex gap-3 items-start">
             <span
               className={`w-8 h-8 rounded bg-zinc-800 flex items-center justify-center text-base shrink-0 ${style.color}`}
             >

@@ -223,7 +223,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
   const circuitSvg = getCircuitSvg(race.name);
 
   const content = (
-    <div className="rounded-lg bg-zinc-900 p-5 h-full flex flex-col relative overflow-hidden">
+    <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-5 h-full flex flex-col relative overflow-hidden transition-colors group-hover:border-zinc-700/70 group-hover:bg-zinc-900/80">
       {/* Circuit outline */}
       {circuitSvg && (
         <div className="absolute top-3 right-3 w-14 h-10 opacity-[0.15]">
@@ -275,7 +275,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
     return (
       <Link
         href={`/races/${year}/${encodeURIComponent(race.name)}`}
-        className="block hover:scale-[1.02] transition-transform"
+        className="block group hover:scale-[1.02] transition-all duration-200"
       >
         {content}
       </Link>

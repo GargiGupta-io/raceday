@@ -325,7 +325,7 @@ export default function StrategySimulator({
   // Collapsed prompt
   if (!expanded) {
     return (
-      <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-6 text-center">
+      <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-6 text-center hover:border-zinc-700/50 transition-colors">
         <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">
           Strategy Simulator
         </p>

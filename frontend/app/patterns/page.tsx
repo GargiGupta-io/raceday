@@ -244,7 +244,7 @@ export default function PatternFinderPage() {
                     <Link
                       key={`${race.year}-${race.track}`}
                       href={`/races/${race.year}/${encodeURIComponent(race.track)}`}
-                      className="flex items-center gap-4 rounded-lg bg-zinc-900 px-4 py-3 hover:bg-zinc-800 transition-colors"
+                      className="flex items-center gap-4 rounded-lg bg-zinc-900 border border-zinc-800/40 px-4 py-3 hover:bg-zinc-800/80 hover:border-zinc-700/50 transition-all duration-150"
                     >
                       <span className="text-sm font-mono text-zinc-500 w-10">
                         {race.year}
