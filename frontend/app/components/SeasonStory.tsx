@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API } from "@/app/lib/api";
+import HighlightedText from "@/app/lib/HighlightedText";
 
 interface TurningPoint {
   race: string;
@@ -57,16 +58,6 @@ const TP_ICON: Record<string, { icon: string; color: string }> = {
   gap_closing:   { icon: "\u2198", color: "text-orange-400" },
 };
 
-// Highlight "Full Name (CODE)" patterns
-const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/g;
-
-function highlightDrivers(text: string): string {
-  if (!text) return "";
-  return text.replace(
-    DRIVER_NAME_PATTERN,
-    '<span class="font-semibold text-white">$1</span> <span class="text-zinc-500">($2)</span>'
-  );
-}
 
 export default function SeasonStory({
   year,
@@ -132,10 +123,9 @@ export default function SeasonStory({
                     {style.icon}
                   </span>
                   <div className="min-w-0">
-                    <p
-                      className="text-sm font-medium text-zinc-200"
-                      dangerouslySetInnerHTML={{ __html: highlightDrivers(tp.headline) }}
-                    />
+                    <p className="text-sm font-medium text-zinc-200">
+                      <HighlightedText text={tp.headline} />
+                    </p>
                     <p className="text-xs text-zinc-500 mt-0.5">{tp.detail}</p>
                   </div>
                 </div>

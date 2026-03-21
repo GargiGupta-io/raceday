@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { API } from "@/app/lib/api";
+import HighlightedText from "@/app/lib/HighlightedText";
 
 interface Moment {
   type: string;
@@ -20,34 +21,6 @@ const MOMENT_STYLE: Record<string, { icon: string; color: string }> = {
   close_battle:    { icon: "\u2623", color: "text-blue-400" },    // ☣ → using ⚡ visually
   attrition:       { icon: "\u26a0", color: "text-amber-400" },   // ⚠
 };
-
-// Highlight "Full Name (CODE)" patterns — returns React elements (no dangerouslySetInnerHTML)
-const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/;
-
-function HighlightedText({ text }: { text: string }) {
-  if (!text) return null;
-  const parts: React.ReactNode[] = [];
-  let remaining = text;
-  let key = 0;
-
-  while (remaining) {
-    const match = remaining.match(DRIVER_NAME_PATTERN);
-    if (!match || match.index === undefined) {
-      parts.push(remaining);
-      break;
-    }
-    if (match.index > 0) {
-      parts.push(remaining.slice(0, match.index));
-    }
-    parts.push(
-      <span key={key++} className="font-semibold text-white">{match[1]}</span>,
-      <span key={key++} className="text-zinc-500"> ({match[2]})</span>
-    );
-    remaining = remaining.slice(match.index + match[0].length);
-  }
-
-  return <>{parts}</>;
-}
 
 export default function KeyMoments({
   year,

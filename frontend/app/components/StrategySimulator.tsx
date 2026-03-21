@@ -135,6 +135,7 @@ export default function StrategySimulator({
   // Simulation result
   const [result, setResult] = useState<SimResult | null>(null);
   const [simulating, setSimulating] = useState(false);
+  const [simError, setSimError] = useState<string | null>(null);
 
   // Fetch context
   useEffect(() => {
@@ -186,8 +187,6 @@ export default function StrategySimulator({
   }, [selectedDriver, numStops, context]);
 
   // Run simulation
-  const [simError, setSimError] = useState<string | null>(null);
-
   const runSimulation = () => {
     if (!context || !selectedDriver) return;
     if (compounds.length !== numStops + 1) {

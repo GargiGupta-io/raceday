@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist, Geist_Mono, Racing_Sans_One } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/app/components/Navbar";
@@ -35,7 +36,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${racingFont.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Navbar />
+        <Suspense fallback={<div className="h-12 border-b border-zinc-800 bg-zinc-950" />}>
+          <Navbar />
+        </Suspense>
         {children}
       </body>
     </html>

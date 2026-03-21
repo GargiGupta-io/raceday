@@ -62,13 +62,13 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [weatherFilter, setWeatherFilter] = useState<string>("ALL");
+  const [seasonsError, setSeasonsError] = useState(false);
 
   useEffect(() => {
     if (urlYear) setYear(parseInt(urlYear));
   }, [urlYear]);
 
   // Fetch season summaries once
-  const [seasonsError, setSeasonsError] = useState(false);
   useEffect(() => {
     fetch(`${API}/seasons/summary`)
       .then((r) => { if (!r.ok) throw new Error(); return r.json(); })

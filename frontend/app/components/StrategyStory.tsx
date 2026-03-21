@@ -3,14 +3,12 @@
 import { useEffect, useState } from "react";
 
 import { API } from "@/app/lib/api";
+import HighlightedText from "@/app/lib/HighlightedText";
 
 interface NarrativeSection {
   heading: string;
   body: string;
 }
-
-// Highlight driver names — pattern matches "Full Name (CODE)"
-const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/g;
 
 export default function StrategyStory({
   year,
@@ -89,20 +87,11 @@ export default function StrategyStory({
               {section.heading}
             </h3>
           </div>
-          <p
-            className="text-sm text-zinc-400 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: highlightDrivers(section.body) }}
-          />
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            <HighlightedText text={section.body} />
+          </p>
         </div>
       ))}
     </div>
-  );
-}
-
-function highlightDrivers(text: string | undefined): string {
-  if (!text) return "";
-  return text.replace(
-    DRIVER_NAME_PATTERN,
-    '<span class="font-semibold text-white">$1</span> <span class="text-zinc-500">($2)</span>'
   );
 }
