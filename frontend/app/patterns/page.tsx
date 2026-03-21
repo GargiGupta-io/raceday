@@ -61,7 +61,7 @@ export default function PatternFinderPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(filters),
     })
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
       .then((data) => {
         setResults(data);
         setLoading(false);
