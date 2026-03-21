@@ -293,7 +293,10 @@ def get_lap_times(year: int, track: str) -> dict | None:
         else:
             continue  # skip laps without timing
 
-        compound = str(row.get("Compound", "UNKNOWN"))
+        raw_compound = row.get("Compound")
+        compound = str(raw_compound) if raw_compound is not None and pd.notna(raw_compound) else "UNKNOWN"
+        if compound.lower() in ("nan", "none", ""):
+            compound = "UNKNOWN"
         stint_val = row.get("Stint")
         stint = int(stint_val) if stint_val is not None and pd.notna(stint_val) else 1
 
