@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { API } from "@/app/lib/api";
 
 interface StoryData {
-  tagline: string | null;
   narrative: string[];
   weather: string;
   retirements: number;

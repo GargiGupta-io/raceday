@@ -168,7 +168,7 @@ export default function RadioMoments({
                 <div className="flex items-center gap-2">
                   <span
                     className="w-2 h-2 rounded-full shrink-0"
-                    style={{ backgroundColor: `#${clip.team_colour}` }}
+                    style={{ backgroundColor: `#${clip.team_colour || "666666"}` }}
                   />
                   <span className="text-sm font-semibold text-zinc-100">
                     {clip.driver_name}

@@ -75,10 +75,13 @@ export default function RacePage({
     setError(null);
 
     // Fetch tab data (blocks render)
+    const safeFetch = (url: string) =>
+      fetch(url).then((r) => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
+
     Promise.all([
-      fetch(`${base}/results`).then((r) => r.json()),
-      fetch(`${base}/standings`).then((r) => r.json()),
-      fetch(`${base}/strategy`).then((r) => r.json()),
+      safeFetch(`${base}/results`),
+      safeFetch(`${base}/standings`),
+      safeFetch(`${base}/strategy`),
     ])
       .then(([res, sta, str]) => {
         setResults(res);

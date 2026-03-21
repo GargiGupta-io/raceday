@@ -2,13 +2,13 @@
 
 import { useState, ReactNode } from "react";
 
-interface GoDeperItemProps {
+interface GoDeeperItemProps {
   title: string;
   children: ReactNode;
   defaultOpen?: boolean;
 }
 
-function GoDeeperItem({ title, children, defaultOpen = false }: GoDeperItemProps) {
+function GoDeeperItem({ title, children, defaultOpen = false }: GoDeeperItemProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (

@@ -532,6 +532,12 @@ def simulate_strategy(
         delta_position — estimated position change
         verdict        — human-readable summary
     """
+    # Validate compounds
+    valid_compounds = set(COMPOUND_DELTA.keys())
+    for c in compounds:
+        if c.upper() not in valid_compounds:
+            return {"error": f"Unknown compound: {c}. Valid: {', '.join(sorted(valid_compounds))}"}
+
     data = indexer.load_race_index(year, track)
     if data is None:
         return None

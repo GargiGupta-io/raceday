@@ -192,7 +192,7 @@ export default function StrategySimulator({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         driver: selectedDriver,
-        pit_stop_laps: pitLaps,
+        pit_stop_laps: [...pitLaps].sort((a, b) => a - b),
         compounds: compounds,
       }),
     })
@@ -344,7 +344,7 @@ export default function StrategySimulator({
                   )}
                 </p>
                 <div className="flex gap-1 flex-wrap">
-                  {["SOFT", "MEDIUM", "HARD", "INTERMEDIATE", "WET"].map((c) => (
+                  {["SUPERSOFT", "SOFT", "MEDIUM", "HARD", "INTERMEDIATE", "WET"].map((c) => (
                     <CompoundButton
                       key={c}
                       compound={c}
