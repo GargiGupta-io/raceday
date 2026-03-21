@@ -131,8 +131,46 @@ export default function RacePage({
           </div>
         </div>
 
-        {loading && <p className="text-zinc-500 text-sm">Loading race data...</p>}
-        {error && <p className="text-red-400 text-sm">Could not load race data.</p>}
+        {loading && (
+          <div className="animate-pulse space-y-8">
+            {/* Podium skeleton */}
+            <div className="rounded-lg bg-zinc-900 p-6 space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-zinc-800 rounded" />
+                  <div className="h-4 bg-zinc-800 rounded w-32" />
+                  <div className="h-3 bg-zinc-800 rounded w-20 ml-auto" />
+                </div>
+              ))}
+            </div>
+            {/* Moments skeleton */}
+            <div className="space-y-2">
+              <div className="h-3 w-20 bg-zinc-800 rounded" />
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3">
+                  <div className="w-8 h-8 bg-zinc-800 rounded-full shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-48 bg-zinc-800 rounded" />
+                    <div className="h-3 w-full bg-zinc-800 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Story skeleton */}
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-zinc-800 rounded" />
+              <div className="h-3 w-full bg-zinc-800 rounded" />
+              <div className="h-3 w-5/6 bg-zinc-800 rounded" />
+              <div className="h-3 w-4/6 bg-zinc-800 rounded" />
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="rounded-lg bg-zinc-900 border border-red-900/50 p-6 text-center">
+            <p className="text-red-400 text-sm">Could not load race data.</p>
+            <p className="text-zinc-600 text-xs mt-1">Check that the backend is running on the correct port.</p>
+          </div>
+        )}
 
         {!loading && !error && (<>
           <div className="flex flex-col lg:flex-row gap-8">

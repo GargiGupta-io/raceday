@@ -208,8 +208,25 @@ export default function PatternFinderPage() {
           </button>
         </div>
 
+        {/* Loading skeleton for results */}
+        {loading && (
+          <div className="space-y-2 animate-pulse">
+            <div className="h-4 w-24 bg-zinc-800 rounded mb-4" />
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="flex items-center gap-4 rounded-lg bg-zinc-900 px-4 py-3">
+                <div className="h-4 w-10 bg-zinc-800 rounded" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-4 w-48 bg-zinc-800 rounded" />
+                  <div className="h-3 w-36 bg-zinc-800 rounded" />
+                </div>
+                <div className="h-4 w-12 bg-zinc-800 rounded" />
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Results */}
-        {searched && results && (
+        {!loading && searched && results && (
           <div>
             <p className="text-sm text-zinc-400 mb-4">
               {results.count} {results.count === 1 ? "race" : "races"} found

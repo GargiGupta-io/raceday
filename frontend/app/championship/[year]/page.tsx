@@ -61,8 +61,45 @@ export default function ChampionshipPage({
           )}
         </div>
 
-        {loading && <p className="text-zinc-500 text-sm">Loading standings...</p>}
-        {error && <p className="text-red-400 text-sm">Could not load standings — is the backend running?</p>}
+        {loading && (
+          <div className="space-y-4 animate-pulse">
+            {/* Leader card skeleton */}
+            <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-6 flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="h-2 w-28 bg-zinc-800 rounded" />
+                <div className="h-7 w-40 bg-zinc-800 rounded" />
+                <div className="h-3 w-24 bg-zinc-800 rounded" />
+              </div>
+              <div className="text-right space-y-2">
+                <div className="h-7 w-16 bg-zinc-800 rounded ml-auto" />
+                <div className="h-2 w-10 bg-zinc-800 rounded ml-auto" />
+              </div>
+            </div>
+            {/* Table skeleton */}
+            <div className="rounded-lg bg-zinc-900 overflow-hidden">
+              <div className="px-5 py-2 border-b border-zinc-800">
+                <div className="h-3 w-full bg-zinc-800 rounded" />
+              </div>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="flex items-center gap-4 px-5 py-3 border-b border-zinc-800/60">
+                  <div className="h-4 w-6 bg-zinc-800 rounded" />
+                  <div className="flex-1 space-y-1">
+                    <div className="h-4 w-32 bg-zinc-800 rounded" />
+                    <div className="h-3 w-20 bg-zinc-800 rounded" />
+                  </div>
+                  <div className="h-4 w-10 bg-zinc-800 rounded" />
+                  <div className="h-4 w-8 bg-zinc-800 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {error && (
+          <div className="rounded-lg bg-zinc-900 border border-red-900/50 p-6 text-center">
+            <p className="text-red-400 text-sm">Could not load standings.</p>
+            <p className="text-zinc-600 text-xs mt-1">Check that the backend is running on the correct port.</p>
+          </div>
+        )}
 
         {!loading && !error && standings && (
           <div className="space-y-4">

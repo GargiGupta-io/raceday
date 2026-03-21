@@ -155,7 +155,21 @@ function Home() {
 
         {/* Race grid */}
         {loading && (
-          <p className="text-zinc-500 text-sm">Loading {year} season...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="rounded-lg bg-zinc-900 p-5 space-y-3">
+                <div className="space-y-1.5">
+                  <div className="h-2 w-12 bg-zinc-800 rounded" />
+                  <div className="h-4 w-40 bg-zinc-800 rounded" />
+                  <div className="h-3 w-28 bg-zinc-800 rounded" />
+                </div>
+                <div className="flex items-center gap-2 mt-auto">
+                  <div className="h-3 w-24 bg-zinc-800 rounded" />
+                  <div className="h-4 w-10 bg-zinc-800 rounded ml-auto" />
+                </div>
+              </div>
+            ))}
+          </div>
         )}
 
         {error && (
