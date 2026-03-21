@@ -245,6 +245,28 @@ def simulate(year: int, track: str, payload: dict):
     return data
 
 
+@app.get("/races/{year}/{track}/swap-context")
+def swap_context(year: int, track: str):
+    from backend.core import strategy_sim
+    data = strategy_sim.get_swap_context(year, track)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
+    return data
+
+
+@app.post("/races/{year}/{track}/simulate-swap")
+def simulate_swap(year: int, track: str, payload: dict):
+    from backend.core import strategy_sim
+    driver = payload.get("driver", "")
+    target_team = payload.get("target_team", "")
+    if not driver or not target_team:
+        raise HTTPException(status_code=400, detail="Missing driver or target_team")
+    data = strategy_sim.simulate_swap(year, track, driver, target_team)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No data found for {year} {track} / {driver}")
+    return data
+
+
 @app.get("/races/{year}/{track}/precedents")
 def race_precedents(year: int, track: str):
     data = insights.get_auto_precedents(year, track)
