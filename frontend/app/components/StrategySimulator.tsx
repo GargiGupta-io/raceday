@@ -427,17 +427,25 @@ export default function StrategySimulator({
           })()}
 
           {/* Swap button */}
-          <button
-            onClick={runSwap}
-            disabled={swapping || !swapDriver || !targetTeam}
-            className={`w-full rounded-md py-2.5 text-sm font-medium transition-colors ${
-              swapping
-                ? "bg-zinc-800 text-zinc-600 cursor-wait"
-                : "bg-white text-black hover:bg-zinc-200"
-            }`}
-          >
-            {swapping ? "Predicting..." : "Swap Driver"}
-          </button>
+          {(() => {
+            const driverTeam = context?.drivers.find((d) => d.code === swapDriver)?.team;
+            const sameTeam = driverTeam === targetTeam;
+            return (
+              <button
+                onClick={runSwap}
+                disabled={swapping || !swapDriver || !targetTeam || sameTeam}
+                className={`w-full rounded-md py-2.5 text-sm font-medium transition-colors ${
+                  swapping
+                    ? "bg-zinc-800 text-zinc-600 cursor-wait"
+                    : sameTeam
+                    ? "bg-zinc-800 text-zinc-600 cursor-not-allowed"
+                    : "bg-white text-black hover:bg-zinc-200"
+                }`}
+              >
+                {swapping ? "Predicting..." : sameTeam ? "Driver is already in this team" : "Swap Driver"}
+              </button>
+            );
+          })()}
 
           {/* Swap result */}
           {swapResult && (
@@ -496,12 +504,26 @@ export default function StrategySimulator({
               <p className="text-xs text-zinc-400 leading-relaxed">
                 {swapResult.verdict}
               </p>
+
+              {/* Model disclaimer */}
+              <p className="text-[9px] text-zinc-600 border-t border-zinc-700 pt-2 mt-2">
+                {swapResult.model_used === "grid-estimate"
+                  ? "Pre-2018 estimate — based on grid positions only (no lap timing data available)."
+                  : "Estimate based on lap timing data, qualifying gaps, and tyre degradation patterns. Actual results would vary."}
+              </p>
             </div>
           )}
 
           {swapError && (
             <p className="text-xs text-red-400 text-center">{swapError}</p>
           )}
+        </div>
+      )}
+
+      {/* Swap mode unavailable */}
+      {mode === "swap" && !swapContext && (
+        <div className="rounded-lg bg-zinc-900 p-5 text-center">
+          <p className="text-xs text-zinc-500">Driver Swap data unavailable for this race.</p>
         </div>
       )}
 
@@ -681,6 +703,11 @@ export default function StrategySimulator({
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
               {result.verdict}
+            </p>
+            <p className="text-[9px] text-zinc-600 border-t border-zinc-700 pt-2 mt-2">
+              {result.model_used === "data-driven"
+                ? "ML regression trained on real lap data from this race."
+                : "Physics-based estimate (no lap timing data for pre-2018 races)."}
             </p>
           </div>
         )}
