@@ -39,15 +39,20 @@ function AudioPlayer({ url }: { url: string }) {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const [playError, setPlayError] = useState(false);
+
   const toggle = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    setPlayError(false);
     if (playing) {
       audio.pause();
+      setPlaying(false);
     } else {
-      audio.play().catch(() => {});
+      audio.play()
+        .then(() => setPlaying(true))
+        .catch(() => { setPlaying(false); setPlayError(true); });
     }
-    setPlaying(!playing);
   };
 
   useEffect(() => {
@@ -92,6 +97,7 @@ function AudioPlayer({ url }: { url: string }) {
         />
       </div>
       <audio ref={audioRef} src={url} preload="none" />
+      {playError && <span className="text-[9px] text-red-400 ml-1">Failed</span>}
     </div>
   );
 }

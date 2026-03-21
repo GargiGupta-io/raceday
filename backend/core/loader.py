@@ -263,6 +263,8 @@ def get_lap_times(year: int, track: str) -> dict | None:
     Returns None if the session cannot be loaded.
     Only available for 2018+ (FastF1 data).
     """
+    import pandas as pd
+
     if year < 2018:
         return None
 
@@ -283,7 +285,6 @@ def get_lap_times(year: int, track: str) -> dict | None:
         lap_num = int(row["LapNumber"])
 
         # Extract lap time in seconds
-        import pandas as pd
         lap_time = row.get("LapTime")
         if lap_time is not None and pd.notna(lap_time) and hasattr(lap_time, "total_seconds"):
             time_sec = lap_time.total_seconds()
@@ -292,16 +293,11 @@ def get_lap_times(year: int, track: str) -> dict | None:
         else:
             continue  # skip laps without timing
 
-        # Skip outlier laps (pit in/out, safety cars) — over 150% of a normal lap
-        # We'll filter these when building the model, not here
-
         compound = str(row.get("Compound", "UNKNOWN"))
-        import pandas as pd
         stint_val = row.get("Stint")
         stint = int(stint_val) if stint_val is not None and pd.notna(stint_val) else 1
 
         # Detect pit stops — PitInTime is NaT for non-pit laps in pandas
-        import pandas as pd
         pit_in_val = row.get("PitInTime")
         pit_out_val = row.get("PitOutTime")
         is_pit = pd.notna(pit_in_val)

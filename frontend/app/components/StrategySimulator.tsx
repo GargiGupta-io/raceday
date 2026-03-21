@@ -182,10 +182,17 @@ export default function StrategySimulator({
   }, [selectedDriver, numStops, context]);
 
   // Run simulation
+  const [simError, setSimError] = useState<string | null>(null);
+
   const runSimulation = () => {
-    if (!context || !selectedDriver || compounds.length !== numStops + 1) return;
+    if (!context || !selectedDriver) return;
+    if (compounds.length !== numStops + 1) {
+      setSimError("Compound count doesn't match stint count. Try changing pit stops.");
+      return;
+    }
     setSimulating(true);
     setResult(null);
+    setSimError(null);
 
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/simulate`, {
       method: "POST",
@@ -196,12 +203,16 @@ export default function StrategySimulator({
         compounds: compounds,
       }),
     })
-      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => {
+        if (!r.ok) throw new Error(`Server error (${r.status})`);
+        return r.json();
+      })
       .then((d) => {
         setResult(d);
         setSimulating(false);
       })
-      .catch(() => {
+      .catch((e) => {
+        setSimError(e.message || "Simulation failed");
         setSimulating(false);
       });
   };
@@ -440,6 +451,10 @@ export default function StrategySimulator({
 
         {result && "error" in result && (
           <p className="text-xs text-red-400 text-center">{(result as any).error}</p>
+        )}
+
+        {simError && !result && (
+          <p className="text-xs text-red-400 text-center">{simError}</p>
         )}
       </div>
     </div>

@@ -1,12 +1,15 @@
 interface SidebarData {
-  articles: unknown[];
-  reddit: unknown;
   did_you_know: string[];
 }
 
 export default function FactsSidebar({ data }: { data: SidebarData }) {
   if (!data.did_you_know || data.did_you_know.length === 0) {
-    return null;
+    return (
+      <div className="rounded-lg bg-zinc-900 p-4">
+        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Race Intelligence</p>
+        <p className="text-xs text-zinc-600">No race insights available for this event.</p>
+      </div>
+    );
   }
 
   return (

@@ -639,6 +639,12 @@ def simulate_strategy(
         else:
             verdict = f"Your strategy is ~{loss:.0f}s slower. The team's call was better."
 
+    # Check if driver retired
+    status = driver_result.get("status", "Finished")
+    retired = status not in ("Finished",) and not status.startswith("+")
+    if retired:
+        verdict += " Note: this driver retired — simulation uses partial data."
+
     return {
         "driver": {
             "code": driver_code,
@@ -646,6 +652,7 @@ def simulate_strategy(
             "team": driver_result.get("team", "Unknown"),
             "actual_finish": actual_pos,
             "total_laps": total_laps,
+            "retired": retired,
         },
         "actual": {
             "total_time": actual_result["total_time"],

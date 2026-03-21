@@ -68,11 +68,12 @@ function Home() {
   }, [urlYear]);
 
   // Fetch season summaries once
+  const [seasonsError, setSeasonsError] = useState(false);
   useEffect(() => {
     fetch(`${API}/seasons/summary`)
-      .then((r) => r.json())
+      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
       .then(setSeasons)
-      .catch(() => {});
+      .catch(() => setSeasonsError(true));
   }, []);
 
   // Fetch races for selected year (only when a year is selected)
@@ -98,6 +99,11 @@ function Home() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-8">
+
+        {/* Seasons error */}
+        {seasonsError && (
+          <p className="text-red-400 text-sm text-center mb-4">Could not load seasons — is the backend running?</p>
+        )}
 
         {/* Year selector — only show after a year is picked */}
         {year !== null && <div className="mb-8 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
