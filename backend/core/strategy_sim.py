@@ -863,6 +863,203 @@ def get_swap_context(year: int, track: str) -> dict | None:
 
 
 # ---------------------------------------------------------------------------
+# Driver Swap prediction
+# ---------------------------------------------------------------------------
+
+
+def simulate_swap(
+    year: int,
+    track: str,
+    driver_code: str,
+    target_team: str,
+) -> dict | None:
+    """
+    Predict what would happen if a driver raced in a different team's car.
+
+    Combines three factors:
+        1. Driver skill — qualifying delta vs their actual teammate
+        2. Car performance — seconds/lap gap between source and target car
+        3. Tyre management — driver's degradation profile applied to new car
+
+    Args:
+        year         — race year
+        track        — race name
+        driver_code  — 3-letter code of the driver to swap
+        target_team  — team name to put them in (e.g. "Red Bull Racing")
+
+    Returns a prediction dict or None if data is insufficient.
+    """
+    from backend.core.insights import _DRIVER_NAMES
+
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+
+    # Find the driver
+    driver_result = None
+    for r in results:
+        if r["driver"] == driver_code:
+            driver_result = r
+            break
+    if driver_result is None:
+        return {"error": f"Driver {driver_code} not found in this race."}
+
+    source_team = driver_result.get("team", "Unknown")
+    if source_team == target_team:
+        return {"error": "Driver is already in this team. Pick a different car."}
+
+    # Get all data sources
+    teammate_deltas = get_teammate_deltas(year, track)
+    car_gaps = get_car_performance_gaps(year, track)
+    deg_profiles = get_driver_deg_profiles(year, track)
+
+    # --- Factor 1: Driver skill (qualifying delta vs teammate) ---
+    driver_delta = teammate_deltas.get(driver_code, {})
+    teammate_code = driver_delta.get("teammate")
+    quali_advantage = driver_delta.get("delta_positions", 0)  # negative = faster
+
+    # --- Factor 2: Car performance gap ---
+    source_gap = car_gaps.get(source_team, {})
+    target_gap = car_gaps.get(target_team, {})
+
+    # Seconds per lap difference (positive = target is faster)
+    source_secs = source_gap.get("gap_seconds")
+    target_secs = target_gap.get("gap_seconds")
+
+    if source_secs is not None and target_secs is not None:
+        car_delta_per_lap = source_secs - target_secs  # positive = target car is faster
+    else:
+        # Fall back to grid-position-based estimate (~0.3s per grid position)
+        source_pos = source_gap.get("gap_positions", 0)
+        target_pos = target_gap.get("gap_positions", 0)
+        car_delta_per_lap = (source_pos - target_pos) * 0.3
+
+    # --- Factor 3: Tyre management ---
+    driver_deg = deg_profiles.get(driver_code, {})
+    tyre_saving = driver_deg.get("tyre_saving", 0)  # negative = saves tyres
+
+    # The tyre saving is relative to the race average. Applied over a full
+    # race distance, it compounds. Assume ~50 laps and the saving applies
+    # to the second half of each stint (first few laps are similar for everyone).
+    stints_data = data.get("stints", {})
+    winner_code = None
+    for r in results:
+        if r.get("finish_position") == 1:
+            winner_code = r["driver"]
+            break
+    winner_stints = stints_data.get(winner_code, [])
+    total_laps = winner_stints[-1].get("lap_end", 52) if winner_stints else 52
+
+    # Tyre effect: saving per lap × ~60% of race laps (first few laps don't differ much)
+    tyre_total_effect = tyre_saving * total_laps * 0.6
+
+    # --- Combine into predicted time delta ---
+    # Car effect over race distance
+    car_total_effect = car_delta_per_lap * total_laps
+
+    # Total time advantage of being in the target car with this driver's skills
+    # Positive = faster (better) in target car
+    total_advantage = car_total_effect - tyre_total_effect
+
+    # Convert to position change (diminishing returns, same as simulator)
+    abs_advantage = abs(total_advantage)
+    sign = 1 if total_advantage > 0 else -1
+    if abs_advantage <= 20:
+        pos_change = round(abs_advantage / 5.0) * sign
+    else:
+        pos_change = round((4 + (abs_advantage - 20) / 10.0)) * sign
+
+    # Apply to actual finish position
+    actual_finish = driver_result.get("finish_position")
+    finishers = [r for r in results if r.get("finish_position") is not None]
+    num_finishers = len(finishers)
+
+    if actual_finish is not None:
+        predicted_finish = max(1, min(num_finishers, actual_finish - pos_change))
+    else:
+        predicted_finish = None
+
+    # Estimate new qualifying position
+    actual_grid = driver_result.get("grid_position")
+    if actual_grid is not None:
+        # Grid shift based on car gap in positions
+        grid_shift = source_gap.get("gap_positions", 0) - target_gap.get("gap_positions", 0)
+        predicted_grid = max(1, min(20, actual_grid - grid_shift))
+    else:
+        predicted_grid = None
+
+    # Who currently drives for the target team? (they'd be displaced)
+    target_drivers = []
+    for r in results:
+        if r.get("team") == target_team:
+            target_drivers.append({
+                "code": r["driver"],
+                "name": _DRIVER_NAMES.get(r["driver"], r["driver"]),
+                "finish": r.get("finish_position"),
+                "grid": r.get("grid_position"),
+            })
+
+    # Generate verdict
+    if predicted_finish is not None and actual_finish is not None:
+        diff = actual_finish - predicted_finish
+        if abs(diff) <= 1:
+            verdict = (f"{_DRIVER_NAMES.get(driver_code, driver_code)} in the {target_team} "
+                       f"would finish around the same position — the car change isn't enough "
+                       f"to make a significant difference here.")
+        elif diff > 0:
+            verdict = (f"{_DRIVER_NAMES.get(driver_code, driver_code)} in the {target_team} "
+                       f"would likely finish ~P{predicted_finish}, gaining {diff} "
+                       f"position{'s' if diff > 1 else ''}. "
+                       f"The {target_team} car is {abs(car_delta_per_lap):.1f}s/lap faster.")
+        else:
+            verdict = (f"{_DRIVER_NAMES.get(driver_code, driver_code)} in the {target_team} "
+                       f"would likely drop to ~P{predicted_finish}, losing {abs(diff)} "
+                       f"position{'s' if abs(diff) > 1 else ''}. "
+                       f"The {target_team} car is {abs(car_delta_per_lap):.1f}s/lap slower.")
+    else:
+        verdict = "Insufficient data for a reliable prediction."
+
+    # Add tyre context
+    deg_label = driver_deg.get("label", "Average tyre wear")
+    if tyre_saving < -0.015:
+        verdict += f" {driver_code}'s gentle tyre management would extend stints."
+    elif tyre_saving > 0.015:
+        verdict += f" {driver_code}'s aggressive tyre usage may require an extra stop."
+
+    return {
+        "driver": {
+            "code": driver_code,
+            "name": _DRIVER_NAMES.get(driver_code, driver_code),
+            "actual_team": source_team,
+            "actual_grid": actual_grid,
+            "actual_finish": actual_finish,
+        },
+        "target_team": target_team,
+        "target_drivers": target_drivers,
+        "prediction": {
+            "predicted_grid": predicted_grid,
+            "predicted_finish": predicted_finish,
+            "position_change": pos_change if actual_finish else None,
+            "total_advantage_seconds": round(total_advantage, 1),
+        },
+        "factors": {
+            "car_gap_per_lap": round(car_delta_per_lap, 3),
+            "car_total_effect": round(car_total_effect, 1),
+            "tyre_saving_per_lap": round(tyre_saving, 4),
+            "tyre_total_effect": round(tyre_total_effect, 1),
+            "tyre_label": deg_label,
+            "quali_delta_vs_teammate": quali_advantage,
+            "teammate": teammate_code,
+        },
+        "race_laps": total_laps,
+        "verdict": verdict,
+        "model_used": "data-driven" if source_secs is not None else "grid-estimate",
+    }
+
+
+# ---------------------------------------------------------------------------
 # Main simulation — compare alternate strategy vs actual
 # ---------------------------------------------------------------------------
 
