@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface Moment {
   type: string;
@@ -21,15 +21,32 @@ const MOMENT_STYLE: Record<string, { icon: string; color: string }> = {
   attrition:       { icon: "\u26a0", color: "text-amber-400" },   // ⚠
 };
 
-// Highlight "Full Name (CODE)" patterns
-const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/g;
+// Highlight "Full Name (CODE)" patterns — returns React elements (no dangerouslySetInnerHTML)
+const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/;
 
-function highlightDrivers(text: string): string {
-  if (!text) return "";
-  return text.replace(
-    DRIVER_NAME_PATTERN,
-    '<span class="font-semibold text-white">$1</span> <span class="text-zinc-500">($2)</span>'
-  );
+function HighlightedText({ text }: { text: string }) {
+  if (!text) return null;
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining) {
+    const match = remaining.match(DRIVER_NAME_PATTERN);
+    if (!match || match.index === undefined) {
+      parts.push(remaining);
+      break;
+    }
+    if (match.index > 0) {
+      parts.push(remaining.slice(0, match.index));
+    }
+    parts.push(
+      <span key={key++} className="font-semibold text-white">{match[1]}</span>,
+      <span key={key++} className="text-zinc-500"> ({match[2]})</span>
+    );
+    remaining = remaining.slice(match.index + match[0].length);
+  }
+
+  return <>{parts}</>;
 }
 
 export default function KeyMoments({
@@ -92,14 +109,12 @@ export default function KeyMoments({
               {style.icon}
             </span>
             <div className="min-w-0">
-              <p
-                className="text-sm font-semibold text-zinc-100"
-                dangerouslySetInnerHTML={{ __html: highlightDrivers(m.headline) }}
-              />
-              <p
-                className="text-xs text-zinc-500 mt-1 leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: highlightDrivers(m.detail) }}
-              />
+              <p className="text-sm font-semibold text-zinc-100">
+                <HighlightedText text={m.headline} />
+              </p>
+              <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+                <HighlightedText text={m.detail} />
+              </p>
             </div>
           </div>
         );

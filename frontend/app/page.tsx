@@ -7,7 +7,7 @@ import Image from "next/image";
 import { getCircuitSvg } from "@/app/lib/circuits";
 import IntroHero from "@/app/components/IntroHero";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface SeasonSummary {
   year: number;

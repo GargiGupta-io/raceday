@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface TurningPoint {
   race: string;

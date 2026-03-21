@@ -16,7 +16,7 @@ import PatternPrecedents from "@/app/components/PatternPrecedents";
 import RadioMoments from "@/app/components/RadioMoments";
 import StrategySimulator from "@/app/components/StrategySimulator";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface RaceSummary {
   winner: string;

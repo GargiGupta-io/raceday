@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 const COMPOUND_INFO: Record<string, { color: string; desc: string }> = {
   Soft:         { color: "bg-red-500",    desc: "Fastest, degrades quickly" },

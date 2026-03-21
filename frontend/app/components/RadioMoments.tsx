@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface RadioClip {
   driver_code: string;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const API = "http://localhost:8888";
+import { API } from "@/app/lib/api";
 
 interface RaceResult {
   year: number;

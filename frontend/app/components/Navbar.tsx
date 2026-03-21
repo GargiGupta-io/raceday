@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
 const YEARS = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
@@ -9,10 +9,16 @@ const YEARS = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015,
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Extract year from URL if present, default to 2023
+  // Extract year from URL path (/races/2023/...) or query param (?year=2023)
   const yearMatch = pathname.match(/\/(\d{4})/);
-  const activeYear = yearMatch ? parseInt(yearMatch[1]) : 2025;
+  const queryYear = searchParams.get("year");
+  const activeYear = yearMatch
+    ? parseInt(yearMatch[1])
+    : queryYear
+    ? parseInt(queryYear)
+    : 2025;
 
   const isChampionship = pathname.startsWith("/championship");
   const isPatterns = pathname.startsWith("/patterns");
