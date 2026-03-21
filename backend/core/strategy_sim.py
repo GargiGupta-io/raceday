@@ -349,6 +349,7 @@ def _build_circuit_model(lap_data: dict) -> dict:
     # The quadratic stint_age term captures the "cliff" (non-linear degradation)
     compound_models: dict[str, list[float]] = {}
     compound_stats: dict[str, dict] = {}
+    max_stint_ages: dict[str, int] = {}
 
     all_clean_times = []
 
@@ -362,6 +363,9 @@ def _build_circuit_model(lap_data: dict) -> dict:
 
         all_clean_times.extend(times.tolist())
 
+        # Track max stint age seen in training data (for extrapolation guard)
+        max_stint_ages[compound] = int(np.percentile(stint_ages, 95))
+
         # Build feature matrix: [stint_age, stint_age^2, race_lap, 1]
         X = np.column_stack([
             stint_ages,
@@ -373,13 +377,36 @@ def _build_circuit_model(lap_data: dict) -> dict:
         # Least squares regression
         coeffs, residuals, _, _ = np.linalg.lstsq(X, times, rcond=None)
 
+        # Coefficient sanity checks — clamp extreme values
+        linear_deg = float(coeffs[0])
+        quad_deg = float(coeffs[1])
+        fuel_effect = float(coeffs[2])
+
+        # Quadratic degradation shouldn't be extreme (max ~0.01 s/lap²)
+        if quad_deg > 0.01:
+            coeffs[1] = 0.01
+            logger.warning("  %s: quad_deg %.5f clamped to 0.01", compound, quad_deg)
+        elif quad_deg < -0.005:
+            coeffs[1] = 0.0  # negative quad makes no physical sense
+            logger.warning("  %s: negative quad_deg %.5f zeroed", compound, quad_deg)
+
+        # Linear degradation should be positive (tyres get slower)
+        if linear_deg < -0.5:
+            coeffs[0] = 0.0
+            logger.warning("  %s: extreme negative linear_deg %.4f zeroed", compound, linear_deg)
+
+        # Fuel effect should be negative (lighter = faster) and modest
+        if abs(fuel_effect) > 0.3:
+            coeffs[2] = -0.06  # fallback to standard fuel correction
+            logger.warning("  %s: extreme fuel_effect %.4f reset to -0.06", compound, fuel_effect)
+
         compound_models[compound] = coeffs.tolist()
 
-        # Extract human-readable stats
-        base_time = float(coeffs[3])  # intercept = fresh tyre, race start
-        linear_deg = float(coeffs[0])  # linear degradation per stint lap
-        quad_deg = float(coeffs[1])    # quadratic (cliff) component
-        fuel_effect = float(coeffs[2])  # fuel correction per race lap
+        # Re-extract after clamping
+        base_time = float(coeffs[3])
+        linear_deg = float(coeffs[0])
+        quad_deg = float(coeffs[1])
+        fuel_effect = float(coeffs[2])
 
         # Estimate "cliff lap" — where degradation accelerates
         # d(time)/d(stint_age) = c1 + 2*c2*stint_age
@@ -397,15 +424,17 @@ def _build_circuit_model(lap_data: dict) -> dict:
             "quad_deg": round(quad_deg, 5),
             "fuel_effect": round(fuel_effect, 4),
             "cliff_lap": cliff_lap,
+            "max_stint_age": max_stint_ages[compound],
             "r_squared": round(1 - (np.sum((times - X @ coeffs)**2) /
                                      np.sum((times - np.mean(times))**2)), 4)
                          if len(samples) > 4 else None,
         }
 
         logger.info(
-            "  %s: %d samples, base=%.1fs, deg=%.3f+%.5f*age^2, fuel=%.4f, cliff=%s, R2=%s",
+            "  %s: %d samples, base=%.1fs, deg=%.3f+%.5f*age^2, fuel=%.4f, cliff=%s, R2=%s, max_age=%d",
             compound, len(samples), base_time, linear_deg, quad_deg,
             fuel_effect, cliff_lap, compound_stats[compound].get("r_squared"),
+            max_stint_ages[compound],
         )
 
     # Overall base lap
@@ -418,6 +447,7 @@ def _build_circuit_model(lap_data: dict) -> dict:
     return {
         "compound_models": compound_models,
         "compound_stats": compound_stats,
+        "max_stint_ages": max_stint_ages,
         "pit_stop_avg": round(pit_avg, 2),
         "base_lap": round(base_lap, 3),
         "data_driven": True,
@@ -425,7 +455,12 @@ def _build_circuit_model(lap_data: dict) -> dict:
 
 
 def _predict_lap_time_ml(model: dict, compound: str, stint_age: int, race_lap: int) -> float:
-    """Predict a single lap time using the fitted regression model."""
+    """Predict a single lap time using the fitted regression model.
+
+    Includes extrapolation guard: caps stint_age at the max observed in
+    training data to prevent quadratic blowup on long stints (the main
+    cause of unrealistic deltas on 1-stop strategies).
+    """
     coeffs = model["compound_models"].get(compound.upper())
     if coeffs is None:
         # Fallback to physics model for unknown compounds
@@ -434,11 +469,29 @@ def _predict_lap_time_ml(model: dict, compound: str, stint_age: int, race_lap: i
         deg = COMPOUND_DEGRADATION.get(compound.upper(), 0.05)
         return base + delta + (deg * stint_age) + (FUEL_CORRECTION_PER_LAP * race_lap)
 
+    # Cap stint_age to prevent quadratic extrapolation beyond training data
+    max_stint_age = model.get("max_stint_ages", {}).get(compound.upper(), 35)
+    capped_age = min(stint_age, max_stint_age)
+
+    # For laps beyond the cap, add only linear degradation (no quadratic explosion)
+    extra_laps = max(0, stint_age - max_stint_age)
+    linear_deg_per_lap = coeffs[0] + 2 * coeffs[1] * capped_age  # derivative at cap point
+
     # coeffs = [c1_stint_age, c2_stint_age^2, c3_race_lap, c0_intercept]
-    return (coeffs[0] * stint_age +
-            coeffs[1] * stint_age ** 2 +
-            coeffs[2] * race_lap +
-            coeffs[3])
+    predicted = (coeffs[0] * capped_age +
+                 coeffs[1] * capped_age ** 2 +
+                 coeffs[2] * race_lap +
+                 coeffs[3])
+
+    # Add linear extension for extrapolated laps
+    if extra_laps > 0:
+        predicted += max(0, linear_deg_per_lap) * extra_laps
+
+    # Sanity clamp: lap time shouldn't deviate more than 15s from base
+    base_lap = model["base_lap"]
+    predicted = max(base_lap - 5.0, min(base_lap + 15.0, predicted))
+
+    return predicted
 
 
 def estimate_total_race_time_ml(
@@ -610,21 +663,55 @@ def simulate_strategy(
             base_lap, total_laps, pit_stop_laps, compounds
         )
 
-    # Time delta
-    delta_seconds = alternate_result["total_time"] - actual_result["total_time"]
+    # Time delta — cap at ±120s to catch model failures
+    raw_delta = alternate_result["total_time"] - actual_result["total_time"]
+    delta_seconds = max(-120.0, min(120.0, raw_delta))
 
-    # Estimate position change from time delta
-    # Rough heuristic: ~1 position per 5 seconds of race time difference
+    if abs(raw_delta) > 120:
+        logger.warning(
+            "Delta capped: raw=%.1fs, capped=%.1fs for %s at %s %s",
+            raw_delta, delta_seconds, driver_code, year, track,
+        )
+
+    # Estimate position change with diminishing returns
+    # First 20s: ~1 position per 5s. Beyond that: ~1 per 10s.
     actual_pos = driver_result.get("finish_position")
     if actual_pos is not None:
-        pos_change = round(delta_seconds / 5.0)
+        abs_delta = abs(delta_seconds)
+        sign = 1 if delta_seconds > 0 else -1
+        if abs_delta <= 20:
+            pos_change = round(abs_delta / 5.0) * sign
+        else:
+            # 4 positions for first 20s, then 1 per 10s after
+            pos_change = round((4 + (abs_delta - 20) / 10.0)) * sign
         predicted_pos = max(1, min(len(finishers), actual_pos + pos_change))
     else:
         predicted_pos = None
         pos_change = None
 
+    # Detect weather mismatch: actual used wet compounds but alternate doesn't (or vice versa)
+    wet_compounds = {"INTERMEDIATE", "WET"}
+    actual_had_wet = any(c.upper() in wet_compounds for c in actual_compounds)
+    alternate_has_wet = any(c.upper() in wet_compounds for c in compounds)
+    weather_mismatch = actual_had_wet != alternate_has_wet
+
+    # If weather mismatch, the delta is meaningless — override it
+    if weather_mismatch and abs(delta_seconds) > 30:
+        delta_seconds = 0.0
+        pos_change = 0
+        if actual_pos is not None:
+            predicted_pos = actual_pos
+
     # Generate verdict
-    if abs(delta_seconds) < 2:
+    if weather_mismatch:
+        if actual_had_wet:
+            verdict = ("This race had changing weather conditions. The actual strategy included "
+                       "wet-weather tyres, so a pure dry comparison isn't meaningful. "
+                       "Try including INTERMEDIATE or WET compounds to get a realistic prediction.")
+        else:
+            verdict = ("The actual race was dry, but your strategy includes wet-weather compounds. "
+                       "The comparison isn't meaningful under dry conditions.")
+    elif abs(delta_seconds) < 2:
         verdict = "Roughly the same outcome — your strategy matches the team's call."
     elif delta_seconds < 0:
         gain = abs(delta_seconds)
@@ -669,6 +756,7 @@ def simulate_strategy(
         "position_change": pos_change,
         "verdict": verdict,
         "model_used": "data-driven" if circuit_model else "physics",
+        "weather_mismatch": weather_mismatch,
     }
 
 

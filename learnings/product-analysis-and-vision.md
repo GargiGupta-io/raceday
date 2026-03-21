@@ -231,24 +231,97 @@ Why it matters:
 
 ---
 
-## The 6-Month Roadmap
+## Phase 7 — Final Build Before Deploy
 
-| Month | What | Impact |
-|-------|------|--------|
-| 1 | Deploy + mobile fixes + auto-indexing | Go live, first real users |
-| 2 | AI Race Engineer mode | Unique gamified content |
-| 3 | Live Race Companion extension (MVP) | Real-time relevance |
-| 4 | Prediction leagues + user accounts | Retention loop |
-| 5 | Driver swap simulator + strategy replay | Depth features |
-| 6 | Premium tier launch + marketing push | Revenue |
+> Complete the product. Fix what's broken, strengthen the core, make it beautiful, add live data, build the extension. Then deploy.
 
-By month 6, Raceday would have:
-- A deployed website with 300+ race analyses
-- A browser extension used during every race
-- A gamified race engineer mode
-- Social prediction leagues
-- Premium features worth paying for
-- A genuine moat: the ML models + data pipeline + extension ecosystem
+**Build order (agreed 2026-03-21):**
+
+| Phase | What | Why |
+|-------|------|-----|
+| 7A | Bug fixes & cleanup | Clean foundation |
+| 7B | Simulator + Driver Swap | Strengthen core differentiator |
+| 7C | Frontend beautification + mobile | Make it look finished |
+| 7D | Live 2026 data | Site feels current |
+| 7E | Browser extension | The hook that attracts users |
+| 8 | Deploy | Final step |
+
+### 7A: Bug Fixes & Cleanup
+
+**Backend:**
+- [ ] Radio transcription — Groq API key / Whisper fallback (currently broken OAuth)
+- [ ] Strategy simulator calibration — HAM 1-stop showing unrealistic deltas on some races
+- [ ] Compound validation edge cases — SUPERSOFT/HYPERSOFT for pre-2019 races
+- [ ] Pre-generate all laps.json for 2018-2025 to avoid on-demand FastF1 calls under load
+- [ ] Audit all API endpoints for error handling consistency
+
+**Frontend:**
+- [ ] RadioMoments UI — speaker icon should be a clickable play button, progress bar below driver name
+- [ ] Team colour consistency — use accents throughout, not just podium dots
+- [ ] Verify all components handle empty/error states gracefully
+- [ ] Loading states — ensure skeleton loaders exist for all async sections
+- [ ] Circuit SVGs — verify all 2025 tracks have outlines, add any missing
+
+**Code quality:**
+- [ ] Remove dead imports and unused components (rss_fetcher.py, reddit_fetcher.py if Discussion is killed)
+- [ ] Ensure consistent error response format across all API endpoints
+
+### 7B: Strategy Simulator + Driver Swap
+
+Merge the Driver Swap concept into the existing simulator. One powerful tool, not two separate pages.
+
+**How it works:**
+1. User picks a driver (e.g., Hamilton)
+2. User picks a target car (e.g., Red Bull) — **new toggle**
+3. System calculates: qualifying pace delta vs teammate → apply to target car's quali position, tyre management profile → apply to target car's tyre data, race craft score → factor in
+4. Combines driver swap adjustment with any strategy changes the user makes
+5. Shows: "Hamilton in the Red Bull with your strategy: Predicted P1, 4.2s faster"
+
+**Data needed (all extractable from existing data):**
+- Teammate qualifying deltas per race (from race_results.json)
+- Tyre degradation profiles per driver (from laps.json, 2018+)
+- Car performance gap per circuit (qualifying gaps between teams)
+
+**UI:** "Swap Car" toggle below driver selector. Optional layer, not mandatory.
+
+**Limitations:** Pre-2018 uses simplified model (quali deltas only). Clear disclaimer: "Estimate based on historical data patterns."
+
+### 7C: Frontend Beautification + Mobile Responsiveness
+
+**Visual polish:**
+- [ ] Race page energy matching IntroHero — dramatic layouts, better typography
+- [ ] Scroll animations (Intersection Observer, subtle)
+- [ ] Circuit SVGs on race pages (not just home cards)
+- [ ] Consistent spacing, typography hierarchy, card hover states
+
+**Mobile (375px–768px):**
+- [ ] Single-column race cards, horizontal year scrollbar
+- [ ] Simulator controls stack vertically, compound buttons wrap
+- [ ] Pattern Finder filter form stacks, championship table scrolls
+- [ ] Navbar hamburger, 44px min tap targets
+- [ ] Test at 375px (iPhone SE), 390px (iPhone 14)
+
+### 7D: Live 2026 Data Provision
+
+- [ ] Verify FastF1 can fetch 2026 data as races happen
+- [ ] Auto-indexing for new races (extend background indexer or manual refresh endpoint)
+- [ ] Partial season UI — "upcoming" vs "completed" race cards
+- [ ] 2026 circuit SVGs for new tracks
+- [ ] "Latest Race" banner on landing page
+
+### 7E: Browser Extension — Live Race Companion
+
+Chrome/Firefox extension overlaying real-time strategy predictions during live F1 broadcasts.
+
+**Shows:** live pit predictions, "what if" ticker, pattern alerts, tyre life indicators.
+
+**Architecture:** Manifest V3, React popup/sidebar, WebSocket to backend, OpenF1 real-time data, ML predictions every lap (~90s), fallback /live dashboard for non-extension users.
+
+**Build phases:** extension shell → WebSocket server → live predictions → pattern alerts → Chrome Web Store prep.
+
+### Phase 8: Deploy
+
+Frontend → Vercel, Backend → Railway/Render, pre-index all data, domain + SSL + CDN, SEO, analytics.
 
 ---
 
