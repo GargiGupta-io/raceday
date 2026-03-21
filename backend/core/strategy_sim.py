@@ -556,6 +556,151 @@ def estimate_total_race_time_ml(
 
 
 # ---------------------------------------------------------------------------
+# Driver Swap — teammate deltas and car performance gaps
+# ---------------------------------------------------------------------------
+
+
+def get_teammate_deltas(year: int, track: str) -> dict:
+    """
+    Calculate qualifying gap between teammates for each team in a race.
+
+    Uses grid positions as a proxy for qualifying pace (grid = quali result
+    minus penalties, close enough for simulation purposes).
+
+    Returns a dict keyed by driver code:
+        {
+            "VER": {"teammate": "PER", "delta_positions": -5, "team": "Red Bull Racing"},
+            "PER": {"teammate": "VER", "delta_positions": +5, "team": "Red Bull Racing"},
+        }
+
+    delta_positions = this driver's grid - teammate's grid
+    Negative = this driver qualified higher (better).
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return {}
+
+    results = data["results"]
+
+    # Group drivers by team
+    teams: dict[str, list[dict]] = {}
+    for r in results:
+        team = r.get("team", "Unknown")
+        teams.setdefault(team, []).append(r)
+
+    deltas = {}
+    for team, drivers in teams.items():
+        drivers_with_grid = [d for d in drivers if d.get("grid_position") is not None]
+        if len(drivers_with_grid) < 2:
+            for d in drivers:
+                deltas[d["driver"]] = {
+                    "teammate": None,
+                    "delta_positions": 0,
+                    "team": team,
+                }
+            continue
+
+        # For each driver, find their teammate and compute grid delta
+        for d in drivers_with_grid:
+            teammates = [t for t in drivers_with_grid if t["driver"] != d["driver"]]
+            if not teammates:
+                deltas[d["driver"]] = {"teammate": None, "delta_positions": 0, "team": team}
+                continue
+
+            teammate = teammates[0]
+            delta = d["grid_position"] - teammate["grid_position"]
+
+            deltas[d["driver"]] = {
+                "teammate": teammate["driver"],
+                "delta_positions": delta,
+                "team": team,
+            }
+
+    return deltas
+
+
+def get_car_performance_gaps(year: int, track: str) -> dict:
+    """
+    Estimate car performance gap between teams at a specific circuit.
+
+    Uses the best qualifying position from each team as a proxy for car
+    pace. Returns the gap in grid positions relative to the fastest team.
+
+    Returns a dict keyed by team name:
+        {
+            "Red Bull Racing": {"best_grid": 1, "gap_positions": 0},
+            "Mercedes": {"best_grid": 3, "gap_positions": 2},
+        }
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return {}
+
+    results = data["results"]
+
+    team_best: dict[str, int] = {}
+    for r in results:
+        team = r.get("team", "Unknown")
+        grid = r.get("grid_position")
+        if grid is not None:
+            if team not in team_best or grid < team_best[team]:
+                team_best[team] = grid
+
+    if not team_best:
+        return {}
+
+    fastest = min(team_best.values())
+    return {
+        team: {"best_grid": bg, "gap_positions": bg - fastest}
+        for team, bg in team_best.items()
+    }
+
+
+def get_swap_context(year: int, track: str) -> dict | None:
+    """
+    Return all data needed for the Driver Swap feature.
+
+    Combines teammate deltas and car performance gaps into a single
+    response the frontend can use to populate the swap UI.
+    """
+    data = indexer.load_race_index(year, track)
+    if data is None:
+        return None
+
+    results = data["results"]
+    from backend.core.insights import _DRIVER_NAMES
+
+    teammate_deltas = get_teammate_deltas(year, track)
+    car_gaps = get_car_performance_gaps(year, track)
+
+    # Build team list for the dropdown
+    teams: dict[str, dict] = {}
+    for r in results:
+        team = r.get("team", "Unknown")
+        if team not in teams:
+            teams[team] = {
+                "name": team,
+                "best_grid": car_gaps.get(team, {}).get("best_grid"),
+                "gap": car_gaps.get(team, {}).get("gap_positions", 0),
+                "drivers": [],
+            }
+        teams[team]["drivers"].append({
+            "code": r["driver"],
+            "name": _DRIVER_NAMES.get(r["driver"], r["driver"]),
+            "grid": r.get("grid_position"),
+            "finish": r.get("finish_position"),
+        })
+
+    team_list = sorted(teams.values(), key=lambda t: t.get("best_grid") or 99)
+
+    return {
+        "teammate_deltas": teammate_deltas,
+        "car_gaps": car_gaps,
+        "teams": team_list,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Main simulation — compare alternate strategy vs actual
 # ---------------------------------------------------------------------------
 
