@@ -29,12 +29,22 @@ interface PatternAlert {
   type: "warning" | "info" | "opportunity";
 }
 
+interface WhatIf {
+  driver: string;
+  position: number;
+  pitNow: string;
+  stayOut: string;
+  recommendation: "pit" | "stay" | "neutral";
+  summary: string;
+}
+
 interface LiveData {
   lap: number;
   totalLaps: number;
   session: string;
   drivers: DriverLive[];
   predictions: PitPrediction[];
+  whatIf?: WhatIf[];
   alerts: PatternAlert[];
 }
 
@@ -59,6 +69,12 @@ const MOCK_DATA: LiveData = {
     { driver: "RUS", prediction: "Pit lap 37-39 for Hard", confidence: "high" },
     { driver: "VER", prediction: "No more stops", confidence: "medium" },
     { driver: "LEC", prediction: "Pit lap 41-43 for Hard", confidence: "medium" },
+  ],
+  whatIf: [
+    { driver: "NOR", position: 1, pitNow: "P4", stayOut: "P1", recommendation: "stay" as const, summary: "NOR: Pit NOW -> P4 | Stay out -> P1" },
+    { driver: "RUS", position: 2, pitNow: "P5", stayOut: "P2", recommendation: "stay" as const, summary: "RUS: Pit NOW -> P5 | Stay out -> P2" },
+    { driver: "VER", position: 3, pitNow: "P8", stayOut: "P5", recommendation: "stay" as const, summary: "VER: Pit NOW -> P8 | Stay out -> P5" },
+    { driver: "LEC", position: 4, pitNow: "P6", stayOut: "P4", recommendation: "stay" as const, summary: "LEC: Pit NOW -> P6 | Stay out -> P4" },
   ],
   alerts: [
     { text: "Last 4 races at Suzuka: leader after lap 35 won the race.", type: "info" },
@@ -289,6 +305,37 @@ function Popup() {
                       color: p.confidence === "high" ? "#4ade80" : "#a1a1aa",
                     }}>
                       {p.confidence}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </Card>
+          )}
+
+          {/* What If ticker */}
+          {data.whatIf && data.whatIf.length > 0 && (
+            <Card>
+              <SectionLabel>What If They Pit NOW?</SectionLabel>
+              {data.whatIf.map((w, i) => (
+                <div key={i} style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "5px 0", borderBottom: i < (data.whatIf?.length ?? 0) - 1 ? "1px solid #1a1a1e" : "none",
+                }}>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "#e4e4e7", width: 32 }}>{w.driver}</span>
+                  <div style={{ display: "flex", gap: 8, fontSize: 10 }}>
+                    <span style={{
+                      color: w.recommendation === "pit" ? "#4ade80" : "#a1a1aa",
+                      background: w.recommendation === "pit" ? "#052e16" : "transparent",
+                      padding: "1px 5px", borderRadius: 3,
+                    }}>
+                      Pit {w.pitNow}
+                    </span>
+                    <span style={{
+                      color: w.recommendation === "stay" ? "#4ade80" : "#a1a1aa",
+                      background: w.recommendation === "stay" ? "#052e16" : "transparent",
+                      padding: "1px 5px", borderRadius: 3,
+                    }}>
+                      Stay {w.stayOut}
                     </span>
                   </div>
                 </div>

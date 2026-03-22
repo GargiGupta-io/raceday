@@ -279,6 +279,126 @@ def _generate_pit_predictions(
     return predictions[:6], pit_windows
 
 
+def _generate_what_if(
+    drivers: list[dict],
+    current_lap: int,
+    total_laps: int,
+) -> list[dict]:
+    """
+    Generate "What If X pits NOW" scenarios for the top 5 drivers.
+
+    Estimates the position a driver would rejoin at after a pit stop,
+    based on the typical time lost (~22 seconds) and the gaps between
+    drivers. Also estimates what happens if they stay out to the end.
+
+    Returns a list of what-if dicts for the extension UI.
+    """
+    PIT_LOSS_SECONDS = 22.0
+    remaining_laps = total_laps - current_lap
+
+    if remaining_laps < 3:
+        return []  # too late to pit, no what-if needed
+
+    what_ifs = []
+
+    # Only top 5 drivers
+    top_drivers = [d for d in drivers if d.get("position", 99) <= 5]
+    top_drivers.sort(key=lambda d: d.get("position", 99))
+
+    # Gap between positions increases further down the field
+    # P1-P5: ~2-4s between each, P5-P10: ~3-6s, P10+: ~5-10s
+    def gap_for_positions(pos: int, num_places: int) -> float:
+        """Estimate total time gap for dropping num_places from position pos."""
+        total = 0.0
+        for i in range(num_places):
+            p = pos + i
+            if p <= 3:
+                total += 2.5
+            elif p <= 8:
+                total += 4.0
+            else:
+                total += 6.0
+        return total
+
+    for d in top_drivers:
+        code = d.get("code", "???")
+        position = d.get("position", 99)
+        compound = d.get("compound", "UNKNOWN")
+        stint_age = d.get("stintAge", 0)
+
+        # How many positions lost from pit stop?
+        # Find how many positions 22 seconds covers from current position
+        positions_lost = 0
+        gap_sum = 0.0
+        while gap_sum < PIT_LOSS_SECONDS and positions_lost < len(drivers) - position:
+            positions_lost += 1
+            p = position + positions_lost
+            gap_sum += 2.5 if p <= 3 else 4.0 if p <= 8 else 6.0
+
+        pit_now_position = min(len(drivers), position + positions_lost)
+
+        # Recovery on fresh tyres: ~0.4s/lap advantage, but only ~50% converts to overtakes
+        # (dirty air, DRS dependency, track position advantage)
+        effective_recovery_per_lap = 0.2  # seconds/lap that actually converts to positions
+        recovery_total = effective_recovery_per_lap * remaining_laps
+        positions_recovered = 0
+        recover_sum = 0.0
+        check_pos = pit_now_position
+        while recover_sum < recovery_total and check_pos > position:
+            recover_sum += 2.5 if check_pos <= 3 else 4.0 if check_pos <= 8 else 6.0
+            if recover_sum <= recovery_total:
+                positions_recovered += 1
+                check_pos -= 1
+
+        final_if_pit = max(1, pit_now_position - positions_recovered)
+
+        # What if they stay out?
+        COMPOUND_MAX = {"SOFT": 18, "MEDIUM": 28, "HARD": 40, "INTERMEDIATE": 25, "WET": 30}
+        max_stint = COMPOUND_MAX.get(compound, 25)
+        laps_past_cliff = max(0, (stint_age + remaining_laps) - max_stint)
+
+        if laps_past_cliff > 0:
+            # Cliff penalty: 0.4s/lap once past optimal stint, converts to position loss
+            cliff_total = laps_past_cliff * 0.4
+            positions_lost_staying = 0
+            cliff_sum = 0.0
+            for i in range(20):
+                p = position + i + 1
+                cliff_sum += 2.5 if p <= 3 else 4.0 if p <= 8 else 6.0
+                if cliff_sum <= cliff_total:
+                    positions_lost_staying += 1
+                else:
+                    break
+            final_if_stay = min(len(drivers), position + positions_lost_staying)
+        else:
+            final_if_stay = position
+
+        # Build what-if text
+        if final_if_pit < final_if_stay:
+            recommendation = "pit"
+            pit_text = f"Pit NOW -> P{final_if_pit}"
+            stay_text = f"Stay out -> P{final_if_stay}"
+        elif final_if_pit > final_if_stay:
+            recommendation = "stay"
+            pit_text = f"Pit NOW -> P{final_if_pit}"
+            stay_text = f"Stay out -> P{final_if_stay}"
+        else:
+            recommendation = "neutral"
+            pit_text = f"Pit NOW -> P{final_if_pit}"
+            stay_text = f"Stay out -> P{final_if_stay}"
+
+        what_ifs.append({
+            "driver": code,
+            "position": position,
+            "pitNow": f"P{final_if_pit}",
+            "stayOut": f"P{final_if_stay}",
+            "recommendation": recommendation,
+            "summary": f"{code}: {pit_text} | {stay_text}",
+        })
+
+    return what_ifs
+
+
 def _build_live_state(session: dict) -> dict | None:
     """Build a complete live state snapshot from OpenF1 data."""
     session_key = session.get("session_key")
@@ -333,10 +453,11 @@ def _build_live_state(session: dict) -> dict | None:
     year = session.get("year", datetime.now().year)
     session_name = f"{year} {location or country} Grand Prix"
 
-    # Generate pit predictions and tyre alerts
+    # Generate pit predictions, what-if scenarios, and tyre alerts
     current_lap = lap_count["current"]
     total_laps = lap_count["total"]
     predictions, pit_windows = _generate_pit_predictions(drivers, current_lap, total_laps)
+    what_ifs = _generate_what_if(drivers, current_lap, total_laps)
 
     # Apply pit windows to driver list
     for d in drivers:
@@ -349,6 +470,7 @@ def _build_live_state(session: dict) -> dict | None:
         "sessionKey": session_key,
         "drivers": drivers,
         "predictions": predictions,
+        "whatIf": what_ifs,
         "alerts": [],  # filled by pattern matcher (Step 36)
     }
 
