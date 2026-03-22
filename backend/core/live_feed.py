@@ -20,6 +20,8 @@ from datetime import datetime, timezone
 
 import requests
 
+from backend.core import indexer
+
 logger = logging.getLogger(__name__)
 
 OPENF1_BASE = "https://api.openf1.org/v1"
@@ -399,6 +401,128 @@ def _generate_what_if(
     return what_ifs
 
 
+def _generate_pattern_alerts(
+    session: dict,
+    current_lap: int,
+    total_laps: int,
+    drivers: list[dict],
+) -> list[dict]:
+    """
+    Generate historical pattern alerts relevant to the current race.
+
+    Queries the pattern matcher with the circuit and conditions to surface
+    facts like "Last 3 times it rained here, the leader changed after lap 30."
+
+    Returns a list of {text, type} alert dicts.
+    """
+    alerts: list[dict] = []
+
+    location = session.get("location", "")
+    country = session.get("country_name", "")
+    circuit_name = location or country
+
+    if not circuit_name:
+        return alerts
+
+    # Map OpenF1 location names to Raceday GP name keywords
+    LOCATION_TO_KEYWORD = {
+        "silverstone": "british", "melbourne": "australian", "monaco": "monaco",
+        "sakhir": "bahrain", "jeddah": "saudi", "baku": "azerbaijan",
+        "miami": "miami", "imola": "emilia", "barcelona": "spanish",
+        "spielberg": "austrian", "budapest": "hungarian", "spa-francorchamps": "belgian",
+        "zandvoort": "dutch", "monza": "italian", "marina bay": "singapore",
+        "suzuka": "japanese", "lusail": "qatar", "austin": "united states",
+        "mexico city": "mexico", "interlagos": "paulo", "las vegas": "las vegas",
+        "yas island": "abu dhabi", "shanghai": "chinese", "montreal": "canadian",
+    }
+    search_keyword = LOCATION_TO_KEYWORD.get(circuit_name.lower(), circuit_name.lower())
+
+    try:
+        # Find historical races at this circuit
+        all_indexed = indexer.list_indexed()
+        circuit_races = []
+        for race in all_indexed:
+            track_lower = race.get("track", "").lower()
+            if search_keyword in track_lower:
+                circuit_races.append(race)
+
+        if len(circuit_races) < 3:
+            return alerts
+
+        # Analyze patterns from historical races at this circuit
+        leader_code = None
+        for d in drivers:
+            if d.get("position") == 1:
+                leader_code = d.get("code")
+                break
+
+        # Pattern: How often does the leader at this point win?
+        winners_from_lead = 0
+        total_checked = 0
+        for race in circuit_races[-6:]:  # last 6 races at this circuit
+            data = indexer.load_race_index(race["year"], race["track"])
+            if data is None:
+                continue
+            results = data["results"]
+            winner = None
+            for r in results:
+                if r.get("finish_position") == 1:
+                    winner = r["driver"]
+                    break
+            if winner:
+                total_checked += 1
+                # Approximate: if the winner also had the best grid, they likely led mid-race
+                for r in results:
+                    if r["driver"] == winner and r.get("grid_position") == 1:
+                        winners_from_lead += 1
+                        break
+
+        if total_checked >= 3 and winners_from_lead >= total_checked * 0.6:
+            pct = round(100 * winners_from_lead / total_checked)
+            alerts.append({
+                "text": f"At {circuit_name}, the pole sitter won {winners_from_lead} of the last {total_checked} races ({pct}%).",
+                "type": "info",
+            })
+
+        # Pattern: How often are there many retirements here?
+        high_dnf_count = 0
+        for race in circuit_races[-6:]:
+            data = indexer.load_race_index(race["year"], race["track"])
+            if data is None:
+                continue
+            results = data["results"]
+            dnfs = sum(1 for r in results if r.get("finish_position") is None)
+            if dnfs >= 4:
+                high_dnf_count += 1
+
+        if high_dnf_count >= 2:
+            alerts.append({
+                "text": f"{circuit_name} is tough on cars — {high_dnf_count} of the last {min(6, len(circuit_races))} races had 4+ retirements.",
+                "type": "warning",
+            })
+
+        # Pattern: Tyre cliff alert for current leader
+        if leader_code and current_lap > total_laps * 0.5:
+            for d in drivers:
+                if d.get("code") == leader_code:
+                    compound = d.get("compound", "")
+                    stint_age = d.get("stintAge", 0)
+                    COMPOUND_MAX = {"SOFT": 18, "MEDIUM": 28, "HARD": 40}
+                    max_life = COMPOUND_MAX.get(compound, 25)
+                    laps_left = max_life - stint_age
+                    if 0 < laps_left <= 8:
+                        alerts.append({
+                            "text": f"{leader_code}'s {compound} tyres at {d.get('tyreLife', '?')}% life — cliff expected in ~{laps_left} laps.",
+                            "type": "warning",
+                        })
+                    break
+
+    except Exception as exc:
+        logger.warning("Pattern alert generation failed: %s", exc)
+
+    return alerts[:4]  # max 4 alerts
+
+
 def _build_live_state(session: dict) -> dict | None:
     """Build a complete live state snapshot from OpenF1 data."""
     session_key = session.get("session_key")
@@ -453,11 +577,12 @@ def _build_live_state(session: dict) -> dict | None:
     year = session.get("year", datetime.now().year)
     session_name = f"{year} {location or country} Grand Prix"
 
-    # Generate pit predictions, what-if scenarios, and tyre alerts
+    # Generate pit predictions, what-if scenarios, and pattern alerts
     current_lap = lap_count["current"]
     total_laps = lap_count["total"]
     predictions, pit_windows = _generate_pit_predictions(drivers, current_lap, total_laps)
     what_ifs = _generate_what_if(drivers, current_lap, total_laps)
+    alerts = _generate_pattern_alerts(session, current_lap, total_laps, drivers)
 
     # Apply pit windows to driver list
     for d in drivers:
@@ -471,7 +596,7 @@ def _build_live_state(session: dict) -> dict | None:
         "drivers": drivers,
         "predictions": predictions,
         "whatIf": what_ifs,
-        "alerts": [],  # filled by pattern matcher (Step 36)
+        "alerts": alerts,
     }
 
 
