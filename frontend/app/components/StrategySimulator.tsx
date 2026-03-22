@@ -408,7 +408,7 @@ export default function StrategySimulator({
             >
               {swapContext.teams.map((t) => (
                 <option key={t.name} value={t.name}>
-                  {t.name} (P{t.best_grid}{t.gap > 0 ? `, +${t.gap} gap` : ", fastest"})
+                  {t.name}
                 </option>
               ))}
             </select>

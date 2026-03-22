@@ -126,7 +126,7 @@ export default function RacePage({
             ) : null;
           })()}
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-racing)" }}>{trackName}</h1>
+          <h1 className="text-2xl font-bold text-white">{trackName}</h1>
           <div className="min-h-8 mt-2">
             {tagline && (
               <p className="animate-[fadeIn_0.5s_ease-in]">

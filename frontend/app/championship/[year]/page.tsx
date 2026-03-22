@@ -53,7 +53,7 @@ export default function ChampionshipPage({
         {/* Header */}
         <div className="mb-8">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
-          <h1 className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-racing)" }}>Drivers Championship</h1>
+          <h1 className="text-2xl font-bold text-white">Drivers Championship</h1>
           {racesIndexed > 0 && (
             <p className="mt-1 text-xs text-zinc-500">
               Based on {racesIndexed} indexed {racesIndexed === 1 ? "race" : "races"}

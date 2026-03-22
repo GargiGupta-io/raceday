@@ -81,7 +81,7 @@ export default function PatternFinderPage() {
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">
             Pattern Finder
           </p>
-          <h1 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "var(--font-racing)" }}>
+          <h1 className="text-2xl font-bold text-white mb-2">
             Search F1 History
           </h1>
           <p className="text-sm text-zinc-400">
