@@ -38,6 +38,7 @@ const CIRCUIT_MAP: Record<string, string> = {
   "Saudi Arabian Grand Prix": "jeddah",
   "Singapore Grand Prix": "singapore",
   "Spanish Grand Prix": "barcelona",
+  "Barcelona Grand Prix": "barcelona",
   "Styrian Grand Prix": "red-bull-ring",
   "São Paulo Grand Prix": "interlagos",
   "Turkish Grand Prix": "istanbul",
