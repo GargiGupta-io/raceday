@@ -134,7 +134,12 @@ function Home() {
         {/* Season header + weather filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
           <h2 className="text-2xl font-bold text-white">
-            {year} Season <span className="text-zinc-500 font-normal text-lg">— {races.length} Races</span>
+            {year} Season <span className="text-zinc-500 font-normal text-lg">— {(() => {
+              const indexed = races.filter((r) => r.indexed).length;
+              return indexed < races.length
+                ? `${indexed} of ${races.length} Races`
+                : `${races.length} Races`;
+            })()}</span>
           </h2>
           <div className="flex gap-1.5">
             {["ALL", "DRY", "WET", "MIXED"].map((f) => (
@@ -221,6 +226,7 @@ const WEATHER_BADGE: Record<string, { bg: string; text: string; label: string }>
 function RaceCard({ race, year }: { race: Race; year: number }) {
   const weather = WEATHER_BADGE[race.weather || ""] || null;
   const circuitSvg = getCircuitSvg(race.name);
+  const isUpcoming = race.date && new Date(race.date) > new Date();
 
   const content = (
     <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-5 h-full flex flex-col relative overflow-hidden transition-colors group-hover:border-zinc-700/70 group-hover:bg-zinc-900/80">
@@ -242,15 +248,24 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
         </div>
       </div>
 
-      {/* Bottom row: winner + badges */}
+      {/* Bottom row: winner/date + badges */}
       <div className="mt-auto flex items-center gap-2 flex-wrap">
-        {race.winner && (
+        {race.winner ? (
           <span className="text-xs text-zinc-300">
             <span className="text-emerald-400 font-semibold mr-1">P1</span>
             {race.winner}
           </span>
-        )}
+        ) : isUpcoming && race.date ? (
+          <span className="text-xs text-zinc-500">
+            {new Date(race.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+          </span>
+        ) : null}
         <div className="flex items-center gap-1.5 ml-auto">
+          {isUpcoming && (
+            <span className="rounded px-1.5 py-0.5 text-[10px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700">
+              UPCOMING
+            </span>
+          )}
           {weather && (
             <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${weather.bg} ${weather.text}`}>
               {weather.label}
