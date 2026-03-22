@@ -1,18 +1,21 @@
 /**
  * background.js — Extension service worker
  *
- * Manages WebSocket connection to the Raceday backend for live data.
- * Runs in the background, relays updates to popup and content scripts.
+ * Manages connection to the Raceday backend for live data.
+ * Polls the REST /live endpoint (WebSocket is available but
+ * REST polling is simpler for extension service workers).
+ * Relays updates to popup and content scripts.
  */
 
 const BACKEND_URL = "http://localhost:8888";
-let ws = null;
 let liveData = null;
+let pollInterval = null;
+let connectionStatus = "disconnected"; // "connected" | "disconnected" | "checking"
 
 // Listen for messages from popup/content scripts
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_LIVE_DATA") {
-    sendResponse({ data: liveData });
+    sendResponse({ data: liveData, status: connectionStatus });
     return true;
   }
 
@@ -21,61 +24,77 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === "CONNECT_LIVE") {
-    connectWebSocket(msg.sessionKey);
-    sendResponse({ status: "connecting" });
+  if (msg.type === "START_POLLING") {
+    startPolling();
+    sendResponse({ status: "polling" });
     return true;
   }
 
-  if (msg.type === "DISCONNECT_LIVE") {
-    disconnectWebSocket();
-    sendResponse({ status: "disconnected" });
+  if (msg.type === "STOP_POLLING") {
+    stopPolling();
+    sendResponse({ status: "stopped" });
     return true;
   }
 });
 
-function connectWebSocket(sessionKey) {
-  if (ws) {
-    ws.close();
-  }
+// Poll the /live REST endpoint
+async function fetchLiveData() {
+  try {
+    const resp = await fetch(`${BACKEND_URL}/live`, { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-  const wsUrl = BACKEND_URL.replace("http", "ws") + `/ws/live/${sessionKey}`;
-  ws = new WebSocket(wsUrl);
+    const data = await resp.json();
 
-  ws.onopen = () => {
-    console.log("[Raceday] WebSocket connected");
-    broadcastToAll({ type: "WS_STATUS", status: "connected" });
-  };
-
-  ws.onmessage = (event) => {
-    try {
-      liveData = JSON.parse(event.data);
-      broadcastToAll({ type: "LIVE_UPDATE", data: liveData });
-    } catch (e) {
-      console.error("[Raceday] Failed to parse WS message", e);
+    if (connectionStatus !== "connected") {
+      connectionStatus = "connected";
+      broadcastToAll({ type: "WS_STATUS", status: "connected" });
     }
-  };
 
-  ws.onclose = () => {
-    console.log("[Raceday] WebSocket disconnected");
-    broadcastToAll({ type: "WS_STATUS", status: "disconnected" });
-    ws = null;
-  };
-
-  ws.onerror = (err) => {
-    console.error("[Raceday] WebSocket error", err);
-  };
+    if (data.active) {
+      liveData = data;
+      broadcastToAll({ type: "LIVE_UPDATE", data: liveData });
+    } else if (liveData !== null) {
+      liveData = null;
+      broadcastToAll({ type: "LIVE_UPDATE", data: null });
+    }
+  } catch (e) {
+    if (connectionStatus !== "disconnected") {
+      connectionStatus = "disconnected";
+      broadcastToAll({ type: "WS_STATUS", status: "disconnected" });
+    }
+  }
 }
 
-function disconnectWebSocket() {
-  if (ws) {
-    ws.close();
-    ws = null;
+function startPolling() {
+  if (pollInterval) return; // already polling
+  connectionStatus = "checking";
+  fetchLiveData(); // immediate first fetch
+  pollInterval = setInterval(fetchLiveData, 10000); // then every 10s
+  console.log("[Raceday] Polling started");
+}
+
+function stopPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval);
+    pollInterval = null;
   }
   liveData = null;
+  connectionStatus = "disconnected";
+  console.log("[Raceday] Polling stopped");
 }
 
 function broadcastToAll(message) {
-  // Send to all extension pages (popup, etc.)
   chrome.runtime.sendMessage(message).catch(() => {});
 }
+
+// Auto-start polling on install/startup
+chrome.runtime.onInstalled.addListener(() => {
+  startPolling();
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  startPolling();
+});
+
+// Start immediately
+startPolling();

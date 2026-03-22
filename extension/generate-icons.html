@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head><title>Generate Raceday Icons</title></head>
+<body style="background:#222;color:#fff;font-family:sans-serif;padding:40px">
+<h2>Raceday Extension Icons</h2>
+<p>Right-click each icon and "Save Image As" to download the PNG.</p>
+<div style="display:flex;gap:40px;margin-top:20px">
+  <div>
+    <p>128x128</p>
+    <canvas id="c128" width="128" height="128"></canvas>
+  </div>
+  <div>
+    <p>48x48</p>
+    <canvas id="c48" width="48" height="48"></canvas>
+  </div>
+  <div>
+    <p>16x16</p>
+    <canvas id="c16" width="16" height="16"></canvas>
+  </div>
+</div>
+<script>
+function drawIcon(id, size) {
+  const c = document.getElementById(id);
+  const ctx = c.getContext("2d");
+  const r = size * 0.15; // corner radius
+
+  // Rounded red rectangle
+  ctx.fillStyle = "#dc2626";
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(size - r, 0);
+  ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size - r);
+  ctx.quadraticCurveTo(size, size, size - r, size);
+  ctx.lineTo(r, size);
+  ctx.quadraticCurveTo(0, size, 0, size - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.fill();
+
+  // "RD" text
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = `bold ${size * 0.45}px -apple-system, sans-serif`;
+  ctx.fillText("RD", size / 2, size / 2 + size * 0.02);
+}
+drawIcon("c128", 128);
+drawIcon("c48", 48);
+drawIcon("c16", 16);
+</script>
+</body>
+</html>
