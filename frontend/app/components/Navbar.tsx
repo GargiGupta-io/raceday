@@ -22,7 +22,8 @@ export default function Navbar() {
 
   const isChampionship = pathname.startsWith("/championship");
   const isPatterns = pathname.startsWith("/patterns");
-  const isRaces = !isChampionship && !isPatterns;
+  const isLive = pathname.startsWith("/live");
+  const isRaces = !isChampionship && !isPatterns && !isLive;
 
   return (
     <nav className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur">
@@ -68,6 +69,16 @@ export default function Navbar() {
             }`}
           >
             Patterns
+          </Link>
+          <Link
+            href="/live"
+            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
+              isLive
+                ? "bg-red-900/60 text-red-400"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}
+          >
+            Live
           </Link>
         </div>
 
