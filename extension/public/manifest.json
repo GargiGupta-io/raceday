@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Raceday — Live F1 Strategy Companion",
+  "version": "0.1.0",
+  "description": "Real-time F1 strategy predictions, tyre life, and pattern alerts during live races.",
+  "permissions": ["storage"],
+  "host_permissions": ["http://localhost:8888/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.formula1.com/*", "https://f1tv.formula1.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}
