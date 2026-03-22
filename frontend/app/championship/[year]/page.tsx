@@ -121,7 +121,7 @@ export default function ChampionshipPage({
 
             {/* Full table */}
             <div className="rounded-lg bg-zinc-900 overflow-x-auto">
-              <div className="min-w-[20rem]">
+              <div className="min-w-0 sm:min-w-[20rem]">
               {/* Header */}
               <div className="grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 px-3 sm:px-5 py-2 border-b border-zinc-800">
                 <span className="text-xs text-zinc-600 text-right">P</span>
