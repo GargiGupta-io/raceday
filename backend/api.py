@@ -4,13 +4,16 @@ api.py — Raceday FastAPI Application
 Entry point for the Raceday backend REST API.
 Routes are thin — all business logic lives in backend/core/.
 
-On startup, a background thread indexes all seasons (2010–2024)
-so that every page has data ready when a user visits.
+On startup, a background thread indexes all seasons (2010–current year)
+so that every page has data ready when a user visits. The current season
+is re-checked periodically to pick up new races as they happen.
 """
 
 import logging
 import threading
+import time
 from contextlib import asynccontextmanager
+from datetime import datetime
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,7 +27,8 @@ logger = logging.getLogger(__name__)
 # Background indexer
 # ---------------------------------------------------------------------------
 
-SEASONS_TO_INDEX = list(range(2010, 2026))  # 2010–2025
+CURRENT_YEAR = datetime.now().year
+SEASONS_TO_INDEX = list(range(2010, CURRENT_YEAR + 1))
 
 _indexing_status = {
     "running": False,
@@ -67,6 +71,24 @@ def _background_index_all():
         _indexing_status["total_skipped"],
         _indexing_status["total_failed"],
     )
+
+    # After full index, periodically re-check current season for new races
+    _periodic_current_season_check()
+
+
+def _periodic_current_season_check():
+    """Re-index the current season every 6 hours to pick up new races."""
+    while True:
+        time.sleep(6 * 3600)  # 6 hours
+        logger.info("Periodic re-check: indexing %d season for new races...", CURRENT_YEAR)
+        try:
+            result = indexer.index_season(CURRENT_YEAR)
+            if result["indexed"] > 0:
+                logger.info("  Found %d new races for %d!", result["indexed"], CURRENT_YEAR)
+            else:
+                logger.info("  No new races for %d.", CURRENT_YEAR)
+        except Exception as exc:
+            logger.error("  Periodic check failed: %s", exc)
 
 
 @asynccontextmanager
@@ -113,6 +135,21 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.post("/refresh/{year}")
+def refresh_season(year: int):
+    """Manually trigger re-indexing for a specific season. Useful after a race weekend."""
+    try:
+        result = indexer.index_season(year)
+        return {
+            "year": year,
+            "indexed": result["indexed"],
+            "skipped": result["skipped"],
+            "failed": result["failed"],
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Refresh failed: {exc}")
 
 
 @app.get("/indexing/status")
