@@ -158,6 +158,33 @@ function Home() {
           </div>
         </div>
 
+        {/* Latest race banner — only for current/partial seasons */}
+        {!loading && !error && (() => {
+          const indexedRaces = races.filter((r) => r.indexed && r.winner);
+          if (indexedRaces.length === 0 || indexedRaces.length === races.length) return null;
+          const latest = indexedRaces[indexedRaces.length - 1];
+          return (
+            <Link
+              href={`/races/${year}/${encodeURIComponent(latest.name)}`}
+              className="block mb-6 group"
+            >
+              <div className="rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-900/50 border border-zinc-800/50 p-4 sm:p-5 flex items-center gap-4 group-hover:border-zinc-700/50 transition-colors">
+                <div className="shrink-0">
+                  <p className="text-[9px] text-zinc-500 uppercase tracking-widest">Latest</p>
+                  <p className="text-lg sm:text-xl font-bold text-white mt-0.5">{latest.name.replace(" Grand Prix", "")}</p>
+                </div>
+                <div className="ml-auto text-right shrink-0">
+                  <p className="text-xs text-zinc-500">Round {latest.round}</p>
+                  <p className="text-sm text-emerald-400 font-semibold mt-0.5">
+                    P1 {latest.winner}
+                  </p>
+                </div>
+                <span className="text-zinc-700 text-sm hidden sm:block">&rarr;</span>
+              </div>
+            </Link>
+          );
+        })()}
+
         {/* Race grid */}
         {loading && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
