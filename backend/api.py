@@ -15,11 +15,12 @@ import time
 from contextlib import asynccontextmanager
 from datetime import datetime
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from backend.core import indexer, insights
+from backend.core import live_feed
 
 logger = logging.getLogger(__name__)
 
@@ -93,11 +94,13 @@ def _periodic_current_season_check():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: launch background indexer thread
+    # Startup: launch background indexer thread + live feed
     thread = threading.Thread(target=_background_index_all, daemon=True)
     thread.start()
+    live_feed.start_feed()
     yield
-    # Shutdown: nothing to clean up (daemon thread dies with process)
+    # Shutdown
+    live_feed.stop_feed()
 
 
 # ---------------------------------------------------------------------------
@@ -150,6 +153,36 @@ def refresh_season(year: int):
         }
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Refresh failed: {exc}")
+
+
+@app.get("/live")
+def live_status():
+    """Get current live race state (same data as WebSocket, but via REST)."""
+    state = live_feed.get_live_state()
+    if state is None:
+        return {"active": False, "session": None}
+    return {"active": True, **state}
+
+
+@app.websocket("/ws/live")
+async def websocket_live(ws: WebSocket):
+    """WebSocket endpoint for live race data. Clients receive updates every ~10s during a live session."""
+    await ws.accept()
+    live_feed.add_client(ws)
+
+    # Send current state immediately if available
+    state = live_feed.get_live_state()
+    if state:
+        await ws.send_json(state)
+
+    try:
+        # Keep connection alive — wait for client messages (pings/disconnect)
+        while True:
+            await ws.receive_text()
+    except WebSocketDisconnect:
+        pass
+    finally:
+        live_feed.remove_client(ws)
 
 
 @app.get("/indexing/status")
