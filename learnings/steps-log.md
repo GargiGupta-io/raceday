@@ -243,3 +243,22 @@ Every prediction now has a small disclaimer: "ML regression trained on real lap 
 ~ modified: frontend/app/components/StrategySimulator.tsx
 
 ---
+
+## Steps 21-24 — Mobile Responsiveness (Summary)
+*Completed: 2026-03-22*
+
+**What was built**
+Steps 21-24 made all pages mobile-responsive:
+- Step 21: Compact navbar ("Champ" on mobile), tighter padding across all 4 pages
+- Step 22: Simulator — wider sliders, taller touch targets for compound buttons
+- Step 23: Pattern Finder — single-column filter form on phones; Championship — responsive leader card + scrollable table
+- Step 24: Cross-device audit — fixed championship min-width, deleted orphaned AuthButton (192 lines)
+
+**In plain English**
+The entire site now works on phones. The navbar compresses "Championship" to "Champ" on small screens. All pages use tighter padding (16px instead of 24px). The strategy simulator's controls stretch to full width on mobile with bigger tap targets. Pattern Finder filters stack to one column. Championship table scrolls horizontally if needed. A cross-device CSS audit found only 2 issues — both fixed.
+
+**Files changed**
+~ Navbar.tsx, page.tsx, races page, patterns page, championship page, StrategySimulator.tsx
+- deleted: AuthButton.tsx (orphaned)
+
+---
