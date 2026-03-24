@@ -36,7 +36,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${racingFont.variable} antialiased`}
         suppressHydrationWarning
       >
-        <Suspense fallback={<div className="h-12 border-b border-zinc-800 bg-zinc-950" />}>
+        <Suspense fallback={<div className="h-12 border-b border-white/[0.06]" />}>
           <Navbar />
         </Suspense>
         {children}

@@ -46,7 +46,7 @@ const TEAM_COLOR: Record<string, string> = {
 
 export default function HomePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-zinc-950" />}>
+    <Suspense fallback={<div className="min-h-screen" />}>
       <Home />
     </Suspense>
   );
@@ -97,7 +97,7 @@ function Home() {
   }, [year]);
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+    <div className="min-h-screen text-zinc-100">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6 sm:py-8">
 
         {/* Seasons error */}
