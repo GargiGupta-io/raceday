@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
-const YEARS = [2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
+const YEARS = [2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010];
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -26,35 +26,35 @@ export default function Navbar() {
   const isRaces = !isChampionship && !isPatterns && !isLive;
 
   return (
-    <nav className="sticky top-0 z-10 border-b border-zinc-800 bg-zinc-950/90 backdrop-blur">
+    <nav className="sticky top-0 z-50 glass border-b border-white/[0.06]">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
 
         {/* Brand */}
         <Link
           href="/"
-          className="text-sm font-bold tracking-tight text-white hover:text-zinc-300 transition-colors"
+          className="text-sm font-bold tracking-tight text-white hover:text-white/80 transition-colors"
         >
           Raceday
         </Link>
 
         {/* Nav links */}
-        <div className="flex items-center gap-0.5 sm:gap-1">
+        <div className="flex items-center gap-1 sm:gap-1.5">
           <Link
             href="/"
-            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isRaces
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "glass-button-active text-white"
+                : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
             }`}
           >
             Races
           </Link>
           <Link
             href={`/championship/${activeYear}`}
-            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isChampionship
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "glass-button-active text-white"
+                : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
             }`}
           >
             <span className="hidden sm:inline">Championship</span>
@@ -62,27 +62,27 @@ export default function Navbar() {
           </Link>
           <Link
             href="/patterns"
-            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isPatterns
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "glass-button-active text-white"
+                : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
             }`}
           >
             Patterns
           </Link>
           <Link
             href="/live"
-            className={`rounded px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-medium transition-colors ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isLive
-                ? "bg-red-900/60 text-red-400"
-                : "text-zinc-500 hover:text-zinc-300"
+                ? "glass-button-active text-red-400 glow-pulse"
+                : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
             }`}
           >
             Live
           </Link>
         </div>
 
-        {/* Year selector + Auth */}
+        {/* Year selector */}
         <div className="flex items-center gap-3">
           <select
             value={activeYear}
@@ -90,13 +90,12 @@ export default function Navbar() {
               const y = e.target.value;
               router.push(isChampionship ? `/championship/${y}` : `/?year=${y}`);
             }}
-            className="rounded bg-zinc-800 px-2 py-1.5 text-xs text-zinc-300 border border-zinc-700 focus:outline-none focus:border-zinc-500 cursor-pointer"
+            className="glass-input px-3 py-1.5 text-xs cursor-pointer"
           >
             {YEARS.map((y) => (
-              <option key={y} value={y}>{y}</option>
+              <option key={y} value={y} className="bg-zinc-900 text-zinc-200">{y}</option>
             ))}
           </select>
-
         </div>
 
       </div>
