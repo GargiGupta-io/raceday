@@ -12,10 +12,10 @@ function GoDeeperItem({ title, children, defaultOpen = false }: GoDeeperItemProp
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-zinc-800 last:border-b-0">
+    <div className="border-b border-white/[0.06] last:border-b-0">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3.5 text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-all duration-150"
+        className="w-full flex items-center justify-between px-6 py-4 text-sm font-medium text-zinc-300 hover:text-white hover:bg-white/[0.03] transition-all duration-200"
       >
         <span>{title}</span>
         <span
@@ -26,11 +26,15 @@ function GoDeeperItem({ title, children, defaultOpen = false }: GoDeeperItemProp
           ▸
         </span>
       </button>
-      {open && (
-        <div className="px-4 pb-4">
+      <div
+        className={`overflow-hidden transition-all duration-300 ease-in-out ${
+          open ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-6 pb-6">
           {children}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -42,12 +46,12 @@ interface GoDeeperProps {
 export default function GoDeeper({ children }: GoDeeperProps) {
   return (
     <div>
-      <div className="flex items-center gap-3 mb-3">
-        <div className="h-px flex-1 bg-zinc-800" />
+      <div className="flex items-center gap-4 mb-5">
+        <div className="glass-divider flex-1" />
         <p className="text-xs text-zinc-500 uppercase tracking-widest">Go Deeper</p>
-        <div className="h-px flex-1 bg-zinc-800" />
+        <div className="glass-divider flex-1" />
       </div>
-      <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 divide-y divide-zinc-800 overflow-hidden">
+      <div className="glass-card divide-y divide-white/[0.06] overflow-hidden">
         {children}
       </div>
     </div>
