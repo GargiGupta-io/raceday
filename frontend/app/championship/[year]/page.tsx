@@ -48,69 +48,69 @@ export default function ChampionshipPage({
 
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16">
 
         {/* Header */}
-        <div className="mb-8">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
-          <h1 className="text-2xl font-bold text-white">Drivers Championship</h1>
+        <div className="mb-12">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">{year}</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">Drivers Championship</h1>
           {racesIndexed > 0 && (
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-2 text-xs text-zinc-500">
               Based on {racesIndexed} indexed {racesIndexed === 1 ? "race" : "races"}
             </p>
           )}
         </div>
 
         {loading && (
-          <div className="space-y-4 animate-pulse">
+          <div className="space-y-6">
             {/* Leader card skeleton */}
-            <div className="rounded-lg bg-zinc-900 border border-zinc-800 p-6 flex items-center justify-between">
-              <div className="space-y-2">
-                <div className="h-2 w-28 bg-zinc-800 rounded" />
-                <div className="h-7 w-40 bg-zinc-800 rounded" />
-                <div className="h-3 w-24 bg-zinc-800 rounded" />
+            <div className="glass-card p-8 flex items-center justify-between">
+              <div className="space-y-3">
+                <div className="h-2 w-28 glass-skeleton rounded" />
+                <div className="h-7 w-40 glass-skeleton rounded" />
+                <div className="h-3 w-24 glass-skeleton rounded" />
               </div>
-              <div className="text-right space-y-2">
-                <div className="h-7 w-16 bg-zinc-800 rounded ml-auto" />
-                <div className="h-2 w-10 bg-zinc-800 rounded ml-auto" />
+              <div className="text-right space-y-3">
+                <div className="h-7 w-16 glass-skeleton rounded ml-auto" />
+                <div className="h-2 w-10 glass-skeleton rounded ml-auto" />
               </div>
             </div>
             {/* Table skeleton */}
-            <div className="rounded-lg bg-zinc-900 overflow-hidden">
-              <div className="px-5 py-2 border-b border-zinc-800">
-                <div className="h-3 w-full bg-zinc-800 rounded" />
+            <div className="glass-card overflow-hidden">
+              <div className="px-6 py-3 border-b border-white/[0.06]">
+                <div className="h-3 w-full glass-skeleton rounded" />
               </div>
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="flex items-center gap-4 px-5 py-3 border-b border-zinc-800/60">
-                  <div className="h-4 w-6 bg-zinc-800 rounded" />
+                <div key={i} className="flex items-center gap-4 px-6 py-3.5 border-b border-white/[0.04]">
+                  <div className="h-4 w-6 glass-skeleton rounded" />
                   <div className="flex-1 space-y-1">
-                    <div className="h-4 w-32 bg-zinc-800 rounded" />
-                    <div className="h-3 w-20 bg-zinc-800 rounded" />
+                    <div className="h-4 w-32 glass-skeleton rounded" />
+                    <div className="h-3 w-20 glass-skeleton rounded" />
                   </div>
-                  <div className="h-4 w-10 bg-zinc-800 rounded" />
-                  <div className="h-4 w-8 bg-zinc-800 rounded" />
+                  <div className="h-4 w-10 glass-skeleton rounded" />
+                  <div className="h-4 w-8 glass-skeleton rounded" />
                 </div>
               ))}
             </div>
           </div>
         )}
         {error && (
-          <div className="rounded-lg bg-zinc-900 border border-red-900/50 p-6 text-center">
+          <div className="glass-card p-8 text-center">
             <p className="text-red-400 text-sm">Could not load standings.</p>
-            <p className="text-zinc-600 text-xs mt-1">Check that the backend is running on the correct port.</p>
+            <p className="text-zinc-500 text-xs mt-2">Check that the backend is running on the correct port.</p>
           </div>
         )}
 
         {!loading && !error && standings && (
-          <div className="space-y-4">
+          <div className="space-y-8">
 
-            {/* Leader card */}
+            {/* Leader card — glass with gold glow */}
             {leader && (
-              <div className="rounded-lg bg-zinc-900 border border-yellow-500/30 p-4 sm:p-6 flex items-center justify-between gap-4">
+              <div className="glass-card p-6 sm:p-8 flex items-center justify-between gap-4" style={{ boxShadow: "0 0 30px rgba(234, 179, 8, 0.08), inset 0 1px 0 rgba(234, 179, 8, 0.1)" }}>
                 <div className="min-w-0">
-                  <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Championship leader</p>
+                  <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Championship leader</p>
                   <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight truncate">{leader.driver}</p>
-                  <p className="mt-1 text-sm text-zinc-400 truncate">{leader.team}</p>
+                  <p className="mt-1.5 text-sm text-zinc-400 truncate">{leader.team}</p>
                 </div>
                 <div className="text-right shrink-0">
                   <p className="text-2xl sm:text-3xl font-bold text-yellow-400">{leader.points}</p>
@@ -119,23 +119,23 @@ export default function ChampionshipPage({
               </div>
             )}
 
-            {/* Full table */}
-            <div className="rounded-lg bg-zinc-900 overflow-x-auto">
+            {/* Full table — glass */}
+            <div className="glass-card overflow-x-auto">
               <div className="min-w-0 sm:min-w-[20rem]">
               {/* Header */}
-              <div className="grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 px-3 sm:px-5 py-2 border-b border-zinc-800">
-                <span className="text-xs text-zinc-600 text-right">P</span>
-                <span className="text-xs text-zinc-600">Driver</span>
-                <span className="text-xs text-zinc-600 text-right">Points</span>
-                <span className="text-xs text-zinc-600 text-right">Wins</span>
-                <span className="text-xs text-zinc-600 text-right">Races</span>
+              <div className="grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 px-4 sm:px-6 py-3 border-b border-white/[0.06]">
+                <span className="text-xs text-zinc-500 text-right">P</span>
+                <span className="text-xs text-zinc-500">Driver</span>
+                <span className="text-xs text-zinc-500 text-right">Points</span>
+                <span className="text-xs text-zinc-500 text-right">Wins</span>
+                <span className="text-xs text-zinc-500 text-right">Races</span>
               </div>
 
               {standings.map((entry) => (
                 <div
                   key={entry.driver}
-                  className={`grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 items-center px-3 sm:px-5 py-3 border-b border-zinc-800/60 last:border-0 ${
-                    entry.position === 1 ? "bg-yellow-500/5" : ""
+                  className={`grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 items-center px-4 sm:px-6 py-3.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${
+                    entry.position === 1 ? "bg-yellow-500/[0.03]" : ""
                   }`}
                 >
                   {/* Position */}
