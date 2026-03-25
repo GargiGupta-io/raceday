@@ -20,6 +20,7 @@ import Image from "next/image";
 import { API } from "@/app/lib/api";
 import FadeIn from "@/app/lib/FadeIn";
 import { getCircuitSvg } from "@/app/lib/circuits";
+import SectionDivider from "@/app/components/SectionDivider";
 
 interface RaceSummary {
   winner: string;
@@ -112,25 +113,25 @@ export default function RacePage({
 
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-10 sm:py-16">
 
-        {/* Race header with circuit outline */}
-        <div className="mb-8 relative">
-          {/* Circuit SVG background */}
+        {/* Race header — cinematic */}
+        <div className="mb-16 sm:mb-20 relative">
+          {/* Circuit SVG — large decorative element */}
           {(() => {
             const svg = getCircuitSvg(trackName);
             return svg ? (
-              <div className="absolute -top-4 right-0 w-36 h-28 opacity-[0.06] pointer-events-none select-none">
-                <Image src={svg} alt="" width={144} height={112} className="invert object-contain" />
+              <div className="absolute -top-6 right-0 w-48 sm:w-56 h-40 sm:h-44 opacity-[0.05] pointer-events-none select-none">
+                <Image src={svg} alt="" width={224} height={176} className="invert object-contain" />
               </div>
             ) : null;
           })()}
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">{year}</p>
-          <h1 className="text-2xl font-bold text-white">{trackName}</h1>
-          <div className="min-h-8 mt-2">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">{year}</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">{trackName}</h1>
+          <div className="min-h-10 mt-4">
             {tagline && (
               <p className="animate-[fadeIn_0.5s_ease-in]">
-                <span className="text-sm italic text-zinc-300 bg-zinc-800/60 px-3 py-1 rounded-md">
+                <span className="glass-badge text-sm italic text-zinc-300 !rounded-lg !px-4 !py-1.5">
                   &ldquo;{tagline}&rdquo;
                 </span>
               </p>
@@ -139,51 +140,51 @@ export default function RacePage({
         </div>
 
         {loading && (
-          <div className="animate-pulse space-y-8">
+          <div className="space-y-10">
             {/* Podium skeleton */}
-            <div className="rounded-lg bg-zinc-900 p-6 space-y-3">
+            <div className="glass-card p-8 space-y-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="w-6 h-6 bg-zinc-800 rounded" />
-                  <div className="h-4 bg-zinc-800 rounded w-32" />
-                  <div className="h-3 bg-zinc-800 rounded w-20 ml-auto" />
+                  <div className="w-6 h-6 glass-skeleton rounded" />
+                  <div className="h-4 glass-skeleton rounded w-32" />
+                  <div className="h-3 glass-skeleton rounded w-20 ml-auto" />
                 </div>
               ))}
             </div>
             {/* Moments skeleton */}
-            <div className="space-y-2">
-              <div className="h-3 w-20 bg-zinc-800 rounded" />
+            <div className="space-y-3">
+              <div className="h-3 w-20 glass-skeleton rounded" />
               {[1, 2, 3].map((i) => (
-                <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3">
-                  <div className="w-8 h-8 bg-zinc-800 rounded-full shrink-0" />
+                <div key={i} className="glass-card p-5 flex gap-3">
+                  <div className="w-8 h-8 glass-skeleton rounded-full shrink-0" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-4 w-48 bg-zinc-800 rounded" />
-                    <div className="h-3 w-full bg-zinc-800 rounded" />
+                    <div className="h-4 w-48 glass-skeleton rounded" />
+                    <div className="h-3 w-full glass-skeleton rounded" />
                   </div>
                 </div>
               ))}
             </div>
             {/* Story skeleton */}
-            <div className="space-y-2">
-              <div className="h-3 w-24 bg-zinc-800 rounded" />
-              <div className="h-3 w-full bg-zinc-800 rounded" />
-              <div className="h-3 w-5/6 bg-zinc-800 rounded" />
-              <div className="h-3 w-4/6 bg-zinc-800 rounded" />
+            <div className="space-y-3">
+              <div className="h-3 w-24 glass-skeleton rounded" />
+              <div className="h-3 w-full glass-skeleton rounded" />
+              <div className="h-3 w-5/6 glass-skeleton rounded" />
+              <div className="h-3 w-4/6 glass-skeleton rounded" />
             </div>
           </div>
         )}
         {error && (
-          <div className="rounded-lg bg-zinc-900 border border-red-900/50 p-6 text-center">
+          <div className="glass-card p-8 text-center">
             <p className="text-red-400 text-sm">Could not load race data.</p>
-            <p className="text-zinc-600 text-xs mt-1">Check that the backend is running on the correct port.</p>
+            <p className="text-zinc-500 text-xs mt-2">Check that the backend is running on the correct port.</p>
           </div>
         )}
 
         {!loading && !error && (<>
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-12">
 
-            {/* Main content — single scroll, no tabs */}
-            <div className="flex-1 min-w-0 space-y-8">
+            {/* Main content — single scroll, breathing room */}
+            <div className="flex-1 min-w-0 space-y-16">
 
               {/* THE RESULT */}
               {results && (
@@ -196,6 +197,9 @@ export default function RacePage({
               <FadeIn delay={80}>
                 <KeyMoments year={year} track={trackName} />
               </FadeIn>
+
+              {/* Image divider */}
+              <SectionDivider src="/images/f1-pack-racing.jpg" alt="F1 cars racing" />
 
               {/* THE RACE STORY */}
               <FadeIn delay={120}>
@@ -213,6 +217,7 @@ export default function RacePage({
               </FadeIn>
 
               {/* GO DEEPER — expandable sections for hardcore fans */}
+              <div className="pt-8">
               <FadeIn>
               <GoDeeper>
                 <GoDeeperItem title="Strategy breakdown">
@@ -222,10 +227,10 @@ export default function RacePage({
                         <button
                           key={mode}
                           onClick={() => setStrategyMode(mode)}
-                          className={`px-3 py-1 rounded text-xs font-medium capitalize transition-colors ${
+                          className={`px-4 py-1.5 rounded-lg text-xs font-medium capitalize transition-all duration-200 ${
                             strategyMode === mode
-                              ? "bg-zinc-700 text-white"
-                              : "bg-zinc-800 text-zinc-500 hover:text-zinc-300"
+                              ? "glass-button-active text-white"
+                              : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
                           }`}
                         >
                           {mode}
@@ -257,20 +262,21 @@ export default function RacePage({
                 </GoDeeperItem>
               </GoDeeper>
               </FadeIn>
+              </div>
 
             </div>
 
             {/* Sidebar — Race Intelligence + Strategy Simulator */}
-            <div className="w-full lg:w-72 shrink-0 space-y-6">
+            <div className="w-full lg:w-80 shrink-0 space-y-8">
               {sidebar ? (
                 <FactsSidebar data={sidebar} />
               ) : (
-                <div className="rounded-lg bg-zinc-900 p-4 animate-pulse">
-                  <div className="h-3 w-24 bg-zinc-800 rounded mb-4" />
-                  <div className="space-y-2">
-                    <div className="h-3 w-full bg-zinc-800 rounded" />
-                    <div className="h-3 w-3/4 bg-zinc-800 rounded" />
-                    <div className="h-3 w-5/6 bg-zinc-800 rounded" />
+                <div className="glass-card p-6">
+                  <div className="h-3 w-24 glass-skeleton rounded mb-4" />
+                  <div className="space-y-3">
+                    <div className="h-3 w-full glass-skeleton rounded" />
+                    <div className="h-3 w-3/4 glass-skeleton rounded" />
+                    <div className="h-3 w-5/6 glass-skeleton rounded" />
                   </div>
                 </div>
               )}
