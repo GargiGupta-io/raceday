@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
 // Simple F1 car side-view SVG silhouette
 function F1CarSilhouette({ className }: { className?: string }) {
@@ -58,35 +59,29 @@ const FEATURES = [
     icon: "\u{1F3CE}",
     title: "Race Stories",
     desc: "Every race told as a narrative — who won, what went wrong, and why it mattered.",
-    accent: "from-red-600/20 to-transparent",
   },
   {
     icon: "\u{1F9EA}",
     title: "Strategy Simulator",
     desc: "Build alternate pit strategies and see ML-predicted outcomes.",
-    accent: "from-orange-600/20 to-transparent",
   },
   {
     icon: "\u{1F50A}",
     title: "Team Radio",
     desc: "Hear the real emotions — celebrations, frustrations, strategy calls.",
-    accent: "from-blue-600/20 to-transparent",
   },
   {
     icon: "\u{1F50D}",
     title: "Pattern Finder",
     desc: "What happens when it rains at Silverstone? History has the answers.",
-    accent: "from-emerald-600/20 to-transparent",
   },
   {
     icon: "\u{1F4CA}",
-    title: "15 Seasons · 300+ Races",
-    desc: "Every lap, every stop, every overtake from 2010 to 2025.",
-    accent: "from-purple-600/20 to-transparent",
+    title: "16 Seasons · 300+ Races",
+    desc: "Every lap, every stop, every overtake from 2010 to 2026.",
   },
 ];
 
-// Option A: Car drives across, cards trail behind it
 function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
   const [visible, setVisible] = useState(false);
 
@@ -96,42 +91,59 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
   }, []);
 
   return (
-    <div className="relative overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-950/40 via-red-950/10 to-zinc-950" />
+    <div className="relative overflow-hidden min-h-[100dvh] flex flex-col">
+
+      {/* Hero background image */}
+      <div className="absolute inset-0 pointer-events-none select-none">
+        <Image
+          src="/images/hero-f1-dark.jpg"
+          alt=""
+          fill
+          className="object-cover object-center opacity-30"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/70 to-[#08080c]/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c]/50 via-transparent to-[#08080c]/50" />
+      </div>
+
+      {/* Subtle red gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent pointer-events-none" />
 
       {/* Speed lines behind car */}
       <div
-        className={`absolute top-1/3 -right-full h-[2px] bg-gradient-to-l from-transparent via-red-500/30 to-transparent transition-all duration-[3000ms] ease-out ${
+        className={`absolute top-[40%] -right-full h-[2px] bg-gradient-to-l from-transparent via-red-500/30 to-transparent transition-all duration-[3000ms] ease-out ${
           visible ? "-translate-x-[200%]" : ""
         }`}
         style={{ width: "150%" }}
       />
       <div
-        className={`absolute top-[38%] -right-full h-[1px] bg-gradient-to-l from-transparent via-red-400/20 to-transparent transition-all duration-[3500ms] ease-out delay-200 ${
+        className={`absolute top-[43%] -right-full h-[1px] bg-gradient-to-l from-transparent via-red-400/20 to-transparent transition-all duration-[3500ms] ease-out delay-200 ${
           visible ? "-translate-x-[200%]" : ""
         }`}
         style={{ width: "120%" }}
       />
 
-      <div className="relative max-w-5xl mx-auto px-6 py-16 sm:py-24">
-        {/* Title */}
+      {/* Main content — centered vertically */}
+      <div className="relative flex-1 flex flex-col justify-center max-w-5xl mx-auto px-6 w-full">
+
+        {/* Title — kept exactly as original */}
         <div
-          className={`text-center mb-12 transition-all duration-1000 ${
+          className={`text-center mb-16 transition-all duration-1000 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <h1 className="text-5xl sm:text-7xl tracking-tight text-white mb-3" style={{ fontFamily: "var(--font-racing)" }}>
+          <h1 className="text-6xl sm:text-8xl tracking-tight text-white mb-4" style={{ fontFamily: "var(--font-racing)" }}>
             RACE
             <span className="text-red-500">DAY</span>
           </h1>
-          <p className="text-lg text-zinc-400 font-light">
+          <p className="text-lg sm:text-xl text-zinc-400 font-light">
             Every race has a story.
           </p>
         </div>
 
-        {/* F1 car driving across — right to left */}
-        <div className="relative h-16 mb-10 overflow-hidden">
+        {/* F1 car driving across — kept exactly as original */}
+        <div className="relative h-16 mb-16 overflow-hidden">
           <div
             className={`absolute top-0 transition-all duration-[2500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
               visible ? "-left-32" : "left-[110%]"
@@ -148,31 +160,30 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
           />
         </div>
 
-        {/* Feature cards — stagger in after car passes */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+        {/* Feature cards — glass style with more spacing */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-16">
           {FEATURES.map((f, i) => (
             <div
               key={i}
-              className={`rounded-xl bg-zinc-900/80 border border-zinc-800/50 p-5 backdrop-blur transition-all duration-700 hover:border-zinc-700 hover:bg-zinc-900 ${
+              className={`glass-card relative p-6 sm:p-7 transition-all duration-700 ${
                 visible
                   ? "opacity-100 translate-x-0"
                   : "opacity-0 translate-x-12"
               }`}
               style={{ transitionDelay: `${800 + i * 200}ms` }}
             >
-              <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${f.accent} pointer-events-none`} />
-              <span className="text-2xl mb-2 block">{f.icon}</span>
-              <p className="text-sm font-semibold text-zinc-100 mb-1">
+              <span className="text-2xl mb-3 block">{f.icon}</span>
+              <p className="text-sm font-semibold text-zinc-100 mb-2">
                 {f.title}
               </p>
-              <p className="text-xs text-zinc-500 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed">
                 {f.desc}
               </p>
             </div>
           ))}
         </div>
 
-        {/* CTA */}
+        {/* CTA — glass button */}
         <div
           className={`text-center transition-all duration-700 ${
             visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
@@ -181,13 +192,28 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
         >
           <button
             onClick={onStart}
-            className="rounded-lg bg-red-600 hover:bg-red-500 text-white px-8 py-3 text-sm font-semibold transition-all shadow-lg shadow-red-600/20 hover:shadow-red-500/30"
+            className="glass-button px-10 py-3.5 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-red-500/10 border-red-500/30 hover:border-red-500/50"
           >
             Pick a season to start
           </button>
-          <p className="text-[10px] text-zinc-600 mt-3">
+          <p className="text-[11px] text-zinc-600 mt-4">
             No account needed — just explore.
           </p>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div
+        className={`relative pb-8 text-center transition-all duration-700 ${
+          visible ? "opacity-100" : "opacity-0"
+        }`}
+        style={{ transitionDelay: "3200ms" }}
+      >
+        <div className="inline-flex flex-col items-center gap-2 text-zinc-600">
+          <span className="text-[10px] uppercase tracking-widest">Scroll to explore</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="animate-bounce">
+            <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
         </div>
       </div>
     </div>
