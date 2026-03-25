@@ -82,22 +82,22 @@ function dn(code: string): string {
 export default function ResultsCard({ data }: { data: RaceSummary }) {
   return (
     <div>
-      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">The Result</p>
-      <div className="rounded-lg bg-zinc-900 divide-y divide-zinc-800">
+      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">The Result</p>
+      <div className="glass-card divide-y divide-white/[0.06] overflow-hidden">
         {data.podium.map((p) => {
           const dot = TEAM_DOT[p.team] || "bg-zinc-500";
           const medal = POSITION_MEDAL[p.position] ?? `P${p.position}`;
           return (
-            <div key={p.position} className="flex items-center gap-3 px-4 py-3">
+            <div key={p.position} className="flex items-center gap-4 px-6 py-4 hover:bg-white/[0.02] transition-colors">
               <span className="text-lg w-7 text-center">{medal}</span>
               <div className="flex-1 min-w-0">
                 <p className={`font-semibold text-zinc-100 ${p.position === 1 ? "text-base" : "text-sm"}`}>
                   {dn(p.driver)}
                 </p>
               </div>
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <span className={`w-2 h-2 rounded-full ${dot}`} />
-                <p className="text-xs text-zinc-500">{p.team}</p>
+                <p className="text-xs text-zinc-400">{p.team}</p>
               </div>
             </div>
           );

@@ -51,13 +51,13 @@ export default function KeyMoments({
 
   if (loading) {
     return (
-      <div className="space-y-3 animate-pulse">
+      <div className="space-y-4">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3">
-            <div className="w-8 h-8 bg-zinc-800 rounded shrink-0" />
+          <div key={i} className="glass-card p-5 flex gap-4">
+            <div className="w-10 h-10 glass-skeleton rounded-full shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-48 bg-zinc-800 rounded" />
-              <div className="h-3 w-full bg-zinc-800 rounded" />
+              <div className="h-4 w-48 glass-skeleton rounded" />
+              <div className="h-3 w-full glass-skeleton rounded" />
             </div>
           </div>
         ))}
@@ -68,30 +68,32 @@ export default function KeyMoments({
   if (moments.length === 0) return null;
 
   return (
-    <div className="space-y-2">
-      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+    <div>
+      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">
         Key Moments
       </p>
-      {moments.map((m, i) => {
-        const style = MOMENT_STYLE[m.type] || { icon: "?", color: "text-zinc-400" };
-        return (
-          <div key={i} className="rounded-lg bg-zinc-900 border border-zinc-800/40 p-4 flex gap-3 items-start">
-            <span
-              className={`w-8 h-8 rounded bg-zinc-800 flex items-center justify-center text-base shrink-0 ${style.color}`}
-            >
-              {style.icon}
-            </span>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-zinc-100">
-                <HighlightedText text={m.headline} />
-              </p>
-              <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
-                <HighlightedText text={m.detail} />
-              </p>
+      <div className="space-y-4">
+        {moments.map((m, i) => {
+          const style = MOMENT_STYLE[m.type] || { icon: "?", color: "text-zinc-400" };
+          return (
+            <div key={i} className="glass-card p-5 flex gap-4 items-start">
+              <span
+                className={`w-10 h-10 rounded-full glass flex items-center justify-center text-lg shrink-0 ${style.color}`}
+              >
+                {style.icon}
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-zinc-100">
+                  <HighlightedText text={m.headline} />
+                </p>
+                <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+                  <HighlightedText text={m.detail} />
+                </p>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 }
