@@ -82,17 +82,17 @@ function RadioCard({ clip }: { clip: RadioClip }) {
 
   return (
     <div
-      className="rounded-lg bg-zinc-900 overflow-hidden border border-zinc-800/50 hover:border-zinc-700/50 transition-colors"
+      className="glass-card overflow-hidden transition-all duration-200"
       style={{ borderLeftWidth: "3px", borderLeftColor: teamColour }}
     >
-      <div className="p-4">
+      <div className="p-5">
         <div className="flex gap-3 items-start">
           {/* Play button — replaces the old sentiment icon */}
           <button
             onClick={toggle}
-            className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
+            className="w-10 h-10 rounded-full glass flex items-center justify-center shrink-0 transition-all duration-200 hover:scale-105 active:scale-95"
             style={{
-              backgroundColor: playing ? teamColour : "rgb(39 39 42)",
+              backgroundColor: playing ? teamColour : undefined,
               color: playing ? "#fff" : teamColour,
             }}
             title={playing ? "Pause" : "Play radio clip"}
@@ -200,14 +200,14 @@ export default function RadioMoments({
 
   if (loading) {
     return (
-      <div className="space-y-3 animate-pulse">
-        <div className="h-4 w-24 bg-zinc-800 rounded" />
+      <div className="space-y-4">
+        <div className="h-4 w-24 glass-skeleton rounded" />
         {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-lg bg-zinc-900 p-4 flex gap-3">
-            <div className="w-10 h-10 bg-zinc-800 rounded-full shrink-0" />
+          <div key={i} className="glass-card p-5 flex gap-4">
+            <div className="w-10 h-10 glass-skeleton rounded-full shrink-0" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-40 bg-zinc-800 rounded" />
-              <div className="h-1 w-full bg-zinc-800 rounded" />
+              <div className="h-4 w-40 glass-skeleton rounded" />
+              <div className="h-1 w-full glass-skeleton rounded" />
             </div>
           </div>
         ))}
@@ -219,18 +219,20 @@ export default function RadioMoments({
   if (!data || !data.available || data.clips.length === 0) return null;
 
   return (
-    <div className="space-y-2">
-      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+    <div>
+      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">
         Team Radio
       </p>
       {!data.has_transcripts && (
-        <p className="text-[10px] text-zinc-600 -mt-1 mb-2">
+        <p className="text-[10px] text-zinc-600 mb-3">
           Audio only — transcripts unavailable for this session
         </p>
       )}
-      {data.clips.map((clip, i) => (
-        <RadioCard key={i} clip={clip} />
-      ))}
+      <div className="space-y-4">
+        {data.clips.map((clip, i) => (
+          <RadioCard key={i} clip={clip} />
+        ))}
+      </div>
     </div>
   );
 }
