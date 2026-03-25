@@ -66,7 +66,7 @@ function TyreIndicator({ compound, stintAge, tyreLife }: { compound: string; sti
       >
         {compound.charAt(0)}
       </div>
-      <div className="w-10 h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+      <div className="w-10 h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${tyreLife}%`, background: lifeColour }} />
       </div>
       <span className="text-[10px] text-zinc-600 tabular-nums">{stintAge}L</span>
@@ -100,45 +100,48 @@ export default function LivePage() {
 
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-12">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-10 sm:py-16">
 
         {/* Header */}
-        <div className="mb-8">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Live</p>
-          <h1 className="text-2xl font-bold text-white">Race Companion</h1>
-          <p className="text-sm text-zinc-500 mt-1">
+        <div className="mb-12">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Live</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white">Race Companion</h1>
+          <p className="text-sm text-zinc-400 mt-2">
             Real-time strategy predictions during live F1 sessions.
           </p>
         </div>
 
         {loading && (
-          <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-8 text-center animate-pulse">
-            <div className="h-5 w-48 bg-zinc-800 rounded mx-auto mb-3" />
-            <div className="h-3 w-64 bg-zinc-800 rounded mx-auto" />
+          <div className="glass-card p-10 text-center">
+            <div className="h-5 w-48 glass-skeleton rounded mx-auto mb-4" />
+            <div className="h-3 w-64 glass-skeleton rounded mx-auto" />
           </div>
         )}
 
         {!loading && (!data || !data.active) && (
-          <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-8 sm:p-12 text-center">
-            <div className="text-4xl mb-4">&#127937;</div>
-            <h2 className="text-lg font-semibold text-zinc-200 mb-2">No Live Session</h2>
-            <p className="text-sm text-zinc-500 max-w-md mx-auto">
+          <div className="glass-card p-10 sm:p-16 text-center">
+            <div className="text-4xl mb-5">&#127937;</div>
+            <h2 className="text-lg font-semibold text-zinc-200 mb-3">No Live Session</h2>
+            <p className="text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
               This page comes alive during race weekends. Strategy predictions, tyre life tracking,
               and pattern alerts appear automatically when a session is active.
             </p>
-            <p className="text-xs text-zinc-600 mt-4">
+            <p className="text-xs text-zinc-600 mt-5">
               Auto-refreshes every 10 seconds
             </p>
           </div>
         )}
 
         {!loading && data?.active && data.drivers && (
-          <div className="space-y-6">
+          <div className="space-y-8">
 
             {/* Session bar */}
-            <div className="rounded-lg bg-zinc-900 border border-red-900/30 p-5 flex items-center justify-between">
+            <div className="glass-card p-6 flex items-center justify-between" style={{ boxShadow: "0 0 20px rgba(239, 68, 68, 0.08), inset 0 1px 0 rgba(239, 68, 68, 0.1)" }}>
               <div>
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Live</p>
+                <p className="text-xs text-red-400 uppercase tracking-widest mb-1 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  Live
+                </p>
                 <p className="text-xl font-bold text-white">
                   {(data.session || "").replace(" Grand Prix", " GP")}
                 </p>
@@ -151,28 +154,28 @@ export default function LivePage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
               {/* Driver standings — takes 2 columns */}
-              <div className="lg:col-span-2 rounded-lg bg-zinc-900 border border-zinc-800/50 p-5">
-                <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Driver Standings</p>
+              <div className="lg:col-span-2 glass-card p-6">
+                <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">Driver Standings</p>
 
                 {/* Header */}
-                <div className="grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 mb-2">
-                  <span className="text-[9px] text-zinc-600 text-right">P</span>
+                <div className="grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 mb-3">
+                  <span className="text-[9px] text-zinc-500 text-right">P</span>
                   <span />
-                  <span className="text-[9px] text-zinc-600">Code</span>
-                  <span className="text-[9px] text-zinc-600">Gap</span>
-                  <span className="text-[9px] text-zinc-600 text-center">Tyre</span>
-                  <span className="text-[9px] text-zinc-600 text-right">Pit window</span>
+                  <span className="text-[9px] text-zinc-500">Code</span>
+                  <span className="text-[9px] text-zinc-500">Gap</span>
+                  <span className="text-[9px] text-zinc-500 text-center">Tyre</span>
+                  <span className="text-[9px] text-zinc-500 text-right">Pit window</span>
                   <span />
                 </div>
 
                 {data.drivers.map((d, i) => (
                   <div
                     key={d.code}
-                    className={`grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 py-2 border-b border-zinc-800/40 last:border-0 ${
-                      i < 3 ? "bg-zinc-800/20" : ""
+                    className={`grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 py-2.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${
+                      i < 3 ? "bg-white/[0.02]" : ""
                     }`}
                   >
                     <span className={`text-sm font-bold text-right tabular-nums ${
@@ -188,7 +191,7 @@ export default function LivePage() {
                     </div>
                     <span className="text-right">
                       {d.pitWindow ? (
-                        <span className="text-[10px] text-amber-400 bg-amber-900/30 px-1.5 py-0.5 rounded">
+                        <span className="glass-badge text-amber-400">
                           {d.pitWindow.replace("Lap ", "L")}
                         </span>
                       ) : (
@@ -201,19 +204,19 @@ export default function LivePage() {
               </div>
 
               {/* Sidebar — predictions + what-if + alerts */}
-              <div className="space-y-4">
+              <div className="space-y-6">
 
                 {/* Pit predictions */}
                 {data.predictions && data.predictions.length > 0 && (
-                  <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-4">
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Pit Predictions</p>
+                  <div className="glass-card p-5">
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Pit Predictions</p>
                     {data.predictions.map((p, i) => (
-                      <div key={i} className="flex justify-between items-center py-1.5 border-b border-zinc-800/40 last:border-0">
+                      <div key={i} className="flex justify-between items-center py-2 border-b border-white/[0.04] last:border-0">
                         <span className="text-xs font-semibold text-zinc-200">{p.driver}</span>
                         <div className="text-right">
                           <span className="text-[10px] text-zinc-400">{p.prediction}</span>
-                          <span className={`text-[8px] ml-1.5 px-1.5 py-0.5 rounded-full ${
-                            p.confidence === "high" ? "bg-green-900/50 text-green-400" : "bg-zinc-800 text-zinc-500"
+                          <span className={`text-[8px] ml-1.5 glass-badge ${
+                            p.confidence === "high" ? "text-green-400" : "text-zinc-500"
                           }`}>
                             {p.confidence}
                           </span>
@@ -225,18 +228,18 @@ export default function LivePage() {
 
                 {/* What-if */}
                 {data.whatIf && data.whatIf.length > 0 && (
-                  <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-4">
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">What If Pit NOW?</p>
+                  <div className="glass-card p-5">
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">What If Pit NOW?</p>
                     {data.whatIf.map((w, i) => (
-                      <div key={i} className="flex items-center gap-2 py-1.5 border-b border-zinc-800/40 last:border-0">
+                      <div key={i} className="flex items-center gap-2 py-2 border-b border-white/[0.04] last:border-0">
                         <span className="text-xs font-semibold text-zinc-200 w-8">{w.driver}</span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded ${
-                          w.recommendation === "pit" ? "bg-green-900/40 text-green-400" : "text-zinc-500"
+                        <span className={`text-[10px] px-2 py-0.5 rounded-lg ${
+                          w.recommendation === "pit" ? "bg-green-500/10 text-green-400" : "text-zinc-500"
                         }`}>
                           Pit {w.pitNow}
                         </span>
-                        <span className={`text-[10px] px-2 py-0.5 rounded ${
-                          w.recommendation === "stay" ? "bg-green-900/40 text-green-400" : "text-zinc-500"
+                        <span className={`text-[10px] px-2 py-0.5 rounded-lg ${
+                          w.recommendation === "stay" ? "bg-green-500/10 text-green-400" : "text-zinc-500"
                         }`}>
                           Stay {w.stayOut}
                         </span>
@@ -247,10 +250,10 @@ export default function LivePage() {
 
                 {/* Pattern alerts */}
                 {data.alerts && data.alerts.length > 0 && (
-                  <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-4">
-                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Pattern Alerts</p>
+                  <div className="glass-card p-5">
+                    <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">Pattern Alerts</p>
                     {data.alerts.map((a, i) => (
-                      <p key={i} className={`text-xs leading-relaxed py-1 ${
+                      <p key={i} className={`text-xs leading-relaxed py-1.5 ${
                         a.type === "warning" ? "text-amber-400" : "text-zinc-400"
                       }`}>
                         {a.type === "warning" ? "! " : ""}{a.text}
@@ -262,7 +265,7 @@ export default function LivePage() {
             </div>
 
             {/* Auto-refresh notice */}
-            <p className="text-[10px] text-zinc-700 text-center">
+            <p className="text-[10px] text-zinc-600 text-center">
               Auto-refreshes every 10 seconds
             </p>
           </div>
