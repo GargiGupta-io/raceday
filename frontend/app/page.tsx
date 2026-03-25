@@ -98,7 +98,7 @@ function Home() {
 
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-6 sm:py-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Seasons error */}
         {seasonsError && (
@@ -106,16 +106,16 @@ function Home() {
         )}
 
         {/* Year selector — only show after a year is picked */}
-        {year !== null && <div className="mb-8 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
-          <div className="flex gap-1.5 min-w-max">
+        {year !== null && <div className="mb-12 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
+          <div className="flex gap-2 min-w-max">
             {seasons.map((s) => (
               <button
                 key={s.year}
                 onClick={() => { setYear(s.year); router.push(`/?year=${s.year}`); }}
-                className={`shrink-0 rounded px-4 py-2.5 text-left transition-all border-b-2 ${
+                className={`shrink-0 rounded-xl px-5 py-3 text-left transition-all duration-200 ${
                   year !== null && s.year === year
-                    ? "bg-zinc-800/80 border-red-500 text-white"
-                    : "bg-transparent border-transparent text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900/50"
+                    ? "glass-button-active text-white border-b-2 border-red-500"
+                    : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
                 }`}
               >
                 <p className="text-sm font-bold tracking-tight">{s.year}</p>
@@ -132,24 +132,24 @@ function Home() {
         {year !== null && (<>
 
         {/* Season header + weather filter */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-          <h2 className="text-2xl font-bold text-white">
-            {year} Season <span className="text-zinc-500 font-normal text-lg">— {(() => {
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white">
+            {year} Season <span className="text-zinc-500 font-normal text-lg sm:text-xl">— {(() => {
               const indexed = races.filter((r) => r.indexed).length;
               return indexed < races.length
                 ? `${indexed} of ${races.length} Races`
                 : `${races.length} Races`;
             })()}</span>
           </h2>
-          <div className="flex gap-1.5">
+          <div className="flex gap-2">
             {["ALL", "DRY", "WET", "MIXED"].map((f) => (
               <button
                 key={f}
                 onClick={() => setWeatherFilter(f)}
-                className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                   weatherFilter === f
-                    ? "bg-zinc-700 text-white"
-                    : "bg-zinc-900 text-zinc-500 hover:text-zinc-300"
+                    ? "glass-button-active text-white"
+                    : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
                 }`}
               >
                 {f}
@@ -166,20 +166,20 @@ function Home() {
           return (
             <Link
               href={`/races/${year}/${encodeURIComponent(latest.name)}`}
-              className="block mb-6 group"
+              className="block mb-10 group"
             >
-              <div className="rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-900/50 border border-zinc-800/50 p-4 sm:p-5 flex items-center gap-4 group-hover:border-zinc-700/50 transition-colors">
+              <div className="glass-card p-5 sm:p-6 flex items-center gap-4 transition-all duration-200">
                 <div className="shrink-0">
                   <p className="text-[9px] text-zinc-500 uppercase tracking-widest">Latest</p>
-                  <p className="text-lg sm:text-xl font-bold text-white mt-0.5">{latest.name.replace(" Grand Prix", "")}</p>
+                  <p className="text-lg sm:text-xl font-bold text-white mt-1">{latest.name.replace(" Grand Prix", "")}</p>
                 </div>
                 <div className="ml-auto text-right shrink-0">
                   <p className="text-xs text-zinc-500">Round {latest.round}</p>
-                  <p className="text-sm text-emerald-400 font-semibold mt-0.5">
+                  <p className="text-sm text-emerald-400 font-semibold mt-1">
                     P1 {latest.winner}
                   </p>
                 </div>
-                <span className="text-zinc-700 text-sm hidden sm:block">&rarr;</span>
+                <span className="text-zinc-600 text-sm hidden sm:block">&rarr;</span>
               </div>
             </Link>
           );
