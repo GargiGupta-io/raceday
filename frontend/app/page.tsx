@@ -187,17 +187,17 @@ function Home() {
 
         {/* Race grid */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-pulse">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="rounded-lg bg-zinc-900 p-5 space-y-3">
-                <div className="space-y-1.5">
-                  <div className="h-2 w-12 bg-zinc-800 rounded" />
-                  <div className="h-4 w-40 bg-zinc-800 rounded" />
-                  <div className="h-3 w-28 bg-zinc-800 rounded" />
+              <div key={i} className="glass-card p-6 space-y-4">
+                <div className="space-y-2">
+                  <div className="h-2 w-12 glass-skeleton rounded" />
+                  <div className="h-4 w-40 glass-skeleton rounded" />
+                  <div className="h-3 w-28 glass-skeleton rounded" />
                 </div>
                 <div className="flex items-center gap-2 mt-auto">
-                  <div className="h-3 w-24 bg-zinc-800 rounded" />
-                  <div className="h-4 w-10 bg-zinc-800 rounded ml-auto" />
+                  <div className="h-3 w-24 glass-skeleton rounded" />
+                  <div className="h-4 w-10 glass-skeleton rounded ml-auto" />
                 </div>
               </div>
             ))}
@@ -205,7 +205,9 @@ function Home() {
         )}
 
         {error && (
-          <p className="text-red-400 text-sm">Could not load season — is the backend running?</p>
+          <div className="glass-card p-8 text-center">
+            <p className="text-red-400 text-sm">Could not load season — is the backend running?</p>
+          </div>
         )}
 
         {!loading && !error && (() => {
@@ -214,13 +216,13 @@ function Home() {
             ? races
             : races.filter((r) => r.weather === weatherMap[weatherFilter]);
           return filtered.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {filtered.map((race) => (
                 <RaceCard key={race.round} race={race} year={year} />
               ))}
             </div>
           ) : (
-            <p className="text-zinc-600 text-sm text-center py-8">
+            <p className="text-zinc-600 text-sm text-center py-12">
               No {weatherFilter.toLowerCase()} races in the {year} season.
             </p>
           );
@@ -256,27 +258,27 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
   const isUpcoming = race.date && new Date(race.date) > new Date();
 
   const content = (
-    <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-5 h-full flex flex-col relative overflow-hidden transition-colors group-hover:border-zinc-700/70 group-hover:bg-zinc-900/80">
-      {/* Circuit outline */}
+    <div className="glass-card p-6 h-full flex flex-col relative overflow-hidden transition-all duration-200">
+      {/* Circuit outline — larger */}
       {circuitSvg && (
-        <div className="absolute top-3 right-3 w-14 h-10 opacity-[0.15]">
-          <Image src={circuitSvg} alt="" width={56} height={40} className="invert" />
+        <div className="absolute top-4 right-4 w-20 h-14 opacity-[0.12]">
+          <Image src={circuitSvg} alt="" width={80} height={56} className="invert" />
         </div>
       )}
 
       {/* Top row: round + name */}
-      <div className="flex items-start gap-3 mb-3">
+      <div className="flex items-start gap-3 mb-4">
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-1">
+          <p className="text-[10px] text-zinc-500 uppercase tracking-widest mb-1.5">
             Round {race.round}
           </p>
           <p className="text-base font-semibold text-zinc-100 leading-tight">{race.name}</p>
-          <p className="text-xs text-zinc-500 mt-0.5">{race.location}, {race.country}</p>
+          <p className="text-xs text-zinc-400 mt-1">{race.location}, {race.country}</p>
         </div>
       </div>
 
       {/* Bottom row: winner/date + badges */}
-      <div className="mt-auto flex items-center gap-2 flex-wrap">
+      <div className="mt-auto flex items-center gap-2 flex-wrap pt-2">
         {race.winner ? (
           <span className="text-xs text-zinc-300">
             <span className="text-emerald-400 font-semibold mr-1">P1</span>
@@ -289,22 +291,22 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
         ) : null}
         <div className="flex items-center gap-1.5 ml-auto">
           {isUpcoming && (
-            <span className="rounded px-1.5 py-0.5 text-[10px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700">
+            <span className="glass-badge text-zinc-400">
               UPCOMING
             </span>
           )}
           {weather && (
-            <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${weather.bg} ${weather.text}`}>
+            <span className={`glass-badge ${weather.text}`}>
               {weather.label}
             </span>
           )}
           {race.total_laps && (
-            <span className="text-[10px] text-zinc-600 border border-zinc-800 rounded px-1.5 py-0.5">
+            <span className="glass-badge text-zinc-500">
               {race.total_laps} LAPS
             </span>
           )}
           {race.format === "sprint" && (
-            <span className="rounded px-1.5 py-0.5 text-[10px] font-bold bg-yellow-900/60 text-yellow-400">
+            <span className="glass-badge text-yellow-400">
               SPRINT
             </span>
           )}
@@ -317,12 +319,12 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
     return (
       <Link
         href={`/races/${year}/${encodeURIComponent(race.name)}`}
-        className="block group hover:scale-[1.02] transition-all duration-200"
+        className="block group hover:scale-[1.015] transition-all duration-200"
       >
         {content}
       </Link>
     );
   }
 
-  return <div className="opacity-40 cursor-default">{content}</div>;
+  return <div className="opacity-35 cursor-default">{content}</div>;
 }
