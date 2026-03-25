@@ -310,9 +310,9 @@ export default function StrategySimulator({
 
   if (loading) {
     return (
-      <div className="rounded-lg bg-zinc-900 p-6 animate-pulse">
-        <div className="h-5 w-48 bg-zinc-800 rounded mb-4" />
-        <div className="h-3 w-64 bg-zinc-800 rounded" />
+      <div className="glass-card p-6">
+        <div className="h-5 w-48 glass-skeleton rounded mb-4" />
+        <div className="h-3 w-64 glass-skeleton rounded" />
       </div>
     );
   }
@@ -325,16 +325,16 @@ export default function StrategySimulator({
   // Collapsed prompt
   if (!expanded) {
     return (
-      <div className="rounded-lg bg-zinc-900 border border-zinc-800/50 p-6 text-center hover:border-zinc-700/50 transition-colors">
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">
+      <div className="glass-card p-6 text-center">
+        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
           Strategy Simulator
         </p>
-        <p className="text-sm text-zinc-300 mb-4">
+        <p className="text-sm text-zinc-400 mb-5">
           Test alternate strategies or swap drivers into different cars.
         </p>
         <button
           onClick={() => setExpanded(true)}
-          className="rounded-md bg-zinc-700 hover:bg-zinc-600 px-5 py-2 text-sm font-medium text-white transition-colors"
+          className="glass-button px-6 py-2.5 text-sm font-medium text-white"
         >
           Open simulator
         </button>
@@ -363,14 +363,14 @@ export default function StrategySimulator({
       </p>
 
       {/* Mode toggle */}
-      <div className="flex gap-1 rounded-lg bg-zinc-800 p-1">
+      <div className="flex gap-1 rounded-xl glass p-1">
         {(["strategy", "swap"] as const).map((m) => (
           <button
             key={m}
             onClick={() => { setMode(m); setResult(null); setSwapResult(null); }}
-            className={`flex-1 rounded-md py-1.5 text-xs font-medium transition-colors ${
+            className={`flex-1 rounded-lg py-2 text-xs font-medium transition-all duration-200 ${
               mode === m
-                ? "bg-zinc-700 text-white"
+                ? "glass-button-active text-white"
                 : "text-zinc-500 hover:text-zinc-300"
             }`}
           >
@@ -381,17 +381,17 @@ export default function StrategySimulator({
 
       {/* === SWAP MODE === */}
       {mode === "swap" && swapContext && (
-        <div className="rounded-lg bg-zinc-900 p-5 space-y-5">
+        <div className="glass-card p-6 space-y-5">
           {/* Driver selector */}
           <div>
-            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">Put this driver</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Put this driver</label>
             <select
               value={swapDriver}
               onChange={(e) => { setSwapDriver(e.target.value); setSwapResult(null); }}
-              className="w-full rounded bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
+              className="glass-input w-full px-3 py-2.5 text-sm"
             >
               {context?.drivers.map((d) => (
-                <option key={d.code} value={d.code}>
+                <option key={d.code} value={d.code} className="bg-zinc-900 text-zinc-200">
                   {d.name} ({d.code}) — {d.team}
                 </option>
               ))}
@@ -400,14 +400,14 @@ export default function StrategySimulator({
 
           {/* Target team selector */}
           <div>
-            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">In this car</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">In this car</label>
             <select
               value={targetTeam}
               onChange={(e) => { setTargetTeam(e.target.value); setSwapResult(null); }}
-              className="w-full rounded bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
+              className="glass-input w-full px-3 py-2.5 text-sm"
             >
               {swapContext.teams.map((t) => (
-                <option key={t.name} value={t.name}>
+                <option key={t.name} value={t.name} className="bg-zinc-900 text-zinc-200">
                   {t.name}
                 </option>
               ))}
@@ -434,12 +434,12 @@ export default function StrategySimulator({
               <button
                 onClick={runSwap}
                 disabled={swapping || !swapDriver || !targetTeam || sameTeam}
-                className={`w-full rounded-md py-2.5 text-sm font-medium transition-colors ${
+                className={`w-full rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${
                   swapping
-                    ? "bg-zinc-800 text-zinc-600 cursor-wait"
+                    ? "glass text-zinc-600 cursor-wait"
                     : sameTeam
-                    ? "bg-zinc-800 text-zinc-600 cursor-not-allowed"
-                    : "bg-white text-black hover:bg-zinc-200"
+                    ? "glass text-zinc-600 cursor-not-allowed"
+                    : "glass-button text-white hover:bg-white/[0.18]"
                 }`}
               >
                 {swapping ? "Predicting..." : sameTeam ? "Driver is already in this team" : "Swap Driver"}
@@ -449,7 +449,7 @@ export default function StrategySimulator({
 
           {/* Swap result */}
           {swapResult && (
-            <div className="rounded-md bg-zinc-800 p-4 space-y-3">
+            <div className="glass p-5 rounded-xl space-y-3">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-zinc-500">
@@ -488,15 +488,15 @@ export default function StrategySimulator({
 
               {/* Factor breakdown */}
               <div className="grid grid-cols-2 gap-2 text-[10px]">
-                <div className="rounded bg-zinc-900 p-2">
-                  <p className="text-zinc-600">Car gap</p>
+                <div className="rounded-lg glass p-3">
+                  <p className="text-zinc-500">Car gap</p>
                   <p className="text-zinc-300 font-medium">
                     {swapResult.factors.car_gap_per_lap > 0 ? "+" : ""}
                     {swapResult.factors.car_gap_per_lap.toFixed(2)}s/lap
                   </p>
                 </div>
-                <div className="rounded bg-zinc-900 p-2">
-                  <p className="text-zinc-600">Tyre management</p>
+                <div className="rounded-lg glass p-3">
+                  <p className="text-zinc-500">Tyre management</p>
                   <p className="text-zinc-300 font-medium">{swapResult.factors.tyre_label}</p>
                 </div>
               </div>
@@ -506,7 +506,7 @@ export default function StrategySimulator({
               </p>
 
               {/* Model disclaimer */}
-              <p className="text-[9px] text-zinc-600 border-t border-zinc-700 pt-2 mt-2">
+              <p className="text-[9px] text-zinc-600 border-t border-white/[0.06] pt-2 mt-2">
                 {swapResult.model_used === "grid-estimate"
                   ? "Pre-2018 estimate — based on grid positions only (no lap timing data available)."
                   : "Estimate based on lap timing data, qualifying gaps, and tyre degradation patterns. Actual results would vary."}
@@ -522,41 +522,41 @@ export default function StrategySimulator({
 
       {/* Swap mode unavailable */}
       {mode === "swap" && !swapContext && (
-        <div className="rounded-lg bg-zinc-900 p-5 text-center">
+        <div className="glass-card p-6 text-center">
           <p className="text-xs text-zinc-500">Driver Swap data unavailable for this race.</p>
         </div>
       )}
 
       {/* === STRATEGY MODE === */}
       {mode === "strategy" && (
-      <div className="rounded-lg bg-zinc-900 p-5 space-y-5">
+      <div className="glass-card p-6 space-y-5">
         {/* Row 1: Driver + Stops */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">Driver</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Driver</label>
             <select
               value={selectedDriver}
               onChange={(e) => setSelectedDriver(e.target.value)}
-              className="w-full rounded bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-zinc-200 focus:outline-none focus:border-zinc-500"
+              className="glass-input w-full px-3 py-2.5 text-sm"
             >
               {context.drivers.map((d) => (
-                <option key={d.code} value={d.code}>
+                <option key={d.code} value={d.code} className="bg-zinc-900 text-zinc-200">
                   {d.name} ({d.code}) — P{d.finish ?? "DNF"}
                 </option>
               ))}
             </select>
           </div>
           <div className="w-full sm:w-32">
-            <label className="text-[10px] text-zinc-600 uppercase mb-1 block">Pit stops</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Pit stops</label>
             <div className="flex gap-1">
               {[0, 1, 2, 3, 4].map((n) => (
                 <button
                   key={n}
                   onClick={() => setNumStops(n)}
-                  className={`flex-1 rounded py-2.5 sm:py-2 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-lg py-2.5 sm:py-2 text-xs font-medium transition-all duration-200 ${
                     numStops === n
-                      ? "bg-zinc-600 text-white"
-                      : "bg-zinc-800 text-zinc-500 hover:text-zinc-300"
+                      ? "glass-button-active text-white"
+                      : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
                   }`}
                 >
                   {n}
@@ -634,7 +634,7 @@ export default function StrategySimulator({
 
         {/* Stint bars: actual vs user */}
         {driver && driver.actual_stints.length > 0 && (
-          <div className="space-y-2 pt-2 border-t border-zinc-800">
+          <div className="space-y-2 pt-3 border-t border-white/[0.06]">
             <StintBar
               stints={driver.actual_stints}
               totalLaps={totalLaps}
@@ -652,10 +652,10 @@ export default function StrategySimulator({
         <button
           onClick={runSimulation}
           disabled={simulating}
-          className={`w-full rounded-md py-2.5 text-sm font-medium transition-colors ${
+          className={`w-full rounded-lg py-2.5 text-sm font-medium transition-all duration-200 ${
             simulating
-              ? "bg-zinc-800 text-zinc-600 cursor-wait"
-              : "bg-white text-black hover:bg-zinc-200"
+              ? "glass text-zinc-600 cursor-wait"
+              : "glass-button text-white hover:bg-white/[0.18]"
           }`}
         >
           {simulating ? "Running simulation..." : "Simulate"}
@@ -663,7 +663,7 @@ export default function StrategySimulator({
 
         {/* Result */}
         {result && !("error" in result) && (
-          <div className="rounded-md bg-zinc-800 p-4 space-y-3">
+          <div className="glass p-5 rounded-xl space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <p className={`text-2xl font-bold ${
@@ -704,7 +704,7 @@ export default function StrategySimulator({
             <p className="text-xs text-zinc-400 leading-relaxed">
               {result.verdict}
             </p>
-            <p className="text-[9px] text-zinc-600 border-t border-zinc-700 pt-2 mt-2">
+            <p className="text-[9px] text-zinc-600 border-t border-white/[0.06] pt-2 mt-2">
               {result.model_used === "data-driven"
                 ? "ML regression trained on real lap data from this race."
                 : "Physics-based estimate (no lap timing data for pre-2018 races)."}
