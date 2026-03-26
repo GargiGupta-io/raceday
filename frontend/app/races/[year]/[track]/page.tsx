@@ -130,10 +130,8 @@ export default function RacePage({
           <h1 className="text-3xl sm:text-4xl font-bold text-white">{trackName}</h1>
           <div className="min-h-10 mt-4">
             {tagline && (
-              <p className="animate-[fadeIn_0.5s_ease-in]">
-                <span className="glass-badge text-sm italic text-zinc-300 !rounded-lg !px-4 !py-1.5">
-                  &ldquo;{tagline}&rdquo;
-                </span>
+              <p className="animate-[fadeIn_0.5s_ease-in] text-sm italic text-zinc-400">
+                &ldquo;{tagline}&rdquo;
               </p>
             )}
           </div>

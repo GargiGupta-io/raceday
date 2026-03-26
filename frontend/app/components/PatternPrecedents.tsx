@@ -46,7 +46,7 @@ export default function PatternPrecedents({
 
   if (loading) {
     return (
-      <div className="glass-card p-8 space-y-3">
+      <div className="space-y-3">
         <div className="h-3 w-48 glass-skeleton rounded" />
         <div className="h-3 w-full glass-skeleton rounded" />
         <div className="h-3 w-3/4 glass-skeleton rounded" />
@@ -62,46 +62,44 @@ export default function PatternPrecedents({
         What History Tells Us
       </p>
 
-      {/* Insight sentences */}
-      <div className="glass-card p-6 sm:p-8">
-        <div className="space-y-3 mb-6">
-          {data.insights.map((insight, i) => (
-            <p key={i} className="text-sm text-zinc-300 leading-[1.8]">
-              {insight}
-            </p>
-          ))}
-        </div>
-
-        {/* Matching races */}
-        {data.matches.length > 0 && (
-          <div>
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4 pt-4 border-t border-white/[0.06]">
-              Similar races
-            </p>
-            <div className="space-y-2">
-              {data.matches.map((m, i) => (
-                <Link
-                  key={i}
-                  href={`/races/${m.year}/${encodeURIComponent(m.track)}`}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 hover:bg-white/[0.04] transition-all duration-200"
-                >
-                  <span className="text-xs font-mono text-zinc-500 w-8">{m.year}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm text-zinc-200 truncate">{m.track}</p>
-                    <p className="text-xs text-zinc-500">
-                      Won by {m.winner_name}
-                      {m.reasons.length > 0 && (
-                        <span> — {m.reasons[0].toLowerCase()}</span>
-                      )}
-                    </p>
-                  </div>
-                  <span className="text-zinc-600 text-xs">→</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
+      {/* Insight sentences — bare text */}
+      <div className="space-y-3">
+        {data.insights.map((insight, i) => (
+          <p key={i} className="text-sm text-zinc-300 leading-[1.8]">
+            {insight}
+          </p>
+        ))}
       </div>
+
+      {/* Matching races — keep glass since these are interactive links */}
+      {data.matches.length > 0 && (
+        <div className="mt-8">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
+            Similar races
+          </p>
+          <div className="space-y-2">
+            {data.matches.map((m, i) => (
+              <Link
+                key={i}
+                href={`/races/${m.year}/${encodeURIComponent(m.track)}`}
+                className="glass-card flex items-center gap-3 px-4 py-3 transition-all duration-200"
+              >
+                <span className="text-xs font-mono text-zinc-500 w-8">{m.year}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-zinc-200 truncate">{m.track}</p>
+                  <p className="text-xs text-zinc-500">
+                    Won by {m.winner_name}
+                    {m.reasons.length > 0 && (
+                      <span> — {m.reasons[0].toLowerCase()}</span>
+                    )}
+                  </p>
+                </div>
+                <span className="text-zinc-600 text-xs">→</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
