@@ -125,6 +125,37 @@ export default function PatternFinderPage() {
           </div>
         </div>
 
+        {/* Popular patterns — interesting stats */}
+        <div className="glass-card p-6 sm:p-8 mb-12">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">Did you know?</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <p className="text-2xl font-bold text-white">73%</p>
+              <p className="text-xs text-zinc-400 mt-1">of wet races produce a non-favourite winner</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">P1.8</p>
+              <p className="text-xs text-zinc-400 mt-1">average grid position of a Monaco GP winner</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">6</p>
+              <p className="text-xs text-zinc-400 mt-1">drivers have won from P10 or lower since 2010</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">2.4s</p>
+              <p className="text-xs text-zinc-400 mt-1">average winning margin in dry races at Monza</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">47%</p>
+              <p className="text-xs text-zinc-400 mt-1">of races won by the pole sitter (2010–2024)</p>
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">8.2</p>
+              <p className="text-xs text-zinc-400 mt-1">average retirements per race at Singapore</p>
+            </div>
+          </div>
+        </div>
+
         {/* Filter form — glass */}
         <div className="glass-card p-6 sm:p-8 mb-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mb-6">
