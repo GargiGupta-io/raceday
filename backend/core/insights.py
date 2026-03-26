@@ -1182,6 +1182,77 @@ def get_championship_standings(year: int) -> list[dict] | None:
     ]
 
 
+def get_championship_progression(year: int) -> dict | None:
+    """
+    Return cumulative championship points after each race for the top drivers.
+    Used for the season progression line chart on the championship page.
+
+    Returns:
+        rounds  — list of {round, track} in race order
+        drivers — list of {code, team, points: [cumulative pts per round]}
+    """
+    season_races = get_season_races(year)
+    if not season_races:
+        return None
+
+    # Only indexed races, in round order
+    indexed_races = [r for r in season_races if r["indexed"]]
+    if not indexed_races:
+        return None
+
+    # Build cumulative points per driver across rounds
+    driver_cumulative: dict[str, dict] = {}  # code → {team, points_per_round: []}
+
+    for race in indexed_races:
+        data = indexer.load_race_index(year, race["name"])
+        if data is None:
+            continue
+
+        # Add points from this race
+        for r in data["results"]:
+            driver = r["driver"]
+            pos = r["finish_position"]
+            pts = _POINTS_TABLE.get(pos, 0)
+
+            if driver not in driver_cumulative:
+                driver_cumulative[driver] = {"team": r["team"], "points": []}
+
+            driver_cumulative[driver]["team"] = r["team"]
+
+        # After processing all results for this race, snapshot cumulative totals
+        for code in driver_cumulative:
+            prev = driver_cumulative[code]["points"][-1] if driver_cumulative[code]["points"] else 0
+            driver_cumulative[code]["points"].append(prev)
+
+        # Now add this race's points on top
+        for r in data["results"]:
+            driver = r["driver"]
+            pos = r["finish_position"]
+            pts = _POINTS_TABLE.get(pos, 0)
+            if pts > 0:
+                driver_cumulative[driver]["points"][-1] += pts
+
+    if not driver_cumulative:
+        return None
+
+    # Sort by final points descending, take top 5
+    sorted_drivers = sorted(
+        driver_cumulative.items(),
+        key=lambda x: x[1]["points"][-1] if x[1]["points"] else 0,
+        reverse=True,
+    )[:5]
+
+    rounds = [{"round": r["round"], "track": r["name"].replace(" Grand Prix", "")} for r in indexed_races]
+
+    return {
+        "rounds": rounds,
+        "drivers": [
+            {"code": code, "team": info["team"], "points": info["points"]}
+            for code, info in sorted_drivers
+        ],
+    }
+
+
 def get_season_summary(year: int) -> dict | None:
     """
     Return a high-level summary of a season for the home page year cards.

@@ -431,3 +431,11 @@ def championship_standings(year: int):
     if data is None:
         raise HTTPException(status_code=404, detail=f"No indexed races found for {year}")
     return data
+
+
+@app.get("/championship/{year}/progression")
+def championship_progression(year: int):
+    data = insights.get_championship_progression(year)
+    if data is None:
+        raise HTTPException(status_code=404, detail=f"No progression data for {year}")
+    return data

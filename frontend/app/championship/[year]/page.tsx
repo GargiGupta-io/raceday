@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { use } from "react";
 
 import { API } from "@/app/lib/api";
+import ProgressionChart from "@/app/components/ProgressionChart";
 
 interface StandingEntry {
   position: number;
@@ -118,6 +119,9 @@ export default function ChampionshipPage({
                 </div>
               </div>
             )}
+
+            {/* Season progression chart */}
+            <ProgressionChart year={year} />
 
             {/* Full table — glass */}
             <div className="glass-card overflow-x-auto">
