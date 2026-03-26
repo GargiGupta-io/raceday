@@ -36,27 +36,22 @@ export default function PatternFinderPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  interface PresetFilters {
-    circuit?: string; condition?: string; winner?: string;
-    team?: string; minGrid?: string; minDnf?: string;
-  }
-
-  const PRESETS: { label: string; filters: PresetFilters }[] = [
+  const PRESETS = [
     { label: "Wet race upsets", filters: { condition: "wet", minGrid: "5" } },
     { label: "Monaco winners", filters: { circuit: "Monaco" } },
     { label: "5+ retirements", filters: { minDnf: "5" } },
     { label: "Won from P10+", filters: { minGrid: "10" } },
     { label: "Rain at Silverstone", filters: { circuit: "British", condition: "wet" } },
     { label: "Ferrari wins", filters: { team: "Ferrari" } },
-  ];
+  ] as const;
 
-  function applyPreset(preset: { label: string; filters: PresetFilters }) {
-    setCircuit(preset.filters.circuit || "");
-    setCondition(preset.filters.condition || "");
-    setWinner(preset.filters.winner || "");
-    setTeam(preset.filters.team || "");
-    setMinGrid(preset.filters.minGrid || "");
-    setMinDnf(preset.filters.minDnf || "");
+  function applyPreset(filters: Record<string, string>) {
+    setCircuit(filters.circuit || "");
+    setCondition(filters.condition || "");
+    setWinner(filters.winner || "");
+    setTeam(filters.team || "");
+    setMinGrid(filters.minGrid || "");
+    setMinDnf(filters.minDnf || "");
     setYearFrom("2010");
     setYearTo("2024");
     // Trigger search after state updates
@@ -121,7 +116,7 @@ export default function PatternFinderPage() {
             {PRESETS.map((preset) => (
               <button
                 key={preset.label}
-                onClick={() => applyPreset(preset)}
+                onClick={() => applyPreset(preset.filters as Record<string, string>)}
                 className="glass-button px-4 py-2 text-xs font-medium text-zinc-300 hover:text-white"
               >
                 {preset.label}
