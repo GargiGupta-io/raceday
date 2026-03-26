@@ -204,16 +204,6 @@ export default function RacePage({
                 <RaceStory year={year} track={trackName} />
               </FadeIn>
 
-              {/* WHAT HISTORY TELLS US */}
-              <FadeIn delay={160}>
-                <PatternPrecedents year={year} track={trackName} />
-              </FadeIn>
-
-              {/* TEAM RADIO (2023+ only) */}
-              <FadeIn delay={200}>
-                <RadioMoments year={year} track={trackName} />
-              </FadeIn>
-
               {/* GO DEEPER — expandable sections for hardcore fans */}
               <div className="pt-8">
               <FadeIn>
@@ -251,6 +241,10 @@ export default function RacePage({
                   </div>
                 </GoDeeperItem>
 
+                <GoDeeperItem title="What history tells us">
+                  <PatternPrecedents year={year} track={trackName} />
+                </GoDeeperItem>
+
                 <GoDeeperItem title="Season standings at this point">
                   <SeasonStory year={year} track={trackName} />
                 </GoDeeperItem>
@@ -264,7 +258,7 @@ export default function RacePage({
 
             </div>
 
-            {/* Sidebar — Race Intelligence + Strategy Simulator */}
+            {/* Sidebar — Race Intelligence + Simulator + Radio */}
             <div className="w-full lg:w-80 shrink-0 space-y-8">
               {sidebar ? (
                 <FactsSidebar data={sidebar} />
@@ -280,6 +274,9 @@ export default function RacePage({
               )}
 
               <StrategySimulator year={year} track={trackName} />
+
+              {/* Team Radio — moved to sidebar */}
+              <RadioMoments year={year} track={trackName} />
             </div>
 
           </div>
