@@ -29,9 +29,9 @@ function CompoundChip({ compound }: { compound: string }) {
 
 function StopsBadge({ stops }: { stops: number }) {
   if (stops === 0)
-    return <span className="rounded px-1.5 py-0.5 text-xs bg-zinc-800 text-zinc-400">0-stop</span>;
+    return <span className="glass-badge text-zinc-400">0-stop</span>;
   if (stops === 1)
-    return <span className="rounded px-1.5 py-0.5 text-xs bg-zinc-800 text-zinc-300">1-stop</span>;
+    return <span className="glass-badge text-zinc-300">1-stop</span>;
   return (
     <span className="rounded px-1.5 py-0.5 text-xs bg-amber-900/60 text-amber-400">
       {stops}-stop
@@ -47,7 +47,7 @@ export default function StrategyPanel({ data }: { data: StrategyEntry[] }) {
 
   if (allUnknown) {
     return (
-      <div className="rounded-lg bg-zinc-900 p-6 text-center">
+      <div className="glass-card p-6 text-center">
         <p className="text-sm text-zinc-400 mb-1">No tyre strategy data available</p>
         <p className="text-xs text-zinc-600">
           {data.length > 0 && data[0].stops === 0
@@ -89,9 +89,9 @@ export default function StrategyPanel({ data }: { data: StrategyEntry[] }) {
       </div>
 
       {/* Driver rows */}
-      <div className="rounded-lg bg-zinc-900 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[4rem_1fr_auto_5rem] gap-3 px-5 py-2 border-b border-zinc-800">
+        <div className="grid grid-cols-[4rem_1fr_auto_5rem] gap-3 px-5 py-2 border-b border-white/[0.06]">
           <span className="text-xs text-zinc-600">Driver</span>
           <span className="text-xs text-zinc-600">Stints</span>
           <span className="text-xs text-zinc-600 text-right">Stops</span>
@@ -101,7 +101,7 @@ export default function StrategyPanel({ data }: { data: StrategyEntry[] }) {
         {data.map((entry) => (
           <div
             key={entry.driver}
-            className="flex items-center justify-between px-5 py-3 border-b border-zinc-800/60 last:border-0 gap-4"
+            className="flex items-center justify-between px-5 py-3 border-b border-white/[0.06]/60 last:border-0 gap-4"
           >
             {/* Driver */}
             <div className="w-20 shrink-0">

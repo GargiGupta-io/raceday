@@ -15,9 +15,9 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
     <div className="space-y-3">
 
       {/* Finishers */}
-      <div className="rounded-lg bg-zinc-900 overflow-hidden">
+      <div className="glass-card overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 px-5 py-2 border-b border-zinc-800">
+        <div className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 px-5 py-2 border-b border-white/[0.06]">
           <span className="text-xs text-zinc-600 text-right">P</span>
           <span className="text-xs text-zinc-600">Driver</span>
           <span className="text-xs text-zinc-600 text-center">Grid</span>
@@ -27,7 +27,7 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
         {finishers.map((entry) => (
           <div
             key={entry.driver}
-            className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 items-center px-5 py-3 border-b border-zinc-800/60 last:border-0"
+            className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 items-center px-5 py-3 border-b border-white/[0.06]/60 last:border-0"
           >
             {/* Finish position */}
             <span className="text-sm font-mono text-right text-zinc-400">
@@ -55,8 +55,8 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
 
       {/* Retirements */}
       {retirees.length > 0 && (
-        <div className="rounded-lg bg-zinc-900 overflow-hidden">
-          <div className="px-5 py-2 border-b border-zinc-800">
+        <div className="glass-card overflow-hidden">
+          <div className="px-5 py-2 border-b border-white/[0.06]">
             <span className="text-xs text-zinc-500 uppercase tracking-widest">
               Retired ({retirees.length})
             </span>
@@ -64,7 +64,7 @@ export default function StandingsTable({ data }: { data: StandingEntry[] }) {
           {retirees.map((entry) => (
             <div
               key={entry.driver}
-              className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 items-center px-5 py-3 border-b border-zinc-800/60 last:border-0 opacity-40"
+              className="grid grid-cols-[2rem_1fr_3rem_3rem] gap-3 items-center px-5 py-3 border-b border-white/[0.06]/60 last:border-0 opacity-40"
             >
               <span className="text-sm font-mono text-right text-zinc-500">—</span>
               <div>
@@ -102,7 +102,7 @@ function DeltaBadge({ delta }: { delta: number | null }) {
     );
 
   return (
-    <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold bg-zinc-800 text-zinc-500">
+    <span className="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-semibold glass text-zinc-500">
       =
     </span>
   );

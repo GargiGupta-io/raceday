@@ -45,7 +45,7 @@ export default function StrategyKey({
     <div className="space-y-4">
 
       {/* Compound Key */}
-      <div className="rounded-lg bg-zinc-900 p-4">
+      <div className="glass p-4 rounded-xl">
         <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
           Compound Key
         </p>
@@ -68,7 +68,7 @@ export default function StrategyKey({
 
       {/* Race Stats */}
       {stats && (
-        <div className="rounded-lg bg-zinc-900 p-4">
+        <div className="glass p-4 rounded-xl">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
             Race Stats
           </p>
@@ -83,7 +83,7 @@ export default function StrategyKey({
                   {stats.strategy_breakdown.map((s) => (
                     <span
                       key={s.strategy}
-                      className="text-[10px] bg-zinc-800 text-zinc-300 rounded px-2 py-0.5"
+                      className="glass-badge text-zinc-300"
                     >
                       {s.strategy}: {s.count}
                     </span>

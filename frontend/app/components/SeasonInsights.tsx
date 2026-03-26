@@ -85,8 +85,8 @@ export default function SeasonInsights({ year }: { year: string }) {
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-lg bg-zinc-900 p-5 h-40" />
-        <div className="rounded-lg bg-zinc-900 p-5 h-48" />
+        <div className="glass p-5 rounded-xl h-40" />
+        <div className="glass p-5 rounded-xl h-48" />
       </div>
     );
   }
@@ -101,7 +101,7 @@ export default function SeasonInsights({ year }: { year: string }) {
 
       {/* Awards */}
       {data.awards.length > 0 && (
-        <div className="rounded-lg bg-zinc-900 p-5">
+        <div className="glass p-5 rounded-xl">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
             Season Awards
           </p>
@@ -110,7 +110,7 @@ export default function SeasonInsights({ year }: { year: string }) {
               const dot = TEAM_DOT[a.team] || "bg-zinc-500";
               const icon = AWARD_ICON[a.title] || "\uD83C\uDFC6";
               return (
-                <div key={a.title} className="rounded bg-zinc-800/50 p-3">
+                <div key={a.title} className="rounded-lg glass p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-base">{icon}</span>
                     <span className="text-xs text-zinc-400 font-medium uppercase tracking-widest">
@@ -134,7 +134,7 @@ export default function SeasonInsights({ year }: { year: string }) {
 
       {/* Teammate H2H */}
       {data.h2h.length > 0 && (
-        <div className="rounded-lg bg-zinc-900 p-5">
+        <div className="glass p-5 rounded-xl">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
             Teammate Head-to-Head
           </p>
@@ -156,7 +156,7 @@ export default function SeasonInsights({ year }: { year: string }) {
                     <span className="text-zinc-100 font-bold w-5 text-right">
                       {h.score1}
                     </span>
-                    <div className="flex-1 h-2 bg-zinc-800 rounded-full overflow-hidden flex">
+                    <div className="flex-1 h-2 bg-white/[0.06] rounded-full overflow-hidden flex">
                       <div
                         className="h-full bg-emerald-500/70 rounded-l-full"
                         style={{ width: `${pct1}%` }}

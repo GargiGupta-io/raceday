@@ -89,8 +89,8 @@ export default function SeasonStory({
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="rounded-lg bg-zinc-900 p-5 h-32" />
-        <div className="rounded-lg bg-zinc-900 p-5 h-32" />
+        <div className="glass p-5 rounded-xl h-32" />
+        <div className="glass p-5 rounded-xl h-32" />
       </div>
     );
   }
@@ -108,7 +108,7 @@ export default function SeasonStory({
 
       {/* Turning Points */}
       {data.turning_points.length > 0 && (
-        <div className="rounded-lg bg-zinc-900 p-5">
+        <div className="glass p-5 rounded-xl">
           <p className="text-xs text-zinc-500 uppercase tracking-widest mb-4">
             Championship Turning Points
           </p>
@@ -118,7 +118,7 @@ export default function SeasonStory({
               return (
                 <div key={i} className="flex gap-3 items-start">
                   <span
-                    className={`w-7 h-7 rounded bg-zinc-800 flex items-center justify-center text-sm shrink-0 ${style.color}`}
+                    className={`w-7 h-7 rounded-full glass flex items-center justify-center text-sm shrink-0 ${style.color}`}
                   >
                     {style.icon}
                   </span>
@@ -136,7 +136,7 @@ export default function SeasonStory({
       )}
 
       {/* Team Standings */}
-      <div className="rounded-lg bg-zinc-900 p-5">
+      <div className="glass p-5 rounded-xl">
         <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">
           Team Championship
         </p>
@@ -160,7 +160,7 @@ export default function SeasonStory({
                     {c.points}
                   </span>
                 </div>
-                <div className="h-2 bg-zinc-800 rounded-full overflow-hidden ml-6">
+                <div className="h-2 bg-white/[0.06] rounded-full overflow-hidden ml-6">
                   <div
                     className={`h-full rounded-full ${barColor}`}
                     style={{ width: `${barWidth}%` }}

@@ -138,7 +138,7 @@ function RadioCard({ clip }: { clip: RadioClip }) {
 
             {/* Progress bar — directly below driver name */}
             <div className="mt-2 flex items-center gap-2">
-              <div className="flex-1 h-1 rounded-full bg-zinc-800 overflow-hidden">
+              <div className="flex-1 h-1 rounded-full bg-white/[0.06] overflow-hidden">
                 <div
                   className="h-full rounded-full transition-all duration-150"
                   style={{
