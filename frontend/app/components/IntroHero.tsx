@@ -55,31 +55,11 @@ function F1CarSilhouette({ className }: { className?: string }) {
 }
 
 const FEATURES = [
-  {
-    icon: "\u{1F3CE}",
-    title: "Race Stories",
-    desc: "Every race told as a narrative — who won, what went wrong, and why it mattered.",
-  },
-  {
-    icon: "\u{1F9EA}",
-    title: "Strategy Simulator",
-    desc: "Build alternate pit strategies and see ML-predicted outcomes.",
-  },
-  {
-    icon: "\u{1F50A}",
-    title: "Team Radio",
-    desc: "Hear the real emotions — celebrations, frustrations, strategy calls.",
-  },
-  {
-    icon: "\u{1F50D}",
-    title: "Pattern Finder",
-    desc: "What happens when it rains at Silverstone? History has the answers.",
-  },
-  {
-    icon: "\u{1F4CA}",
-    title: "16 Seasons · 300+ Races",
-    desc: "Every lap, every stop, every overtake from 2010 to 2026.",
-  },
+  { icon: "\u{1F3CE}", title: "Race Stories" },
+  { icon: "\u{1F9EA}", title: "Strategy Simulator" },
+  { icon: "\u{1F50A}", title: "Team Radio" },
+  { icon: "\u{1F50D}", title: "Pattern Finder" },
+  { icon: "\u{1F4CA}", title: "16 Seasons · 300+ Races" },
 ];
 
 function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
@@ -99,12 +79,12 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
           src="/images/hero-f1-dark.jpg"
           alt=""
           fill
-          className="object-cover object-center opacity-30"
+          className="object-cover object-center opacity-50"
           sizes="100vw"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/70 to-[#08080c]/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c]/50 via-transparent to-[#08080c]/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c]/30 via-transparent to-[#08080c]/30" />
       </div>
 
       {/* Subtle red gradient overlay */}
@@ -160,25 +140,20 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
           />
         </div>
 
-        {/* Feature cards — glass style with more spacing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-16">
+        {/* Feature pills — compact one-liners */}
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
           {FEATURES.map((f, i) => (
             <div
               key={i}
-              className={`glass-card relative p-6 sm:p-7 transition-all duration-700 ${
+              className={`glass-button px-5 py-2.5 flex items-center gap-2.5 transition-all duration-700 ${
                 visible
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-12"
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-6"
               }`}
-              style={{ transitionDelay: `${800 + i * 200}ms` }}
+              style={{ transitionDelay: `${800 + i * 150}ms` }}
             >
-              <span className="text-2xl mb-3 block">{f.icon}</span>
-              <p className="text-sm font-semibold text-zinc-100 mb-2">
-                {f.title}
-              </p>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                {f.desc}
-              </p>
+              <span className="text-base">{f.icon}</span>
+              <span className="text-xs font-medium text-zinc-200">{f.title}</span>
             </div>
           ))}
         </div>
