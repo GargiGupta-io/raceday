@@ -10,6 +10,7 @@ is re-checked periodically to pick up new races as they happen.
 """
 
 import logging
+import os
 import threading
 import time
 from contextlib import asynccontextmanager
@@ -115,7 +116,14 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        os.environ.get("FRONTEND_URL", ""),
+        "https://*.vercel.app",
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
