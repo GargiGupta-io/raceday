@@ -36,7 +36,12 @@ export default function PatternFinderPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
-  const PRESETS = [
+  interface PresetFilters {
+    circuit?: string; condition?: string; winner?: string;
+    team?: string; minGrid?: string; minDnf?: string;
+  }
+
+  const PRESETS: { label: string; filters: PresetFilters }[] = [
     { label: "Wet race upsets", filters: { condition: "wet", minGrid: "5" } },
     { label: "Monaco winners", filters: { circuit: "Monaco" } },
     { label: "5+ retirements", filters: { minDnf: "5" } },
@@ -45,7 +50,7 @@ export default function PatternFinderPage() {
     { label: "Ferrari wins", filters: { team: "Ferrari" } },
   ];
 
-  function applyPreset(preset: typeof PRESETS[0]) {
+  function applyPreset(preset: { label: string; filters: PresetFilters }) {
     setCircuit(preset.filters.circuit || "");
     setCondition(preset.filters.condition || "");
     setWinner(preset.filters.winner || "");
