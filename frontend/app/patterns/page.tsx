@@ -36,6 +36,31 @@ export default function PatternFinderPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
 
+  const PRESETS = [
+    { label: "Wet race upsets", filters: { condition: "wet", minGrid: "5" } },
+    { label: "Monaco winners", filters: { circuit: "Monaco" } },
+    { label: "5+ retirements", filters: { minDnf: "5" } },
+    { label: "Won from P10+", filters: { minGrid: "10" } },
+    { label: "Rain at Silverstone", filters: { circuit: "British", condition: "wet" } },
+    { label: "Ferrari wins", filters: { team: "Ferrari" } },
+  ];
+
+  function applyPreset(preset: typeof PRESETS[0]) {
+    setCircuit(preset.filters.circuit || "");
+    setCondition(preset.filters.condition || "");
+    setWinner(preset.filters.winner || "");
+    setTeam(preset.filters.team || "");
+    setMinGrid(preset.filters.minGrid || "");
+    setMinDnf(preset.filters.minDnf || "");
+    setYearFrom("2010");
+    setYearTo("2024");
+    // Trigger search after state updates
+    setTimeout(() => {
+      const btn = document.getElementById("pattern-search-btn");
+      if (btn) btn.click();
+    }, 50);
+  }
+
   function handleSearch() {
     setLoading(true);
     setSearched(true);
@@ -82,6 +107,22 @@ export default function PatternFinderPage() {
             Find races that match specific conditions across 2010–2024. Combine
             any filters to build your query.
           </p>
+        </div>
+
+        {/* Quick presets */}
+        <div className="mb-8">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Quick searches</p>
+          <div className="flex flex-wrap gap-2">
+            {PRESETS.map((preset) => (
+              <button
+                key={preset.label}
+                onClick={() => applyPreset(preset)}
+                className="glass-button px-4 py-2 text-xs font-medium text-zinc-300 hover:text-white"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Filter form — glass */}
@@ -194,6 +235,7 @@ export default function PatternFinderPage() {
           </div>
 
           <button
+            id="pattern-search-btn"
             onClick={handleSearch}
             disabled={loading}
             className="glass-button px-6 py-2.5 text-sm font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all disabled:opacity-50"
