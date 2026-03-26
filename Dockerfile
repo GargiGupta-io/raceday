@@ -6,9 +6,8 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code and data
+# Copy backend code (data is indexed on startup)
 COPY backend/ backend/
-COPY data/ data/
 
 # Expose port
 ENV PORT=8888
