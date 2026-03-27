@@ -1,193 +1,194 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ScrollCarAnimation from "./ScrollCarAnimation";
+import FeatureSection from "./FeatureSection";
 
-// Simple F1 car side-view SVG silhouette
-function F1CarSilhouette({ className }: { className?: string }) {
+gsap.registerPlugin(ScrollTrigger);
+
+interface SeasonSummary {
+  year: number;
+  champion: string;
+  team: string;
+  wins: number;
+  races: number;
+  tagline: string;
+}
+
+const TEAM_COLOR: Record<string, string> = {
+  "Red Bull Racing": "border-blue-500",
+  "Red Bull": "border-blue-500",
+  Mercedes: "border-emerald-400",
+  Ferrari: "border-red-500",
+  McLaren: "border-orange-400",
+  Williams: "border-white",
+  Renault: "border-yellow-400",
+  Brawn: "border-lime-400",
+};
+
+const FEATURES = [
+  {
+    image: "/images/f1-pack-racing.jpg",
+    title: "Race Stories",
+    subtitle: "Beyond the Results",
+    description:
+      "Every Grand Prix is more than a finishing order. We break down the key moments, strategy calls, and turning points that shaped each race — from the opening lap chaos to the final-lap drama.",
+    align: "left" as const,
+  },
+  {
+    image: "/images/cockpit-detail.jpg",
+    title: "Strategy Simulator",
+    subtitle: "What If You Were on the Pit Wall",
+    description:
+      "Choose your driver, pick your tyres, set your pit windows — then watch how your strategy plays out against what actually happened. Every decision changes the outcome.",
+    align: "right" as const,
+  },
+  {
+    image: "/images/night-race.jpg",
+    title: "Team Radio",
+    subtitle: "Hear the Pressure",
+    description:
+      "The raw, unfiltered radio messages between drivers and engineers — transcribed, timestamped, and tagged by emotion. Hear the frustration, the celebration, the split-second calls.",
+    align: "left" as const,
+  },
+  {
+    image: "/images/aerial-racing.jpg",
+    title: "Pattern Finder",
+    subtitle: "History Repeats Itself",
+    description:
+      "Search across 16 seasons and 300+ races for patterns. Which circuits punish pole-sitters? Where do wet races produce upsets? When does a one-stop beat a two-stop? The data knows.",
+    align: "right" as const,
+  },
+  {
+    image: "/images/monaco-tight.jpg",
+    title: "16 Seasons of F1",
+    subtitle: "2010 — 2025",
+    description:
+      "From Vettel's dominance to Hamilton's reign to Verstappen's era. Every race, every strategy, every radio message — indexed, analyzed, and ready to explore.",
+    align: "left" as const,
+  },
+];
+
+export default function IntroHero({
+  seasons,
+  onSelectYear,
+}: {
+  seasons: SeasonSummary[];
+  onSelectYear: (year: number) => void;
+}) {
   return (
-    <svg
-      viewBox="0 0 400 120"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-    >
-      {/* Body */}
-      <path
-        d="M50,80 L30,75 L20,70 L15,65 L20,55 L40,50 L80,45 L120,40 L160,38 L200,36 L280,35 L320,36 L350,40 L370,45 L380,50 L385,55 L380,65 L370,72 L350,78 L320,80 Z"
-        fill="currentColor"
-        opacity="0.9"
-      />
-      {/* Nose cone */}
-      <path
-        d="M15,65 L5,62 L2,60 L5,58 L15,55 L20,55 L15,65Z"
-        fill="currentColor"
-        opacity="0.8"
-      />
-      {/* Rear wing */}
-      <path
-        d="M370,30 L385,28 L390,30 L390,45 L385,48 L375,45 L370,40Z"
-        fill="currentColor"
-        opacity="0.85"
-      />
-      {/* Front wing */}
-      <path
-        d="M5,62 L0,60 L0,55 L5,53 L20,55 L15,65 L5,62Z"
-        fill="currentColor"
-        opacity="0.7"
-      />
-      {/* Halo */}
-      <path
-        d="M160,38 L165,28 L175,24 L195,24 L205,28 L210,38"
-        stroke="currentColor"
-        strokeWidth="4"
-        fill="none"
-        opacity="0.6"
-      />
-      {/* Front wheel */}
-      <ellipse cx="90" cy="78" rx="18" ry="18" fill="currentColor" opacity="0.95" />
-      <ellipse cx="90" cy="78" rx="10" ry="10" fill="black" opacity="0.5" />
-      {/* Rear wheel */}
-      <ellipse cx="320" cy="78" rx="20" ry="20" fill="currentColor" opacity="0.95" />
-      <ellipse cx="320" cy="78" rx="11" ry="11" fill="black" opacity="0.5" />
-    </svg>
+    <div>
+      {/* Section 1: Hero */}
+      <HeroSection />
+
+      {/* Section 2: Car scroll animation */}
+      <ScrollCarAnimation />
+
+      {/* Sections 3-7: Feature showcase */}
+      {FEATURES.map((f, i) => (
+        <FeatureSection key={i} index={i} {...f} />
+      ))}
+
+      {/* Section 8: Season picker */}
+      <SeasonPicker seasons={seasons} onSelectYear={onSelectYear} />
+    </div>
   );
 }
 
-const FEATURES = [
-  { icon: "\u{1F3CE}", title: "Race Stories" },
-  { icon: "\u{1F9EA}", title: "Strategy Simulator" },
-  { icon: "\u{1F50A}", title: "Team Radio" },
-  { icon: "\u{1F50D}", title: "Pattern Finder" },
-  { icon: "\u{1F4CA}", title: "16 Seasons · 300+ Races" },
-];
-
-function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
+function HeroSection() {
   const [visible, setVisible] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 100);
     return () => clearTimeout(t);
   }, []);
 
-  return (
-    <div className="relative overflow-hidden min-h-[100dvh] flex flex-col">
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
 
-      {/* Hero background image */}
+    const ctx = gsap.context(() => {
+      gsap.to(el, {
+        opacity: 0,
+        y: -30,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          end: "top 20%",
+          scrub: true,
+        },
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
+      {/* Background image */}
       <div className="absolute inset-0 pointer-events-none select-none">
         <Image
           src="/images/hero-f1-dark.jpg"
           alt=""
           fill
-          className="object-cover object-center opacity-50"
+          className="object-cover object-center opacity-40"
           sizes="100vw"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/50 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c]/30 via-transparent to-[#08080c]/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/60 via-transparent to-[#08080c]" />
       </div>
 
-      {/* Subtle red gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent pointer-events-none" />
-
-      {/* Speed lines behind car */}
-      <div
-        className={`absolute top-[40%] -right-full h-[2px] bg-gradient-to-l from-transparent via-red-500/30 to-transparent transition-all duration-[3000ms] ease-out ${
-          visible ? "-translate-x-[200%]" : ""
-        }`}
-        style={{ width: "150%" }}
-      />
-      <div
-        className={`absolute top-[43%] -right-full h-[1px] bg-gradient-to-l from-transparent via-red-400/20 to-transparent transition-all duration-[3500ms] ease-out delay-200 ${
-          visible ? "-translate-x-[200%]" : ""
-        }`}
-        style={{ width: "120%" }}
-      />
-
-      {/* Main content — centered vertically */}
-      <div className="relative flex-1 flex flex-col justify-center max-w-5xl mx-auto px-6 w-full">
-
-        {/* Title — kept exactly as original */}
+      {/* Center content */}
+      <div className="relative flex-1 flex flex-col justify-center items-center px-6">
         <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          className={`text-center transition-all duration-1000 ${
+            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           }`}
         >
-          <h1 className="text-6xl sm:text-8xl tracking-tight text-white mb-4" style={{ fontFamily: "var(--font-racing)" }}>
+          <h1
+            className="text-7xl sm:text-9xl md:text-[10rem] tracking-tight text-white mb-6"
+            style={{ fontFamily: "var(--font-racing)" }}
+          >
             RACE
             <span className="text-red-500">DAY</span>
           </h1>
-          <p className="text-lg sm:text-xl text-zinc-400 font-light">
-            Every race has a story.
-          </p>
-        </div>
-
-        {/* F1 car driving across — kept exactly as original */}
-        <div className="relative h-16 mb-16 overflow-hidden">
-          <div
-            className={`absolute top-0 transition-all duration-[2500ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              visible ? "-left-32" : "left-[110%]"
-            }`}
-            style={{ width: "160px" }}
-          >
-            <F1CarSilhouette className="w-40 h-12 text-red-500/70" />
-          </div>
-          {/* Trail line behind car */}
-          <div
-            className={`absolute top-6 right-0 h-[1px] bg-gradient-to-l from-red-500/50 to-transparent transition-all duration-[2500ms] ease-out ${
-              visible ? "w-full" : "w-0"
-            }`}
-          />
-        </div>
-
-        {/* Feature pills — compact one-liners */}
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-16">
-          {FEATURES.map((f, i) => (
-            <div
-              key={i}
-              className={`glass-button px-5 py-2.5 flex items-center gap-2.5 transition-all duration-700 ${
-                visible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-6"
-              }`}
-              style={{ transitionDelay: `${800 + i * 150}ms` }}
-            >
-              <span className="text-base">{f.icon}</span>
-              <span className="text-xs font-medium text-zinc-200">{f.title}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA — glass button */}
-        <div
-          className={`text-center transition-all duration-700 ${
-            visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-          style={{ transitionDelay: "2800ms" }}
-        >
-          <button
-            onClick={onStart}
-            className="glass-button px-10 py-3.5 text-sm font-semibold text-white transition-all hover:shadow-lg hover:shadow-red-500/10 border-red-500/30 hover:border-red-500/50"
-          >
-            Pick a season to start
-          </button>
-          <p className="text-[11px] text-zinc-600 mt-4">
-            No account needed — just explore.
+          <p className="text-base sm:text-xl text-zinc-500 font-light tracking-wide">
+            Every race has a story. Scroll to find yours.
           </p>
         </div>
       </div>
 
       {/* Scroll indicator */}
       <div
-        className={`relative pb-8 text-center transition-all duration-700 ${
+        ref={scrollRef}
+        className={`pb-10 text-center transition-all duration-700 ${
           visible ? "opacity-100" : "opacity-0"
         }`}
-        style={{ transitionDelay: "3200ms" }}
+        style={{ transitionDelay: "1500ms" }}
       >
-        <div className="inline-flex flex-col items-center gap-2 text-zinc-600">
-          <span className="text-[10px] uppercase tracking-widest">Scroll to explore</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="animate-bounce">
-            <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        <div className="inline-flex flex-col items-center gap-3 text-zinc-600">
+          <span className="text-[10px] uppercase tracking-[0.3em]">
+            Scroll
+          </span>
+          <svg
+            width="16"
+            height="24"
+            viewBox="0 0 16 24"
+            fill="none"
+            className="animate-bounce"
+          >
+            <path
+              d="M8 0L8 20M8 20L2 14M8 20L14 14"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </div>
       </div>
@@ -195,10 +196,114 @@ function AnimatedCarIntro({ onStart }: { onStart: () => void }) {
   );
 }
 
-export default function IntroHero({
-  onStart,
+function SeasonPicker({
+  seasons,
+  onSelectYear,
 }: {
-  onStart: () => void;
+  seasons: SeasonSummary[];
+  onSelectYear: (year: number) => void;
 }) {
-  return <AnimatedCarIntro onStart={onStart} />;
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top 70%",
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      if (titleRef.current) {
+        tl.fromTo(
+          titleRef.current,
+          { opacity: 0, y: 30, filter: "blur(12px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power2.out" },
+          0
+        );
+      }
+
+      if (subtitleRef.current) {
+        tl.fromTo(
+          subtitleRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+          0.2
+        );
+      }
+
+      if (gridRef.current) {
+        tl.fromTo(
+          gridRef.current,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+          0.35
+        );
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, [seasons]);
+
+  // Sort seasons newest first
+  const sorted = [...seasons].sort((a, b) => b.year - a.year);
+
+  return (
+    <div
+      ref={sectionRef}
+      className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24"
+    >
+      {/* Background subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-950/5 to-transparent pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-5xl mx-auto text-center">
+        {/* Heading */}
+        <h2
+          ref={titleRef}
+          className="text-4xl sm:text-5xl md:text-7xl font-light text-white tracking-wide mb-4"
+        >
+          Choose Your Season
+        </h2>
+        <p
+          ref={subtitleRef}
+          className="text-sm sm:text-base text-zinc-500 mb-16"
+        >
+          16 seasons. 300+ races. Pick one and dive in.
+        </p>
+
+        {/* Season grid */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"
+        >
+          {sorted.map((s) => (
+            <button
+              key={s.year}
+              onClick={() => onSelectYear(s.year)}
+              className={`glass-card p-5 sm:p-6 text-left transition-all duration-300 hover:scale-[1.03] hover:border-red-500/30 group ${
+                TEAM_COLOR[s.team] ? `border-l-2 ${TEAM_COLOR[s.team]}` : "border-l-2 border-zinc-700"
+              }`}
+            >
+              <p className="text-2xl sm:text-3xl font-light text-white tracking-wide group-hover:text-red-400 transition-colors">
+                {s.year}
+              </p>
+              <p className="text-xs text-zinc-500 mt-2">{s.champion}</p>
+              <p className="text-[10px] text-zinc-600 mt-1">{s.team}</p>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-[11px] text-zinc-700 mt-12">
+          No account needed — just explore.
+        </p>
+      </div>
+    </div>
+  );
 }

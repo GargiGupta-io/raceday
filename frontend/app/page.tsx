@@ -98,6 +98,18 @@ function Home() {
 
   return (
     <div className="min-h-screen text-zinc-100">
+
+      {/* Intro hero — full-width, visible until user selects a year */}
+      {year === null && (
+        <IntroHero
+          seasons={seasons}
+          onSelectYear={(y) => {
+            setYear(y);
+            router.push(`/?year=${y}`);
+          }}
+        />
+      )}
+
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
 
         {/* Seasons error */}
@@ -230,16 +242,6 @@ function Home() {
 
         </>)}
 
-        {/* Intro hero — visible until user selects a year */}
-        {year === null && (
-          <IntroHero
-            onStart={() => {
-              const firstYear = seasons.length > 0 ? seasons[0].year : 2025;
-              setYear(firstYear);
-              router.push(`/?year=${firstYear}`);
-            }}
-          />
-        )}
 
       </div>
     </div>
