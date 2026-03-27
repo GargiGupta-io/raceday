@@ -22,8 +22,25 @@ const racingFont = Racing_Sans_One({
 });
 
 export const metadata: Metadata = {
-  title: "Raceday",
-  description: "F1 fan intelligence platform — race results, strategy, and championship standings",
+  title: {
+    default: "Raceday | F1 Race Intelligence",
+    template: "%s | Raceday",
+  },
+  description:
+    "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for every F1 season from 2010 to 2025.",
+  openGraph: {
+    title: "Raceday | F1 Race Intelligence",
+    description:
+      "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for Formula 1.",
+    type: "website",
+    siteName: "Raceday",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Raceday | F1 Race Intelligence",
+    description:
+      "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for Formula 1.",
+  },
 };
 
 export default function RootLayout({
