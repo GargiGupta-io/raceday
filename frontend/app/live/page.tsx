@@ -119,16 +119,21 @@ export default function LivePage() {
         )}
 
         {!loading && (!data || !data.active) && (
-          <div className="glass-card p-10 sm:p-16 text-center">
-            <div className="text-4xl mb-5">&#127937;</div>
-            <h2 className="text-lg font-semibold text-zinc-200 mb-3">No Live Session</h2>
-            <p className="text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
-              This page comes alive during race weekends. Strategy predictions, tyre life tracking,
-              and pattern alerts appear automatically when a session is active.
-            </p>
-            <p className="text-xs text-zinc-600 mt-5">
-              Auto-refreshes every 10 seconds
-            </p>
+          <div className="space-y-6">
+            <div className="glass-card p-10 sm:p-16 text-center">
+              <div className="text-4xl mb-5">&#127937;</div>
+              <h2 className="text-lg font-semibold text-zinc-200 mb-3">No Live Session</h2>
+              <p className="text-sm text-zinc-400 max-w-md mx-auto leading-relaxed">
+                This page comes alive during race weekends. Strategy predictions, tyre life tracking,
+                and pattern alerts appear automatically when a session is active.
+              </p>
+              <p className="text-xs text-zinc-600 mt-5">
+                Auto-refreshes every 10 seconds
+              </p>
+            </div>
+
+            {/* Extension download banner */}
+            <ExtensionBanner />
           </div>
         )}
 
@@ -268,10 +273,44 @@ export default function LivePage() {
             <p className="text-[10px] text-zinc-600 text-center">
               Auto-refreshes every 10 seconds
             </p>
+
+            {/* Extension banner — during live session */}
+            <ExtensionBanner />
           </div>
         )}
 
       </div>
+    </div>
+  );
+}
+
+function ExtensionBanner() {
+  return (
+    <div className="glass-card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-5">
+      <div className="shrink-0 w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-red-400">
+          <path d="M20 4H4C2.89 4 2 4.89 2 6V18C2 19.11 2.89 20 4 20H20C21.11 20 22 19.11 22 18V6C22 4.89 21.11 4 20 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M12 15L12 9M12 9L9 12M12 9L15 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+      <div className="flex-1 text-center sm:text-left">
+        <p className="text-sm font-medium text-white mb-1">
+          Raceday Browser Extension
+        </p>
+        <p className="text-xs text-zinc-400 leading-relaxed">
+          Get live strategy predictions overlaid directly on your F1 stream.
+          Works with F1TV, YouTube, and any broadcast.
+        </p>
+      </div>
+      <a
+        href="https://github.com/GargiGupta-io/raceday/tree/master/extension"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Download Raceday browser extension from GitHub"
+        className="shrink-0 glass-button px-5 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
+      >
+        Get Extension
+      </a>
     </div>
   );
 }
