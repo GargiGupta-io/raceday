@@ -286,6 +286,7 @@ function SeasonPicker({
           {sorted.map((s) => (
             <button
               key={s.year}
+              aria-label={`Explore ${s.year} season — champion ${s.champion}, ${s.team}`}
               onClick={() => onSelectYear(s.year)}
               className={`glass-card p-5 sm:p-6 text-left transition-all duration-300 hover:scale-[1.03] hover:border-red-500/30 group ${
                 TEAM_COLOR[s.team] ? `border-l-2 ${TEAM_COLOR[s.team]}` : "border-l-2 border-zinc-700"
