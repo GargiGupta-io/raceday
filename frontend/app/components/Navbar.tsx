@@ -26,12 +26,13 @@ export default function Navbar() {
   const isRaces = !isChampionship && !isPatterns && !isLive;
 
   return (
-    <nav className="sticky top-0 z-50 glass border-b border-white/[0.06]">
+    <nav aria-label="Main navigation" className="sticky top-0 z-50 glass border-b border-white/[0.06]">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
 
         {/* Brand */}
         <Link
           href="/"
+          aria-label="Raceday home"
           className="text-sm font-bold tracking-tight text-white hover:text-white/80 transition-colors"
         >
           Raceday
@@ -41,6 +42,7 @@ export default function Navbar() {
         <div className="flex items-center gap-1 sm:gap-1.5">
           <Link
             href="/"
+            aria-current={isRaces ? "page" : undefined}
             className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isRaces
                 ? "glass-button-active text-white"
@@ -51,6 +53,7 @@ export default function Navbar() {
           </Link>
           <Link
             href={`/championship/${activeYear}`}
+            aria-current={isChampionship ? "page" : undefined}
             className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isChampionship
                 ? "glass-button-active text-white"
@@ -58,10 +61,11 @@ export default function Navbar() {
             }`}
           >
             <span className="hidden sm:inline">Championship</span>
-            <span className="sm:hidden">Champ</span>
+            <span className="sm:hidden" aria-hidden="true">Champ</span>
           </Link>
           <Link
             href="/patterns"
+            aria-current={isPatterns ? "page" : undefined}
             className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isPatterns
                 ? "glass-button-active text-white"
@@ -72,6 +76,7 @@ export default function Navbar() {
           </Link>
           <Link
             href="/live"
+            aria-current={isLive ? "page" : undefined}
             className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
               isLive
                 ? "glass-button-active text-red-400 glow-pulse"
@@ -85,6 +90,7 @@ export default function Navbar() {
         {/* Year selector */}
         <div className="flex items-center gap-3">
           <select
+            aria-label="Select season year"
             value={activeYear}
             onChange={(e) => {
               const y = e.target.value;
