@@ -297,7 +297,7 @@ On startup, the backend spawns a daemon thread that indexes all F1 seasons (2010
 {"running":true,"current_year":2011,"completed_years":[2010],"total_indexed":19}
 ```
 
-Railway's filesystem is ephemeral — data is lost on every redeploy. The `INDEX_DIR` and `CACHE_DIR` environment variables point to `./data/index` and `./data/cache` respectively. For persistence, Railway would need a volume mount, but the current approach (re-index on deploy) works for the scale of data.
+Railway's filesystem is ephemeral by default — data is lost on every redeploy. We fixed this by adding a **Railway Volume** mounted at `/data`. The `INDEX_DIR` and `CACHE_DIR` environment variables point to `./data/index` and `./data/cache`, which now persist across deploys. After the volume was added, the backend only needs to index from scratch once. Every subsequent deploy skips already-indexed races, making deploys fast and the site immediately usable.
 
 ## Vercel Deployment — Frontend
 
@@ -338,18 +338,83 @@ The Chanel pattern: one idea per screen. When every section is 100vh, the user p
 
 GRU Space and Chanel both use this pattern. A simple fade-in (opacity 0→1) feels flat — the element "appears." Adding `filter: blur(12px)` → `blur(0px)` makes the element feel like it's coming into focus, like adjusting a camera lens. Combined with a slight upward translate (y: 20→0), it creates the sensation of depth — the text is materializing from the background rather than being placed on top of it.
 
+## Polish Pass — Fixing the Weaknesses
+
+After the initial build, we identified and fixed six weaknesses:
+
+### 1. Railway Volume for Persistent Indexing
+
+The backend re-indexed all 16 seasons from scratch on every Railway deploy, which meant the site was broken for hours after each push. Fix: added a Railway Volume mounted at `/data` via the dashboard (Settings → Volumes). This is a one-click infrastructure change — no code needed. The volume persists across deploys, so indexed race data survives.
+
+### 2. Honest Loading Screen
+
+The original PageLoader had a fake progress counter (0-100%) that simulated loading with `Math.random()` increments. Anyone paying attention would notice the number isn't tied to anything real. Fix: replaced with a clean branded splash — the F1 car loops back and forth over a "RACEDAY" title, shows for 2 seconds, then fades out. No fake numbers, no deception. Same sessionStorage skip on revisit.
+
+### 3. Mobile GSAP Fix
+
+ScrollTrigger's `pin: true` is notoriously buggy on mobile Safari — it causes layout jumps, rubber-band scroll conflicts, and jank. Fix: detect mobile with `window.innerWidth < 768` and disable pinning:
+
+```typescript
+const isMobile = window.innerWidth < 768;
+const tl = gsap.timeline({
+  scrollTrigger: {
+    pin: !isMobile,              // No pinning on mobile
+    scrub: isMobile ? 0.5 : 1,  // Faster scrub response on mobile
+  },
+});
+```
+
+For FeatureSection, the parallax scale was reduced from 1.15 to 1.05 on mobile — less GPU work, smoother scroll.
+
+### 4. Shared F1Car Component
+
+The F1 car SVG was copy-pasted identically in PageLoader, ScrollCarAnimation, and DataLoader — 90 lines of duplication. Fix: extracted to `F1Car.tsx`, a single component that accepts a `className` prop. All three consumers now import from one source.
+
+### 5. SEO Meta Tags
+
+Sharing the Vercel URL on LinkedIn or Twitter showed a generic "Raceday" preview with no description or image. Fix: added Open Graph and Twitter Card meta tags to `layout.tsx`:
+
+```typescript
+export const metadata: Metadata = {
+  title: { default: "Raceday | F1 Race Intelligence", template: "%s | Raceday" },
+  openGraph: { title: "...", description: "...", type: "website", siteName: "Raceday" },
+  twitter: { card: "summary_large_image", title: "...", description: "..." },
+};
+```
+
+Also added page-specific metadata via `layout.tsx` files in `/patterns` and `/live` routes (since their `page.tsx` files are client components and can't export metadata directly).
+
+### 6. Scroll-Synced Video (Replacing SVG Silhouette)
+
+The SVG car silhouette looked basic next to full-viewport F1 photographs. Fix: downloaded a night race flyby clip from Pexels (free license, 720p, 5.1MB) and replaced the SVG animation with scroll-synced video playback:
+
+```typescript
+ScrollTrigger.create({
+  trigger: section,
+  scrub: 0.5,
+  onUpdate: (self) => {
+    video.currentTime = self.progress * video.duration;
+  },
+});
+```
+
+The video sits paused. As the user scrolls, GSAP maps scroll progress (0-1) to video time (0-duration), so the race footage plays forward/backward tied to the scrollbar. Dark overlays, vignette edges, and top/bottom fades ensure the "Every Race Has a Story" text stays readable.
+
 ## Phase 8F — Statistics
 
 | Metric | Value |
 |--------|-------|
-| New files | 4 components + 1 learning doc |
-| Rewritten files | 2 (IntroHero.tsx, page.tsx) |
-| Updated files | 2 (globals.css, phase8e learning doc) |
+| New files | 5 components + 1 video + 2 layout files + 1 learning doc |
+| Rewritten files | 3 (IntroHero.tsx, ScrollCarAnimation.tsx, page.tsx) |
+| Updated files | 4 (globals.css, layout.tsx, PageLoader.tsx, phase8e learning doc) |
+| Deleted code | ~90 lines of duplicated SVG |
 | New dependency | gsap (~30KB gzipped) |
-| Total commits | 11 |
-| Sections on home page | 8 (loader + hero + car + 5 features + picker) |
+| New asset | night-race-flyby.mp4 (5.1MB, Pexels free license) |
+| Total commits | 19 |
+| Sections on home page | 8 (loader + hero + video scroll + 5 features + picker) |
 | Images used | 6 (all existing, dark F1 themed) |
-| Deploy targets | Railway (backend) + Vercel (frontend) |
+| Deploy targets | Railway (backend, persistent volume) + Vercel (frontend) |
+| SEO | Open Graph + Twitter Cards on all pages |
 | Build status | 0 errors, 0 warnings |
 
 ## What RaceDay's Home Page Looks Like Now vs Before
@@ -364,14 +429,16 @@ GRU Space and Chanel both use this pattern. A simple fade-in (opacity 0→1) fee
 
 **After Phase 8F:**
 - 8 full-viewport scroll sections
-- GSAP-powered car flyby tied to scroll position
-- 5 dark F1 photographs filling the viewport
+- Scroll-synced night race video (real footage, tied to scroll position)
+- 5 dark F1 photographs filling the viewport with parallax
 - Blur-to-sharp text reveals on each section
-- First-visit loading screen with progress counter
+- Branded loading splash (honest, no fake progress)
 - Season picker grid at the bottom
-- F1 car animation for all loading states
-- Deployed on Railway + Vercel
+- Shared F1 car animation for all loading states
+- Mobile-optimized (no pin, lighter parallax)
+- SEO meta tags for social sharing
+- Deployed on Railway (persistent volume) + Vercel
 
 ---
 
-*Generated: 2026-03-27 | Project: RaceDay | Phase 8F: Cinematic Scroll + Deploy (11 commits)*
+*Generated: 2026-03-27 | Updated: 2026-03-27 | Project: RaceDay | Phase 8F: Cinematic Scroll + Deploy + Polish (19 commits)*
