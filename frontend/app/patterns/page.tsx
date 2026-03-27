@@ -119,6 +119,7 @@ export default function PatternFinderPage() {
             {PRESETS.map((preset) => (
               <button
                 key={preset.label}
+                aria-label={`Apply preset: ${preset.label}`}
                 onClick={() => applyPreset(preset.filters as Record<string, string>)}
                 className="glass-button px-4 py-2 text-xs font-medium text-zinc-300 hover:text-white"
               >
@@ -270,6 +271,7 @@ export default function PatternFinderPage() {
 
           <button
 
+            aria-label="Search for matching race patterns"
             onClick={handleSearch}
             disabled={loading}
             className="glass-button px-6 py-2.5 text-sm font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all disabled:opacity-50"
