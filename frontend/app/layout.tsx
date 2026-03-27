@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Geist, Geist_Mono, Racing_Sans_One } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/app/components/Navbar";
+import PageLoader from "@/app/components/PageLoader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${racingFont.variable} antialiased`}
         suppressHydrationWarning
       >
+        <PageLoader />
         <Suspense fallback={<div className="h-12 border-b border-white/[0.06]" />}>
           <Navbar />
         </Suspense>
