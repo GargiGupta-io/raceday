@@ -37,11 +37,13 @@ export default function FeatureSection({
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      // Image parallax — slow move as you scroll through
+      const isMobile = window.innerWidth < 768;
+
+      // Image parallax — lighter on mobile to avoid jank
       if (imageRef.current) {
         gsap.fromTo(
           imageRef.current,
-          { scale: 1.15 },
+          { scale: isMobile ? 1.05 : 1.15 },
           {
             scale: 1,
             ease: "none",
@@ -49,7 +51,7 @@ export default function FeatureSection({
               trigger: section,
               start: "top bottom",
               end: "bottom top",
-              scrub: true,
+              scrub: isMobile ? 0.5 : true,
             },
           }
         );

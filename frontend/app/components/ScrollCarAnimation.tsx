@@ -64,13 +64,15 @@ export default function ScrollCarAnimation() {
     if (!section || !car || !glow || !text) return;
 
     const ctx = gsap.context(() => {
+      const isMobile = window.innerWidth < 768;
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          start: "top top",
-          end: "+=150%",
-          pin: true,
-          scrub: 1,
+          start: isMobile ? "top 80%" : "top top",
+          end: isMobile ? "bottom 20%" : "+=150%",
+          pin: !isMobile,
+          scrub: isMobile ? 0.5 : 1,
           anticipatePin: 1,
         },
       });
