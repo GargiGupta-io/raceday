@@ -3,148 +3,132 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import F1Car from "./F1Car";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ScrollCarAnimation() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const carRef = useRef<HTMLDivElement>(null);
-  const trailRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const glowRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
-    const car = carRef.current;
-    const glow = glowRef.current;
+    const video = videoRef.current;
     const text = textRef.current;
-    if (!section || !car || !glow || !text) return;
+    const overlay = overlayRef.current;
+    if (!section || !video || !text || !overlay) return;
 
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth < 768;
+    // Wait for video metadata to load so we know the duration
+    const setup = () => {
+      const duration = video.duration;
+      if (!duration || isNaN(duration)) return;
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
+      const ctx = gsap.context(() => {
+        const isMobile = window.innerWidth < 768;
+
+        // Scrub video playback to scroll position
+        const st = ScrollTrigger.create({
           trigger: section,
           start: isMobile ? "top 80%" : "top top",
-          end: isMobile ? "bottom 20%" : "+=150%",
+          end: isMobile ? "bottom 20%" : "+=200%",
           pin: !isMobile,
-          scrub: isMobile ? 0.5 : 1,
+          scrub: 0.5,
           anticipatePin: 1,
-        },
-      });
-
-      // Car drives from right (120%) to left (-30%)
-      tl.fromTo(
-        car,
-        { xPercent: 120 },
-        { xPercent: -30, ease: "none", duration: 1 }
-      );
-
-      // Glow follows the car
-      tl.fromTo(
-        glow,
-        { xPercent: 120, opacity: 0 },
-        { xPercent: -30, opacity: 1, ease: "none", duration: 1 },
-        0
-      );
-
-      // Speed lines animate with the car
-      trailRefs.current.forEach((trail, i) => {
-        if (!trail) return;
-        tl.fromTo(
-          trail,
-          { scaleX: 0, opacity: 0 },
-          {
-            scaleX: 1,
-            opacity: [0.6, 0.4, 0.3, 0.2, 0.15][i] || 0.2,
-            ease: "none",
-            duration: 0.4,
+          onUpdate: (self) => {
+            if (video && duration) {
+              video.currentTime = self.progress * duration;
+            }
           },
-          0.1 + i * 0.05
+        });
+
+        // Text fades in at 30% scroll, fades out at 80%
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: isMobile ? "top 60%" : "top top",
+            end: isMobile ? "bottom 20%" : "+=200%",
+            scrub: 0.5,
+          },
+        });
+
+        tl.fromTo(
+          text,
+          { opacity: 0, y: 40, filter: "blur(12px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out" },
+          0.25
         );
         tl.to(
-          trail,
-          { opacity: 0, duration: 0.3 },
+          text,
+          { opacity: 0, y: -30, duration: 0.2 },
           0.7
         );
-      });
 
-      // Text fades in mid-scroll
-      tl.fromTo(
-        text,
-        { opacity: 0, y: 30, filter: "blur(10px)" },
-        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.4, ease: "power2.out" },
-        0.3
-      );
-      tl.to(
-        text,
-        { opacity: 0, y: -20, duration: 0.3 },
-        0.8
-      );
-    }, section);
+        // Overlay darkens at start and end for smooth transitions
+        tl.fromTo(
+          overlay,
+          { opacity: 0.8 },
+          { opacity: 0.3, duration: 0.3 },
+          0
+        );
+        tl.to(
+          overlay,
+          { opacity: 0.8, duration: 0.3 },
+          0.7
+        );
 
-    return () => ctx.revert();
+        return () => {
+          st.kill();
+          ctx.revert();
+        };
+      }, section);
+    };
+
+    if (video.readyState >= 1) {
+      setup();
+    } else {
+      video.addEventListener("loadedmetadata", setup, { once: true });
+    }
   }, []);
 
   return (
     <div ref={sectionRef} className="relative h-screen bg-black overflow-hidden">
-      {/* Subtle grid lines for depth */}
-      <div className="absolute inset-0 opacity-[0.03]"
+      {/* Video — paused, controlled by scroll */}
+      <video
+        ref={videoRef}
+        className="absolute inset-0 w-full h-full object-cover"
+        src="/videos/night-race-flyby.mp4"
+        muted
+        playsInline
+        preload="auto"
+      />
+
+      {/* Dark overlay for text readability + transitions */}
+      <div
+        ref={overlayRef}
+        className="absolute inset-0 bg-black/60 pointer-events-none"
+      />
+
+      {/* Vignette edges */}
+      <div className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
+          background: "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%)",
         }}
       />
 
-      {/* Speed trail lines */}
-      {[0, 1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          ref={(el) => { trailRefs.current[i] = el; }}
-          className="absolute h-[1px] origin-right"
-          style={{
-            top: `${46 + i * 3}%`,
-            left: "5%",
-            right: "5%",
-            background: `linear-gradient(90deg, transparent, ${
-              i === 0 ? "rgba(239,68,68,0.5)" : `rgba(239,68,68,${0.3 - i * 0.05})`
-            }, transparent)`,
-            transform: "scaleX(0)",
-          }}
-        />
-      ))}
-
-      {/* Red glow behind car */}
-      <div
-        ref={glowRef}
-        className="absolute top-1/2 -translate-y-1/2 w-64 h-64 rounded-full pointer-events-none"
-        style={{
-          background: "radial-gradient(circle, rgba(239,68,68,0.15) 0%, transparent 70%)",
-          filter: "blur(40px)",
-        }}
-      />
-
-      {/* F1 Car */}
-      <div
-        ref={carRef}
-        className="absolute top-1/2 -translate-y-1/2 w-[280px] sm:w-[360px] md:w-[440px]"
-      >
-        <F1Car className="w-full text-red-500 drop-shadow-[0_0_30px_rgba(239,68,68,0.4)]" />
-      </div>
+      {/* Top/bottom fade into page bg */}
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.5 }} />
 
       {/* Center text — appears mid-scroll */}
       <div
         ref={textRef}
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
       >
-        <div className="text-center">
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-zinc-500 mb-4">
+        <div className="text-center px-6">
+          <p className="text-[10px] sm:text-xs uppercase tracking-[0.4em] text-zinc-400 mb-4">
             Explore What&apos;s Inside
           </p>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light text-white tracking-wide">
+          <h2 className="text-3xl sm:text-5xl md:text-7xl font-light text-white tracking-wide">
             Every Race Has a Story
           </h2>
         </div>
