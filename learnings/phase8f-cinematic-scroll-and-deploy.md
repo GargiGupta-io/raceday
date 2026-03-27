@@ -400,7 +400,138 @@ ScrollTrigger.create({
 
 The video sits paused. As the user scrolls, GSAP maps scroll progress (0-1) to video time (0-duration), so the race footage plays forward/backward tied to the scrollbar. Dark overlays, vignette edges, and top/bottom fades ensure the "Every Race Has a Story" text stays readable.
 
+## Bug Fix & Cleanup Phase
+
+After the cinematic redesign and polish pass, we ran an honest audit of the entire site and fixed every issue found. This section covers the patterns and reasoning behind each fix.
+
+### Dead Dependency Removal — Why Unused Packages Matter
+
+Plain English: Imagine your suitcase has a heavy coat you packed "just in case" but never wore. Every time you carry the suitcase, that coat adds weight for no benefit. Unused npm packages are the same — they increase your bundle size (the amount of JavaScript sent to every visitor's browser), slow down installs, and confuse anyone reading `package.json` into thinking the package is actually used.
+
+We removed `@supabase/supabase-js` (10 packages, ~120KB). Supabase was added for user authentication in an earlier phase, but the login feature was scrapped. The code that connected to Supabase (`lib/supabase.ts`) was still in the project — a dead file importing a dead dependency. No component imported it, but Next.js still bundled it because it existed.
+
+How to find dead dependencies: search for `import ... from "package-name"` across all `.ts` and `.tsx` files. If zero results, the package is dead. We also deleted the Supabase environment variables from `.env.local` (the URL and anonymous key) since nothing reads them.
+
+### Production-Safe Environment Variables — Fail Loud vs Fail Silent
+
+Plain English: Imagine a pilot's checklist before takeoff. If the fuel gauge isn't connected, would you rather see "FUEL: UNKNOWN" on the dashboard, or have the engine silently run on whatever's left? The first one is scary but safe — you know something's wrong. The second one is dangerous — you think everything's fine until you run out mid-flight.
+
+Our `api.ts` file had this pattern:
+```typescript
+// BEFORE — silent failure
+export const API = url || "http://localhost:8888";
+```
+
+If the `NEXT_PUBLIC_API_URL` env var was missing on Vercel, the app would silently try to reach `localhost:8888` — which doesn't exist on Vercel's servers. Every API call would fail, every page would show "Could not load" errors, and you'd spend hours debugging before realizing the env var was simply missing.
+
+```typescript
+// AFTER — loud failure
+if (!url) {
+  if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
+    throw new Error(
+      "NEXT_PUBLIC_API_URL is not set. Add it to your Vercel environment variables."
+    );
+  }
+}
+export const API = url || "http://localhost:8888";
+```
+
+The `typeof window !== "undefined"` check prevents the error from firing during Next.js server-side rendering (where `window` doesn't exist). The `hostname !== "localhost"` check keeps the localhost fallback working for local development. In production, the error fires immediately with a clear message pointing to the exact fix.
+
+**The principle:** In development, defaults are fine. In production, missing config should crash, not silently degrade.
+
+### React Anti-Pattern — DOM Manipulation vs State-Driven Triggers
+
+Plain English: Imagine you're at a restaurant. The correct way to order food is to tell the waiter what you want (declare your intent), and the kitchen makes it. The hacky way is to walk into the kitchen yourself, find the pan, and start cooking. Both get you food, but the second way breaks the system the restaurant was designed around.
+
+In React, the "waiter" is state. You declare what you want (set state), and React re-renders the right thing. The pattern page had this hack:
+
+```typescript
+// BEFORE — walking into the kitchen
+setTimeout(() => {
+  document.getElementById("pattern-search-btn").click();
+}, 50);
+```
+
+This reaches directly into the DOM (the rendered webpage), finds a button by ID, and programmatically clicks it. The `setTimeout(50)` is a prayer — "I hope 50 milliseconds is enough for React to update the form values." Sometimes it is, sometimes it isn't. It also breaks if the button ID changes, if the button hasn't rendered yet, or if React batches state updates differently.
+
+```typescript
+// AFTER — telling the waiter
+const [presetTrigger, setPresetTrigger] = useState(0);
+
+function applyPreset(filters) {
+  setCircuit(filters.circuit || "");
+  // ... set all form values ...
+  setPresetTrigger((n) => n + 1);  // Bump the counter
+}
+
+useEffect(() => {
+  if (presetTrigger > 0) handleSearch();
+}, [presetTrigger]);
+```
+
+Now: preset fills the form → bumps a counter → React re-renders with new values → `useEffect` sees the counter changed → runs `handleSearch()` with the correct, already-set values. No timing guesses, no DOM queries, no fragile IDs.
+
+**The principle:** In React, never use `document.getElementById()` or `document.querySelector()` to trigger actions. Use state changes + `useEffect` to react to those changes. That's literally why it's called React.
+
+### Web Accessibility — ARIA Labels, Semantic HTML, and Live Regions
+
+Plain English: Imagine using a website while blindfolded, with someone reading the screen to you. They say: "Button." Just "Button." You don't know what it does. Now imagine they say: "Button: 2024 season — champion Verstappen." Now you know exactly what clicking it will do. That's what ARIA labels provide — context for people using screen readers.
+
+Three types of ARIA attributes we added:
+
+**1. `aria-label`** — Gives a button or element a readable name when the visual text isn't enough:
+```html
+<button aria-label="2024 season — champion Verstappen">
+  <p>2024</p>
+  <span>Verstappen</span>
+</button>
+```
+Without `aria-label`, a screen reader would say "2024 Verstappen" — which is confusing. With it, it says the full descriptive label.
+
+**2. `aria-current="page"`** — Tells screen readers which nav link is the current page:
+```html
+<Link href="/" aria-current={isRaces ? "page" : undefined}>Races</Link>
+```
+A screen reader announces: "Races, current page" — so the user knows where they are without seeing the visual highlight.
+
+**3. `aria-live="polite"`** — Makes a region announce its changes automatically:
+```html
+<div aria-live="polite">
+  {loading && <DataLoader label="Loading races..." />}
+  {error && <p>Could not load season</p>}
+</div>
+```
+When loading finishes or an error appears, the screen reader announces the change without the user having to navigate to that area. "Polite" means it waits for the reader to finish its current sentence before announcing.
+
+**4. `aria-pressed`** — Tells screen readers if a toggle button is on or off:
+```html
+<button aria-pressed={weatherFilter === f}>DRY</button>
+```
+
+**5. Semantic `<nav>`** — Replaced a `<div>` with `<nav aria-label="Season selector">`, which tells screen readers "this is a navigation area for selecting seasons."
+
+**The principle:** Every interactive element should announce what it does, what state it's in, and what will happen when activated. If the only way to understand a button is to see it visually, it's inaccessible.
+
 ## Phase 8F — Statistics
+
+| Metric | Value |
+|--------|-------|
+| New files | 5 components + 1 video + 2 layout files + 1 learning doc |
+| Rewritten files | 3 (IntroHero.tsx, ScrollCarAnimation.tsx, page.tsx) |
+| Updated files | 4 (globals.css, layout.tsx, PageLoader.tsx, phase8e learning doc) |
+| Deleted code | ~280 lines (duplicated SVG + dead components + dead dependency) |
+| Deleted dependencies | @supabase/supabase-js (10 packages) |
+| Deleted files | HeroImage.tsx, StandingsTable.tsx, lib/supabase.ts |
+| New dependency | gsap (~30KB gzipped) |
+| New asset | night-race-flyby.mp4 (5.1MB, Pexels free license) |
+| Total commits | 27 |
+| Sections on home page | 8 (loader + hero + video scroll + 5 features + picker) |
+| Images used | 6 (all existing, dark F1 themed) |
+| Deploy targets | Railway (backend, persistent volume) + Vercel (frontend) |
+| SEO | Open Graph + Twitter Cards on all pages |
+| Accessibility | aria-labels on all interactive elements, semantic nav, aria-live regions |
+| Build status | 0 errors, 0 warnings |
 
 | Metric | Value |
 |--------|-------|
@@ -438,7 +569,11 @@ The video sits paused. As the user scrolls, GSAP maps scroll progress (0-1) to v
 - Mobile-optimized (no pin, lighter parallax)
 - SEO meta tags for social sharing
 - Deployed on Railway (persistent volume) + Vercel
+- Zero dead dependencies or unused components
+- Production-safe env var handling (throws on missing config)
+- Pattern presets use proper React state flow
+- Full ARIA accessibility on all interactive elements
 
 ---
 
-*Generated: 2026-03-27 | Updated: 2026-03-27 | Project: RaceDay | Phase 8F: Cinematic Scroll + Deploy + Polish (19 commits)*
+*Generated: 2026-03-27 | Updated: 2026-03-28 | Project: RaceDay | Phase 8F: Cinematic Scroll + Deploy + Polish + Cleanup (27 commits)*
