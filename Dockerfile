@@ -14,4 +14,4 @@ ENV PORT=8888
 EXPOSE 8888
 
 # Start server
-CMD ["sh", "-c", "python -m uvicorn backend.api:app --host 0.0.0.0 --port ${PORT:-8888}"]
+CMD ["python", "-c", "import os; import uvicorn; uvicorn.run('backend.api:app', host='0.0.0.0', port=int(os.environ.get('PORT', 8888)))"]
