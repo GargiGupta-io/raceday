@@ -209,3 +209,10 @@ body {
 .glow-pulse {
   animation: glowPulse 2s ease-in-out infinite;
 }
+
+/* Data loader — car drives back and forth */
+@keyframes driveLoader {
+  0% { transform: translateX(-20%); }
+  50% { transform: translateX(80%); }
+  100% { transform: translateX(-20%); }
+}
