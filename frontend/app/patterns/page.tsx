@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 
 import { API } from "@/app/lib/api";
@@ -35,6 +35,7 @@ export default function PatternFinderPage() {
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [presetTrigger, setPresetTrigger] = useState(0);
 
   const PRESETS = [
     { label: "Wet race upsets", filters: { condition: "wet", minGrid: "5" } },
@@ -54,12 +55,14 @@ export default function PatternFinderPage() {
     setMinDnf(filters.minDnf || "");
     setYearFrom("2010");
     setYearTo("2024");
-    // Trigger search after state updates
-    setTimeout(() => {
-      const btn = document.getElementById("pattern-search-btn");
-      if (btn) btn.click();
-    }, 50);
+    setPresetTrigger((n) => n + 1);
   }
+
+  // Auto-search when a preset is applied (runs after state updates)
+  useEffect(() => {
+    if (presetTrigger > 0) handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [presetTrigger]);
 
   function handleSearch() {
     setLoading(true);
@@ -266,7 +269,7 @@ export default function PatternFinderPage() {
           </div>
 
           <button
-            id="pattern-search-btn"
+
             onClick={handleSearch}
             disabled={loading}
             className="glass-button px-6 py-2.5 text-sm font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all disabled:opacity-50"
