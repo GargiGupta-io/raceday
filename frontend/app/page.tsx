@@ -119,11 +119,13 @@ function Home() {
         )}
 
         {/* Year selector — only show after a year is picked */}
-        {year !== null && <div className="mb-12 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
+        {year !== null && <nav aria-label="Season selector" className="mb-12 overflow-x-auto pb-1 -mx-6 px-6 scrollbar-hide">
           <div className="flex gap-2 min-w-max">
             {seasons.map((s) => (
               <button
                 key={s.year}
+                aria-label={`${s.year} season — champion ${s.champion}`}
+                aria-pressed={s.year === year}
                 onClick={() => { setYear(s.year); router.push(`/?year=${s.year}`); }}
                 className={`shrink-0 rounded-xl px-5 py-3 text-left transition-all duration-200 ${
                   year !== null && s.year === year
@@ -139,7 +141,7 @@ function Home() {
               </button>
             ))}
           </div>
-        </div>}
+        </nav>}
 
         {/* Season content — only after selecting a year */}
         {year !== null && (<>
@@ -154,10 +156,12 @@ function Home() {
                 : `${races.length} Races`;
             })()}</span>
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2" role="group" aria-label="Weather filter">
             {["ALL", "DRY", "WET", "MIXED"].map((f) => (
               <button
                 key={f}
+                aria-label={`Filter ${f.toLowerCase()} weather races`}
+                aria-pressed={weatherFilter === f}
                 onClick={() => setWeatherFilter(f)}
                 className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 ${
                   weatherFilter === f
@@ -199,6 +203,7 @@ function Home() {
         })()}
 
         {/* Race grid */}
+        <div aria-live="polite">
         {loading && (
           <DataLoader size="lg" label="Loading races..." />
         )}
@@ -226,6 +231,7 @@ function Home() {
             </p>
           );
         })()}
+        </div>
 
         </>)}
 
