@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getCircuitSvg } from "@/app/lib/circuits";
 import IntroHero from "@/app/components/IntroHero";
+import DataLoader from "@/app/components/DataLoader";
 
 import { API } from "@/app/lib/api";
 
@@ -145,8 +146,8 @@ function Home() {
 
         {/* Season header + weather filter */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">
-            {year} Season <span className="text-zinc-500 font-normal text-lg sm:text-xl">— {(() => {
+          <h2 className="text-3xl sm:text-4xl font-light text-white tracking-wide">
+            {year} Season <span className="text-zinc-500 font-light text-lg sm:text-xl">— {(() => {
               const indexed = races.filter((r) => r.indexed).length;
               return indexed < races.length
                 ? `${indexed} of ${races.length} Races`
@@ -199,21 +200,7 @@ function Home() {
 
         {/* Race grid */}
         {loading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="glass-card p-6 space-y-4">
-                <div className="space-y-2">
-                  <div className="h-2 w-12 glass-skeleton rounded" />
-                  <div className="h-4 w-40 glass-skeleton rounded" />
-                  <div className="h-3 w-28 glass-skeleton rounded" />
-                </div>
-                <div className="flex items-center gap-2 mt-auto">
-                  <div className="h-3 w-24 glass-skeleton rounded" />
-                  <div className="h-4 w-10 glass-skeleton rounded ml-auto" />
-                </div>
-              </div>
-            ))}
-          </div>
+          <DataLoader size="lg" label="Loading races..." />
         )}
 
         {error && (
