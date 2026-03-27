@@ -120,16 +120,18 @@ NAVBAR
   year dropdown           → .glass-input
   live link (active)      → .glow-pulse
 
-HOME PAGE
-  intro hero bg           → Image + gradient overlays
-  feature cards           → .glass-card
-  CTA button              → .glass-button
+HOME PAGE (rewritten in Phase 8F — cinematic scroll)
+  page loader             → custom F1 car animation (PageLoader.tsx)
+  hero section            → Image + gradient overlays, GSAP scroll fade
+  car scroll section      → GSAP ScrollTrigger pin + scrub, SVG car
+  feature sections (x5)   → Image parallax, blur-to-sharp text reveals
+  season picker grid      → .glass-card + team color border
   year tabs (active)      → .glass-button-active
   weather filters         → .glass-button-active / hover
   latest race banner      → .glass-card
   race cards              → .glass-card
   race badges             → .glass-badge
-  skeletons               → .glass-skeleton
+  data loader             → DataLoader.tsx (replaces .glass-skeleton)
 
 RACE PAGE
   tagline pill            → .glass-badge
