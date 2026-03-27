@@ -14,4 +14,4 @@ ENV PORT=8888
 EXPOSE 8888
 
 # Start server
-CMD python -m uvicorn backend.api:app --host 0.0.0.0 --port ${PORT}
+CMD ["sh", "-c", "python -m uvicorn backend.api:app --host 0.0.0.0 --port ${PORT:-8888}"]
