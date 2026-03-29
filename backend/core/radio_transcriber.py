@@ -281,10 +281,13 @@ def transcribe_clips(clips: list[dict]) -> list[dict]:
 
 def get_backend_status() -> dict:
     """Return info about which transcription backend is available."""
+    # Read fresh from env (not cached module-level vars) for debugging
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    openai_key = os.getenv("OPENAI_API_KEY", "")
     available = []
-    if _GROQ_KEY:
+    if groq_key:
         available.append("groq")
-    if _OPENAI_KEY:
+    if openai_key:
         available.append("openai")
     try:
         from faster_whisper import WhisperModel

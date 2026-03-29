@@ -286,8 +286,16 @@ def race_story(year: int, track: str):
 
 @app.get("/debug/transcription")
 def debug_transcription():
+    import os
     from backend.core import radio_transcriber
-    return radio_transcriber.get_backend_status()
+    groq_raw = os.environ.get("GROQ_API_KEY", "")
+    return {
+        **radio_transcriber.get_backend_status(),
+        "groq_key_present": bool(groq_raw),
+        "groq_key_length": len(groq_raw),
+        "groq_key_prefix": groq_raw[:6] + "..." if groq_raw else "empty",
+        "env_keys_with_groq": [k for k in os.environ if "GROQ" in k.upper()],
+    }
 
 
 @app.get("/races/{year}/{track}/radio")
