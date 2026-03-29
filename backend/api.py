@@ -285,7 +285,12 @@ def race_story(year: int, track: str):
 
 
 @app.get("/races/{year}/{track}/radio")
-def race_radio(year: int, track: str):
+def race_radio(year: int, track: str, refresh: bool = False):
+    if refresh:
+        # Clear cached radio moments to re-transcribe
+        cache_path = indexer._race_dir(year, track) / "radio_moments.json"
+        if cache_path.exists():
+            cache_path.unlink()
     data = insights.get_radio_moments(year, track)
     if data is None:
         raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
