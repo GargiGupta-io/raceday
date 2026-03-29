@@ -284,6 +284,12 @@ def race_story(year: int, track: str):
     return {"tagline": tagline, **story}
 
 
+@app.get("/debug/transcription")
+def debug_transcription():
+    from backend.core import radio_transcriber
+    return radio_transcriber.get_backend_status()
+
+
 @app.get("/races/{year}/{track}/radio")
 def race_radio(year: int, track: str, refresh: bool = False):
     if refresh:

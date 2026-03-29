@@ -33,6 +33,11 @@ _CACHE_DIR.mkdir(parents=True, exist_ok=True)
 _GROQ_KEY = os.getenv("GROQ_API_KEY", "")
 _OPENAI_KEY = os.getenv("OPENAI_API_KEY", "")
 
+if _GROQ_KEY:
+    logger.info("Groq API key found (%s...)", _GROQ_KEY[:8])
+else:
+    logger.warning("No GROQ_API_KEY set — radio transcription disabled")
+
 
 # ---------------------------------------------------------------------------
 # Audio download
