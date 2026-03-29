@@ -27,35 +27,40 @@ export default function ScrollCarAnimation() {
       const ctx = gsap.context(() => {
         const isMobile = window.innerWidth < 768;
 
-        // Scrub video playback to scroll position
+        // Scrub video playback to scroll position — throttled for performance
+        let lastTime = -1;
         const st = ScrollTrigger.create({
           trigger: section,
           start: isMobile ? "top 80%" : "top top",
           end: isMobile ? "bottom 20%" : "+=200%",
           pin: !isMobile,
-          scrub: 0.5,
+          scrub: 1,
           anticipatePin: 1,
           onUpdate: (self) => {
             if (video && duration) {
-              video.currentTime = self.progress * duration;
+              const targetTime = Math.round(self.progress * duration * 10) / 10;
+              if (targetTime !== lastTime) {
+                video.currentTime = targetTime;
+                lastTime = targetTime;
+              }
             }
           },
         });
 
-        // Text fades in at 30% scroll, fades out at 80%
+        // Text fades in at 30% scroll, fades out at 80% — no blur filter
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
             start: isMobile ? "top 60%" : "top top",
             end: isMobile ? "bottom 20%" : "+=200%",
-            scrub: 0.5,
+            scrub: 1,
           },
         });
 
         tl.fromTo(
           text,
-          { opacity: 0, y: 40, filter: "blur(12px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.3, ease: "power2.out" },
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" },
           0.25
         );
         tl.to(
@@ -96,7 +101,7 @@ export default function ScrollCarAnimation() {
       {/* Video — paused, controlled by scroll */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover will-change-transform"
         src="/videos/night-race-flyby.mp4"
         muted
         playsInline

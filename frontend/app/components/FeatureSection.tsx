@@ -39,30 +39,11 @@ export default function FeatureSection({
     const ctx = gsap.context(() => {
       const isMobile = window.innerWidth < 768;
 
-      // Image parallax — lighter on mobile to avoid jank
-      if (imageRef.current) {
-        gsap.fromTo(
-          imageRef.current,
-          { scale: isMobile ? 1.05 : 1.15 },
-          {
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: isMobile ? 0.5 : true,
-            },
-          }
-        );
-      }
-
-      // Content reveal timeline
+      // Content reveal timeline — no blur filters (causes repaint jank)
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top 70%",
-          end: "top 20%",
           toggleActions: "play none none reverse",
         },
       });
@@ -77,22 +58,22 @@ export default function FeatureSection({
         );
       }
 
-      // Subtitle fades in with blur
+      // Subtitle fades in
       if (subtitleRef.current) {
         tl.fromTo(
           subtitleRef.current,
-          { opacity: 0, y: 15, filter: "blur(8px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power2.out" },
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
           0.1
         );
       }
 
-      // Title fades in with blur
+      // Title fades in
       if (titleRef.current) {
         tl.fromTo(
           titleRef.current,
-          { opacity: 0, y: 20, filter: "blur(12px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power2.out" },
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
           0.2
         );
       }
@@ -101,8 +82,8 @@ export default function FeatureSection({
       if (descRef.current) {
         tl.fromTo(
           descRef.current,
-          { opacity: 0, y: 20, filter: "blur(6px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "power2.out" },
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
           0.4
         );
       }

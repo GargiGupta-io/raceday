@@ -224,8 +224,8 @@ function SeasonPicker({
       if (titleRef.current) {
         tl.fromTo(
           titleRef.current,
-          { opacity: 0, y: 30, filter: "blur(12px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "power2.out" },
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
           0
         );
       }
