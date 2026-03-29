@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollCarAnimation from "./ScrollCarAnimation";
@@ -129,18 +128,16 @@ function HeroSection() {
 
   return (
     <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
-      {/* Background image */}
+      {/* Red glow behind title */}
       <div className="absolute inset-0 pointer-events-none select-none">
-        <Image
-          src="/images/hero-f1-dark.jpg"
-          alt=""
-          fill
-          className="object-cover object-center opacity-40"
-          sizes="100vw"
-          priority
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] sm:w-[900px] sm:h-[500px]"
+          style={{
+            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.04) 40%, transparent 70%)",
+          }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-[#08080c]/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/60 via-transparent to-[#08080c]" />
+        {/* Fade to page bg at edges */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/40 via-transparent to-[#08080c]" />
       </div>
 
       {/* Center content */}
