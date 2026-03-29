@@ -128,37 +128,35 @@ function HeroSection() {
 
   return (
     <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
-      {/* Red chevron glow behind title */}
+      {/* Red chevron glow — full coverage */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-        {/* CSS chevron pattern — radiating red lines */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] sm:w-[1600px] sm:h-[900px] opacity-[0.18]">
-          {/* Left chevrons */}
-          {[...Array(6)].map((_, i) => (
+        {/* Large radiating diamond lines */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.35]">
+          {[...Array(10)].map((_, i) => (
             <div
-              key={`l${i}`}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              key={`d${i}`}
+              className="absolute top-1/2 left-1/2"
               style={{
-                width: `${200 + i * 120}px`,
-                height: `${200 + i * 120}px`,
-                border: "1.5px solid rgba(239, 68, 68, 0.6)",
-                transform: `translate(-50%, -50%) rotate(45deg) scale(${1 + i * 0.1})`,
+                width: `${300 + i * 200}px`,
+                height: `${300 + i * 200}px`,
+                border: `${i < 3 ? "2px" : "1.5px"} solid rgba(239, 68, 68, ${0.7 - i * 0.05})`,
+                transform: `translate(-50%, -50%) rotate(45deg)`,
               }}
             />
           ))}
         </div>
 
-        {/* Radial red glow in center */}
+        {/* Strong radial red glow */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] sm:w-[1000px] sm:h-[600px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 35%, transparent 65%)",
+            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.20) 0%, rgba(239, 68, 68, 0.08) 30%, rgba(239, 68, 68, 0.03) 50%, transparent 70%)",
           }}
         />
 
-        {/* Edge blur — fades everything into the dark background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-transparent to-[#08080c]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c] via-transparent to-[#08080c]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/50 via-transparent to-[#08080c]" />
+        {/* Edge fade — blends into dark background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.7 }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.5 }} />
       </div>
 
       {/* Center content */}
