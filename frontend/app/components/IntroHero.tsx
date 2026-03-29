@@ -204,104 +204,57 @@ function SeasonPicker({
   onSelectYear: (year: number) => void;
 }) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      if (titleRef.current) {
-        tl.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-          0
-        );
-      }
-
-      if (subtitleRef.current) {
-        tl.fromTo(
-          subtitleRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-          0.2
-        );
-      }
-
-      if (gridRef.current) {
-        tl.fromTo(
-          gridRef.current,
+      if (contentRef.current) {
+        gsap.fromTo(
+          contentRef.current,
           { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0.35
+          {
+            opacity: 1, y: 0, duration: 0.8, ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 70%",
+              toggleActions: "play none none reverse",
+            },
+          }
         );
       }
     }, section);
 
     return () => ctx.revert();
-  }, [seasons]);
+  }, []);
 
-  // Sort seasons newest first
-  const sorted = [...seasons].sort((a, b) => b.year - a.year);
+  const latestYear = seasons.length > 0 ? Math.max(...seasons.map(s => s.year)) : 2025;
 
   return (
     <div
       ref={sectionRef}
-      className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24"
+      className="relative min-h-[60vh] flex flex-col items-center justify-center px-6 py-24"
     >
-      {/* Background subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-950/5 to-transparent pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto text-center">
-        {/* Heading */}
-        <h2
-          ref={titleRef}
-          className="text-4xl sm:text-5xl md:text-7xl font-light text-white tracking-wide mb-4"
-        >
-          Choose Your Season
-        </h2>
-        <p
-          ref={subtitleRef}
-          className="text-sm sm:text-base text-zinc-500 mb-16"
-        >
-          16 seasons. 300+ races. Pick one and dive in.
+      <div ref={contentRef} className="relative z-10 text-center">
+        <p className="text-sm sm:text-base text-zinc-500 mb-8">
+          16 seasons. 300+ races. Every story waiting.
         </p>
 
-        {/* Season grid */}
-        <div
-          ref={gridRef}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4"
+        <button
+          onClick={() => onSelectYear(latestYear)}
+          className="group relative inline-flex items-center gap-3 px-12 py-5 text-lg sm:text-xl font-semibold text-white transition-all duration-300 hover:scale-[1.03]"
         >
-          {sorted.map((s) => (
-            <button
-              key={s.year}
-              aria-label={`Explore ${s.year} season — champion ${s.champion}, ${s.team}`}
-              onClick={() => onSelectYear(s.year)}
-              className={`glass-card p-5 sm:p-6 text-left transition-all duration-300 hover:scale-[1.03] hover:border-red-500/30 group ${
-                TEAM_COLOR[s.team] ? `border-l-2 ${TEAM_COLOR[s.team]}` : "border-l-2 border-zinc-700"
-              }`}
-            >
-              <p className="text-2xl sm:text-3xl font-light text-white tracking-wide group-hover:text-red-400 transition-colors">
-                {s.year}
-              </p>
-              <p className="text-xs text-zinc-500 mt-2">{s.champion}</p>
-              <p className="text-[10px] text-zinc-600 mt-1">{s.team}</p>
-            </button>
-          ))}
-        </div>
+          {/* Glow behind button */}
+          <span className="absolute inset-0 rounded-2xl bg-red-500/10 border border-red-500/20 group-hover:bg-red-500/15 group-hover:border-red-500/30 group-hover:shadow-[0_0_40px_rgba(239,68,68,0.15)] transition-all duration-300" />
+          <span className="relative">Pick a Season</span>
+          <span className="relative text-red-400 group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+        </button>
 
-        <p className="text-[11px] text-zinc-700 mt-12">
+        <p className="text-[11px] text-zinc-700 mt-8">
           No account needed — just explore.
         </p>
       </div>
