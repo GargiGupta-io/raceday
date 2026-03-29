@@ -37,16 +37,13 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Main navigation"
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "top-3 left-4 right-4 sm:left-auto sm:right-auto sm:left-1/2 sm:-translate-x-1/2 sm:max-w-3xl sm:w-full"
-          : ""
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={scrolled ? { top: "12px", left: "50%", right: "auto", transform: "translateX(-50%)", maxWidth: "760px", width: "calc(100% - 32px)" } : undefined}
     >
       <div
         className={`transition-all duration-500 ${
           scrolled
-            ? "glass-card px-5 py-2.5 mx-auto"
+            ? "glass-card px-5 py-2.5"
             : "border-b border-white/[0.04] px-6 py-3 bg-transparent"
         }`}
       >
