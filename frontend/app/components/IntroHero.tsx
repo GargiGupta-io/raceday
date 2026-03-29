@@ -128,16 +128,37 @@ function HeroSection() {
 
   return (
     <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
-      {/* Red glow behind title */}
-      <div className="absolute inset-0 pointer-events-none select-none">
+      {/* Red chevron glow behind title */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        {/* CSS chevron pattern — radiating red lines */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] sm:w-[1600px] sm:h-[900px] opacity-[0.18]">
+          {/* Left chevrons */}
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={`l${i}`}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              style={{
+                width: `${200 + i * 120}px`,
+                height: `${200 + i * 120}px`,
+                border: "1.5px solid rgba(239, 68, 68, 0.6)",
+                transform: `translate(-50%, -50%) rotate(45deg) scale(${1 + i * 0.1})`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Radial red glow in center */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] sm:w-[900px] sm:h-[500px]"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] sm:w-[1000px] sm:h-[600px]"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.04) 40%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 35%, transparent 65%)",
           }}
         />
-        {/* Fade to page bg at edges */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/40 via-transparent to-[#08080c]" />
+
+        {/* Edge blur — fades everything into the dark background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-transparent to-[#08080c]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c] via-transparent to-[#08080c]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c]/50 via-transparent to-[#08080c]" />
       </div>
 
       {/* Center content */}
