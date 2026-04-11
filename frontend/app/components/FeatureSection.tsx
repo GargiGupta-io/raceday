@@ -1,11 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface FeatureSectionProps {
   image: string;
@@ -27,82 +23,26 @@ export default function FeatureSection({
   cta,
 }: FeatureSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const descRef = useRef<HTMLParagraphElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
+    const el = sectionRef.current;
+    if (!el) return;
 
-    const ctx = gsap.context(() => {
-      const isMobile = window.innerWidth < 768;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(el);
 
-      // Content reveal timeline — no blur filters (causes repaint jank)
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
-
-      // Decorative line grows
-      if (lineRef.current) {
-        tl.fromTo(
-          lineRef.current,
-          { scaleX: 0 },
-          { scaleX: 1, duration: 0.6, ease: "power2.out" },
-          0
-        );
-      }
-
-      // Subtitle fades in
-      if (subtitleRef.current) {
-        tl.fromTo(
-          subtitleRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0.1
-        );
-      }
-
-      // Title fades in
-      if (titleRef.current) {
-        tl.fromTo(
-          titleRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" },
-          0.2
-        );
-      }
-
-      // Description fades in
-      if (descRef.current) {
-        tl.fromTo(
-          descRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0.4
-        );
-      }
-
-      // CTA fades in after description
-      if (ctaRef.current) {
-        tl.fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          0.6
-        );
-      }
-    }, section);
-
-    return () => ctx.revert();
+    return () => observer.disconnect();
   }, []);
 
   const isRight = align === "right";
@@ -113,7 +53,7 @@ export default function FeatureSection({
       className="relative min-h-screen flex items-center overflow-hidden"
     >
       {/* Background image with dark overlay */}
-      <div className="absolute inset-0" ref={imageRef}>
+      <div className="absolute inset-0">
         <Image
           src={image}
           alt=""
@@ -122,9 +62,7 @@ export default function FeatureSection({
           sizes="100vw"
           loading={index < 2 ? "eager" : "lazy"}
         />
-        {/* Heavy dark overlay — keeps text readable */}
         <div className="absolute inset-0 bg-black/70" />
-        {/* Directional gradient — darker on the text side */}
         <div
           className={`absolute inset-0 ${
             isRight
@@ -132,13 +70,11 @@ export default function FeatureSection({
               : "bg-gradient-to-r from-black/80 via-black/40 to-transparent"
           }`}
         />
-        {/* Top/bottom fade into page background */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" style={{ opacity: 0.6 }} />
       </div>
 
       {/* Content */}
       <div
-        ref={contentRef}
         className={`relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-12 lg:px-20 py-24 flex ${
           isRight ? "justify-end" : "justify-start"
         }`}
@@ -146,33 +82,40 @@ export default function FeatureSection({
         <div className={`max-w-xl ${isRight ? "text-right" : "text-left"}`}>
           {/* Decorative line */}
           <div
-            ref={lineRef}
-            className={`h-[1px] w-16 bg-red-500 mb-8 ${
-              isRight ? "ml-auto origin-right" : "origin-left"
-            }`}
+            className={`h-[1px] w-16 bg-red-500 mb-8 origin-left transition-transform duration-[600ms] ease-out ${
+              isRight ? "ml-auto origin-right" : ""
+            } ${visible ? "scale-x-100" : "scale-x-0"}`}
           />
 
           {/* Subtitle */}
           <p
-            ref={subtitleRef}
-            className="text-[11px] sm:text-xs uppercase tracking-[0.35em] text-red-400/80 mb-4"
+            className={`text-[11px] sm:text-xs uppercase tracking-[0.35em] text-red-400/80 mb-4 transition-all duration-[600ms] ease-out ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+            style={{ transitionDelay: "100ms" }}
           >
             {subtitle}
           </p>
 
           {/* Title */}
           <h2
-            ref={titleRef}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-wide leading-tight mb-6"
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-wide leading-tight mb-6 transition-all duration-[700ms] ease-out ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+            }`}
+            style={{ transitionDelay: "200ms" }}
           >
             {title}
           </h2>
 
           {/* Description */}
           <p
-            ref={descRef}
-            className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-md"
-            style={isRight ? { marginLeft: "auto" } : {}}
+            className={`text-sm sm:text-base text-zinc-400 leading-relaxed max-w-md transition-all duration-[600ms] ease-out ${
+              visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+            }`}
+            style={{
+              transitionDelay: "400ms",
+              ...(isRight ? { marginLeft: "auto" } : {}),
+            }}
           >
             {description}
           </p>
@@ -180,8 +123,10 @@ export default function FeatureSection({
           {/* Optional CTA */}
           {cta && (
             <div
-              ref={ctaRef}
-              className={`mt-10 ${isRight ? "flex justify-end" : ""}`}
+              className={`mt-10 transition-all duration-[600ms] ease-out ${
+                isRight ? "flex justify-end" : ""
+              } ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              style={{ transitionDelay: "600ms" }}
             >
               <button
                 onClick={cta.onClick}
