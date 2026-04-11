@@ -1,7 +1,41 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { getDefinition } from "@/app/lib/glossary";
+import React, { useState, useRef, useEffect } from "react";
+import { GLOSSARY, getDefinition } from "@/app/lib/glossary";
+
+// Build a single case-insensitive regex matching every glossary term,
+// with longest terms first so "pit window" matches before "pit".
+const TERMS_SORTED = Object.keys(GLOSSARY).sort((a, b) => b.length - a.length);
+const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const TERM_REGEX = new RegExp(
+  `\\b(${TERMS_SORTED.map(escapeRegex).join("|")})\\b`,
+  "gi"
+);
+
+export function wrapGlossaryTerms(text: string): React.ReactNode {
+  if (!text) return text;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  TERM_REGEX.lastIndex = 0;
+  while ((match = TERM_REGEX.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const matched = match[0];
+    parts.push(
+      <GlossaryTerm key={`g${key++}`} term={matched.toLowerCase()}>
+        {matched}
+      </GlossaryTerm>
+    );
+    lastIndex = match.index + matched.length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  return <>{parts}</>;
+}
 
 interface GlossaryTermProps {
   term: string;

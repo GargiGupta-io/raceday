@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { API } from "@/app/lib/api";
+import { wrapGlossaryTerms } from "@/app/components/GlossaryTerm";
 
 const COMPOUND_INFO: Record<string, { color: string; desc: string }> = {
   Soft:         { color: "bg-red-500",    desc: "Fastest, degrades quickly" },
@@ -58,7 +59,7 @@ export default function StrategyKey({
                 <span className={`w-3 h-3 rounded-full ${info.color} shrink-0`} />
                 <div>
                   <p className="text-sm text-zinc-200">{name}</p>
-                  <p className="text-xs text-zinc-500">{info.desc}</p>
+                  <p className="text-xs text-zinc-500">{wrapGlossaryTerms(info.desc)}</p>
                 </div>
               </div>
             );
@@ -137,11 +138,11 @@ function StatRow({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-zinc-500">{label}</span>
+        <span className="text-xs text-zinc-500">{wrapGlossaryTerms(label)}</span>
         <span className="text-xs text-zinc-200 font-medium">{value}</span>
       </div>
       {detail && (
-        <p className="text-[10px] text-zinc-600 text-right mt-0.5">{detail}</p>
+        <p className="text-[10px] text-zinc-600 text-right mt-0.5">{wrapGlossaryTerms(detail)}</p>
       )}
     </div>
   );

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { API } from "@/app/lib/api";
+import { wrapGlossaryTerms } from "@/app/components/GlossaryTerm";
 
 interface StoryData {
   narrative: string[];
@@ -62,7 +63,7 @@ export default function RaceStory({
       <div className="space-y-4">
         {data.narrative.map((paragraph, i) => (
           <p key={i} className="text-sm text-zinc-300 leading-[1.8]">
-            {paragraph}
+            {wrapGlossaryTerms(paragraph)}
           </p>
         ))}
       </div>

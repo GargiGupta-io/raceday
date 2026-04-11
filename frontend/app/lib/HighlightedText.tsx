@@ -1,4 +1,5 @@
 import React from "react";
+import { wrapGlossaryTerms } from "@/app/components/GlossaryTerm";
 
 const DRIVER_NAME_PATTERN = /([A-Z][a-z]+(?: [A-Z][a-z]+)*) \(([A-Z]{3})\)/;
 
@@ -11,11 +12,16 @@ export default function HighlightedText({ text }: { text: string }) {
   while (remaining) {
     const match = remaining.match(DRIVER_NAME_PATTERN);
     if (!match || match.index === undefined) {
-      parts.push(remaining);
+      parts.push(
+        <React.Fragment key={`gt${key++}`}>{wrapGlossaryTerms(remaining)}</React.Fragment>
+      );
       break;
     }
     if (match.index > 0) {
-      parts.push(remaining.slice(0, match.index));
+      const before = remaining.slice(0, match.index);
+      parts.push(
+        <React.Fragment key={`gt${key++}`}>{wrapGlossaryTerms(before)}</React.Fragment>
+      );
     }
     parts.push(
       <span key={key++} className="font-semibold text-white">{match[1]}</span>,
