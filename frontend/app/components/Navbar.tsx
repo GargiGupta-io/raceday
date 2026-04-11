@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -11,14 +10,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    onScroll(); // check on mount
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   // Extract year from URL path (/races/2023/...) or query param (?year=2023)
   const yearMatch = pathname.match(/\/(\d{4})/);
@@ -38,35 +29,29 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-50 bg-transparent"
     >
-      <div
-        className={`transition-all duration-300 px-6 py-3 ${
-          scrolled
-            ? "bg-black/70 backdrop-blur-xl backdrop-saturate-150 border-b border-white/[0.06]"
-            : "bg-transparent border-b border-transparent"
-        }`}
-      >
-        <div className="flex items-center justify-between max-w-5xl mx-auto">
+      <div className="px-6 sm:px-10 py-6">
+        <div className="flex items-center justify-between max-w-6xl mx-auto">
 
           {/* Brand */}
           <Link
             href="/"
             aria-label="Raceday home"
-            className="text-sm font-bold tracking-tight text-white hover:text-white/80 transition-colors"
+            className="text-lg sm:text-xl font-bold tracking-tight text-white hover:text-white/85 transition-colors"
           >
             Raceday
           </Link>
 
           {/* Nav links */}
-          <div className="flex items-center gap-1 sm:gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link
               href="/races"
               aria-current={isRaces ? "page" : undefined}
-              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 isRaces
-                  ? "glass-button-active text-white"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                  ? "text-white bg-white/[0.06]"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               Races
@@ -74,10 +59,10 @@ export default function Navbar() {
             <Link
               href={`/championship/${activeYear}`}
               aria-current={isChampionship ? "page" : undefined}
-              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 isChampionship
-                  ? "glass-button-active text-white"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                  ? "text-white bg-white/[0.06]"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               <span className="hidden sm:inline">Championship</span>
@@ -86,10 +71,10 @@ export default function Navbar() {
             <Link
               href="/patterns"
               aria-current={isPatterns ? "page" : undefined}
-              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 isPatterns
-                  ? "glass-button-active text-white"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                  ? "text-white bg-white/[0.06]"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               Patterns
@@ -97,10 +82,10 @@ export default function Navbar() {
             <Link
               href="/live"
               aria-current={isLive ? "page" : undefined}
-              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 isLive
-                  ? "glass-button-active text-red-400 glow-pulse"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                  ? "text-red-400 bg-red-500/[0.08] glow-pulse"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               Live
@@ -108,10 +93,10 @@ export default function Navbar() {
             <Link
               href="/new-to-f1"
               aria-current={isNewToF1 ? "page" : undefined}
-              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+              className={`rounded-lg px-4 sm:px-5 py-2 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 isNewToF1
-                  ? "glass-button-active text-white"
-                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+                  ? "text-white bg-white/[0.06]"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
               }`}
             >
               <span className="hidden sm:inline">New to F1</span>
@@ -128,7 +113,7 @@ export default function Navbar() {
                 const y = e.target.value;
                 router.push(isChampionship ? `/championship/${y}` : `/races?year=${y}`);
               }}
-              className="glass-input px-3 py-1.5 text-xs cursor-pointer"
+              className="bg-transparent border border-white/[0.1] text-zinc-300 rounded-lg px-4 py-2 text-xs sm:text-sm cursor-pointer hover:border-white/[0.2] focus:border-white/[0.3] focus:outline-none transition-colors"
             >
               {YEARS.map((y) => (
                 <option key={y} value={y} className="bg-zinc-900 text-zinc-200">{y}</option>
