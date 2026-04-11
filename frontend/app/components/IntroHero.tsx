@@ -139,80 +139,37 @@ function HeroSection() {
   }, []);
 
   return (
-    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden bg-black">
-      {/* Eclipse-style red arc glow — bright rim of light on pure black */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none select-none"
-        viewBox="0 0 1440 900"
-        preserveAspectRatio="xMidYMid slice"
-        aria-hidden="true"
-      >
-        <defs>
-          {/* Multi-stage gaussian blur for soft bloom around the arc */}
-          <filter id="arc-bloom" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b1" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="b2" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="b3" />
-            <feGaussianBlur in="SourceGraphic" stdDeviation="70" result="b4" />
-            <feMerge>
-              <feMergeNode in="b4" />
-              <feMergeNode in="b3" />
-              <feMergeNode in="b2" />
-              <feMergeNode in="b1" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          {/* Hotspot gradient — bright white-pink core */}
-          <radialGradient id="hotspot-grad">
-            <stop offset="0%" stopColor="rgba(255, 250, 250, 1)" />
-            <stop offset="15%" stopColor="rgba(255, 200, 200, 0.9)" />
-            <stop offset="40%" stopColor="rgba(255, 100, 100, 0.55)" />
-            <stop offset="100%" stopColor="rgba(255, 50, 50, 0)" />
-          </radialGradient>
-        </defs>
+    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
+      {/* Red chevron glow — full coverage */}
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
+        {/* Large radiating diamond lines */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.35]">
+          {[...Array(10)].map((_, i) => (
+            <div
+              key={`d${i}`}
+              className="absolute top-1/2 left-1/2"
+              style={{
+                width: `${300 + i * 200}px`,
+                height: `${300 + i * 200}px`,
+                border: `${i < 3 ? "2px" : "1.5px"} solid rgba(239, 68, 68, ${0.7 - i * 0.05})`,
+                transform: `translate(-50%, -50%) rotate(45deg)`,
+              }}
+            />
+          ))}
+        </div>
 
-        {/* The arc — a huge circle with center off-screen to the right,
-            so only its left edge curves through the right side of the frame */}
-        <circle
-          cx="1100"
-          cy="450"
-          r="560"
-          fill="none"
-          stroke="#ff2a2a"
-          strokeWidth="3.5"
-          filter="url(#arc-bloom)"
+        {/* Strong radial red glow */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full"
+          style={{
+            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.20) 0%, rgba(239, 68, 68, 0.08) 30%, rgba(239, 68, 68, 0.03) 50%, transparent 70%)",
+          }}
         />
 
-        {/* Sharp inner highlight line — slightly offset to look like the bright edge */}
-        <circle
-          cx="1100"
-          cy="450"
-          r="560"
-          fill="none"
-          stroke="rgba(255, 180, 180, 0.9)"
-          strokeWidth="1.2"
-        />
-
-        {/* Hotspot — bright point on the upper portion of the arc */}
-        <circle
-          cx="620"
-          cy="215"
-          r="55"
-          fill="url(#hotspot-grad)"
-          filter="url(#arc-bloom)"
-        />
-
-        {/* Tight white pinpoint at the hotspot center */}
-        <circle
-          cx="620"
-          cy="215"
-          r="6"
-          fill="rgba(255, 255, 255, 1)"
-        />
-      </svg>
-
-      {/* Pure black vignette — edges stay pitch dark */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.55 }} />
+        {/* Edge fade — blends into pure black background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.7 }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" style={{ opacity: 0.5 }} />
+      </div>
 
       {/* Center content */}
       <div className="relative flex-1 flex flex-col justify-center items-center px-6">

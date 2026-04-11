@@ -60,8 +60,34 @@ export default function NewToF1Card({ currentYear }: { currentYear: number }) {
     new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long" });
 
   return (
-    <section className="relative px-6 py-20 sm:py-28">
-      <div className="mx-auto max-w-3xl">
+    <section className="relative px-6 py-20 sm:py-28 overflow-hidden">
+      {/* Soft blurry red glow behind the card — merges into black */}
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 pointer-events-none"
+        style={{
+          width: "1100px",
+          height: "1100px",
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.22) 0%, rgba(220, 38, 38, 0.1) 25%, rgba(180, 30, 30, 0.04) 45%, transparent 65%)",
+          filter: "blur(120px)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute top-1/2 left-1/2 pointer-events-none"
+        style={{
+          width: "700px",
+          height: "700px",
+          transform: "translate(-50%, -50%)",
+          background:
+            "radial-gradient(ellipse at center, rgba(255, 80, 80, 0.18) 0%, rgba(239, 68, 68, 0.08) 40%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+      />
+
+      <div className="relative mx-auto max-w-3xl">
         <div className="glass-card p-8 sm:p-10">
 
           <p className="text-[10px] text-red-400 uppercase tracking-[0.3em] mb-3">
