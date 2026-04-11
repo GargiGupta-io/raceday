@@ -30,15 +30,6 @@ interface RaceSummary {
   weather: string;
 }
 
-interface StandingEntry {
-  position: number | null;
-  driver: string;
-  team: string;
-  grid: number | null;
-  positions_delta: number | null;
-  status: string;
-}
-
 interface StrategyEntry {
   driver: string;
   team: string;
@@ -60,7 +51,6 @@ export default function RacePage({
   const trackName = decodeURIComponent(track);
 
   const [results, setResults] = useState<RaceSummary | null>(null);
-  const [standings, setStandings] = useState<StandingEntry[] | null>(null);
   const [strategy, setStrategy] = useState<StrategyEntry[] | null>(null);
   const [sidebar, setSidebar] = useState<SidebarData | null>(null);
   const [tagline, setTagline] = useState<string | null>(null);
@@ -79,12 +69,10 @@ export default function RacePage({
 
     Promise.all([
       safeFetch(`${base}/results`),
-      safeFetch(`${base}/standings`),
       safeFetch(`${base}/strategy`),
     ])
-      .then(([res, sta, str]) => {
+      .then(([res, str]) => {
         setResults(res);
-        setStandings(sta);
         setStrategy(str);
         setLoading(false);
       })

@@ -219,14 +219,6 @@ def race_results(year: int, track: str):
     return data
 
 
-@app.get("/races/{year}/{track}/standings")
-def race_standings(year: int, track: str):
-    data = insights.get_driver_standings_snapshot(year, track)
-    if data is None:
-        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
-    return data
-
-
 @app.get("/races/{year}/{track}/strategy")
 def race_strategy(year: int, track: str):
     data = insights.get_strategy_breakdown(year, track)
@@ -306,14 +298,6 @@ def race_radio(year: int, track: str, refresh: bool = False):
         if cache_path.exists():
             cache_path.unlink()
     data = insights.get_radio_moments(year, track)
-    if data is None:
-        raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
-    return data
-
-
-@app.get("/races/{year}/{track}/quiz")
-def race_quiz(year: int, track: str):
-    data = insights.generate_race_quiz(year, track)
     if data is None:
         raise HTTPException(status_code=404, detail=f"No data found for {year} {track}")
     return data
