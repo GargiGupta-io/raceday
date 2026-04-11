@@ -139,35 +139,61 @@ function HeroSection() {
   }, []);
 
   return (
-    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
-      {/* Red chevron glow — full coverage */}
+    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden bg-black">
+      {/* Red arc glow — bright shining light effect */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
-        {/* Large radiating diamond lines */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.35]">
-          {[...Array(10)].map((_, i) => (
-            <div
-              key={`d${i}`}
-              className="absolute top-1/2 left-1/2"
-              style={{
-                width: `${300 + i * 200}px`,
-                height: `${300 + i * 200}px`,
-                border: `${i < 3 ? "2px" : "1.5px"} solid rgba(239, 68, 68, ${0.7 - i * 0.05})`,
-                transform: `translate(-50%, -50%) rotate(45deg)`,
-              }}
-            />
-          ))}
-        </div>
 
-        {/* Strong radial red glow */}
+        {/* Wide ambient bloom — soft outer wash */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.28) 0%, rgba(239, 68, 68, 0.12) 30%, rgba(239, 68, 68, 0.04) 50%, transparent 70%)",
+            width: "1400px",
+            height: "1400px",
+            background:
+              "radial-gradient(circle, rgba(239, 68, 68, 0.22) 0%, rgba(220, 38, 38, 0.08) 35%, transparent 65%)",
+            filter: "blur(90px)",
           }}
         />
 
-        {/* Edge fade — blends into pure black background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.75 }} />
+        {/* Core glow — hotter, smaller, tighter */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: "700px",
+            height: "700px",
+            background:
+              "radial-gradient(circle, rgba(255, 80, 80, 0.75) 0%, rgba(239, 68, 68, 0.35) 25%, rgba(180, 30, 30, 0.1) 50%, transparent 70%)",
+            filter: "blur(50px)",
+          }}
+        />
+
+        {/* Sharp arc ring — the bright rim of light */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          style={{
+            width: "850px",
+            height: "850px",
+            border: "1.5px solid rgba(255, 120, 120, 0.5)",
+            boxShadow:
+              "0 0 140px 30px rgba(255, 50, 50, 0.5), inset 0 0 100px rgba(255, 50, 50, 0.2)",
+            filter: "blur(2px)",
+          }}
+        />
+
+        {/* Tight white-hot pinpoint at center — the brightest peak */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          style={{
+            width: "200px",
+            height: "200px",
+            background:
+              "radial-gradient(circle, rgba(255, 200, 200, 0.4) 0%, rgba(255, 100, 100, 0.2) 30%, transparent 60%)",
+            filter: "blur(30px)",
+          }}
+        />
+
+        {/* Edge vignette — fades into pure black at corners */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.7 }} />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" style={{ opacity: 0.55 }} />
       </div>
 
