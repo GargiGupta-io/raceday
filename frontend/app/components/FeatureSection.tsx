@@ -14,6 +14,7 @@ interface FeatureSectionProps {
   description: string;
   align?: "left" | "right";
   index: number;
+  cta?: { label: string; onClick: () => void };
 }
 
 export default function FeatureSection({
@@ -23,6 +24,7 @@ export default function FeatureSection({
   description,
   align = "left",
   index,
+  cta,
 }: FeatureSectionProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -31,6 +33,7 @@ export default function FeatureSection({
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -85,6 +88,16 @@ export default function FeatureSection({
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
           0.4
+        );
+      }
+
+      // CTA fades in after description
+      if (ctaRef.current) {
+        tl.fromTo(
+          ctaRef.current,
+          { opacity: 0, y: 15 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+          0.6
         );
       }
     }, section);
@@ -163,6 +176,23 @@ export default function FeatureSection({
           >
             {description}
           </p>
+
+          {/* Optional CTA */}
+          {cta && (
+            <div
+              ref={ctaRef}
+              className={`mt-10 ${isRight ? "flex justify-end" : ""}`}
+            >
+              <button
+                onClick={cta.onClick}
+                className="group relative inline-flex items-center gap-3 px-10 py-4 text-base sm:text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.03]"
+              >
+                <span className="absolute inset-0 rounded-2xl bg-red-500/10 border border-red-500/20 group-hover:bg-red-500/15 group-hover:border-red-500/30 group-hover:shadow-[0_0_40px_rgba(239,68,68,0.15)] transition-all duration-300" />
+                <span className="relative">{cta.label}</span>
+                <span className="relative text-red-400 group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
