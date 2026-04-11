@@ -88,7 +88,7 @@ export default function NewToF1Card({ currentYear }: { currentYear: number }) {
       />
 
       <div className="relative mx-auto max-w-3xl">
-        <div className="glass-card p-8 sm:p-10">
+        <div className="glass-card-blur p-8 sm:p-10">
 
           <p className="text-[10px] text-red-400 uppercase tracking-[0.3em] mb-3">
             New to Formula 1?

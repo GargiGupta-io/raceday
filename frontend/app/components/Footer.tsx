@@ -41,7 +41,7 @@ export default function Footer() {
 
         {/* Glass panel — Vorqal-style dark glass card */}
         <div className="relative mx-auto max-w-6xl px-6 sm:px-8">
-          <div className="glass-card p-10 sm:p-14 md:p-16">
+          <div className="glass-card-blur p-10 sm:p-14 md:p-16">
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-10">
 
