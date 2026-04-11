@@ -32,7 +32,7 @@ export default function Navbar() {
   const isChampionship = pathname.startsWith("/championship");
   const isPatterns = pathname.startsWith("/patterns");
   const isLive = pathname.startsWith("/live");
-  const isRaces = !isChampionship && !isPatterns && !isLive;
+  const isRaces = pathname.startsWith("/races");
 
   return (
     <nav
@@ -61,7 +61,7 @@ export default function Navbar() {
           {/* Nav links */}
           <div className="flex items-center gap-1 sm:gap-1.5">
             <Link
-              href="/"
+              href="/races"
               aria-current={isRaces ? "page" : undefined}
               className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
                 isRaces
@@ -114,7 +114,7 @@ export default function Navbar() {
               value={activeYear}
               onChange={(e) => {
                 const y = e.target.value;
-                router.push(isChampionship ? `/championship/${y}` : `/?year=${y}`);
+                router.push(isChampionship ? `/championship/${y}` : `/races?year=${y}`);
               }}
               className="glass-input px-3 py-1.5 text-xs cursor-pointer"
             >
