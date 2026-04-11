@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Geist, Geist_Mono, Racing_Sans_One } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 import PageLoader from "@/app/components/PageLoader";
 
 const geistSans = Geist({
@@ -59,6 +60,7 @@ export default function RootLayout({
           <Navbar />
         </Suspense>
         {children}
+        <Footer />
       </body>
     </html>
   );
