@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ScrollCarAnimation from "./ScrollCarAnimation";
 import FeatureSection from "./FeatureSection";
+import NewToF1Card from "./NewToF1Card";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -78,6 +79,8 @@ export default function IntroHero({
   seasons: SeasonSummary[];
   onSelectYear: (year: number) => void;
 }) {
+  const latestYear = seasons.length > 0 ? Math.max(...seasons.map((s) => s.year)) : 2026;
+
   return (
     <div>
       {/* Section 1: Hero */}
@@ -86,12 +89,15 @@ export default function IntroHero({
       {/* Section 2: Car scroll animation */}
       <ScrollCarAnimation />
 
-      {/* Sections 3-7: Feature showcase */}
+      {/* Section 3: Beginner primer */}
+      <NewToF1Card currentYear={latestYear} />
+
+      {/* Sections 4-8: Feature showcase */}
       {FEATURES.map((f, i) => (
         <FeatureSection key={i} index={i} {...f} />
       ))}
 
-      {/* Section 8: Season picker */}
+      {/* Section 9: Season picker */}
       <SeasonPicker seasons={seasons} onSelectYear={onSelectYear} />
     </div>
   );
