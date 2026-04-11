@@ -92,13 +92,19 @@ export default function IntroHero({
       {/* Section 3: Beginner primer */}
       <NewToF1Card currentYear={latestYear} />
 
-      {/* Sections 4-8: Feature showcase */}
+      {/* Sections 4-8: Feature showcase — first feature gets the Pick a Season CTA */}
       {FEATURES.map((f, i) => (
-        <FeatureSection key={i} index={i} {...f} />
+        <FeatureSection
+          key={i}
+          index={i}
+          {...f}
+          cta={
+            i === 0
+              ? { label: "Pick a Season", onClick: () => onSelectYear(latestYear) }
+              : undefined
+          }
+        />
       ))}
-
-      {/* Section 9: Season picker */}
-      <SeasonPicker seasons={seasons} onSelectYear={onSelectYear} />
     </div>
   );
 }
@@ -218,68 +224,3 @@ function HeroSection() {
   );
 }
 
-function SeasonPicker({
-  seasons,
-  onSelectYear,
-}: {
-  seasons: SeasonSummary[];
-  onSelectYear: (year: number) => void;
-}) {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return;
-
-    const ctx = gsap.context(() => {
-      if (contentRef.current) {
-        gsap.fromTo(
-          contentRef.current,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1, y: 0, duration: 0.8, ease: "power2.out",
-            scrollTrigger: {
-              trigger: section,
-              start: "top 70%",
-              toggleActions: "play none none reverse",
-            },
-          }
-        );
-      }
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
-  const latestYear = seasons.length > 0 ? Math.max(...seasons.map(s => s.year)) : 2025;
-
-  return (
-    <div
-      ref={sectionRef}
-      className="relative min-h-[60vh] flex flex-col items-center justify-center px-6 py-24"
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-950/5 to-transparent pointer-events-none" />
-
-      <div ref={contentRef} className="relative z-10 text-center">
-        <p className="text-sm sm:text-base text-zinc-500 mb-8">
-          16 seasons. 300+ races. Every story waiting.
-        </p>
-
-        <button
-          onClick={() => onSelectYear(latestYear)}
-          className="group relative inline-flex items-center gap-3 px-12 py-5 text-lg sm:text-xl font-semibold text-white transition-all duration-300 hover:scale-[1.03]"
-        >
-          {/* Glow behind button */}
-          <span className="absolute inset-0 rounded-2xl bg-red-500/10 border border-red-500/20 group-hover:bg-red-500/15 group-hover:border-red-500/30 group-hover:shadow-[0_0_40px_rgba(239,68,68,0.15)] transition-all duration-300" />
-          <span className="relative">Pick a Season</span>
-          <span className="relative text-red-400 group-hover:translate-x-1 transition-transform duration-200">&rarr;</span>
-        </button>
-
-        <p className="text-[11px] text-zinc-700 mt-8">
-          No account needed — just explore.
-        </p>
-      </div>
-    </div>
-  );
-}
