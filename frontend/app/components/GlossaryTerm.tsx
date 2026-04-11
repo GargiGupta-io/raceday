@@ -86,13 +86,25 @@ export default function GlossaryTerm({ term, children }: GlossaryTermProps) {
           role="tooltip"
           className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 sm:w-72 z-50 pointer-events-none"
         >
-          <span className="block glass-card px-3 py-2 text-xs text-zinc-200 leading-relaxed text-left shadow-xl">
-            <span className="block text-[10px] uppercase tracking-widest text-red-400 font-semibold mb-1">
+          <span
+            className="block px-3.5 py-2.5 text-xs text-zinc-100 leading-relaxed text-left rounded-lg border border-white/[0.12]"
+            style={{
+              background: "rgba(10, 10, 12, 0.97)",
+              backdropFilter: "blur(16px) saturate(1.3)",
+              WebkitBackdropFilter: "blur(16px) saturate(1.3)",
+              boxShadow:
+                "inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 12px 32px rgba(0, 0, 0, 0.7)",
+            }}
+          >
+            <span className="block text-[10px] uppercase tracking-widest text-red-400 font-semibold mb-1.5">
               {term}
             </span>
             {definition}
           </span>
-          <span className="block w-2 h-2 bg-white/[0.08] border-r border-b border-white/[0.1] rotate-45 mx-auto -mt-1" />
+          <span
+            className="block w-2 h-2 rotate-45 mx-auto -mt-1 border-r border-b border-white/[0.12]"
+            style={{ background: "rgba(10, 10, 12, 0.97)" }}
+          />
         </span>
       )}
     </span>
