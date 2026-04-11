@@ -33,6 +33,7 @@ export default function Navbar() {
   const isPatterns = pathname.startsWith("/patterns");
   const isLive = pathname.startsWith("/live");
   const isRaces = pathname.startsWith("/races");
+  const isNewToF1 = pathname.startsWith("/new-to-f1");
 
   return (
     <nav
@@ -104,6 +105,18 @@ export default function Navbar() {
               }`}
             >
               Live
+            </Link>
+            <Link
+              href="/new-to-f1"
+              aria-current={isNewToF1 ? "page" : undefined}
+              className={`rounded-lg px-3 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium transition-all duration-200 ${
+                isNewToF1
+                  ? "glass-button-active text-white"
+                  : "text-zinc-400 hover:text-white hover:bg-white/[0.06]"
+              }`}
+            >
+              <span className="hidden sm:inline">New to F1</span>
+              <span className="sm:hidden" aria-hidden="true">Guide</span>
             </Link>
           </div>
 
