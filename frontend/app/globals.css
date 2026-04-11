@@ -24,12 +24,7 @@ html {
 body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  background: #08080c;
-  background-image:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(30, 30, 80, 0.25) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(60, 20, 40, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse 90% 60% at 50% 50%, rgba(15, 15, 35, 0.3) 0%, transparent 70%);
-  background-attachment: fixed;
+  background: #000000;
   min-height: 100vh;
 }
 

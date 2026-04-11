@@ -23,7 +23,7 @@ export default function SectionDivider({
         sizes="100vw"
       />
       {/* Top + bottom fade */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#08080c] via-transparent to-[#08080c]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
     </div>
   );
 }

@@ -162,13 +162,13 @@ function HeroSection() {
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full"
           style={{
-            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.20) 0%, rgba(239, 68, 68, 0.08) 30%, rgba(239, 68, 68, 0.03) 50%, transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(239, 68, 68, 0.28) 0%, rgba(239, 68, 68, 0.12) 30%, rgba(239, 68, 68, 0.04) 50%, transparent 70%)",
           }}
         />
 
-        {/* Edge fade — blends into dark background */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.7 }} />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.5 }} />
+        {/* Edge fade — blends into pure black background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.75 }} />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" style={{ opacity: 0.55 }} />
       </div>
 
       {/* Center content */}

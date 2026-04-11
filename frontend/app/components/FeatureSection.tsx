@@ -133,7 +133,7 @@ export default function FeatureSection({
           }`}
         />
         {/* Top/bottom fade into page background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.6 }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" style={{ opacity: 0.6 }} />
       </div>
 
       {/* Content */}

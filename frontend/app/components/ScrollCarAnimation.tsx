@@ -122,7 +122,7 @@ export default function ScrollCarAnimation() {
       />
 
       {/* Top/bottom fade into page bg */}
-      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#08080c] via-transparent to-[#08080c]" style={{ opacity: 0.5 }} />
+      <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black via-transparent to-black" style={{ opacity: 0.5 }} />
 
       {/* Center text — appears mid-scroll */}
       <div
