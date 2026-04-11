@@ -31,7 +31,7 @@ const TEAM_COLOR: Record<string, string> = {
 
 const FEATURES = [
   {
-    image: "/images/f1-pack-racing.jpg",
+    image: "/images/f1-pack-racing.webp",
     title: "Race Stories",
     subtitle: "Beyond the Results",
     description:
@@ -39,7 +39,7 @@ const FEATURES = [
     align: "left" as const,
   },
   {
-    image: "/images/cockpit-detail.jpg",
+    image: "/images/cockpit-detail.webp",
     title: "Strategy Simulator",
     subtitle: "What If You Were on the Pit Wall",
     description:
@@ -47,7 +47,7 @@ const FEATURES = [
     align: "right" as const,
   },
   {
-    image: "/images/night-race.jpg",
+    image: "/images/night-race.webp",
     title: "Team Radio",
     subtitle: "Hear the Pressure",
     description:
@@ -55,7 +55,7 @@ const FEATURES = [
     align: "left" as const,
   },
   {
-    image: "/images/aerial-racing.jpg",
+    image: "/images/aerial-racing.webp",
     title: "Pattern Finder",
     subtitle: "History Repeats Itself",
     description:
@@ -63,7 +63,7 @@ const FEATURES = [
     align: "right" as const,
   },
   {
-    image: "/images/monaco-tight.jpg",
+    image: "/images/monaco-tight.webp",
     title: "16 Seasons of F1",
     subtitle: "2010 — 2025",
     description:

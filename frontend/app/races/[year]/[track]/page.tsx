@@ -185,7 +185,7 @@ export default function RacePage({
               </FadeIn>
 
               {/* Image divider */}
-              <SectionDivider src="/images/f1-pack-racing.jpg" alt="F1 cars racing" />
+              <SectionDivider src="/images/f1-pack-racing.webp" alt="F1 cars racing" />
 
               {/* THE RACE STORY */}
               <FadeIn delay={120}>
