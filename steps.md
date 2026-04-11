@@ -230,3 +230,17 @@ Taught the feature section component how to show a call-to-action button. It's o
 
 **Files changed**
 ~ modified: frontend/app/components/FeatureSection.tsx
+
+---
+
+## ✅ Step 10 — New to F1 nav link
+*Completed: 2026-04-11*
+
+**What was built**
+- `frontend/app/components/Navbar.tsx` — added a "New to F1" link after the Live tab
+
+**In plain English**
+The navbar now has a "New to F1" link (shortened to "Guide" on mobile to save space). Clicking it takes you straight to the full beginner guide page. It highlights with the active-state glass pill when you're on that page, matching how the other nav links behave. The CTA button on the homepage NewToF1Card already pointed to /new-to-f1 from Step 3, so that's fully wired too — a newcomer has three paths into the guide: homepage card CTA, navbar link, and direct URL.
+
+**Files changed**
+~ modified: frontend/app/components/Navbar.tsx
