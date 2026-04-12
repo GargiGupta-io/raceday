@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 
-/**
- * Full-viewport cinematic hero section between the RACEDAY title and the
- * feature showcase. Uses a static image with CSS fixed-attachment parallax
- * and an IntersectionObserver-driven text fade. No GSAP, no video, no
- * scroll listeners.
- */
 export default function ScrollCarAnimation() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -18,7 +11,7 @@ export default function ScrollCarAnimation() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.4 }
+      { threshold: 0.3 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -27,25 +20,23 @@ export default function ScrollCarAnimation() {
   return (
     <div
       ref={sectionRef}
-      className="relative h-screen overflow-hidden bg-black"
+      className="relative h-screen overflow-hidden"
     >
-      {/* Static image — loaded once, no scroll scrubbing */}
-      <Image
-        src="/images/night-race.webp"
-        alt=""
-        fill
-        priority
-        className="object-cover"
-        sizes="100vw"
+      {/* Parallax background — uses CSS background-attachment: fixed
+          so the image stays "pinned" in the viewport while content scrolls past */}
+      <div
+        className="absolute inset-0"
         style={{
-          // Desktop parallax feel — on iOS this degrades to scroll but the image
-          // still shows correctly. No JS scroll listener required.
+          backgroundImage: "url(/images/race-flyby-still.webp)",
+          backgroundSize: "cover",
+          backgroundPosition: "center 40%",
           backgroundAttachment: "fixed",
+          backgroundRepeat: "no-repeat",
         }}
       />
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/65 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
       {/* Radial vignette */}
       <div
@@ -56,13 +47,13 @@ export default function ScrollCarAnimation() {
         }}
       />
 
-      {/* Top + bottom fade into page background */}
+      {/* Top + bottom fade into black */}
       <div
         className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black via-transparent to-black"
         style={{ opacity: 0.55 }}
       />
 
-      {/* Center text — fades in when the section enters the viewport */}
+      {/* Center text — fades in when section enters viewport */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none px-6">
         <div
           className={`text-center transition-all duration-1000 ease-out ${
