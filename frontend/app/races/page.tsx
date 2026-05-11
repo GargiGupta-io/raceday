@@ -109,7 +109,7 @@ function Races() {
 
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-32 sm:pt-40 pb-8 sm:pb-12">
 
         {seasonsError && (
           <p className="text-red-400 text-sm text-center mb-4">Could not load seasons — is the backend running?</p>

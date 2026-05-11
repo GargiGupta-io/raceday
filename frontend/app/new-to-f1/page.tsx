@@ -53,7 +53,7 @@ const WEEKEND_FORMAT = [
 export default function NewToF1Page() {
   return (
     <div className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-3xl px-6 sm:px-8 py-16 sm:py-24">
+      <div className="mx-auto max-w-3xl px-6 sm:px-8 pt-32 sm:pt-40 pb-16 sm:pb-24">
 
         {/* Header */}
         <div className="mb-16">
