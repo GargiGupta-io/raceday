@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import { API } from "@/app/lib/api";
@@ -22,6 +22,71 @@ interface SearchResponse {
   races: RaceResult[];
 }
 
+interface PatternPreset {
+  label: string;
+  description: string;
+  filters: Record<string, string>;
+}
+
+const PRESETS: PatternPreset[] = [
+  {
+    label: "Wet Race Chaos",
+    description: "Rain-affected races where the winner did not start right at the front.",
+    filters: { condition: "wet", minGrid: "5" },
+  },
+  {
+    label: "Won From P10+",
+    description: "Comebacks where the winner started tenth or lower.",
+    filters: { minGrid: "10" },
+  },
+  {
+    label: "High DNF Races",
+    description: "Messy races with at least five retirements.",
+    filters: { minDnf: "5" },
+  },
+  {
+    label: "Safety Car Drama",
+    description: "Current proxy: chaotic races with several retirements.",
+    filters: { minDnf: "4" },
+  },
+  {
+    label: "Pole Sitter Lost",
+    description: "Races where the winner started behind pole.",
+    filters: { minGrid: "2" },
+  },
+  {
+    label: "Undercut-Friendly Circuits",
+    description: "Current proxy: Monza races where strategy and track position often collide.",
+    filters: { circuit: "Monza" },
+  },
+  {
+    label: "Strategy Masterclass",
+    description: "Current proxy: winners from outside the first two rows.",
+    filters: { minGrid: "5" },
+  },
+  {
+    label: "Underdog Podiums",
+    description: "Current proxy: surprise wins from deep starting spots.",
+    filters: { minGrid: "8" },
+  },
+];
+
+function describeMatch(race: RaceResult, activePreset: string | null) {
+  const details: string[] = [];
+
+  if (activePreset) details.push(`Matched "${activePreset}"`);
+  if (race.condition !== "dry") details.push(`${race.condition} conditions`);
+  if (race.winner_grid >= 10) details.push(`winner started P${race.winner_grid}`);
+  else if (race.winner_grid > 1) details.push(`winner started behind pole`);
+  if (race.dnf_count >= 5) details.push(`${race.dnf_count} retirements`);
+  else if (race.dnf_count >= 3) details.push(`${race.dnf_count} DNFs added chaos`);
+  if (race.max_gain >= 5) details.push(`biggest gain was +${race.max_gain}`);
+
+  return details.length > 0
+    ? details.join(". ") + "."
+    : "Matched the filters currently selected.";
+}
+
 export default function PatternFinderPage() {
   const [circuit, setCircuit] = useState("");
   const [condition, setCondition] = useState("");
@@ -36,25 +101,18 @@ export default function PatternFinderPage() {
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [presetTrigger, setPresetTrigger] = useState(0);
+  const [activePreset, setActivePreset] = useState<string | null>(null);
 
-  const PRESETS = [
-    { label: "Wet race upsets", filters: { condition: "wet", minGrid: "5" } },
-    { label: "Monaco winners", filters: { circuit: "Monaco" } },
-    { label: "5+ retirements", filters: { minDnf: "5" } },
-    { label: "Won from P10+", filters: { minGrid: "10" } },
-    { label: "Rain at Silverstone", filters: { circuit: "British", condition: "wet" } },
-    { label: "Ferrari wins", filters: { team: "Ferrari" } },
-  ] as const;
-
-  function applyPreset(filters: Record<string, string>) {
-    setCircuit(filters.circuit || "");
-    setCondition(filters.condition || "");
-    setWinner(filters.winner || "");
-    setTeam(filters.team || "");
-    setMinGrid(filters.minGrid || "");
-    setMinDnf(filters.minDnf || "");
+  function applyPreset(preset: PatternPreset) {
+    setCircuit(preset.filters.circuit || "");
+    setCondition(preset.filters.condition || "");
+    setWinner(preset.filters.winner || "");
+    setTeam(preset.filters.team || "");
+    setMinGrid(preset.filters.minGrid || "");
+    setMinDnf(preset.filters.minDnf || "");
     setYearFrom("2010");
     setYearTo("2024");
+    setActivePreset(preset.label);
     setPresetTrigger((n) => n + 1);
   }
 
@@ -112,18 +170,21 @@ export default function PatternFinderPage() {
           </p>
         </div>
 
-        {/* Quick presets */}
-        <div className="mb-8">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Quick searches</p>
-          <div className="flex flex-wrap gap-2">
+        {/* Preset patterns */}
+        <div className="mb-12">
+          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">Start with a pattern</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PRESETS.map((preset) => (
               <button
                 key={preset.label}
                 aria-label={`Apply preset: ${preset.label}`}
-                onClick={() => applyPreset(preset.filters as Record<string, string>)}
-                className="glass-button px-4 py-2 text-xs font-medium text-zinc-300 hover:text-white"
+                onClick={() => applyPreset(preset)}
+                className={`glass-card p-5 text-left transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/[0.04] ${
+                  activePreset === preset.label ? "border-red-500/40 bg-red-500/[0.06]" : ""
+                }`}
               >
-                {preset.label}
+                <span className="block text-sm font-semibold text-white">{preset.label}</span>
+                <span className="mt-2 block text-xs leading-relaxed text-zinc-400">{preset.description}</span>
               </button>
             ))}
           </div>
