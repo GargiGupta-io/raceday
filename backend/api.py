@@ -13,6 +13,7 @@ import logging
 import os
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from contextlib import asynccontextmanager
 from datetime import datetime
 
@@ -25,6 +26,7 @@ from backend.core import indexer, insights, storage
 from backend.core import live_feed
 
 logger = logging.getLogger(__name__)
+_request_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="api-worker")
 
 # ---------------------------------------------------------------------------
 # Background indexer
@@ -303,9 +305,20 @@ def all_season_summaries():
 
 @app.get("/races/{year}")
 def season_races(year: int):
-    data = insights.get_season_races(year)
+    indexed = insights.get_indexed_season_races(year)
+    if indexed:
+        return indexed
+
+    future = _request_executor.submit(insights.get_season_races, year)
+    try:
+        data = future.result(timeout=6)
+    except TimeoutError:
+        logger.warning("season_races timed out for %s; returning indexed fallback", year)
+        data = indexed
     if data is None:
-        raise HTTPException(status_code=404, detail=f"No schedule found for {year}")
+        data = indexed
+    if data is None:
+        data = []
     return data
 
 
