@@ -1,10 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { useEffect, useState } from "react";
 
-const BACKEND_URL = "http://localhost:8888";
-
-// ---- Types ----
-
 interface DriverLive {
   code: string;
   name: string;
@@ -15,27 +11,7 @@ interface DriverLive {
   compound: string;
   stintAge: number;
   pitWindow: string | null;
-  tyreLife: number; // 0-100 percentage
-}
-
-interface PitPrediction {
-  driver: string;
-  prediction: string;
-  confidence: string;
-}
-
-interface PatternAlert {
-  text: string;
-  type: "warning" | "info" | "opportunity";
-}
-
-interface WhatIf {
-  driver: string;
-  position: number;
-  pitNow: string;
-  stayOut: string;
-  recommendation: "pit" | "stay" | "neutral";
-  summary: string;
+  tyreLife: number;
 }
 
 interface LiveData {
@@ -43,358 +19,275 @@ interface LiveData {
   totalLaps: number;
   session: string;
   drivers: DriverLive[];
-  predictions: PitPrediction[];
-  whatIf?: WhatIf[];
-  alerts: PatternAlert[];
 }
 
-// ---- Mock Data (demo mode) ----
-
-const MOCK_DATA: LiveData = {
-  lap: 34,
-  totalLaps: 56,
-  session: "2026 Japanese Grand Prix",
-  drivers: [
-    { code: "NOR", name: "Lando Norris", team: "McLaren", teamColour: "#FF8700", position: 1, gap: "LEADER", compound: "MEDIUM", stintAge: 14, pitWindow: "Lap 38-42", tyreLife: 62 },
-    { code: "RUS", name: "George Russell", team: "Mercedes", teamColour: "#27F4D2", position: 2, gap: "+3.2s", compound: "MEDIUM", stintAge: 14, pitWindow: "Lap 36-40", tyreLife: 58 },
-    { code: "VER", name: "Max Verstappen", team: "Red Bull Racing", teamColour: "#3671C6", position: 3, gap: "+5.8s", compound: "HARD", stintAge: 22, pitWindow: null, tyreLife: 45 },
-    { code: "LEC", name: "Charles Leclerc", team: "Ferrari", teamColour: "#E8002D", position: 4, gap: "+8.1s", compound: "MEDIUM", stintAge: 12, pitWindow: "Lap 40-44", tyreLife: 68 },
-    { code: "ANT", name: "Kimi Antonelli", team: "Mercedes", teamColour: "#27F4D2", position: 5, gap: "+12.4s", compound: "HARD", stintAge: 20, pitWindow: null, tyreLife: 50 },
-    { code: "PIA", name: "Oscar Piastri", team: "McLaren", teamColour: "#FF8700", position: 6, gap: "+15.7s", compound: "MEDIUM", stintAge: 14, pitWindow: "Lap 38-42", tyreLife: 60 },
-    { code: "HAM", name: "Lewis Hamilton", team: "Ferrari", teamColour: "#E8002D", position: 7, gap: "+18.3s", compound: "HARD", stintAge: 22, pitWindow: null, tyreLife: 42 },
-    { code: "ALO", name: "Fernando Alonso", team: "Aston Martin", teamColour: "#229971", position: 8, gap: "+22.9s", compound: "MEDIUM", stintAge: 10, pitWindow: "Lap 42-46", tyreLife: 72 },
-  ],
-  predictions: [
-    { driver: "NOR", prediction: "Pit lap 39-41 for Hard", confidence: "high" },
-    { driver: "RUS", prediction: "Pit lap 37-39 for Hard", confidence: "high" },
-    { driver: "VER", prediction: "No more stops", confidence: "medium" },
-    { driver: "LEC", prediction: "Pit lap 41-43 for Hard", confidence: "medium" },
-  ],
-  whatIf: [
-    { driver: "NOR", position: 1, pitNow: "P4", stayOut: "P1", recommendation: "stay" as const, summary: "NOR: Pit NOW -> P4 | Stay out -> P1" },
-    { driver: "RUS", position: 2, pitNow: "P5", stayOut: "P2", recommendation: "stay" as const, summary: "RUS: Pit NOW -> P5 | Stay out -> P2" },
-    { driver: "VER", position: 3, pitNow: "P8", stayOut: "P5", recommendation: "stay" as const, summary: "VER: Pit NOW -> P8 | Stay out -> P5" },
-    { driver: "LEC", position: 4, pitNow: "P6", stayOut: "P4", recommendation: "stay" as const, summary: "LEC: Pit NOW -> P6 | Stay out -> P4" },
-  ],
-  alerts: [
-    { text: "Last 4 races at Suzuka: leader after lap 35 won the race.", type: "info" },
-    { text: "VER's Hard tyres at 45% life — cliff expected in ~8 laps.", type: "warning" },
-  ],
-};
-
-const COMPOUND_COLOUR: Record<string, string> = {
-  SOFT: "#dc2626",
-  MEDIUM: "#eab308",
-  HARD: "#e4e4e7",
-  INTERMEDIATE: "#22c55e",
-  WET: "#3b82f6",
-};
-
-// ---- Components ----
-
-function StatusDot({ ok }: { ok: boolean | null }) {
-  const colour = ok === null ? "#71717a" : ok ? "#4ade80" : "#f87171";
-  return (
-    <span style={{
-      width: 6, height: 6, borderRadius: "50%", background: colour,
-      display: "inline-block", marginRight: 6,
-    }} />
-  );
+interface ExtensionSettings {
+  backendUrl: string;
+  overlayEnabled: boolean;
+  overlayMode: "compact" | "full";
+  demoMode: boolean;
 }
 
-function TyreIndicator({ compound, stintAge, tyreLife }: { compound: string; stintAge: number; tyreLife: number }) {
-  const colour = COMPOUND_COLOUR[compound] || "#a1a1aa";
+type ConnectionStatus = "connected" | "checking" | "offline" | "demo" | "no-session" | "stopped" | "disconnected";
+
+const DEFAULT_SETTINGS: ExtensionSettings = {
+  backendUrl: "http://localhost:8888",
+  overlayEnabled: true,
+  overlayMode: "compact",
+  demoMode: false,
+};
+
+function sendMessage<T>(message: Record<string, unknown>): Promise<T> {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(message, (response) => resolve(response as T));
+  });
+}
+
+function statusLabel(status: ConnectionStatus) {
+  if (status === "connected") return "Connected";
+  if (status === "checking") return "Checking";
+  if (status === "demo") return "Demo Mode";
+  if (status === "no-session") return "No Live Session";
+  if (status === "stopped") return "Overlay Off";
+  return "Offline";
+}
+
+function statusColor(status: ConnectionStatus) {
+  if (status === "connected" || status === "demo") return "#dc2626";
+  if (status === "checking") return "#a1a1aa";
+  return "#52525b";
+}
+
+function Card({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-      <div style={{
-        width: 14, height: 14, borderRadius: "50%", border: `2px solid ${colour}`,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        fontSize: 7, fontWeight: 700, color: colour,
-      }}>
-        {compound.charAt(0)}
-      </div>
-      <div style={{ width: 32, height: 4, borderRadius: 2, background: "#27272a", overflow: "hidden" }}>
-        <div style={{
-          width: `${tyreLife}%`, height: "100%", borderRadius: 2,
-          background: tyreLife > 50 ? "#4ade80" : tyreLife > 25 ? "#eab308" : "#f87171",
-          transition: "width 0.3s",
-        }} />
-      </div>
-      <span style={{ fontSize: 9, color: "#71717a" }}>{stintAge}L</span>
+    <div style={{
+      padding: "12px",
+      borderRadius: 8,
+      marginBottom: 10,
+      background: "#111113",
+      border: "1px solid #1f1f24",
+    }}>
+      {children}
     </div>
   );
 }
 
-function DriverRow({ driver, index }: { driver: DriverLive; index: number }) {
+function Toggle({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
   return (
-    <div style={{
-      display: "grid", gridTemplateColumns: "20px 1fr 50px 80px",
-      alignItems: "center", gap: 6, padding: "6px 0",
-      borderBottom: "1px solid #1a1a1e",
-    }}>
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+        border: "1px solid #27272a",
+        background: checked ? "rgba(220, 38, 38, 0.12)" : "#0c0c0e",
+        color: "#e4e4e7",
+        borderRadius: 6,
+        padding: "8px 10px",
+        cursor: "pointer",
+      }}
+    >
+      <span style={{ fontSize: 11, fontWeight: 600 }}>{label}</span>
       <span style={{
-        fontSize: 11, fontWeight: 700, textAlign: "right",
-        color: index < 3 ? "#fafafa" : "#71717a",
-      }}>
-        {driver.position}
-      </span>
-      <div style={{ minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <span style={{
-            width: 3, height: 12, borderRadius: 1, background: driver.teamColour,
-          }} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: "#e4e4e7" }}>
-            {driver.code}
-          </span>
-          <span style={{ fontSize: 9, color: "#52525b" }}>{driver.gap}</span>
-        </div>
-      </div>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <TyreIndicator compound={driver.compound} stintAge={driver.stintAge} tyreLife={driver.tyreLife} />
-      </div>
-      <div style={{ textAlign: "right" }}>
-        {driver.pitWindow ? (
-          <span style={{ fontSize: 9, color: "#eab308", background: "#422006", padding: "1px 4px", borderRadius: 3 }}>
-            {driver.pitWindow.replace("Lap ", "L")}
-          </span>
-        ) : (
-          <span style={{ fontSize: 9, color: "#3f3f46" }}>no stop</span>
-        )}
-      </div>
-    </div>
+        width: 8,
+        height: 8,
+        borderRadius: 999,
+        background: checked ? "#dc2626" : "#52525b",
+      }} />
+    </button>
   );
 }
-
-function SectionLabel({ children }: { children: string }) {
-  return (
-    <div style={{ fontSize: 9, textTransform: "uppercase", letterSpacing: 0.8, color: "#52525b", marginBottom: 6 }}>
-      {children}
-    </div>
-  );
-}
-
-function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return (
-    <div style={{
-      padding: "10px 12px", borderRadius: 8, marginBottom: 10,
-      background: "#111113", border: "1px solid #1e1e22",
-      ...style,
-    }}>
-      {children}
-    </div>
-  );
-}
-
-// ---- Main Popup ----
 
 function Popup() {
-  const [backendOk, setBackendOk] = useState<boolean | null>(null);
-  const [latestRace, setLatestRace] = useState<{ year: number; name: string; winner: string } | null>(null);
-  const [demoMode, setDemoMode] = useState(false);
+  const [settings, setSettings] = useState<ExtensionSettings>(DEFAULT_SETTINGS);
+  const [backendDraft, setBackendDraft] = useState(DEFAULT_SETTINGS.backendUrl);
+  const [status, setStatus] = useState<ConnectionStatus>("checking");
   const [liveData, setLiveData] = useState<LiveData | null>(null);
 
-  // Check backend health
   useEffect(() => {
-    fetch(`${BACKEND_URL}/health`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((d) => setBackendOk(d?.status === "ok"))
-      .catch(() => setBackendOk(false));
-  }, []);
+    sendMessage<{ settings: ExtensionSettings; status: ConnectionStatus; data?: LiveData | null }>({ type: "GET_LIVE_DATA" })
+      .then((response) => {
+        if (!response) return;
+        const nextSettings = { ...DEFAULT_SETTINGS, ...response.settings };
+        setSettings(nextSettings);
+        setBackendDraft(nextSettings.backendUrl);
+        setStatus(response.status || "checking");
+        setLiveData(response.data || null);
+      });
 
-  // Fetch latest race
-  useEffect(() => {
-    if (!backendOk) return;
-    const year = new Date().getFullYear();
-    fetch(`${BACKEND_URL}/races/${year}`)
-      .then((r) => r.ok ? r.json() : [])
-      .then((races: { name: string; winner?: string; indexed: boolean }[]) => {
-        const completed = races.filter((r) => r.indexed && r.winner);
-        if (completed.length > 0) {
-          const last = completed[completed.length - 1];
-          setLatestRace({ year, name: last.name, winner: last.winner! });
-        }
-      })
-      .catch(() => {});
-  }, [backendOk]);
-
-  // Listen for live updates
-  useEffect(() => {
-    const listener = (msg: { type: string; data?: LiveData }) => {
-      if (msg.type === "LIVE_UPDATE" && msg.data) {
-        setLiveData(msg.data);
+    const listener = (msg: { type: string; data?: LiveData | null; status?: ConnectionStatus; settings?: ExtensionSettings }) => {
+      if (msg.type === "LIVE_UPDATE") setLiveData(msg.data || null);
+      if (msg.type === "WS_STATUS" && msg.status) setStatus(msg.status);
+      if (msg.type === "SETTINGS_UPDATE" && msg.settings) {
+        setSettings({ ...DEFAULT_SETTINGS, ...msg.settings });
+        setBackendDraft(msg.settings.backendUrl);
       }
     };
-    chrome.runtime?.onMessage?.addListener(listener);
-    return () => chrome.runtime?.onMessage?.removeListener(listener);
+    chrome.runtime.onMessage.addListener(listener);
+    return () => chrome.runtime.onMessage.removeListener(listener);
   }, []);
 
-  const data = demoMode ? MOCK_DATA : liveData;
+  function saveSettings(next: Partial<ExtensionSettings>) {
+    const merged = { ...settings, ...next };
+    setSettings(merged);
+    sendMessage<{ settings: ExtensionSettings; status: ConnectionStatus }>({
+      type: "SAVE_SETTINGS",
+      settings: merged,
+    }).then((response) => {
+      if (!response) return;
+      setSettings({ ...DEFAULT_SETTINGS, ...response.settings });
+      setStatus(response.status);
+    });
+  }
 
   return (
     <div style={{ padding: 12 }}>
-      {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
         <div style={{
-          background: "#dc2626", color: "white", fontWeight: 800,
-          fontSize: 13, padding: "3px 8px", borderRadius: 5, letterSpacing: 0.8,
+          background: "#dc2626",
+          color: "white",
+          fontWeight: 800,
+          fontSize: 13,
+          padding: "3px 8px",
+          borderRadius: 5,
+          letterSpacing: 0.8,
         }}>
           RD
         </div>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: "#fafafa" }}>Raceday</div>
-          <div style={{ fontSize: 9, color: "#52525b" }}>Live Strategy Companion</div>
+          <div style={{ fontSize: 9, color: "#71717a" }}>Live Strategy Companion</div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <StatusDot ok={backendOk} />
-          <span style={{ fontSize: 9, color: "#52525b" }}>{backendOk ? "Online" : "Offline"}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span style={{ width: 7, height: 7, borderRadius: 999, background: statusColor(status) }} />
+          <span style={{ fontSize: 9, color: "#a1a1aa" }}>{statusLabel(status)}</span>
         </div>
       </div>
 
-      {/* Active session or idle state */}
-      {data ? (
-        <>
-          {/* Session bar */}
-          <Card style={{ background: "#0c0c0e", borderColor: "#dc262640" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: "#fafafa" }}>
-                  {data.session.replace(" Grand Prix", "")}
-                </div>
-                {demoMode && (
-                  <div style={{ fontSize: 8, color: "#dc2626", marginTop: 2 }}>DEMO MODE</div>
-                )}
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#fafafa", letterSpacing: -0.5 }}>
-                  {data.lap}<span style={{ fontSize: 11, color: "#52525b", fontWeight: 400 }}>/{data.totalLaps}</span>
-                </div>
-                <div style={{ fontSize: 8, color: "#52525b", textTransform: "uppercase" }}>Lap</div>
-              </div>
-            </div>
-          </Card>
+      <Card>
+        <div style={{ fontSize: 9, color: "#71717a", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
+          Backend URL
+        </div>
+        <div style={{ display: "flex", gap: 6 }}>
+          <input
+            value={backendDraft}
+            onChange={(event) => setBackendDraft(event.target.value)}
+            placeholder="https://your-backend.railway.app"
+            style={{
+              flex: 1,
+              minWidth: 0,
+              border: "1px solid #27272a",
+              borderRadius: 6,
+              background: "#09090b",
+              color: "#e4e4e7",
+              fontSize: 10,
+              padding: "8px",
+            }}
+          />
+          <button
+            type="button"
+            onClick={() => saveSettings({ backendUrl: backendDraft.trim() || DEFAULT_SETTINGS.backendUrl })}
+            style={{
+              border: "1px solid rgba(220, 38, 38, 0.35)",
+              borderRadius: 6,
+              background: "rgba(220, 38, 38, 0.14)",
+              color: "#fff",
+              fontSize: 10,
+              fontWeight: 700,
+              padding: "0 10px",
+              cursor: "pointer",
+            }}
+          >
+            Save
+          </button>
+        </div>
+      </Card>
 
-          {/* Driver standings */}
-          <Card>
-            <SectionLabel>Live Standings</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "20px 1fr 50px 80px", gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 8, color: "#3f3f46", textAlign: "right" }}>P</span>
-              <span style={{ fontSize: 8, color: "#3f3f46" }}>Driver</span>
-              <span style={{ fontSize: 8, color: "#3f3f46", textAlign: "center" }}>Tyre</span>
-              <span style={{ fontSize: 8, color: "#3f3f46", textAlign: "right" }}>Pit window</span>
-            </div>
-            {data.drivers.map((d, i) => (
-              <DriverRow key={d.code} driver={d} index={i} />
+      <Card>
+        <div style={{ display: "grid", gap: 8 }}>
+          <Toggle
+            label="Overlay"
+            checked={settings.overlayEnabled}
+            onChange={(checked) => saveSettings({ overlayEnabled: checked })}
+          />
+          <Toggle
+            label="Demo mode"
+            checked={settings.demoMode}
+            onChange={(checked) => saveSettings({ demoMode: checked })}
+          />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+            {(["compact", "full"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => saveSettings({ overlayMode: mode })}
+                style={{
+                  border: settings.overlayMode === mode ? "1px solid rgba(220, 38, 38, 0.45)" : "1px solid #27272a",
+                  borderRadius: 6,
+                  background: settings.overlayMode === mode ? "rgba(220, 38, 38, 0.12)" : "#0c0c0e",
+                  color: "#e4e4e7",
+                  padding: "8px",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: "capitalize",
+                  cursor: "pointer",
+                }}
+              >
+                {mode}
+              </button>
             ))}
-          </Card>
+          </div>
+        </div>
+      </Card>
 
-          {/* Pit predictions */}
-          {data.predictions.length > 0 && (
-            <Card>
-              <SectionLabel>Pit Predictions</SectionLabel>
-              {data.predictions.map((p, i) => (
-                <div key={i} style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "5px 0", borderBottom: i < data.predictions.length - 1 ? "1px solid #1a1a1e" : "none",
-                }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#e4e4e7" }}>{p.driver}</span>
-                  <div style={{ textAlign: "right" }}>
-                    <span style={{ fontSize: 10, color: "#a1a1aa" }}>{p.prediction}</span>
-                    <span style={{
-                      fontSize: 8, marginLeft: 6, padding: "1px 4px", borderRadius: 3,
-                      background: p.confidence === "high" ? "#052e16" : "#1c1917",
-                      color: p.confidence === "high" ? "#4ade80" : "#a1a1aa",
-                    }}>
-                      {p.confidence}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </Card>
-          )}
-
-          {/* What If ticker */}
-          {data.whatIf && data.whatIf.length > 0 && (
-            <Card>
-              <SectionLabel>What If They Pit NOW?</SectionLabel>
-              {data.whatIf.map((w, i) => (
-                <div key={i} style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "5px 0", borderBottom: i < (data.whatIf?.length ?? 0) - 1 ? "1px solid #1a1a1e" : "none",
-                }}>
-                  <span style={{ fontSize: 11, fontWeight: 600, color: "#e4e4e7", width: 32 }}>{w.driver}</span>
-                  <div style={{ display: "flex", gap: 8, fontSize: 10 }}>
-                    <span style={{
-                      color: w.recommendation === "pit" ? "#4ade80" : "#a1a1aa",
-                      background: w.recommendation === "pit" ? "#052e16" : "transparent",
-                      padding: "1px 5px", borderRadius: 3,
-                    }}>
-                      Pit {w.pitNow}
-                    </span>
-                    <span style={{
-                      color: w.recommendation === "stay" ? "#4ade80" : "#a1a1aa",
-                      background: w.recommendation === "stay" ? "#052e16" : "transparent",
-                      padding: "1px 5px", borderRadius: 3,
-                    }}>
-                      Stay {w.stayOut}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </Card>
-          )}
-
-          {/* Pattern alerts */}
-          {data.alerts.length > 0 && (
-            <Card>
-              <SectionLabel>Pattern Alerts</SectionLabel>
-              {data.alerts.map((a, i) => (
-                <div key={i} style={{
-                  fontSize: 10, lineHeight: 1.4, padding: "5px 0",
-                  borderBottom: i < data.alerts.length - 1 ? "1px solid #1a1a1e" : "none",
-                  color: a.type === "warning" ? "#fbbf24" : a.type === "opportunity" ? "#4ade80" : "#a1a1aa",
-                }}>
-                  {a.type === "warning" ? "! " : a.type === "opportunity" ? "+ " : ""}{a.text}
-                </div>
-              ))}
-            </Card>
-          )}
-        </>
-      ) : (
-        <>
-          {/* Idle state — no live session */}
-          {latestRace && (
-            <Card>
-              <SectionLabel>Latest Result</SectionLabel>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#fafafa" }}>
-                {latestRace.name.replace(" Grand Prix", "")}
+      {liveData ? (
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#fafafa" }}>
+                {liveData.session.replace(" Grand Prix", "")}
               </div>
-              <div style={{ fontSize: 11, color: "#4ade80", marginTop: 2 }}>
-                P1 {latestRace.winner}
+              <div style={{ fontSize: 9, color: settings.demoMode ? "#dc2626" : "#71717a", marginTop: 2 }}>
+                {settings.demoMode ? "Demo data" : "Live data"}
               </div>
-            </Card>
-          )}
-
-          <Card>
-            <SectionLabel>Live Session</SectionLabel>
-            <div style={{ fontSize: 11, color: "#52525b", lineHeight: 1.5 }}>
-              No live session active. Predictions appear automatically during race weekends.
             </div>
-          </Card>
-        </>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#fafafa" }}>
+              {liveData.lap}<span style={{ fontSize: 11, color: "#71717a", fontWeight: 400 }}>/{liveData.totalLaps}</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 10, display: "grid", gap: 5 }}>
+            {liveData.drivers.slice(0, 5).map((driver) => (
+              <div key={driver.code} style={{ display: "grid", gridTemplateColumns: "26px 1fr 46px", gap: 8, fontSize: 10, color: "#d4d4d8" }}>
+                <span>P{driver.position}</span>
+                <span>{driver.code}</span>
+                <span style={{ textAlign: "right", color: "#71717a" }}>{driver.gap}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      ) : (
+        <Card>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>No live session active</div>
+          <div style={{ fontSize: 10, color: "#71717a", lineHeight: 1.5, marginTop: 5 }}>
+            The overlay will wake up automatically during race weekends. Turn on demo mode to preview the flow now.
+          </div>
+        </Card>
       )}
 
-      {/* Footer with demo toggle */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
-        <span style={{ fontSize: 8, color: "#27272a" }}>v0.1.0</span>
-        <button
-          onClick={() => { setDemoMode(!demoMode); if (!demoMode) setLiveData(null); }}
-          style={{
-            fontSize: 8, color: "#3f3f46", background: "none", border: "none",
-            cursor: "pointer", padding: "2px 4px",
-          }}
-        >
-          {demoMode ? "Exit demo" : "Demo"}
-        </button>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8 }}>
+        <span style={{ fontSize: 8, color: "#3f3f46" }}>v0.1.0</span>
+        <span style={{ fontSize: 8, color: "#3f3f46" }}>{settings.overlayMode} overlay</span>
       </div>
     </div>
   );
