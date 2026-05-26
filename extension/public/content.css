@@ -15,11 +15,11 @@
   border: 1px solid #1e1e22;
 }
 
-.raceday-collapsed {
+.raceday-compact {
   width: 180px;
 }
 
-.raceday-expanded {
+.raceday-full {
   width: 300px;
 }
 
@@ -69,6 +69,8 @@
 }
 
 .raceday-toggle-btn {
+  background: transparent;
+  border: none;
   font-size: 14px;
   color: #52525b;
   cursor: pointer;
@@ -76,6 +78,18 @@
   flex-shrink: 0;
   width: 16px;
   text-align: center;
+}
+
+.raceday-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: #dc2626;
+  flex-shrink: 0;
+}
+
+.raceday-dot-demo {
+  background: #991b1b;
 }
 
 .raceday-toggle-btn:hover {
@@ -137,6 +151,11 @@
   height: 14px;
   border-radius: 1px;
   flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.raceday-team-lead {
+  background: #dc2626;
 }
 
 .raceday-code {
@@ -166,6 +185,42 @@
   flex-shrink: 0;
 }
 
+.raceday-tyre-soft {
+  background: #dc2626;
+  border-color: #ef4444;
+  color: #ffffff;
+}
+
+.raceday-tyre-medium {
+  background: #450a0a;
+  border-color: #991b1b;
+  color: #fee2e2;
+}
+
+.raceday-tyre-hard {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+.raceday-tyre-inter {
+  background: #3f3f46;
+  border-color: #71717a;
+  color: #ffffff;
+}
+
+.raceday-tyre-wet {
+  background: #000000;
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #ffffff;
+}
+
+.raceday-tyre-unknown {
+  background: #18181b;
+  border-color: #52525b;
+  color: #d4d4d8;
+}
+
 .raceday-life-bar {
   width: 24px;
   height: 3px;
@@ -179,6 +234,18 @@
   height: 100%;
   border-radius: 2px;
   transition: width 0.3s;
+}
+
+.raceday-life-low {
+  background: #dc2626;
+}
+
+.raceday-life-mid {
+  background: #991b1b;
+}
+
+.raceday-life-high {
+  background: #ffffff;
 }
 
 /* Prediction rows */
@@ -217,12 +284,21 @@
   border-radius: 3px;
 }
 
+.raceday-option-active {
+  color: #fecaca;
+  background: rgba(220, 38, 38, 0.16);
+}
+
 /* Alerts */
 .raceday-alert {
   font-size: 9px;
   line-height: 1.4;
   padding: 3px 0;
   border-bottom: 1px solid #141416;
+}
+
+.raceday-alert-warning {
+  color: #fca5a5;
 }
 
 .raceday-alert:last-child {

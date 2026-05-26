@@ -1,33 +1,60 @@
 /**
- * content.js — Injected into F1 broadcast pages
+ * content.js - injected live overlay
  *
- * Creates a floating, draggable overlay panel showing live race data:
- * - Lap counter and session name
- * - Top 5 driver standings with tyre indicators
- * - Pit predictions
- * - What-if scenarios
- * - Pattern alerts
- *
- * Communicates with the background service worker for data.
+ * Renders the stream overlay and persists user placement/settings.
  */
 
-(function () {
+(async function () {
   if (document.getElementById("raceday-overlay")) return;
 
-  // State
-  let collapsed = true;
+  const DEFAULT_SETTINGS = {
+    overlayEnabled: true,
+    overlayMode: "compact",
+    demoMode: false,
+  };
+
+  let settings = { ...DEFAULT_SETTINGS };
   let liveData = null;
+  let connectionStatus = "checking";
   let dragState = { dragging: false, offsetX: 0, offsetY: 0 };
 
-  // Create overlay
   const overlay = document.createElement("div");
   overlay.id = "raceday-overlay";
-  overlay.className = "raceday-panel raceday-collapsed";
   document.body.appendChild(overlay);
 
-  function render() {
-    const data = liveData;
+  await loadInitialState();
+  render();
 
+  async function loadInitialState() {
+    const stored = await chrome.storage.local.get({ ...DEFAULT_SETTINGS, overlayPosition: null });
+    settings = { ...DEFAULT_SETTINGS, ...stored };
+    if (stored.overlayPosition) {
+      overlay.style.left = `${stored.overlayPosition.x}px`;
+      overlay.style.top = `${stored.overlayPosition.y}px`;
+      overlay.style.right = "auto";
+      overlay.style.bottom = "auto";
+    }
+
+    chrome.runtime.sendMessage({ type: "GET_LIVE_DATA" }, (response) => {
+      if (response?.settings) settings = { ...settings, ...response.settings };
+      if (response?.status) connectionStatus = response.status;
+      liveData = response?.data || null;
+      render();
+    });
+  }
+
+  function setOverlayMode(mode) {
+    settings.overlayMode = mode;
+    chrome.storage.local.set({ overlayMode: mode });
+    chrome.runtime.sendMessage({ type: "SAVE_SETTINGS", settings });
+    render();
+  }
+
+  function render() {
+    overlay.style.display = settings.overlayEnabled ? "block" : "none";
+    overlay.className = `raceday-panel raceday-${settings.overlayMode}`;
+
+    const data = liveData;
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
@@ -35,132 +62,126 @@
           <span class="raceday-session">${(data.session || "").replace(" Grand Prix", "")}</span>
           <span class="raceday-lap">${data.lap}/${data.totalLaps}</span>
         ` : `
-          <span class="raceday-session">Raceday</span>
+          <span class="raceday-session">${statusCopy(connectionStatus)}</span>
         `}
-        <span class="raceday-toggle-btn" id="raceday-toggle">${collapsed ? "+" : "_"}</span>
+        <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
+        <button class="raceday-toggle-btn" id="raceday-toggle" type="button">
+          ${settings.overlayMode === "compact" ? "+" : "_"}
+        </button>
       </div>
-      ${!collapsed ? `
+      ${settings.overlayMode === "full" ? `
         <div class="raceday-body">
           ${data ? renderLiveContent(data) : renderIdleContent()}
         </div>
       ` : ""}
     `;
 
-    // Bind toggle
-    document.getElementById("raceday-toggle")?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      collapsed = !collapsed;
-      overlay.className = collapsed ? "raceday-panel raceday-collapsed" : "raceday-panel raceday-expanded";
-      render();
+    document.getElementById("raceday-toggle")?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setOverlayMode(settings.overlayMode === "compact" ? "full" : "compact");
     });
 
-    // Bind drag on header
-    const header = document.getElementById("raceday-header");
-    if (header) {
-      header.addEventListener("mousedown", startDrag);
-    }
+    document.getElementById("raceday-header")?.addEventListener("mousedown", startDrag);
   }
 
   function renderLiveContent(data) {
-    const compoundColour = { SOFT: "#dc2626", MEDIUM: "#eab308", HARD: "#e4e4e7", INTERMEDIATE: "#22c55e", WET: "#3b82f6" };
-
-    // Top 5 drivers
-    const driversHtml = (data.drivers || []).slice(0, 5).map((d) => {
-      const col = compoundColour[d.compound] || "#a1a1aa";
-      const lifeCol = d.tyreLife > 50 ? "#4ade80" : d.tyreLife > 25 ? "#eab308" : "#f87171";
+    const driversHtml = (data.drivers || []).slice(0, 5).map((driver, index) => {
       return `
         <div class="raceday-driver-row">
-          <span class="raceday-pos">P${d.position}</span>
-          <span class="raceday-team-bar" style="background:${d.teamColour}"></span>
-          <span class="raceday-code">${d.code}</span>
-          <span class="raceday-gap">${d.gap}</span>
-          <span class="raceday-compound" style="border-color:${col}">${d.compound.charAt(0)}</span>
-          <div class="raceday-life-bar"><div class="raceday-life-fill" style="width:${d.tyreLife}%;background:${lifeCol}"></div></div>
+          <span class="raceday-pos">P${driver.position}</span>
+          <span class="raceday-team-bar ${index === 0 ? "raceday-team-lead" : ""}"></span>
+          <span class="raceday-code">${driver.code}</span>
+          <span class="raceday-gap">${driver.gap}</span>
+          <span class="raceday-compound ${compoundClass(driver.compound)}">${driver.compound.charAt(0)}</span>
+          <div class="raceday-life-bar">
+            <div class="raceday-life-fill ${lifeClass(driver.tyreLife)}" style="width:${driver.tyreLife}%"></div>
+          </div>
         </div>
       `;
     }).join("");
 
-    // What-if (top 3)
-    const whatIfHtml = (data.whatIf || []).slice(0, 3).map((w) => {
-      const pitBg = w.recommendation === "pit" ? "#052e16" : "transparent";
-      const stayBg = w.recommendation === "stay" ? "#052e16" : "transparent";
-      return `
-        <div class="raceday-whatif-row">
-          <span class="raceday-code">${w.driver}</span>
-          <span class="raceday-option" style="background:${pitBg}">Pit ${w.pitNow}</span>
-          <span class="raceday-option" style="background:${stayBg}">Stay ${w.stayOut}</span>
-        </div>
-      `;
-    }).join("");
+    const predictionsHtml = (data.predictions || []).slice(0, 3).map((prediction) => `
+      <div class="raceday-pred-row">
+        <span class="raceday-code">${prediction.driver}</span>
+        <span class="raceday-pred-text">${prediction.prediction}</span>
+      </div>
+    `).join("");
 
-    // Alerts
-    const alertsHtml = (data.alerts || []).slice(0, 2).map((a) => {
-      const col = a.type === "warning" ? "#fbbf24" : "#a1a1aa";
-      return `<div class="raceday-alert" style="color:${col}">${a.type === "warning" ? "! " : ""}${a.text}</div>`;
-    }).join("");
+    const whatIfHtml = (data.whatIf || []).slice(0, 3).map((item) => `
+      <div class="raceday-whatif-row">
+        <span class="raceday-code">${item.driver}</span>
+        <span class="raceday-option ${item.recommendation === "pit" ? "raceday-option-active" : ""}">Pit ${item.pitNow}</span>
+        <span class="raceday-option ${item.recommendation === "stay" ? "raceday-option-active" : ""}">Stay ${item.stayOut}</span>
+      </div>
+    `).join("");
 
-    // Predictions (top 3)
-    const predsHtml = (data.predictions || []).slice(0, 3).map((p) => {
-      return `
-        <div class="raceday-pred-row">
-          <span class="raceday-code">${p.driver}</span>
-          <span class="raceday-pred-text">${p.prediction}</span>
-        </div>
-      `;
-    }).join("");
+    const alertsHtml = (data.alerts || []).slice(0, 2).map((alert) => `
+      <div class="raceday-alert ${alert.type === "warning" ? "raceday-alert-warning" : ""}">
+        ${alert.type === "warning" ? "! " : ""}${alert.text}
+      </div>
+    `).join("");
 
     return `
       <div class="raceday-section">
-        <div class="raceday-section-label">STANDINGS</div>
+        <div class="raceday-section-label">Standings</div>
         ${driversHtml}
       </div>
-      ${predsHtml ? `
-        <div class="raceday-section">
-          <div class="raceday-section-label">PIT PREDICTIONS</div>
-          ${predsHtml}
-        </div>
-      ` : ""}
-      ${whatIfHtml ? `
-        <div class="raceday-section">
-          <div class="raceday-section-label">WHAT IF PIT NOW?</div>
-          ${whatIfHtml}
-        </div>
-      ` : ""}
-      ${alertsHtml ? `
-        <div class="raceday-section">
-          <div class="raceday-section-label">PATTERN ALERTS</div>
-          ${alertsHtml}
-        </div>
-      ` : ""}
+      ${predictionsHtml ? `<div class="raceday-section"><div class="raceday-section-label">Pit predictions</div>${predictionsHtml}</div>` : ""}
+      ${whatIfHtml ? `<div class="raceday-section"><div class="raceday-section-label">What if pit now?</div>${whatIfHtml}</div>` : ""}
+      ${alertsHtml ? `<div class="raceday-section"><div class="raceday-section-label">Alerts</div>${alertsHtml}</div>` : ""}
     `;
   }
 
   function renderIdleContent() {
     return `
       <div class="raceday-idle">
-        <p>No live session active.</p>
-        <p class="raceday-idle-sub">Predictions appear automatically during race weekends.</p>
+        <p>${statusCopy(connectionStatus)}</p>
+        <p class="raceday-idle-sub">The overlay will update during race weekends. Open the popup to enable demo mode anytime.</p>
       </div>
     `;
   }
 
-  // Drag support
-  function startDrag(e) {
-    if (e.target.id === "raceday-toggle") return;
+  function compoundClass(compound) {
+    const upper = (compound || "").toUpperCase();
+    if (upper === "SOFT") return "raceday-tyre-soft";
+    if (upper === "MEDIUM") return "raceday-tyre-medium";
+    if (upper === "HARD") return "raceday-tyre-hard";
+    if (upper === "INTERMEDIATE") return "raceday-tyre-inter";
+    if (upper === "WET") return "raceday-tyre-wet";
+    return "raceday-tyre-unknown";
+  }
+
+  function lifeClass(tyreLife) {
+    if (tyreLife <= 35) return "raceday-life-low";
+    if (tyreLife <= 60) return "raceday-life-mid";
+    return "raceday-life-high";
+  }
+
+  function statusCopy(status) {
+    if (status === "connected") return "Connected";
+    if (status === "checking") return "Checking backend";
+    if (status === "demo") return "Demo Mode";
+    if (status === "no-session") return "No Live Session";
+    if (status === "stopped") return "Overlay Off";
+    return "Offline";
+  }
+
+  function startDrag(event) {
+    if (event.target.id === "raceday-toggle") return;
     dragState.dragging = true;
-    dragState.offsetX = e.clientX - overlay.getBoundingClientRect().left;
-    dragState.offsetY = e.clientY - overlay.getBoundingClientRect().top;
+    dragState.offsetX = event.clientX - overlay.getBoundingClientRect().left;
+    dragState.offsetY = event.clientY - overlay.getBoundingClientRect().top;
     document.addEventListener("mousemove", onDrag);
     document.addEventListener("mouseup", stopDrag);
     overlay.style.transition = "none";
   }
 
-  function onDrag(e) {
+  function onDrag(event) {
     if (!dragState.dragging) return;
-    const x = Math.max(0, Math.min(window.innerWidth - 160, e.clientX - dragState.offsetX));
-    const y = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - dragState.offsetY));
-    overlay.style.left = x + "px";
-    overlay.style.top = y + "px";
+    const x = Math.max(0, Math.min(window.innerWidth - overlay.offsetWidth, event.clientX - dragState.offsetX));
+    const y = Math.max(0, Math.min(window.innerHeight - 40, event.clientY - dragState.offsetY));
+    overlay.style.left = `${x}px`;
+    overlay.style.top = `${y}px`;
     overlay.style.right = "auto";
     overlay.style.bottom = "auto";
   }
@@ -170,25 +191,26 @@
     document.removeEventListener("mousemove", onDrag);
     document.removeEventListener("mouseup", stopDrag);
     overlay.style.transition = "";
+    chrome.storage.local.set({
+      overlayPosition: {
+        x: overlay.getBoundingClientRect().left,
+        y: overlay.getBoundingClientRect().top,
+      },
+    });
   }
 
-  // Listen for live updates from background
   chrome.runtime.onMessage.addListener((msg) => {
-    if (msg.type === "LIVE_UPDATE" && msg.data) {
-      liveData = msg.data;
+    if (msg.type === "LIVE_UPDATE") {
+      liveData = msg.data || null;
       render();
     }
-    if (msg.type === "WS_STATUS" && msg.status === "disconnected") {
-      liveData = null;
+    if (msg.type === "WS_STATUS") {
+      connectionStatus = msg.status;
       render();
     }
-  });
-
-  // Request current state from background on load
-  chrome.runtime.sendMessage({ type: "GET_LIVE_DATA" }, (response) => {
-    if (response && response.data) {
-      liveData = response.data;
+    if (msg.type === "SETTINGS_UPDATE") {
+      settings = { ...settings, ...msg.settings };
+      render();
     }
-    render();
   });
 })();
