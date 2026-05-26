@@ -3,6 +3,10 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
+  --raceday-red: #dc2626;
+  --raceday-red-soft: rgba(220, 38, 38, 0.12);
+  --raceday-red-border: rgba(239, 68, 68, 0.28);
+  --raceday-panel: rgba(20, 20, 24, 0.68);
 }
 
 @theme inline {
@@ -26,6 +30,11 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   background: #000000;
   min-height: 100vh;
+}
+
+::selection {
+  background: rgba(220, 38, 38, 0.32);
+  color: #ffffff;
 }
 
 /* ───────────────────────────────────────────
@@ -64,7 +73,7 @@ body {
 /* Card variant — flat by default: no backdrop-filter so cards that scroll
    in lists don't trigger repaints. Uses a solid-ish dark rgba instead. */
 .glass-card {
-  background: rgba(20, 20, 24, 0.6);
+  background: var(--raceday-panel);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 0.5rem;
   box-shadow:
@@ -114,18 +123,18 @@ body {
 }
 
 .glass-button:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--raceday-red-border);
+  box-shadow: 0 2px 12px rgba(220, 38, 38, 0.08);
 }
 
 .glass-button-active {
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--raceday-red-soft);
+  border: 1px solid var(--raceday-red-border);
   border-radius: 0.5rem;
-  box-shadow: 0 2px 12px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 2px 12px rgba(220, 38, 38, 0.08);
 }
 
 /* Input — form fields */
@@ -141,9 +150,9 @@ body {
 
 .glass-input:focus {
   background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: var(--raceday-red-border);
   outline: none;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.08);
 }
 
 .glass-input::placeholder {
