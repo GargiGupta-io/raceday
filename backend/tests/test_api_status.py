@@ -27,6 +27,14 @@ def test_data_source_health_includes_live_source():
     assert {"FastF1", "Jolpica", "OpenMeteo", "OpenF1"}.issubset(names)
 
 
+def test_live_demo_endpoint_returns_active_snapshot():
+    response = api.live_demo_snapshot()
+
+    assert response["active"] is True
+    assert response["session"] == "Demo Grand Prix"
+    assert response["drivers"]
+
+
 def test_storage_status_route_reports_active_store():
     response = api.storage_status()
 
