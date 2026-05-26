@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Real-time F1 strategy predictions, tyre life, and pattern alerts during live races.",
   "permissions": ["storage"],
-  "host_permissions": ["http://localhost:8888/*"],
+  "host_permissions": ["http://*/*", "https://*/*"],
   "action": {
     "default_popup": "popup.html"
   },
