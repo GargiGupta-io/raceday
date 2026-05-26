@@ -8,10 +8,60 @@ never from FastF1 directly.
 
 import json
 import logging
+from datetime import datetime
 
 from backend.core import indexer, loader
 
 logger = logging.getLogger(__name__)
+
+
+def _race_details_from_index(year: int, track: str) -> dict:
+    entry = {
+        "round": 0,
+        "name": track,
+        "location": "",
+        "country": "",
+        "date": "",
+        "format": "indexed",
+        "indexed": True,
+    }
+
+    data = indexer.load_race_index(year, track)
+    if not data:
+        return entry
+
+    results = data["results"]
+    weather = data["weather"]
+    finished = sorted(
+        [r for r in results if r["finish_position"] is not None],
+        key=lambda r: r["finish_position"],
+    )
+    if finished:
+        entry["winner"] = finished[0]["driver"]
+        entry["winner_team"] = finished[0]["team"]
+
+    total_laps = 0
+    for result in results:
+        laps = result.get("total_laps")
+        if laps and laps > total_laps:
+            total_laps = laps
+    if total_laps == 0 and data.get("stints"):
+        for driver_stints in data["stints"].values():
+            if driver_stints:
+                total_laps = max(total_laps, driver_stints[-1].get("lap_end", 0))
+
+    entry["total_laps"] = total_laps if total_laps > 0 else None
+    entry["weather"] = weather.get("condition")
+    return entry
+
+
+def get_indexed_season_races(year: int) -> list[dict]:
+    indexed = [race for race in indexer.list_indexed() if race["year"] == year]
+    races = [_race_details_from_index(year, race["track"]) for race in indexed]
+    races.sort(key=lambda race: race["name"])
+    for index, race in enumerate(races, start=1):
+        race["round"] = race["round"] or index
+    return races
 
 
 def get_season_races(year: int) -> list[dict] | None:
@@ -41,32 +91,13 @@ def get_season_races(year: int) -> list[dict] | None:
 
         # Add race details for indexed races
         if entry["indexed"]:
-            data = indexer.load_race_index(year, track)
-            if data:
-                results = data["results"]
-                weather = data["weather"]
-                finished = sorted(
-                    [r for r in results if r["finish_position"] is not None],
-                    key=lambda r: r["finish_position"],
-                )
-                if finished:
-                    entry["winner"] = finished[0]["driver"]
-                    entry["winner_team"] = finished[0]["team"]
-                # Get total laps: try total_laps field (Jolpica), then stint data
-                total_laps = 0
-                for r in results:
-                    tl = r.get("total_laps")
-                    if tl and tl > total_laps:
-                        total_laps = tl
-                if total_laps == 0 and data.get("stints"):
-                    for driver_stints in data["stints"].values():
-                        if driver_stints:
-                            last = driver_stints[-1]
-                            total_laps = max(total_laps, last.get("lap_end", 0))
-                entry["total_laps"] = total_laps if total_laps > 0 else None
-                entry["weather"] = weather.get("condition")
+            entry.update(_race_details_from_index(year, track))
+            entry.update({**event, "indexed": True})
 
         races.append(entry)
+
+    if not races and year >= datetime.now().year:
+        return get_indexed_season_races(year)
 
     return races
 
