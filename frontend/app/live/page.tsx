@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API } from "@/app/lib/api";
+import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
 
 interface DriverLive {
   code: string;
@@ -159,9 +159,12 @@ function TyreIndicator({ compound, stintAge, tyreLife }: { compound: string; sti
 export default function LivePage() {
   const [data, setData] = useState<LiveData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [liveState, setLiveState] = useState<FetchState>("loading");
+  const [liveError, setLiveError] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
   const [demoIndex, setDemoIndex] = useState(0);
   const [showFullGrid, setShowFullGrid] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (demoMode) return;
@@ -169,8 +172,12 @@ export default function LivePage() {
     let active = true;
 
     const fetchLive = () => {
-      fetch(`${API}/live`)
-        .then((r) => (r.ok ? r.json() : null))
+      fetchWithTimeout<LiveData | null>(`${API}/live`, {
+        onState: (state) => {
+          setLiveState(state);
+          if (state !== "error") setLiveError(false);
+        },
+      })
         .then((liveData) => {
           if (active) {
             setData(liveData);
@@ -180,6 +187,7 @@ export default function LivePage() {
         .catch(() => {
           if (active) {
             setData(null);
+            setLiveError(true);
             setLoading(false);
           }
         });
@@ -191,7 +199,7 @@ export default function LivePage() {
       active = false;
       clearInterval(interval);
     };
-  }, [demoMode]);
+  }, [demoMode, retryCount]);
 
   useEffect(() => {
     if (!demoMode) return;
@@ -223,6 +231,7 @@ export default function LivePage() {
                 const next = !value;
                 if (next) {
                   setLoading(false);
+                  setLiveError(false);
                   setDemoIndex(0);
                 }
                 return next;
@@ -241,11 +250,48 @@ export default function LivePage() {
         {loading && (
           <div className="glass-card p-10 text-center">
             <div className="h-5 w-48 glass-skeleton rounded mx-auto mb-4" />
-            <div className="h-3 w-64 glass-skeleton rounded mx-auto" />
+            <p className="text-sm text-zinc-400">
+              {liveState === "slowLoading"
+                ? "Waking up the race data service..."
+                : liveState === "retrying"
+                  ? "Retrying live race data..."
+                  : "Loading live race data..."}
+            </p>
           </div>
         )}
 
-        {!loading && (!visibleData || !visibleData.active) && (
+        {!loading && liveError && !demoMode && (
+          <div className="space-y-6">
+            <div className="glass-card p-10 sm:p-16 text-center">
+              <p className="text-xs text-red-400 uppercase tracking-widest mb-4">Offline</p>
+              <h2 className="text-lg font-semibold text-zinc-200 mb-3">The backend is taking longer than expected.</h2>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoading(true);
+                  setRetryCount((value) => value + 1);
+                }}
+                className="mt-4 rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500"
+              >
+                Retry
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDemoIndex(0);
+                  setLoading(false);
+                  setLiveError(false);
+                  setDemoMode(true);
+                }}
+                className="ml-3 mt-4 rounded-md border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
+              >
+                Try Demo
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!loading && !liveError && (!visibleData || !visibleData.active) && (
           <div className="space-y-6">
             <div className="glass-card p-10 sm:p-16 text-center">
               <p className="text-xs text-red-400 uppercase tracking-widest mb-4">No Live Session</p>
@@ -258,6 +304,7 @@ export default function LivePage() {
                 onClick={() => {
                   setDemoIndex(0);
                   setLoading(false);
+                  setLiveError(false);
                   setDemoMode(true);
                 }}
                 className="mt-7 rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500"
