@@ -526,7 +526,8 @@ function LiveCompanion({
             )}
           </div>
 
-          <div className="grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 mb-3">
+          <div className="overflow-x-auto pb-1 scrollbar-hide">
+          <div className="min-w-[620px] grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 mb-3">
             <span className="text-[9px] text-zinc-500 text-right">P</span>
             <span />
             <span className="text-[9px] text-zinc-500">Code</span>
@@ -539,7 +540,7 @@ function LiveCompanion({
           {visibleDrivers.map((driver, index) => (
             <div
               key={driver.code}
-              className={`grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 py-2.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${
+              className={`min-w-[620px] grid grid-cols-[2rem_3px_2.5rem_1fr_5rem_5rem_5rem] gap-2 items-center px-1 py-2.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${
                 index < 3 ? "bg-white/[0.02]" : ""
               }`}
             >
@@ -564,6 +565,7 @@ function LiveCompanion({
               <span />
             </div>
           ))}
+          </div>
         </div>
 
         <div className="space-y-6">
