@@ -18,17 +18,6 @@ interface SeasonSummary {
   tagline: string;
 }
 
-const TEAM_COLOR: Record<string, string> = {
-  "Red Bull Racing": "border-blue-500",
-  "Red Bull": "border-blue-500",
-  Mercedes: "border-emerald-400",
-  Ferrari: "border-red-500",
-  McLaren: "border-orange-400",
-  Williams: "border-white",
-  Renault: "border-yellow-400",
-  Brawn: "border-lime-400",
-};
-
 const FEATURES = [
   {
     image: "/images/f1-pack-racing.webp",
@@ -101,6 +90,8 @@ export default function IntroHero({
           cta={
             i === 0
               ? { label: "Pick a Season", onClick: () => onSelectYear(latestYear) }
+              : i === 1
+                ? { label: "Try Strategy Lab", onClick: () => onSelectYear(latestYear) }
               : undefined
           }
         />
@@ -186,7 +177,7 @@ function HeroSection() {
             <span className="text-red-500">DAY</span>
           </h1>
           <div className="space-y-2">
-            <p className="text-base sm:text-xl text-amber-200 font-light tracking-wide drop-shadow-[0_0_18px_rgba(245,158,11,0.35)]">
+            <p className="text-base sm:text-xl text-white font-light tracking-wide drop-shadow-[0_0_18px_rgba(239,68,68,0.28)]">
               Feel the chaos. Understand the strategy.
             </p>
             <p className="text-sm sm:text-base text-red-200/60 font-light tracking-wide">
