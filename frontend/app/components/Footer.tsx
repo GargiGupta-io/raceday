@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+const loomUrl =
+  process.env.NEXT_PUBLIC_LOOM_URL ||
+  "https://www.loom.com/share/7df534de3e6848f094580612fe1341e7";
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
@@ -83,8 +87,18 @@ export default function Footer() {
                   </li>
                   <li>
                     <Link href="/live" className="text-sm text-zinc-400 hover:text-white transition-colors">
-                      Live Dashboard
+                      Live Companion
                     </Link>
+                  </li>
+                  <li>
+                    <a
+                      href={loomUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-zinc-400 hover:text-white transition-colors"
+                    >
+                      Video Walkthrough
+                    </a>
                   </li>
                 </ul>
               </div>
