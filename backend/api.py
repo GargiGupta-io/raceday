@@ -19,6 +19,7 @@ from datetime import datetime
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 from backend.core import indexer, insights
 from backend.core import live_feed
@@ -40,6 +41,40 @@ _indexing_status = {
     "total_skipped": 0,
     "total_failed": 0,
 }
+
+
+class HealthResponse(BaseModel):
+    status: str
+    service: str
+    current_year: int
+    indexing_running: bool
+
+
+class DataSourceHealth(BaseModel):
+    name: str
+    status: str
+    purpose: str
+    timeout_seconds: int | None = None
+    note: str | None = None
+
+
+class IndexingStatusResponse(BaseModel):
+    running: bool
+    current_year: int | None
+    completed_years: list[int]
+    total_indexed: int
+    total_skipped: int
+    total_failed: int
+
+
+class LiveStatusResponse(BaseModel):
+    status: str
+    active: bool
+    session: str | None = None
+    clients: int
+    last_update: str | None = None
+    last_error: str | None = None
+    source: str
 
 
 def _background_index_all():
@@ -143,9 +178,47 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 # ---------------------------------------------------------------------------
 
 
-@app.get("/health")
+@app.get("/health", response_model=HealthResponse)
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "service": "raceday-backend",
+        "current_year": CURRENT_YEAR,
+        "indexing_running": bool(_indexing_status["running"]),
+    }
+
+
+@app.get("/health/data-sources", response_model=list[DataSourceHealth])
+def data_source_health():
+    live_status = live_feed.get_live_status()
+    openf1_status = "degraded" if live_status.get("status") == "error" else "configured"
+    return [
+        {
+            "name": "FastF1",
+            "status": "configured",
+            "purpose": "Historical timing, lap, session, tyre, and race data",
+            "note": "Loaded through local cache/indexing jobs",
+        },
+        {
+            "name": "Jolpica",
+            "status": "configured",
+            "purpose": "Historical schedules and results fallback",
+            "timeout_seconds": 15,
+        },
+        {
+            "name": "OpenMeteo",
+            "status": "configured",
+            "purpose": "Weather context for race conditions",
+            "timeout_seconds": 15,
+        },
+        {
+            "name": "OpenF1",
+            "status": openf1_status,
+            "purpose": "Live session, timing, stint, and driver data",
+            "timeout_seconds": live_feed.OPENF1_TIMEOUT_SECONDS,
+            "note": live_status.get("last_error"),
+        },
+    ]
 
 
 @app.post("/refresh/{year}")
@@ -164,12 +237,17 @@ def refresh_season(year: int):
 
 
 @app.get("/live")
-def live_status():
+def live_snapshot():
     """Get current live race state (same data as WebSocket, but via REST)."""
     state = live_feed.get_live_state()
     if state is None:
         return {"active": False, "session": None}
     return {"active": True, **state}
+
+
+@app.get("/live/status", response_model=LiveStatusResponse)
+def live_feed_status():
+    return live_feed.get_live_status()
 
 
 @app.websocket("/ws/live")
@@ -193,7 +271,7 @@ async def websocket_live(ws: WebSocket):
         live_feed.remove_client(ws)
 
 
-@app.get("/indexing/status")
+@app.get("/indexing/status", response_model=IndexingStatusResponse)
 def indexing_status():
     return _indexing_status
 
