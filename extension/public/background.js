@@ -1,76 +1,147 @@
 /**
- * background.js — Extension service worker
+ * background.js - Extension service worker
  *
- * Manages connection to the Raceday backend for live data.
- * Polls the REST /live endpoint (WebSocket is available but
- * REST polling is simpler for extension service workers).
- * Relays updates to popup and content scripts.
+ * Owns backend settings, polling, demo mode, and update broadcasts.
  */
 
-const BACKEND_URL = "http://localhost:8888";
+const DEFAULT_SETTINGS = {
+  backendUrl: "http://localhost:8888",
+  overlayEnabled: true,
+  overlayMode: "compact",
+  demoMode: false,
+};
+
+const DEMO_DATA = {
+  active: true,
+  lap: 25,
+  totalLaps: 57,
+  session: "Demo Grand Prix",
+  drivers: [
+    { code: "NOR", name: "Lando Norris", team: "McLaren", teamColour: "#ffffff", position: 1, gap: "LEADER", compound: "MEDIUM", stintAge: 21, pitWindow: "Lap 25-27", tyreLife: 35 },
+    { code: "VER", name: "Max Verstappen", team: "Red Bull Racing", teamColour: "#ffffff", position: 2, gap: "+1.1", compound: "MEDIUM", stintAge: 21, pitWindow: "Lap 25-27", tyreLife: 33 },
+    { code: "LEC", name: "Charles Leclerc", team: "Ferrari", teamColour: "#dc2626", position: 3, gap: "+3.6", compound: "HARD", stintAge: 13, pitWindow: null, tyreLife: 66 },
+    { code: "PIA", name: "Oscar Piastri", team: "McLaren", teamColour: "#ffffff", position: 4, gap: "+7.8", compound: "MEDIUM", stintAge: 21, pitWindow: "Lap 25-28", tyreLife: 36 },
+    { code: "HAM", name: "Lewis Hamilton", team: "Ferrari", teamColour: "#dc2626", position: 5, gap: "+10.2", compound: "HARD", stintAge: 1, pitWindow: null, tyreLife: 98 },
+  ],
+  predictions: [
+    { driver: "NOR", prediction: "Pit L25-27 for Hard", confidence: "high" },
+    { driver: "VER", prediction: "Pit L25-27 for Hard", confidence: "high" },
+  ],
+  whatIf: [
+    { driver: "NOR", position: 1, pitNow: "P5", stayOut: "P2", recommendation: "pit" },
+    { driver: "VER", position: 2, pitNow: "P6", stayOut: "P3", recommendation: "pit" },
+  ],
+  alerts: [
+    { text: "Norris and Verstappen are inside the same pit window. Track position is now the pressure point.", type: "warning" },
+  ],
+};
+
+let settings = { ...DEFAULT_SETTINGS };
 let liveData = null;
 let pollInterval = null;
-let connectionStatus = "disconnected"; // "connected" | "disconnected" | "checking"
+let connectionStatus = "checking";
 
-// Listen for messages from popup/content scripts
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_LIVE_DATA") {
-    sendResponse({ data: liveData, status: connectionStatus });
+    sendResponse({ data: liveData, status: connectionStatus, settings });
     return true;
   }
 
-  if (msg.type === "GET_BACKEND_URL") {
-    sendResponse({ url: BACKEND_URL });
+  if (msg.type === "GET_SETTINGS") {
+    sendResponse({ settings, status: connectionStatus });
+    return true;
+  }
+
+  if (msg.type === "SAVE_SETTINGS") {
+    saveSettings(msg.settings || {}).then(() => {
+      sendResponse({ settings, status: connectionStatus });
+    });
     return true;
   }
 
   if (msg.type === "START_POLLING") {
     startPolling();
-    sendResponse({ status: "polling" });
+    sendResponse({ status: connectionStatus });
     return true;
   }
 
   if (msg.type === "STOP_POLLING") {
     stopPolling();
-    sendResponse({ status: "stopped" });
+    sendResponse({ status: connectionStatus });
     return true;
   }
 });
 
-// Poll the /live REST endpoint
+async function loadSettings() {
+  const stored = await chrome.storage.local.get(DEFAULT_SETTINGS);
+  settings = { ...DEFAULT_SETTINGS, ...stored };
+}
+
+async function saveSettings(nextSettings) {
+  settings = { ...settings, ...nextSettings };
+  await chrome.storage.local.set(settings);
+  broadcastToAll({ type: "SETTINGS_UPDATE", settings });
+
+  if (!settings.overlayEnabled) {
+    stopPolling();
+    return;
+  }
+
+  if (settings.demoMode) {
+    liveData = DEMO_DATA;
+    connectionStatus = "demo";
+    broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
+    broadcastToAll({ type: "LIVE_UPDATE", data: liveData });
+    startPolling();
+    return;
+  }
+
+  restartPolling();
+}
+
 async function fetchLiveData() {
+  if (!settings.overlayEnabled) return;
+
+  if (settings.demoMode) {
+    liveData = DEMO_DATA;
+    connectionStatus = "demo";
+    broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
+    broadcastToAll({ type: "LIVE_UPDATE", data: liveData });
+    return;
+  }
+
   try {
-    const resp = await fetch(`${BACKEND_URL}/live`, { signal: AbortSignal.timeout(8000) });
+    connectionStatus = "checking";
+    broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
+
+    const base = settings.backendUrl.replace(/\/+$/, "");
+    const resp = await fetch(`${base}/live`, { signal: AbortSignal.timeout(8000) });
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
     const data = await resp.json();
 
-    if (connectionStatus !== "connected") {
-      connectionStatus = "connected";
-      broadcastToAll({ type: "WS_STATUS", status: "connected" });
-    }
-
     if (data.active) {
       liveData = data;
+      connectionStatus = "connected";
       broadcastToAll({ type: "LIVE_UPDATE", data: liveData });
-    } else if (liveData !== null) {
+    } else {
       liveData = null;
+      connectionStatus = "no-session";
       broadcastToAll({ type: "LIVE_UPDATE", data: null });
     }
+    broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
   } catch (e) {
-    if (connectionStatus !== "disconnected") {
-      connectionStatus = "disconnected";
-      broadcastToAll({ type: "WS_STATUS", status: "disconnected" });
-    }
+    liveData = null;
+    connectionStatus = "offline";
+    broadcastToAll({ type: "LIVE_UPDATE", data: null });
+    broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
   }
 }
 
 function startPolling() {
-  if (pollInterval) return; // already polling
-  connectionStatus = "checking";
-  fetchLiveData(); // immediate first fetch
-  pollInterval = setInterval(fetchLiveData, 10000); // then every 10s
-  console.log("[Raceday] Polling started");
+  if (pollInterval) return;
+  fetchLiveData();
+  pollInterval = setInterval(fetchLiveData, 10000);
 }
 
 function stopPolling() {
@@ -79,22 +150,31 @@ function stopPolling() {
     pollInterval = null;
   }
   liveData = null;
-  connectionStatus = "disconnected";
-  console.log("[Raceday] Polling stopped");
+  connectionStatus = "stopped";
+  broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
+  broadcastToAll({ type: "LIVE_UPDATE", data: null });
+}
+
+function restartPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval);
+    pollInterval = null;
+  }
+  startPolling();
 }
 
 function broadcastToAll(message) {
   chrome.runtime.sendMessage(message).catch(() => {});
 }
 
-// Auto-start polling on install/startup
 chrome.runtime.onInstalled.addListener(() => {
-  startPolling();
+  loadSettings().then(startPolling);
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  startPolling();
+  loadSettings().then(startPolling);
 });
 
-// Start immediately
-startPolling();
+loadSettings().then(() => {
+  if (settings.overlayEnabled) startPolling();
+});
