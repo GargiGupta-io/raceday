@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { API } from "@/app/lib/api";
+import { API, fetchWithTimeout } from "@/app/lib/api";
 import { wrapGlossaryTerms } from "@/app/components/GlossaryTerm";
 
 interface StoryData {
@@ -23,12 +23,7 @@ export default function RaceStory({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`${API}/races/${year}/${encodeURIComponent(track)}/story`)
-      .then((r) => {
-        if (!r.ok) return null;
-        return r.json();
-      })
+    fetchWithTimeout<StoryData | null>(`${API}/races/${year}/${encodeURIComponent(track)}/story`)
       .then((d) => {
         setData(d);
         setLoading(false);
