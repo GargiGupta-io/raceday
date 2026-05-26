@@ -101,6 +101,7 @@ export default function PatternFinderPage() {
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [presetTrigger, setPresetTrigger] = useState(0);
   const [activePreset, setActivePreset] = useState<string | null>(null);
 
@@ -126,6 +127,7 @@ export default function PatternFinderPage() {
   function handleSearch() {
     setLoading(true);
     setSearched(true);
+    setSearchError(false);
 
     const filters: Record<string, unknown> = {};
     if (circuit) filters.circuit = circuit;
@@ -149,6 +151,7 @@ export default function PatternFinderPage() {
       })
       .catch(() => {
         setResults(null);
+        setSearchError(true);
         setLoading(false);
       });
   }
@@ -192,7 +195,7 @@ export default function PatternFinderPage() {
         </div>
 
         {/* Popular patterns — interesting stats */}
-        <div className="hidden">
+        <div className="hidden" aria-hidden="true">
           <p className="hidden">Did you know?</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
@@ -389,17 +392,34 @@ export default function PatternFinderPage() {
           </div>
         )}
 
+        {!loading && searchError && (
+          <div className="glass-card p-8 text-center">
+            <p className="text-sm font-semibold text-zinc-200">Pattern search is taking longer than expected.</p>
+            <p className="mt-2 text-xs text-zinc-600">Try again in a moment or use a broader preset.</p>
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="mt-5 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {/* Results */}
-        {!loading && searched && results && (
+        {!loading && !searchError && searched && results && (
           <div>
             <p className="text-sm text-zinc-400 mb-6">
               {results.count} {results.count === 1 ? "race" : "races"} found
             </p>
 
             {results.races.length === 0 ? (
-              <p className="text-zinc-600 text-sm text-center py-12">
-                No races match those criteria. Try broadening your filters.
-              </p>
+              <div className="glass-card p-8 text-center">
+                <p className="text-sm font-semibold text-zinc-300">No matching races yet</p>
+                <p className="mt-2 text-xs text-zinc-600">
+                  Try lowering the grid position, removing a team filter, or starting from a preset.
+                </p>
+              </div>
             ) : (
               <div className="space-y-3">
                 {results.races.map((race) => {
