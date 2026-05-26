@@ -191,8 +191,8 @@ export default function PatternFinderPage() {
         </div>
 
         {/* Popular patterns — interesting stats */}
-        <div className="glass-card p-6 sm:p-8 mb-12">
-          <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">Did you know?</p>
+        <div className="hidden">
+          <p className="hidden">Did you know?</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div>
               <p className="text-2xl font-bold text-white">73%</p>
@@ -223,6 +223,12 @@ export default function PatternFinderPage() {
 
         {/* Filter form — glass */}
         <div className="glass-card p-6 sm:p-8 mb-12">
+          <div className="mb-6">
+            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Build your own pattern</p>
+            <p className="text-sm text-zinc-400">
+              Use the filters when you want to make your own search instead of starting from a preset.
+            </p>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5 mb-6">
             {/* Circuit */}
             <div>
@@ -230,7 +236,10 @@ export default function PatternFinderPage() {
               <input
                 type="text"
                 value={circuit}
-                onChange={(e) => setCircuit(e.target.value)}
+                onChange={(e) => {
+                  setCircuit(e.target.value);
+                  setActivePreset(null);
+                }}
                 placeholder="e.g. British, Monza"
                 className="glass-input w-full px-3 py-2.5 text-sm"
               />
@@ -241,7 +250,10 @@ export default function PatternFinderPage() {
               <label className="block text-xs text-zinc-500 mb-1.5">Weather</label>
               <select
                 value={condition}
-                onChange={(e) => setCondition(e.target.value)}
+                onChange={(e) => {
+                  setCondition(e.target.value);
+                  setActivePreset(null);
+                }}
                 className="glass-input w-full px-3 py-2.5 text-sm"
               >
                 <option value="" className="bg-zinc-900">Any</option>
@@ -257,7 +269,10 @@ export default function PatternFinderPage() {
               <input
                 type="text"
                 value={winner}
-                onChange={(e) => setWinner(e.target.value)}
+                onChange={(e) => {
+                  setWinner(e.target.value);
+                  setActivePreset(null);
+                }}
                 placeholder="e.g. VER, Hamilton"
                 className="glass-input w-full px-3 py-2.5 text-sm"
               />
@@ -269,7 +284,10 @@ export default function PatternFinderPage() {
               <input
                 type="text"
                 value={team}
-                onChange={(e) => setTeam(e.target.value)}
+                onChange={(e) => {
+                  setTeam(e.target.value);
+                  setActivePreset(null);
+                }}
                 placeholder="e.g. Red Bull, Ferrari"
                 className="glass-input w-full px-3 py-2.5 text-sm"
               />
@@ -281,7 +299,10 @@ export default function PatternFinderPage() {
               <input
                 type="number"
                 value={minGrid}
-                onChange={(e) => setMinGrid(e.target.value)}
+                onChange={(e) => {
+                  setMinGrid(e.target.value);
+                  setActivePreset(null);
+                }}
                 placeholder="e.g. 5 (P5 or worse)"
                 min={1}
                 max={20}
@@ -295,7 +316,10 @@ export default function PatternFinderPage() {
               <input
                 type="number"
                 value={minDnf}
-                onChange={(e) => setMinDnf(e.target.value)}
+                onChange={(e) => {
+                  setMinDnf(e.target.value);
+                  setActivePreset(null);
+                }}
                 placeholder="e.g. 5"
                 min={0}
                 max={20}
@@ -309,7 +333,10 @@ export default function PatternFinderPage() {
               <input
                 type="number"
                 value={yearFrom}
-                onChange={(e) => setYearFrom(e.target.value)}
+                onChange={(e) => {
+                  setYearFrom(e.target.value);
+                  setActivePreset(null);
+                }}
                 min={2010}
                 max={2024}
                 className="glass-input w-full px-3 py-2.5 text-sm"
@@ -322,7 +349,10 @@ export default function PatternFinderPage() {
               <input
                 type="number"
                 value={yearTo}
-                onChange={(e) => setYearTo(e.target.value)}
+                onChange={(e) => {
+                  setYearTo(e.target.value);
+                  setActivePreset(null);
+                }}
                 min={2010}
                 max={2024}
                 className="glass-input w-full px-3 py-2.5 text-sm"
