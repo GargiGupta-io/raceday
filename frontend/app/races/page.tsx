@@ -38,6 +38,10 @@ const WEATHER_BADGE: Record<string, { bg: string; text: string; label: string }>
   damp: { bg: "bg-white/10", text: "text-zinc-300", label: "MIXED" },
 };
 
+const STABLE_DEMO_YEAR = 2021;
+const STABLE_DEMO_TRACK = "Abu Dhabi Grand Prix";
+const STABLE_DEMO_RACE = `/races/${STABLE_DEMO_YEAR}/${encodeURIComponent(STABLE_DEMO_TRACK)}`;
+
 export default function RacesPage() {
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
@@ -74,7 +78,10 @@ function Races() {
       .then((data: SeasonSummary[]) => {
         setSeasons(data);
         if (year === null && data.length > 0) {
-          const latest = Math.max(...data.map((s) => s.year));
+          const stableSeasons = data.filter((season) => season.races > 0);
+          const latest = stableSeasons.length > 0
+            ? Math.max(...stableSeasons.map((s) => s.year))
+            : STABLE_DEMO_YEAR;
           setYear(latest);
           router.replace(`/races?year=${latest}`);
         }
@@ -138,6 +145,23 @@ function Races() {
         )}
 
         {year !== null && (<>
+
+          <div className="mb-10 grid gap-3 sm:grid-cols-2">
+            <Link href={STABLE_DEMO_RACE} className="glass-card p-5 transition hover:border-red-500/30">
+              <p className="text-[10px] uppercase tracking-widest text-red-400">Recruiter path</p>
+              <p className="mt-2 text-lg font-semibold text-white">Start with 2021 Abu Dhabi</p>
+              <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+                A stable indexed race story with strategy and simulation data.
+              </p>
+            </Link>
+            <Link href="/live?demo=1" className="glass-card p-5 transition hover:border-red-500/30">
+              <p className="text-[10px] uppercase tracking-widest text-red-400">Anytime demo</p>
+              <p className="mt-2 text-lg font-semibold text-white">Try Live Demo</p>
+              <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+                Replay saved live snapshots without waiting for race weekend.
+              </p>
+            </Link>
+          </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
             <div>
@@ -230,13 +254,24 @@ function Races() {
             {error && (
               <div className="glass-card p-8 text-center">
                 <p className="text-red-400 text-sm">The backend is taking longer than expected.</p>
+                <p className="mt-2 text-xs text-zinc-400">
+                  You can retry this season or open the stable demo race.
+                </p>
+                <div className="mt-5 flex flex-col sm:flex-row justify-center gap-3">
                 <button
                   type="button"
                   onClick={() => setRetryCount((value) => value + 1)}
-                  className="mt-5 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+                  className="rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
                 >
                   Retry
                 </button>
+                  <Link
+                    href={STABLE_DEMO_RACE}
+                    className="rounded-md border border-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:border-red-500/40"
+                  >
+                    Open stable race
+                  </Link>
+                </div>
               </div>
             )}
 
@@ -261,9 +296,23 @@ function Races() {
               ) : (
                 <div className="glass-card p-8 text-center">
                   <p className="text-sm font-semibold text-zinc-300">No races found</p>
-                  <p className="mt-2 text-xs text-zinc-600">
-                    Try clearing the search or switching the weather filter.
+                  <p className="mt-2 text-xs text-zinc-400">
+                    Try clearing the filters, opening the stable race, or using live demo mode.
                   </p>
+                  <div className="mt-5 flex flex-col sm:flex-row justify-center gap-3">
+                    <Link
+                      href={STABLE_DEMO_RACE}
+                      className="rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+                    >
+                      Start with 2021 Abu Dhabi
+                    </Link>
+                    <Link
+                      href="/live?demo=1"
+                      className="rounded-md border border-white/10 px-5 py-2 text-sm font-semibold text-white transition hover:border-red-500/40"
+                    >
+                      Try Live Demo
+                    </Link>
+                  </div>
                 </div>
               );
             })()}
