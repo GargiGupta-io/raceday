@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import IntroHero from "@/app/components/IntroHero";
 
-import { API } from "@/app/lib/api";
+import { API, fetchWithTimeout } from "@/app/lib/api";
 
 interface SeasonSummary {
   year: number;
@@ -20,8 +20,7 @@ export default function HomePage() {
   const [seasons, setSeasons] = useState<SeasonSummary[]>([]);
 
   useEffect(() => {
-    fetch(`${API}/seasons/summary`)
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+    fetchWithTimeout<SeasonSummary[]>(`${API}/seasons/summary`)
       .then(setSeasons)
       .catch(() => {});
   }, []);
