@@ -16,7 +16,7 @@ import RadioMoments from "@/app/components/RadioMoments";
 import StrategySimulator from "@/app/components/StrategySimulator";
 
 import Image from "next/image";
-import { API } from "@/app/lib/api";
+import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
 import FadeIn from "@/app/lib/FadeIn";
 import { getCircuitSvg } from "@/app/lib/circuits";
 
@@ -63,22 +63,26 @@ export default function RacePage({
   const [sidebar, setSidebar] = useState<SidebarData | null>(null);
   const [tagline, setTagline] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [detailState, setDetailState] = useState<FetchState>("loading");
   const [error, setError] = useState<string | null>(null);
   const [strategyMode, setStrategyMode] = useState<"story" | "data">("story");
   const [activeTab, setActiveTab] = useState<RaceTab>("story");
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const base = `${API}/races/${year}/${encodeURIComponent(trackName)}`;
 
-    const safeFetch = (url: string) =>
-      fetch(url).then((r) => {
-        if (!r.ok) throw new Error(`${r.status}`);
-        return r.json();
+    const safeFetch = <T,>(url: string) =>
+      fetchWithTimeout<T>(url, {
+        onState: (state) => {
+          setDetailState(state);
+          if (state !== "error") setError(null);
+        },
       });
 
     Promise.all([
-      safeFetch(`${base}/results`),
-      safeFetch(`${base}/strategy`),
+      safeFetch<RaceSummary>(`${base}/results`),
+      safeFetch<StrategyEntry[]>(`${base}/strategy`),
     ])
       .then(([res, str]) => {
         setResults(res);
@@ -90,37 +94,42 @@ export default function RacePage({
         setLoading(false);
       });
 
-    fetch(`${base}/story`)
-      .then((r) => (r.ok ? r.json() : null))
+    fetchWithTimeout<{ tagline?: string } | null>(`${base}/story`)
       .then((d) => {
         if (d?.tagline) setTagline(d.tagline);
       })
       .catch(() => {});
 
-    fetch(`${base}/sidebar`)
-      .then((r) => {
-        if (!r.ok) return null;
-        return r.json();
-      })
+    fetchWithTimeout<SidebarData | null>(`${base}/sidebar`)
       .then((data) => {
         if (data) setSidebar(data);
       })
       .catch(() => {});
-  }, [year, trackName]);
+  }, [year, trackName, retryCount]);
 
   return (
     <div className="min-h-screen text-zinc-100">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-32 sm:pt-40 pb-10 sm:pb-16">
         <RaceHeader year={year} trackName={trackName} tagline={tagline} />
 
-        {loading && <RaceLoading />}
+        {loading && <RaceLoading state={detailState} />}
 
         {error && (
           <div className="glass-card p-8 text-center">
             <p className="text-red-400 text-sm">Could not load race data.</p>
             <p className="text-zinc-500 text-xs mt-2">
-              Check that the backend is running on the correct port.
+              The backend is taking longer than expected.
             </p>
+            <button
+              type="button"
+              onClick={() => {
+                setLoading(true);
+                setRetryCount((value) => value + 1);
+              }}
+              className="mt-5 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+            >
+              Retry
+            </button>
           </div>
         )}
 
@@ -426,7 +435,7 @@ function MomentsTab({ year, track }: { year: string; track: string }) {
   );
 }
 
-function RaceLoading() {
+function RaceLoading({ state }: { state: FetchState }) {
   return (
     <div className="space-y-10">
       <div className="glass-card p-8 space-y-4">
@@ -444,6 +453,13 @@ function RaceLoading() {
         <div className="h-3 w-5/6 glass-skeleton rounded" />
         <div className="h-3 w-4/6 glass-skeleton rounded" />
       </div>
+      <p className="text-sm text-zinc-500 text-center">
+        {state === "slowLoading"
+          ? "Waking up the race data service..."
+          : state === "retrying"
+            ? "Retrying race data..."
+            : "Loading race story..."}
+      </p>
     </div>
   );
 }
