@@ -21,7 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import indexer, insights
+from backend.core import indexer, insights, storage
 from backend.core import live_feed
 
 logger = logging.getLogger(__name__)
@@ -88,6 +88,14 @@ class LiveStatusResponse(BaseModel):
     last_update: str | None = None
     last_error: str | None = None
     source: str
+
+
+class StorageStatusResponse(BaseModel):
+    backend: str
+    json_index_dir: str
+    database_url_configured: bool
+    postgres_ready: bool
+    active_store: str
 
 
 def _background_index_all():
@@ -281,6 +289,11 @@ async def websocket_live(ws: WebSocket):
 @app.get("/indexing/status", response_model=IndexingStatusResponse)
 def indexing_status():
     return _indexing_status
+
+
+@app.get("/storage/status", response_model=StorageStatusResponse)
+def storage_status():
+    return storage.storage_status()
 
 
 @app.get("/seasons/summary")

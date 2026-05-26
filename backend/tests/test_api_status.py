@@ -29,6 +29,13 @@ def test_data_source_health_includes_live_source():
     assert {"FastF1", "Jolpica", "OpenMeteo", "OpenF1"}.issubset(names)
 
 
+def test_storage_status_route_reports_active_store():
+    response = api.storage_status()
+
+    assert response["active_store"] == "json"
+    assert response["backend"] in {"json", "postgres"}
+
+
 def test_empty_race_response_raises_404(monkeypatch):
     monkeypatch.setattr(api.insights, "get_season_races", lambda year: None)
 
