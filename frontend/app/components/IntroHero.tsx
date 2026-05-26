@@ -185,9 +185,14 @@ function HeroSection() {
             RACE
             <span className="text-red-500">DAY</span>
           </h1>
-          <p className="text-base sm:text-xl text-zinc-500 font-light tracking-wide">
-            Every race has a story. Scroll to find yours.
-          </p>
+          <div className="space-y-2">
+            <p className="text-base sm:text-xl text-amber-200 font-light tracking-wide drop-shadow-[0_0_18px_rgba(245,158,11,0.35)]">
+              Feel the chaos. Understand the strategy.
+            </p>
+            <p className="text-sm sm:text-base text-red-200/60 font-light tracking-wide">
+              The drama is always in the data.
+            </p>
+          </div>
         </div>
       </div>
 
