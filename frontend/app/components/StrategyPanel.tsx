@@ -8,10 +8,10 @@ interface StrategyEntry {
 
 const COMPOUND_STYLES: Record<string, { bg: string; text: string; label: string }> = {
   SOFT:         { bg: "bg-red-600",    text: "text-white",      label: "S" },
-  MEDIUM:       { bg: "bg-yellow-400", text: "text-black",      label: "M" },
+  MEDIUM:       { bg: "bg-white",      text: "text-black",      label: "M" },
   HARD:         { bg: "bg-zinc-100",   text: "text-black",      label: "H" },
-  INTERMEDIATE: { bg: "bg-green-500",  text: "text-white",      label: "I" },
-  WET:          { bg: "bg-blue-500",   text: "text-white",      label: "W" },
+  INTERMEDIATE: { bg: "bg-zinc-600",   text: "text-white",      label: "I" },
+  WET:          { bg: "bg-black",      text: "text-white",      label: "W" },
   UNKNOWN:      { bg: "bg-zinc-700",   text: "text-zinc-300",   label: "?" },
 };
 
@@ -33,7 +33,7 @@ function StopsBadge({ stops }: { stops: number }) {
   if (stops === 1)
     return <span className="glass-badge text-zinc-300">1-stop</span>;
   return (
-    <span className="rounded px-1.5 py-0.5 text-xs bg-amber-900/60 text-amber-400">
+    <span className="rounded px-1.5 py-0.5 text-xs border border-red-500/25 bg-red-500/10 text-red-300">
       {stops}-stop
     </span>
   );
