@@ -134,8 +134,13 @@ const DEMO_SNAPSHOTS: LiveData[] = [
 ];
 
 function tyreClass(compound: string) {
-  if (compound.toUpperCase() === "SOFT") return "border-red-500 text-red-400";
-  return "border-white/70 text-white";
+  const upper = compound.toUpperCase();
+  if (upper === "SOFT") return "border-red-500 bg-red-600 text-white";
+  if (upper === "MEDIUM") return "border-red-800 bg-red-950 text-red-100";
+  if (upper === "HARD") return "border-white bg-white text-black";
+  if (upper === "INTERMEDIATE") return "border-zinc-500 bg-zinc-700 text-white";
+  if (upper === "WET") return "border-white/60 bg-black text-white";
+  return "border-zinc-500 bg-zinc-800 text-zinc-200";
 }
 
 function lifeClass(tyreLife: number) {
