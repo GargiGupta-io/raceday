@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { API, fetchWithTimeout } from "@/app/lib/api";
 import HighlightedText from "@/app/lib/HighlightedText";
+import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 interface Moment {
   type: string;
@@ -89,9 +90,11 @@ export default function KeyMoments({
                 <p className="text-sm font-semibold text-zinc-100">
                   <HighlightedText text={moment.headline} />
                 </p>
-                <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                  <HighlightedText text={moment.detail} />
-                </p>
+                <div className="mt-2">
+                  <ProgressiveDetail label="Why this mattered">
+                    <HighlightedText text={moment.detail} />
+                  </ProgressiveDetail>
+                </div>
               </div>
             </div>
           );
