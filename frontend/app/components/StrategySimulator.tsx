@@ -90,9 +90,9 @@ interface SwapResult {
 
 const COMPOUND_COLORS: Record<string, { bg: string; text: string; ring: string; border: string }> = {
   SOFT:         { bg: "bg-red-600",       text: "text-white",    ring: "ring-red-600",       border: "border-red-500" },
-  MEDIUM:       { bg: "bg-white",         text: "text-black",    ring: "ring-white",         border: "border-white" },
-  HARD:         { bg: "bg-zinc-900",      text: "text-white",    ring: "ring-zinc-500",      border: "border-zinc-500" },
-  SUPERSOFT:    { bg: "bg-red-700",       text: "text-white",    ring: "ring-red-700",       border: "border-red-500" },
+  MEDIUM:       { bg: "bg-red-950",       text: "text-red-100",  ring: "ring-red-900",       border: "border-red-800" },
+  HARD:         { bg: "bg-white",         text: "text-black",    ring: "ring-white",         border: "border-white" },
+  SUPERSOFT:    { bg: "bg-red-800",       text: "text-white",    ring: "ring-red-800",       border: "border-red-600" },
   INTERMEDIATE: { bg: "bg-zinc-700",      text: "text-white",    ring: "ring-zinc-500",      border: "border-zinc-500" },
   WET:          { bg: "bg-black",         text: "text-white",    ring: "ring-white",         border: "border-white/60" },
 };

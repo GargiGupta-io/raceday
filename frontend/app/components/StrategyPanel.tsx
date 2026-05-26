@@ -6,20 +6,20 @@ interface StrategyEntry {
   label: string;
 }
 
-const COMPOUND_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  SOFT:         { bg: "bg-red-600",    text: "text-white",      label: "S" },
-  MEDIUM:       { bg: "bg-white",      text: "text-black",      label: "M" },
-  HARD:         { bg: "bg-zinc-100",   text: "text-black",      label: "H" },
-  INTERMEDIATE: { bg: "bg-zinc-600",   text: "text-white",      label: "I" },
-  WET:          { bg: "bg-black",      text: "text-white",      label: "W" },
-  UNKNOWN:      { bg: "bg-zinc-700",   text: "text-zinc-300",   label: "?" },
+const COMPOUND_STYLES: Record<string, { bg: string; text: string; border: string; label: string }> = {
+  SOFT:         { bg: "bg-red-600",    text: "text-white",     border: "border-red-500",    label: "S" },
+  MEDIUM:       { bg: "bg-red-950",    text: "text-red-100",   border: "border-red-800",    label: "M" },
+  HARD:         { bg: "bg-zinc-100",   text: "text-black",     border: "border-white",      label: "H" },
+  INTERMEDIATE: { bg: "bg-zinc-600",   text: "text-white",     border: "border-zinc-500",   label: "I" },
+  WET:          { bg: "bg-black",      text: "text-white",     border: "border-white/60",   label: "W" },
+  UNKNOWN:      { bg: "bg-zinc-700",   text: "text-zinc-300",  border: "border-zinc-600",   label: "?" },
 };
 
 function CompoundChip({ compound }: { compound: string }) {
   const style = COMPOUND_STYLES[compound.toUpperCase()] ?? COMPOUND_STYLES.UNKNOWN;
   return (
     <span
-      className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${style.bg} ${style.text}`}
+      className={`inline-flex h-6 w-6 items-center justify-center rounded-full border text-xs font-bold ${style.bg} ${style.text} ${style.border}`}
       title={compound}
     >
       {style.label}
@@ -77,7 +77,7 @@ export default function StrategyPanel({ data }: { data: StrategyEntry[] }) {
           .map(([compound, style]) => (
             <div key={compound} className="flex items-center gap-1.5">
               <span
-                className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${style.bg} ${style.text}`}
+                className={`inline-flex h-4 w-4 items-center justify-center rounded-full border text-[10px] font-bold ${style.bg} ${style.text} ${style.border}`}
               >
                 {style.label}
               </span>
