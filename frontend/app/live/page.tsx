@@ -207,6 +207,14 @@ export default function LivePage() {
   const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("demo") === "1") {
+      setDemoMode(true);
+      setConnectionStatus("demo");
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     if (demoMode) return;
 
     let active = true;
