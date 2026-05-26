@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
+import { API, FetchState, fetchWithTimeout, wsUrl } from "@/app/lib/api";
 
 interface DriverLive {
   code: string;
@@ -39,12 +39,14 @@ interface LiveData {
   active: boolean;
   lap?: number;
   totalLaps?: number;
-  session?: string;
+  session?: string | null;
   drivers?: DriverLive[];
   predictions?: PitPrediction[];
   whatIf?: WhatIf[];
   alerts?: PatternAlert[];
 }
+
+type ConnectionStatus = "connected" | "reconnecting" | "offline" | "demo" | "no-session";
 
 const DEMO_SNAPSHOTS: LiveData[] = [
   {
@@ -140,6 +142,27 @@ function lifeClass(tyreLife: number) {
   return "bg-white";
 }
 
+function normalizeLiveData(payload: Partial<LiveData> | null): LiveData | null {
+  if (!payload) return null;
+  if (payload.active === false) return { active: false, session: payload.session };
+  return { active: true, ...payload };
+}
+
+function formatLastUpdated(lastUpdatedAt: number | null, now: number | null) {
+  if (!lastUpdatedAt || !now) return "Last updated --";
+  const seconds = Math.max(0, Math.floor((now - lastUpdatedAt) / 1000));
+  if (seconds < 1) return "Last updated now";
+  return `Last updated ${seconds}s ago`;
+}
+
+function statusCopy(status: ConnectionStatus) {
+  if (status === "connected") return "Connected";
+  if (status === "reconnecting") return "Reconnecting";
+  if (status === "demo") return "Demo Mode";
+  if (status === "no-session") return "No Live Session";
+  return "Offline";
+}
+
 function TyreIndicator({ compound, stintAge, tyreLife }: { compound: string; stintAge: number; tyreLife: number }) {
   return (
     <div className="flex items-center gap-2">
@@ -161,6 +184,9 @@ export default function LivePage() {
   const [loading, setLoading] = useState(true);
   const [liveState, setLiveState] = useState<FetchState>("loading");
   const [liveError, setLiveError] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("reconnecting");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<number | null>(null);
+  const [now, setNow] = useState<number | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [demoIndex, setDemoIndex] = useState(0);
   const [showFullGrid, setShowFullGrid] = useState(false);
@@ -170,8 +196,29 @@ export default function LivePage() {
     if (demoMode) return;
 
     let active = true;
+    let receivedWebSocketMessage = false;
+    let socket: WebSocket | null = null;
+    let noSessionTimer: number | undefined;
+    let pollingInterval: number | undefined;
 
-    const fetchLive = () => {
+    const applyLiveData = (payload: Partial<LiveData> | null, source: "websocket" | "polling") => {
+      if (!active) return;
+
+      const liveData = normalizeLiveData(payload);
+      setData(liveData);
+      setLoading(false);
+      setLiveError(false);
+      setLastUpdatedAt(Date.now());
+
+      if (!liveData?.active) {
+        setConnectionStatus("no-session");
+        return;
+      }
+
+      setConnectionStatus(source === "websocket" ? "connected" : "reconnecting");
+    };
+
+    const fetchLiveFallback = () => {
       fetchWithTimeout<LiveData | null>(`${API}/live`, {
         onState: (state) => {
           setLiveState(state);
@@ -179,25 +226,65 @@ export default function LivePage() {
         },
       })
         .then((liveData) => {
-          if (active) {
-            setData(liveData);
-            setLoading(false);
-          }
+          applyLiveData(liveData, "polling");
         })
         .catch(() => {
           if (active) {
             setData(null);
             setLiveError(true);
             setLoading(false);
+            setConnectionStatus("offline");
           }
         });
     };
 
-    fetchLive();
-    const interval = setInterval(fetchLive, 10000);
+    const startPollingFallback = () => {
+      if (pollingInterval) return;
+      setConnectionStatus("reconnecting");
+      fetchLiveFallback();
+      pollingInterval = window.setInterval(fetchLiveFallback, 10000);
+    };
+
+    try {
+      socket = new WebSocket(wsUrl("/ws/live"));
+
+      socket.onopen = () => {
+        if (!active) return;
+        setConnectionStatus("connected");
+        noSessionTimer = window.setTimeout(() => {
+          if (!active || receivedWebSocketMessage) return;
+          applyLiveData({ active: false, session: null }, "websocket");
+        }, 3500);
+      };
+
+      socket.onmessage = (event) => {
+        receivedWebSocketMessage = true;
+        if (noSessionTimer) window.clearTimeout(noSessionTimer);
+        try {
+          const payload = JSON.parse(event.data) as Partial<LiveData>;
+          applyLiveData(payload, "websocket");
+        } catch {
+          startPollingFallback();
+        }
+      };
+
+      socket.onerror = () => {
+        startPollingFallback();
+      };
+
+      socket.onclose = () => {
+        if (active && !receivedWebSocketMessage) startPollingFallback();
+        if (active && receivedWebSocketMessage) startPollingFallback();
+      };
+    } catch {
+      startPollingFallback();
+    }
+
     return () => {
       active = false;
-      clearInterval(interval);
+      if (noSessionTimer) window.clearTimeout(noSessionTimer);
+      if (pollingInterval) window.clearInterval(pollingInterval);
+      socket?.close();
     };
   }, [demoMode, retryCount]);
 
@@ -206,12 +293,23 @@ export default function LivePage() {
 
     const interval = setInterval(() => {
       setDemoIndex((current) => (current + 1) % DEMO_SNAPSHOTS.length);
+      setLastUpdatedAt(Date.now());
     }, 3500);
 
     return () => clearInterval(interval);
   }, [demoMode]);
 
+  useEffect(() => {
+    const interval = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
   const visibleData = demoMode ? DEMO_SNAPSHOTS[demoIndex] : data;
+  const displayedStatus: ConnectionStatus = demoMode
+    ? "demo"
+    : visibleData?.active === false
+      ? "no-session"
+      : connectionStatus;
 
   return (
     <div className="min-h-screen text-zinc-100">
@@ -223,6 +321,12 @@ export default function LivePage() {
             <p className="text-sm text-zinc-400 mt-2">
               Real-time strategy predictions during live F1 sessions.
             </p>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs">
+              <span className="rounded-md border border-white/10 bg-white/[0.04] px-3 py-1 text-zinc-300">
+                {statusCopy(displayedStatus)}
+              </span>
+              <span className="text-zinc-600">{formatLastUpdated(lastUpdatedAt, now)}</span>
+            </div>
           </div>
           <button
             type="button"
@@ -233,6 +337,13 @@ export default function LivePage() {
                   setLoading(false);
                   setLiveError(false);
                   setDemoIndex(0);
+                  setConnectionStatus("demo");
+                  setLastUpdatedAt(Date.now());
+                } else {
+                  setLoading(true);
+                  setData(null);
+                  setConnectionStatus("reconnecting");
+                  setLastUpdatedAt(null);
                 }
                 return next;
               });
@@ -269,6 +380,9 @@ export default function LivePage() {
                 type="button"
                 onClick={() => {
                   setLoading(true);
+                  setLiveState("loading");
+                  setConnectionStatus("reconnecting");
+                  setLastUpdatedAt(null);
                   setRetryCount((value) => value + 1);
                 }}
                 className="mt-4 rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500"
@@ -281,6 +395,8 @@ export default function LivePage() {
                   setDemoIndex(0);
                   setLoading(false);
                   setLiveError(false);
+                  setConnectionStatus("demo");
+                  setLastUpdatedAt(Date.now());
                   setDemoMode(true);
                 }}
                 className="ml-3 mt-4 rounded-md border border-white/15 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/15"
@@ -305,13 +421,17 @@ export default function LivePage() {
                   setDemoIndex(0);
                   setLoading(false);
                   setLiveError(false);
+                  setConnectionStatus("demo");
+                  setLastUpdatedAt(Date.now());
                   setDemoMode(true);
                 }}
                 className="mt-7 rounded-md bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-500"
               >
                 Try Live Demo
               </button>
-              <p className="text-xs text-zinc-600 mt-5">Auto-refreshes every 10 seconds</p>
+              <p className="text-xs text-zinc-600 mt-5">
+                WebSocket first. REST polling takes over if the live stream is unavailable.
+              </p>
             </div>
 
             <ExtensionBanner />
@@ -322,6 +442,8 @@ export default function LivePage() {
           <LiveCompanion
             data={visibleData}
             demoMode={demoMode}
+            connectionStatus={displayedStatus}
+            lastUpdatedLabel={formatLastUpdated(lastUpdatedAt, now)}
             showFullGrid={showFullGrid}
             setShowFullGrid={setShowFullGrid}
           />
@@ -334,11 +456,15 @@ export default function LivePage() {
 function LiveCompanion({
   data,
   demoMode,
+  connectionStatus,
+  lastUpdatedLabel,
   showFullGrid,
   setShowFullGrid,
 }: {
   data: LiveData;
   demoMode: boolean;
+  connectionStatus: ConnectionStatus;
+  lastUpdatedLabel: string;
   showFullGrid: boolean;
   setShowFullGrid: (value: boolean) => void;
 }) {
@@ -351,10 +477,13 @@ function LiveCompanion({
         <div>
           <p className="text-xs text-red-400 uppercase tracking-widest mb-1 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            {demoMode ? "Demo Mode" : "Live"}
+            {statusCopy(connectionStatus)}
           </p>
           <p className="text-xl font-bold text-white">
             {(data.session || "").replace(" Grand Prix", " GP")}
+          </p>
+          <p className="mt-1 text-[10px] uppercase tracking-widest text-zinc-600">
+            {lastUpdatedLabel}
           </p>
         </div>
         <div className="text-right">
@@ -479,7 +608,7 @@ function LiveCompanion({
       </div>
 
       <p className="text-[10px] text-zinc-600 text-center">
-        {demoMode ? "Demo replay advances every few seconds" : "Auto-refreshes every 10 seconds"}
+        {demoMode ? "Demo replay advances every few seconds" : "Live stream uses WebSocket with REST polling fallback"}
       </p>
 
       <ExtensionBanner />
