@@ -118,7 +118,7 @@ export default function RacePage({
         {error && (
           <div className="glass-card p-8 text-center">
             <p className="text-red-400 text-sm">Could not load race data.</p>
-            <p className="text-zinc-500 text-xs mt-2">
+            <p className="text-zinc-400 text-xs mt-2">
               The backend is taking longer than expected.
             </p>
             <button
@@ -213,7 +213,7 @@ function RaceHeader({
           <Image src={svg} alt="" width={224} height={176} className="invert object-contain" />
         </div>
       )}
-      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">{year}</p>
+      <p className="text-xs text-zinc-400 uppercase tracking-widest mb-2">{year}</p>
       <h1 className="text-3xl sm:text-4xl font-bold text-white">{trackName}</h1>
       <div className="min-h-10 mt-4">
         {tagline && (
@@ -243,7 +243,7 @@ function RaceTabs({
             className={`rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 ${
               activeTab === tab.id
                 ? "bg-red-600 text-white"
-                : "text-zinc-500 hover:bg-white/[0.04] hover:text-white"
+                : "text-zinc-400 hover:bg-white/[0.04] hover:text-white"
             }`}
           >
             {tab.label}
@@ -272,7 +272,7 @@ function StoryTab({
   return (
     <div className="space-y-10">
       <section className="glass-card p-6 sm:p-7">
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+        <p className="text-xs text-zinc-400 uppercase tracking-widest mb-3">
           Race Story
         </p>
         <h2 className="text-2xl sm:text-3xl font-semibold text-white leading-tight">
@@ -298,7 +298,7 @@ function StoryTab({
 
         {podium.length > 0 && (
           <div className="mt-7">
-            <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+            <p className="text-xs text-zinc-400 uppercase tracking-widest mb-3">
               Top 3
             </p>
             <div className="grid gap-3 sm:grid-cols-3">
@@ -306,7 +306,7 @@ function StoryTab({
                 <div key={driver.position} className="rounded-md border border-white/[0.08] bg-black/30 p-4">
                   <p className="text-xs text-red-400 font-semibold">P{driver.position}</p>
                   <p className="mt-1 text-sm font-semibold text-white">{driver.driver}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{driver.team}</p>
+                  <p className="mt-1 text-xs text-zinc-300">{driver.team}</p>
                 </div>
               ))}
             </div>
@@ -317,14 +317,14 @@ function StoryTab({
       <RaceStory year={year} track={track} />
 
       <section>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">
+        <p className="text-xs text-zinc-400 uppercase tracking-widest mb-5">
           3 key moments
         </p>
         <KeyMoments year={year} track={track} limit={3} showHeader={false} />
       </section>
 
       <section className="glass-card p-6">
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+        <p className="text-xs text-zinc-400 uppercase tracking-widest mb-3">
           Why this race mattered
         </p>
         <p className="text-sm text-zinc-300 leading-relaxed">
@@ -349,7 +349,7 @@ function StoryFact({
 }) {
   return (
     <div className="rounded-md border border-white/[0.08] bg-black/30 p-4">
-      <p className="text-xs text-zinc-500 uppercase tracking-widest">{label}</p>
+      <p className="text-xs text-zinc-400 uppercase tracking-widest">{label}</p>
       <p className="mt-2 text-base font-semibold text-white">{value}</p>
       {expandedDetail ? (
         <div className="mt-2">
@@ -358,7 +358,7 @@ function StoryFact({
           </ProgressiveDetail>
         </div>
       ) : (
-        <p className="mt-1 text-xs text-zinc-500">{detail}</p>
+        <p className="mt-1 text-xs text-zinc-300">{detail}</p>
       )}
     </div>
   );
@@ -380,7 +380,7 @@ function StrategyTab({
   return (
     <div className="space-y-6">
       <div>
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+        <p className="text-xs text-zinc-400 uppercase tracking-widest mb-3">
           Strategy
         </p>
         <h2 className="text-2xl font-semibold text-white">
@@ -399,7 +399,7 @@ function StrategyTab({
             className={`px-4 py-1.5 rounded-md text-xs font-medium capitalize transition-all duration-200 ${
               strategyMode === mode
                 ? "bg-red-600 text-white"
-                : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
+                : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
             }`}
           >
             {mode}
@@ -465,7 +465,7 @@ function RaceLoading({ state }: { state: FetchState }) {
         <div className="h-3 w-5/6 glass-skeleton rounded" />
         <div className="h-3 w-4/6 glass-skeleton rounded" />
       </div>
-      <p className="text-sm text-zinc-500 text-center">
+      <p className="text-sm text-zinc-400 text-center">
         {state === "slowLoading"
           ? "Waking up the race data service..."
           : state === "retrying"
