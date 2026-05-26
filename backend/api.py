@@ -9,6 +9,7 @@ so that every page has data ready when a user visits. The current season
 is re-checked periodically to pick up new races as they happen.
 """
 
+import asyncio
 import logging
 import os
 import threading
@@ -23,7 +24,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 from backend.core import indexer, insights, storage
-from backend.core import live_feed
+from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
 _request_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="api-worker")
@@ -262,6 +263,12 @@ def live_snapshot():
     return {"active": True, **state}
 
 
+@app.get("/live/demo")
+def live_demo_snapshot(index: int = 0):
+    """Get a saved live snapshot so demos work outside race weekends."""
+    return live_demo.get_demo_snapshot(index)
+
+
 @app.get("/live/status", response_model=LiveStatusResponse)
 def live_feed_status():
     return live_feed.get_live_status()
@@ -286,6 +293,21 @@ async def websocket_live(ws: WebSocket):
         pass
     finally:
         live_feed.remove_client(ws)
+
+
+@app.websocket("/ws/live/demo")
+async def websocket_live_demo(ws: WebSocket):
+    """Replay saved live snapshots over WebSocket for demo mode."""
+    await ws.accept()
+
+    index = 0
+    try:
+        while True:
+            await ws.send_json(live_demo.get_demo_snapshot(index))
+            index += 1
+            await asyncio.sleep(3.5)
+    except WebSocketDisconnect:
+        pass
 
 
 @app.get("/indexing/status", response_model=IndexingStatusResponse)
