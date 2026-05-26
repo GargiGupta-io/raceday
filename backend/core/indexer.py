@@ -12,14 +12,13 @@ Index structure on disk:
             └── weather.json
 """
 
-import json
 import logging
 import os
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-from backend.core import loader, jolpica_loader, openmeteo_loader, compound_lookup
+from backend.core import loader, jolpica_loader, openmeteo_loader, compound_lookup, storage
 
 # ---------------------------------------------------------------------------
 # Logging
@@ -33,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
-_index_dir = Path(os.getenv("INDEX_DIR", "./data/index"))
+_index_dir = storage.DEFAULT_INDEX_DIR
 _index_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -43,7 +42,12 @@ _index_dir.mkdir(parents=True, exist_ok=True)
 
 def _race_dir(year: int, track: str) -> Path:
     """Return the directory path for a given race, without creating it."""
-    return _index_dir / str(year) / track
+    return _store().race_dir(year, track)
+
+
+def _store() -> storage.JsonRaceStore:
+    """Return the active JSON store. Kept dynamic so tests can patch _index_dir."""
+    return storage.JsonRaceStore(_index_dir)
 
 
 # ---------------------------------------------------------------------------
@@ -91,15 +95,14 @@ def _index_race_fastf1(year: int, track: str) -> bool:
         logger.warning("index_race: no stint data for %s %s — storing empty dict", year, track)
         stints = {}
 
-    _write_index(race_dir, results, weather, stints)
+    _write_index(year, track, results, weather, stints)
 
     # Save lap-by-lap timing data for strategy simulation (2018+ only)
     laps_path = race_dir / "laps.json"
     if not laps_path.exists():
         lap_data = loader.get_lap_times(year, track)
         if lap_data:
-            with open(laps_path, "w") as f:
-                json.dump(lap_data, f)
+            _store().save_lap_data(year, track, lap_data)
             logger.info("Saved lap timing data for %s %s (%d drivers)",
                         year, track, lap_data.get("_meta", {}).get("drivers", 0))
 
@@ -184,22 +187,14 @@ def _index_race_historical(year: int, track: str) -> bool:
             if driver_stints:
                 stints[driver_code] = driver_stints
 
-    _write_index(race_dir, results, weather, stints)
+    _write_index(year, track, results, weather, stints)
     return True
 
 
-def _write_index(race_dir: Path, results: list, weather: dict, stints: dict):
+def _write_index(year: int, track: str, results: list, weather: dict, stints: dict):
     """Write the three JSON files to the race index directory."""
-    race_dir.mkdir(parents=True, exist_ok=True)
-
-    with open(race_dir / "race_results.json", "w") as f:
-        json.dump(results, f, indent=2)
-
-    with open(race_dir / "weather.json", "w") as f:
-        json.dump(weather, f, indent=2)
-
-    with open(race_dir / "stints.json", "w") as f:
-        json.dump(stints, f, indent=2)
+    _store().save_race_index(year, track, results, weather, stints)
+    race_dir = _race_dir(year, track)
 
     logger.info("Indexed → %s", race_dir)
 
@@ -208,8 +203,7 @@ def is_indexed(year: int, track: str) -> bool:
     """
     Return True if both race_results.json and weather.json exist for this race.
     """
-    race_dir = _race_dir(year, track)
-    return (race_dir / "race_results.json").exists() and (race_dir / "weather.json").exists()
+    return _store().is_indexed(year, track)
 
 
 def load_race_index(year: int, track: str) -> dict | None:
@@ -230,21 +224,7 @@ def load_race_index(year: int, track: str) -> dict | None:
         if not success:
             return None
 
-    race_dir = _race_dir(year, track)
-
-    with open(race_dir / "race_results.json") as f:
-        results = json.load(f)
-
-    with open(race_dir / "weather.json") as f:
-        weather = json.load(f)
-
-    stints_path = race_dir / "stints.json"
-    stints = None
-    if stints_path.exists():
-        with open(stints_path) as f:
-            stints = json.load(f)
-
-    return {"results": results, "weather": weather, "stints": stints}
+    return _store().load_race_index(year, track)
 
 
 def load_lap_data(year: int, track: str) -> dict | None:
@@ -253,19 +233,15 @@ def load_lap_data(year: int, track: str) -> dict | None:
     Returns the lap data dict or None if not available.
     Auto-indexes if the race is indexed but laps.json is missing.
     """
-    race_dir = _race_dir(year, track)
-    laps_path = race_dir / "laps.json"
-
-    if laps_path.exists():
-        with open(laps_path) as f:
-            return json.load(f)
+    lap_data = _store().load_lap_data(year, track)
+    if lap_data:
+        return lap_data
 
     # Try to generate it if race is indexed but laps aren't saved yet
     if year >= 2018 and is_indexed(year, track):
         lap_data = loader.get_lap_times(year, track)
         if lap_data:
-            with open(laps_path, "w") as f:
-                json.dump(lap_data, f)
+            _store().save_lap_data(year, track, lap_data)
             logger.info("Generated lap data for %s %s on demand", year, track)
             return lap_data
 
@@ -283,26 +259,7 @@ def list_indexed() -> list[dict]:
     Sorted by year ascending, then track name alphabetically.
     Only includes races where both JSON files are present.
     """
-    indexed = []
-
-    if not _index_dir.exists():
-        return indexed
-
-    for year_dir in sorted(_index_dir.iterdir()):
-        if not year_dir.is_dir():
-            continue
-        try:
-            year = int(year_dir.name)
-        except ValueError:
-            continue
-
-        for track_dir in sorted(year_dir.iterdir()):
-            if not track_dir.is_dir():
-                continue
-            if is_indexed(year, track_dir.name):
-                indexed.append({"year": year, "track": track_dir.name})
-
-    return indexed
+    return _store().list_indexed()
 
 
 def index_season(year: int) -> dict:
