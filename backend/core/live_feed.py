@@ -25,6 +25,9 @@ from backend.core import indexer
 logger = logging.getLogger(__name__)
 
 OPENF1_BASE = "https://api.openf1.org/v1"
+OPENF1_TIMEOUT_SECONDS = 10
+OPENF1_RETRIES = 2
+OPENF1_BACKOFF_SECONDS = 0.75
 
 # Connected WebSocket clients
 _clients: set = set()
@@ -32,6 +35,9 @@ _clients_lock = threading.Lock()
 
 # Current live state
 _live_state: dict | None = None
+_last_update_at: datetime | None = None
+_last_error: str | None = None
+_last_source_status = "idle"
 _feed_running = False
 
 
@@ -54,6 +60,32 @@ def get_live_state() -> dict | None:
     return _live_state
 
 
+def get_live_status() -> dict:
+    """Return health metadata for the live feed without fetching new data."""
+    with _clients_lock:
+        client_count = len(_clients)
+
+    if _live_state:
+        status = "live"
+        session = _live_state.get("session")
+    elif _last_error:
+        status = "error"
+        session = None
+    else:
+        status = _last_source_status
+        session = None
+
+    return {
+        "status": status,
+        "active": _live_state is not None,
+        "session": session,
+        "clients": client_count,
+        "last_update": _last_update_at.isoformat() if _last_update_at else None,
+        "last_error": _last_error,
+        "source": "OpenF1",
+    }
+
+
 # ---------------------------------------------------------------------------
 # OpenF1 data fetching
 # ---------------------------------------------------------------------------
@@ -61,23 +93,53 @@ def get_live_state() -> dict | None:
 
 def _openf1_get(endpoint: str, params: dict | None = None) -> list | None:
     """Fetch data from OpenF1 API."""
-    try:
-        resp = requests.get(
-            f"{OPENF1_BASE}/{endpoint}",
-            params=params,
-            timeout=10,
-            headers={"User-Agent": "Raceday/1.0"},
-        )
-        if resp.status_code == 200:
-            data = resp.json()
-            if isinstance(data, list):
-                return data
-            if isinstance(data, dict) and "detail" in data:
-                return []
-        return None
-    except requests.RequestException as exc:
-        logger.warning("OpenF1 request failed: %s", exc)
-        return None
+    global _last_error, _last_source_status
+
+    url = f"{OPENF1_BASE}/{endpoint}"
+    last_error = None
+    for attempt in range(OPENF1_RETRIES + 1):
+        try:
+            resp = requests.get(
+                url,
+                params=params,
+                timeout=OPENF1_TIMEOUT_SECONDS,
+                headers={"User-Agent": "Raceday/1.0"},
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                _last_error = None
+                _last_source_status = "available"
+                if isinstance(data, list):
+                    return data
+                if isinstance(data, dict) and "detail" in data:
+                    return []
+
+            last_error = f"OpenF1 {endpoint} returned HTTP {resp.status_code}"
+            logger.warning(
+                "openf1_request_bad_status",
+                extra={
+                    "endpoint": endpoint,
+                    "status_code": resp.status_code,
+                    "attempt": attempt + 1,
+                },
+            )
+        except requests.RequestException as exc:
+            last_error = str(exc)
+            logger.warning(
+                "openf1_request_failed",
+                extra={
+                    "endpoint": endpoint,
+                    "attempt": attempt + 1,
+                    "error": last_error,
+                },
+            )
+
+        if attempt < OPENF1_RETRIES:
+            time.sleep(OPENF1_BACKOFF_SECONDS * (2 ** attempt))
+
+    _last_error = last_error
+    _last_source_status = "error"
+    return None
 
 
 def _find_active_session() -> dict | None:
@@ -607,7 +669,7 @@ def _build_live_state(session: dict) -> dict | None:
 
 def _feed_loop():
     """Main polling loop — checks for active session, fetches data, broadcasts."""
-    global _live_state, _feed_running
+    global _live_state, _feed_running, _last_error, _last_source_status, _last_update_at
     _feed_running = True
 
     logger.info("Live feed started — polling for active sessions")
@@ -620,16 +682,23 @@ def _feed_loop():
                 state = _build_live_state(session)
                 if state:
                     _live_state = state
+                    _last_update_at = datetime.now(timezone.utc)
+                    _last_error = None
+                    _last_source_status = "live"
                     _broadcast(state)
                     time.sleep(10)  # Update every 10 seconds during live session
                     continue
 
             # No active session
             _live_state = None
+            if _last_source_status != "error":
+                _last_source_status = "idle"
             time.sleep(60)  # Check every minute when idle
 
         except Exception as exc:
-            logger.error("Live feed error: %s", exc)
+            _last_error = str(exc)
+            _last_source_status = "error"
+            logger.exception("live_feed_loop_failed")
             time.sleep(30)
 
 
