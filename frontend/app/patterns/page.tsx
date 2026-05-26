@@ -406,25 +406,22 @@ export default function PatternFinderPage() {
                     <Link
                       key={`${race.year}-${race.track}`}
                       href={`/races/${race.year}/${encodeURIComponent(race.track)}`}
-                      className="glass-card flex items-center gap-4 px-5 py-4 transition-all duration-200"
+                      className="glass-card block px-5 py-4 transition-all duration-200 hover:border-red-500/25"
                     >
-                      <span className="text-sm font-mono text-zinc-500 w-10">
-                        {race.year}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-zinc-200 truncate">
-                          {race.track}
-                        </p>
-                        <p className="text-xs text-zinc-500">
-                          {race.winner_name} ({race.winner_team}) from P{race.winner_grid}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className={`glass-badge ${
-                          race.condition === "wet" ? "text-blue-400" :
-                          race.condition === "damp" ? "text-cyan-400" :
-                          "text-amber-400"
-                        }`}>
+                      <div className="flex flex-wrap items-center gap-4">
+                        <span className="text-sm font-mono text-zinc-500 w-10">
+                          {race.year}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-zinc-200 truncate">
+                            {race.track}
+                          </p>
+                          <p className="text-xs text-zinc-500">
+                            {race.winner_name} ({race.winner_team}) from P{race.winner_grid}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                        <span className="glass-badge text-zinc-300">
                           {race.condition.toUpperCase()}
                         </span>
                         {race.dnf_count >= 3 && (
@@ -433,12 +430,16 @@ export default function PatternFinderPage() {
                           </span>
                         )}
                         {race.max_gain >= 5 && (
-                          <span className="glass-badge text-emerald-400">
+                          <span className="glass-badge text-red-300">
                             +{race.max_gain}
                           </span>
                         )}
                       </div>
-                      <span className="text-zinc-600 text-xs">→</span>
+                        <span className="text-zinc-600 text-xs">-&gt;</span>
+                      </div>
+                      <p className="mt-3 border-t border-white/[0.06] pt-3 text-xs leading-relaxed text-zinc-500">
+                        {describeMatch(race, activePreset)}
+                      </p>
                     </Link>
                   );
                 })}
