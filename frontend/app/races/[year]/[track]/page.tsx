@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { use } from "react";
+import { useSearchParams } from "next/navigation";
 import StrategyPanel from "@/app/components/StrategyPanel";
 import StrategyStory from "@/app/components/StrategyStory";
 import StrategyKey from "@/app/components/StrategyKey";
@@ -58,6 +59,7 @@ export default function RacePage({
 }) {
   const { year, track } = use(params);
   const trackName = decodeURIComponent(track);
+  const searchParams = useSearchParams();
 
   const [results, setResults] = useState<RaceSummary | null>(null);
   const [strategy, setStrategy] = useState<StrategyEntry[] | null>(null);
@@ -69,6 +71,13 @@ export default function RacePage({
   const [strategyMode, setStrategyMode] = useState<"story" | "data">("story");
   const [activeTab, setActiveTab] = useState<RaceTab>("story");
   const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    const tab = searchParams.get("tab") as RaceTab | null;
+    if (tab && RACE_TABS.some((raceTab) => raceTab.id === tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const base = `${API}/races/${year}/${encodeURIComponent(trackName)}`;
