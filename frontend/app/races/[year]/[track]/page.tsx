@@ -14,6 +14,7 @@ import RaceStory from "@/app/components/RaceStory";
 import PatternPrecedents from "@/app/components/PatternPrecedents";
 import RadioMoments from "@/app/components/RadioMoments";
 import StrategySimulator from "@/app/components/StrategySimulator";
+import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 import Image from "next/image";
 import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
@@ -285,6 +286,7 @@ function StoryTab({
               label="Weather"
               value={results.weather || "Unknown"}
               detail="Race conditions"
+              expandedDetail="Weather changes tyre choice, pit timing, visibility, and how risky overtakes feel. Dry races usually reward pace and track position. Wet or mixed races usually create more strategy swings."
             />
             <StoryFact
               label="DNFs"
@@ -338,16 +340,26 @@ function StoryFact({
   label,
   value,
   detail,
+  expandedDetail,
 }: {
   label: string;
   value: string;
   detail: string;
+  expandedDetail?: string;
 }) {
   return (
     <div className="rounded-md border border-white/[0.08] bg-black/30 p-4">
       <p className="text-xs text-zinc-500 uppercase tracking-widest">{label}</p>
       <p className="mt-2 text-base font-semibold text-white">{value}</p>
-      <p className="mt-1 text-xs text-zinc-500">{detail}</p>
+      {expandedDetail ? (
+        <div className="mt-2">
+          <ProgressiveDetail label={detail}>
+            {expandedDetail}
+          </ProgressiveDetail>
+        </div>
+      ) : (
+        <p className="mt-1 text-xs text-zinc-500">{detail}</p>
+      )}
     </div>
   );
 }
