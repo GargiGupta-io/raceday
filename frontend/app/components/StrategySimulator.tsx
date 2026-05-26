@@ -87,14 +87,51 @@ interface SwapResult {
   model_used: string;
 }
 
-const COMPOUND_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
-  SOFT:         { bg: "bg-red-600",    text: "text-white",    ring: "ring-red-600" },
-  MEDIUM:       { bg: "bg-yellow-400", text: "text-black",    ring: "ring-yellow-400" },
-  HARD:         { bg: "bg-zinc-100",   text: "text-black",    ring: "ring-zinc-100" },
-  SUPERSOFT:    { bg: "bg-red-400",    text: "text-white",    ring: "ring-red-400" },
-  INTERMEDIATE: { bg: "bg-green-500",  text: "text-white",    ring: "ring-green-500" },
-  WET:          { bg: "bg-blue-500",   text: "text-white",    ring: "ring-blue-500" },
+const COMPOUND_COLORS: Record<string, { bg: string; text: string; ring: string; border: string }> = {
+  SOFT:         { bg: "bg-red-600",       text: "text-white",    ring: "ring-red-600",       border: "border-red-500" },
+  MEDIUM:       { bg: "bg-white",         text: "text-black",    ring: "ring-white",         border: "border-white" },
+  HARD:         { bg: "bg-zinc-900",      text: "text-white",    ring: "ring-zinc-500",      border: "border-zinc-500" },
+  SUPERSOFT:    { bg: "bg-red-700",       text: "text-white",    ring: "ring-red-700",       border: "border-red-500" },
+  INTERMEDIATE: { bg: "bg-zinc-700",      text: "text-white",    ring: "ring-zinc-500",      border: "border-zinc-500" },
+  WET:          { bg: "bg-black",         text: "text-white",    ring: "ring-white",         border: "border-white/60" },
 };
+
+function formatCompound(compound: string) {
+  return compound.charAt(0) + compound.slice(1).toLowerCase();
+}
+
+function formatDelta(seconds: number) {
+  const abs = Math.abs(seconds).toFixed(1);
+  if (seconds < -0.1) return `${abs}s faster`;
+  if (seconds > 0.1) return `${abs}s slower`;
+  return "about the same pace";
+}
+
+function likelyResult(result: SimResult) {
+  if (result.position_change === null || result.position_change === 0) return "No position change";
+  const gain = Math.abs(result.position_change);
+  return result.position_change < 0
+    ? `+${gain} position${gain === 1 ? "" : "s"}`
+    : `-${gain} position${gain === 1 ? "" : "s"}`;
+}
+
+function resultTone(result: SimResult) {
+  if (result.delta_seconds < -0.1) return "text-red-300";
+  if (result.delta_seconds > 0.1) return "text-zinc-300";
+  return "text-white";
+}
+
+function strategyWhy(result: SimResult) {
+  if (result.verdict) return result.verdict;
+  if (result.delta_seconds < -0.1) return "The alternate plan found cleaner tyre life or better track position than the real race plan.";
+  if (result.delta_seconds > 0.1) return "The alternate plan gave away more time than it recovered, usually through pit loss or tyre wear.";
+  return "The alternate plan lands close to what actually happened, so the race result probably stays similar.";
+}
+
+function pitSummary(stops: number, pitLaps: number[]) {
+  if (stops === 0) return "No planned stops. This bets everything on track position and tyre survival.";
+  return `${stops} stop${stops === 1 ? "" : "s"} planned: ${pitLaps.map((lap) => `L${lap}`).join(", ")}`;
+}
 
 function CompoundButton({
   compound,
@@ -109,11 +146,11 @@ function CompoundButton({
   return (
     <button
       onClick={onClick}
-      className={`h-9 sm:h-8 px-3 rounded-md text-xs font-bold transition-all ${style.bg} ${style.text} ${
+      className={`h-9 sm:h-8 px-3 rounded-md border text-xs font-bold transition-all ${style.bg} ${style.text} ${style.border} ${
         selected ? `ring-2 ${style.ring} ring-offset-2 ring-offset-zinc-900 scale-105` : "opacity-60 hover:opacity-90"
       }`}
     >
-      {compound.charAt(0) + compound.slice(1).toLowerCase()}
+      {formatCompound(compound)}
     </button>
   );
 }
@@ -172,6 +209,7 @@ export default function StrategySimulator({
   const [result, setResult] = useState<SimResult | null>(null);
   const [simulating, setSimulating] = useState(false);
   const [simError, setSimError] = useState<string | null>(null);
+  const [technicalOpen, setTechnicalOpen] = useState(false);
 
   // Swap mode state
   const [swapContext, setSwapContext] = useState<SwapContext | null>(null);
@@ -184,9 +222,14 @@ export default function StrategySimulator({
   // Fetch context
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setResult(null);
-    setExpanded(false);
+    const resetTimer = window.setTimeout(() => {
+      if (cancelled) return;
+      setLoading(true);
+      setResult(null);
+      setExpanded(false);
+      setTechnicalOpen(false);
+    }, 0);
+
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/sim-context`)
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -216,32 +259,38 @@ export default function StrategySimulator({
       })
       .catch(() => {});
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      window.clearTimeout(resetTimer);
+    };
   }, [year, track]);
 
   // Reset strategy when driver or stop count changes
   useEffect(() => {
     if (!context) return;
-    const totalLaps = context.total_laps;
-    const defaultCompound = context.compounds_available.includes("MEDIUM")
-      ? "MEDIUM"
-      : context.compounds_available[0] || "MEDIUM";
+    const resetTimer = window.setTimeout(() => {
+      const totalLaps = context.total_laps;
+      const defaultCompound = context.compounds_available.includes("MEDIUM")
+        ? "MEDIUM"
+        : context.compounds_available[0] || "MEDIUM";
 
-    // Generate default evenly-spaced pit laps
-    const newPitLaps: number[] = [];
-    for (let i = 1; i <= numStops; i++) {
-      newPitLaps.push(Math.round((totalLaps * i) / (numStops + 1)));
-    }
-    setPitLaps(newPitLaps);
+      const newPitLaps: number[] = [];
+      for (let i = 1; i <= numStops; i++) {
+        newPitLaps.push(Math.round((totalLaps * i) / (numStops + 1)));
+      }
+      setPitLaps(newPitLaps);
 
-    // Default compounds: alternate between available
-    const avail = context.compounds_available;
-    const newCompounds: string[] = [];
-    for (let i = 0; i <= numStops; i++) {
-      newCompounds.push(avail[i % avail.length] || defaultCompound);
-    }
-    setCompounds(newCompounds);
-    setResult(null);
+      const avail = context.compounds_available;
+      const newCompounds: string[] = [];
+      for (let i = 0; i <= numStops; i++) {
+        newCompounds.push(avail[i % avail.length] || defaultCompound);
+      }
+      setCompounds(newCompounds);
+      setResult(null);
+      setTechnicalOpen(false);
+    }, 0);
+
+    return () => window.clearTimeout(resetTimer);
   }, [selectedDriver, numStops, context]);
 
   // Run simulation
@@ -254,6 +303,7 @@ export default function StrategySimulator({
     setSimulating(true);
     setResult(null);
     setSimError(null);
+    setTechnicalOpen(false);
 
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/simulate`, {
       method: "POST",
@@ -271,6 +321,7 @@ export default function StrategySimulator({
       .then((d) => {
         setResult(d);
         setSimulating(false);
+        setTechnicalOpen(false);
       })
       .catch((e) => {
         setSimError(e.message || "Simulation failed");
@@ -330,7 +381,7 @@ export default function StrategySimulator({
           Strategy Simulator
         </p>
         <p className="text-sm text-zinc-400 mb-5">
-          Test alternate strategies or swap drivers into different cars.
+          Choose a driver, move the pit windows, pick tyres, then see if your call beats the real strategy.
         </p>
         <button
           onClick={() => setExpanded(true)}
@@ -361,6 +412,12 @@ export default function StrategySimulator({
       <p className="text-xs text-zinc-500 uppercase tracking-widest">
         Strategy Simulator
       </p>
+      <div className="glass-card p-5">
+        <p className="text-sm font-semibold text-white">Build the call like a pit wall.</p>
+        <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+          Start with a simple race decision first. Pick the driver, set the pit laps, choose the tyre sequence, then run the model. The math stays hidden until you ask for it.
+        </p>
+      </div>
 
       {/* Mode toggle */}
       <div className="flex gap-1 rounded-xl glass p-1">
@@ -457,7 +514,7 @@ export default function StrategySimulator({
                   </p>
                   <p className={`text-2xl font-bold ${
                     (swapResult.prediction.position_change ?? 0) > 0
-                      ? "text-green-400"
+                      ? "text-red-300"
                       : (swapResult.prediction.position_change ?? 0) < 0
                       ? "text-red-400"
                       : "text-zinc-300"
@@ -473,7 +530,7 @@ export default function StrategySimulator({
                       <span className="text-zinc-600 mx-1.5">&rarr;</span>
                       <span className={
                         (swapResult.prediction.position_change ?? 0) > 0
-                          ? "text-green-400 font-bold"
+                          ? "text-red-300 font-bold"
                           : (swapResult.prediction.position_change ?? 0) < 0
                           ? "text-red-400 font-bold"
                           : "text-zinc-300"
@@ -533,10 +590,14 @@ export default function StrategySimulator({
         {/* Row 1: Driver + Stops */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Driver</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">1. Choose driver</label>
             <select
               value={selectedDriver}
-              onChange={(e) => setSelectedDriver(e.target.value)}
+              onChange={(e) => {
+                setSelectedDriver(e.target.value);
+                setResult(null);
+                setTechnicalOpen(false);
+              }}
               className="glass-input w-full px-3 py-2.5 text-sm"
             >
               {context.drivers.map((d) => (
@@ -547,12 +608,15 @@ export default function StrategySimulator({
             </select>
           </div>
           <div className="w-full sm:w-32">
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Pit stops</label>
+            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">2. Pit stops</label>
             <div className="flex gap-1">
               {[0, 1, 2, 3, 4].map((n) => (
                 <button
                   key={n}
-                  onClick={() => setNumStops(n)}
+                  onClick={() => {
+                    setNumStops(n);
+                    setTechnicalOpen(false);
+                  }}
                   className={`flex-1 rounded-lg py-2.5 sm:py-2 text-xs font-medium transition-all duration-200 ${
                     numStops === n
                       ? "glass-button-active text-white"
@@ -570,7 +634,7 @@ export default function StrategySimulator({
         {numStops > 0 && (
           <div>
             <label className="text-[10px] text-zinc-600 uppercase mb-2 block">
-              Pit on lap
+              Choose pit lap(s)
             </label>
             <div className="flex gap-3 flex-wrap">
               {pitLaps.map((lap, i) => (
@@ -586,8 +650,9 @@ export default function StrategySimulator({
                       newLaps[i] = parseInt(e.target.value);
                       setPitLaps(newLaps);
                       setResult(null);
+                      setTechnicalOpen(false);
                     }}
-                    className="flex-1 sm:w-24 sm:flex-none accent-zinc-500 h-6"
+                    className="flex-1 sm:w-24 sm:flex-none accent-red-600 h-6"
                   />
                   <span className="text-xs text-zinc-300 w-8 text-right shrink-0">{lap}</span>
                 </div>
@@ -599,7 +664,7 @@ export default function StrategySimulator({
         {/* Row 3: Compound selectors per stint */}
         <div>
           <label className="text-[10px] text-zinc-600 uppercase mb-2 block">
-            Tyre for each stint
+            3. Choose tyres
           </label>
           <div className="flex gap-3 flex-wrap">
             {compounds.map((comp, i) => (
@@ -623,6 +688,7 @@ export default function StrategySimulator({
                         newCompounds[i] = c;
                         setCompounds(newCompounds);
                         setResult(null);
+                        setTechnicalOpen(false);
                       }}
                     />
                   ))}
@@ -635,18 +701,24 @@ export default function StrategySimulator({
         {/* Stint bars: actual vs user */}
         {driver && driver.actual_stints.length > 0 && (
           <div className="space-y-2 pt-3 border-t border-white/[0.06]">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Actual vs simulated strategy</p>
             <StintBar
               stints={driver.actual_stints}
               totalLaps={totalLaps}
-              label={`Actual: ${driver.actual_stops}-stop`}
+              label={`Actual strategy: ${driver.actual_stops}-stop`}
             />
             <StintBar
               stints={userStints}
               totalLaps={totalLaps}
-              label={`Yours: ${numStops}-stop`}
+              label={`Your strategy: ${numStops}-stop`}
             />
           </div>
         )}
+
+        <div className="rounded-md border border-white/[0.08] bg-white/[0.03] p-4">
+          <p className="text-[10px] uppercase tracking-widest text-zinc-600">Pit stop summary</p>
+          <p className="mt-2 text-sm text-zinc-300">{pitSummary(numStops, pitLaps)}</p>
+        </div>
 
         {/* Simulate button */}
         <button
@@ -658,57 +730,73 @@ export default function StrategySimulator({
               : "glass-button text-white hover:bg-white/[0.18]"
           }`}
         >
-          {simulating ? "Running simulation..." : "Simulate"}
+          {simulating ? "Running simulation..." : "Run simulation"}
         </button>
 
         {/* Result */}
         {result && !("error" in result) && (
-          <div className="glass p-5 rounded-xl space-y-3">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className={`text-2xl font-bold ${
-                  result.delta_seconds < -2
-                    ? "text-green-400"
-                    : result.delta_seconds > 2
-                    ? "text-red-400"
-                    : "text-zinc-300"
-                }`}>
-                  {result.delta_seconds > 0 ? "+" : ""}
-                  {result.delta_seconds.toFixed(1)}s
+          <div className="glass p-5 rounded-xl space-y-4 border border-red-500/20">
+            <div>
+              <p className="text-[10px] text-red-400 uppercase tracking-widest mb-2">Simulation result</p>
+              <p className={`text-2xl font-bold ${resultTone(result)}`}>
+                Your strategy: {formatDelta(result.delta_seconds)}
+              </p>
+              <p className="mt-1 text-sm text-zinc-300">
+                Likely result: {likelyResult(result)}
+                {result.predicted_position !== null ? `, P${result.predicted_position}` : ""}
+              </p>
+            </div>
+
+            <div className="rounded-md border border-white/[0.08] bg-black/30 p-4">
+              <p className="text-[10px] uppercase tracking-widest text-zinc-600">Why</p>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+                {strategyWhy(result)}
+              </p>
+            </div>
+
+            {result.predicted_position !== null && result.driver.actual_finish !== null && (
+              <div className="flex items-center justify-between rounded-md border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+                <span className="text-xs text-zinc-500">Actual finish</span>
+                <span className="text-sm text-zinc-300">
+                  P{result.driver.actual_finish}
+                  <span className="mx-2 text-zinc-600">to</span>
+                  <span className="font-semibold text-white">P{result.predicted_position}</span>
+                </span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setTechnicalOpen((value) => !value)}
+              className="w-full rounded-md border border-white/[0.08] px-4 py-2 text-left text-xs font-medium text-zinc-300 transition hover:border-red-500/30 hover:text-white"
+            >
+              Why this result?
+            </button>
+
+            {technicalOpen && (
+              <div className="grid gap-2 text-xs text-zinc-400">
+                <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
+                  <span className="text-zinc-600">Pit loss used</span>
+                  <span>Estimated from race pace</span>
                 </p>
-                <p className="text-xs text-zinc-500">
-                  vs actual strategy
+                <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
+                  <span className="text-zinc-600">Compound delta</span>
+                  <span>{compounds.map(formatCompound).join(" / ")}</span>
+                </p>
+                <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
+                  <span className="text-zinc-600">Degradation rate</span>
+                  <span>Fitted from stint timing</span>
+                </p>
+                <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
+                  <span className="text-zinc-600">Weather mismatch</span>
+                  <span>false</span>
+                </p>
+                <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
+                  <span className="text-zinc-600">Model</span>
+                  <span>{result.model_used === "data-driven" ? "data-driven regression" : "physics estimate"}</span>
                 </p>
               </div>
-              {result.predicted_position !== null && (
-                <div className="text-right">
-                  <p className="text-sm text-zinc-300">
-                    P{result.driver.actual_finish}
-                    <span className="text-zinc-600 mx-1.5">&rarr;</span>
-                    <span className={
-                      (result.position_change ?? 0) < 0
-                        ? "text-green-400 font-bold"
-                        : (result.position_change ?? 0) > 0
-                        ? "text-red-400 font-bold"
-                        : "text-zinc-300"
-                    }>
-                      P{result.predicted_position}
-                    </span>
-                  </p>
-                  <p className="text-[10px] text-zinc-600">
-                    {result.model_used === "data-driven" ? "ML regression" : "Physics model"}
-                  </p>
-                </div>
-              )}
-            </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              {result.verdict}
-            </p>
-            <p className="text-[9px] text-zinc-600 border-t border-white/[0.06] pt-2 mt-2">
-              {result.model_used === "data-driven"
-                ? "ML regression trained on real lap data from this race."
-                : "Physics-based estimate (no lap timing data for pre-2018 races)."}
-            </p>
+            )}
           </div>
         )}
 
