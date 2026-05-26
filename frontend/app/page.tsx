@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import IntroHero from "@/app/components/IntroHero";
 
 import { API, fetchWithTimeout } from "@/app/lib/api";
@@ -16,7 +15,6 @@ interface SeasonSummary {
 }
 
 export default function HomePage() {
-  const router = useRouter();
   const [seasons, setSeasons] = useState<SeasonSummary[]>([]);
 
   useEffect(() => {
@@ -29,7 +27,6 @@ export default function HomePage() {
     <div className="min-h-screen text-zinc-100">
       <IntroHero
         seasons={seasons}
-        onSelectYear={(y) => router.push(`/races?year=${y}`)}
       />
     </div>
   );

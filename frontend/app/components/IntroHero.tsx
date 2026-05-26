@@ -18,6 +18,10 @@ interface SeasonSummary {
   tagline: string;
 }
 
+const STABLE_DEMO_YEAR = 2021;
+const STABLE_DEMO_TRACK = "Abu Dhabi Grand Prix";
+const STABLE_DEMO_RACE = `/races/${STABLE_DEMO_YEAR}/${encodeURIComponent(STABLE_DEMO_TRACK)}`;
+
 const FEATURES = [
   {
     image: "/images/f1-pack-racing.webp",
@@ -63,12 +67,11 @@ const FEATURES = [
 
 export default function IntroHero({
   seasons,
-  onSelectYear,
 }: {
   seasons: SeasonSummary[];
-  onSelectYear: (year: number) => void;
 }) {
-  const latestYear = seasons.length > 0 ? Math.max(...seasons.map((s) => s.year)) : 2026;
+  const stableSeason = seasons.find((season) => season.year === STABLE_DEMO_YEAR);
+  const latestStableYear = stableSeason?.year || Math.max(...seasons.filter((s) => s.races > 0).map((s) => s.year), STABLE_DEMO_YEAR);
 
   return (
     <div>
@@ -79,7 +82,7 @@ export default function IntroHero({
       <ScrollCarAnimation />
 
       {/* Section 3: Beginner primer */}
-      <NewToF1Card currentYear={latestYear} />
+      <NewToF1Card currentYear={latestStableYear} />
 
       {/* Sections 4-8: Feature showcase — first feature gets the Pick a Season CTA */}
       {FEATURES.map((f, i) => (
@@ -89,9 +92,9 @@ export default function IntroHero({
           {...f}
           cta={
             i === 0
-              ? { label: "Pick a Season", onClick: () => onSelectYear(latestYear) }
+              ? { label: "Pick a Season", href: `/races?year=${latestStableYear}` }
               : i === 1
-                ? { label: "Try Strategy Lab", onClick: () => onSelectYear(latestYear) }
+                ? { label: "Try Strategy Lab", href: `${STABLE_DEMO_RACE}?tab=simulate` }
               : undefined
           }
         />
