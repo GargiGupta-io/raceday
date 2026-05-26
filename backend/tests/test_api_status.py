@@ -1,5 +1,3 @@
-import pytest
-
 from backend import api
 
 
@@ -36,11 +34,14 @@ def test_storage_status_route_reports_active_store():
     assert response["backend"] in {"json", "postgres"}
 
 
-def test_empty_race_response_raises_404(monkeypatch):
+def test_empty_race_response_returns_indexed_fallback(monkeypatch):
     monkeypatch.setattr(api.insights, "get_season_races", lambda year: None)
+    monkeypatch.setattr(
+        api.insights,
+        "get_indexed_season_races",
+        lambda year: [{"year": year, "track": "Stable Grand Prix"}],
+    )
 
-    with pytest.raises(api.HTTPException) as exc:
-        api.season_races(2035)
+    response = api.season_races(2035)
 
-    assert exc.value.status_code == 404
-    assert "No schedule found" in exc.value.detail
+    assert response == [{"year": 2035, "track": "Stable Grand Prix"}]
