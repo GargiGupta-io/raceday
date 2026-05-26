@@ -42,8 +42,8 @@ export async function fetchWithTimeout<T>(
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     const controller = new AbortController();
-    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
-    const slow = window.setTimeout(() => onState?.("slowLoading"), slowMs);
+    const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
+    const slow = globalThis.setTimeout(() => onState?.("slowLoading"), slowMs);
 
     onState?.(attempt === 0 ? "loading" : "retrying");
 
@@ -67,8 +67,8 @@ export async function fetchWithTimeout<T>(
         throw error;
       }
     } finally {
-      window.clearTimeout(timeout);
-      window.clearTimeout(slow);
+      globalThis.clearTimeout(timeout);
+      globalThis.clearTimeout(slow);
     }
   }
 
@@ -76,7 +76,7 @@ export async function fetchWithTimeout<T>(
   throw lastError instanceof Error ? lastError : new Error("Request failed");
 }
 
-function isEmptyResponse(data: unknown) {
+export function isEmptyResponse(data: unknown) {
   if (Array.isArray(data)) return data.length === 0;
   if (data && typeof data === "object" && "active" in data) return false;
   return data == null;
