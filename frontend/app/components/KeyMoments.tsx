@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { API } from "@/app/lib/api";
+import { API, fetchWithTimeout } from "@/app/lib/api";
 import HighlightedText from "@/app/lib/HighlightedText";
 
 interface Moment {
@@ -37,11 +37,7 @@ export default function KeyMoments({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API}/races/${year}/${encodeURIComponent(track)}/moments`)
-      .then((r) => {
-        if (!r.ok) return [];
-        return r.json();
-      })
+    fetchWithTimeout<Moment[]>(`${API}/races/${year}/${encodeURIComponent(track)}/moments`)
       .then((data) => {
         setMoments(data || []);
         setLoading(false);
