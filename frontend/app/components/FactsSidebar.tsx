@@ -20,7 +20,7 @@ export default function FactsSidebar({ data }: { data: SidebarData }) {
       <ul className="space-y-3">
         {data.did_you_know.map((fact, i) => (
           <li key={i} className="text-sm text-zinc-300 leading-relaxed">
-            <span className="text-yellow-500 mr-2">*</span>
+            <span className="text-red-400 mr-2">*</span>
             {fact}
           </li>
         ))}
