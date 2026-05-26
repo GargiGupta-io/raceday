@@ -13,27 +13,30 @@ interface Moment {
 }
 
 const MOMENT_STYLE: Record<string, { icon: string; color: string }> = {
-  biggest_gainer:  { icon: "\u2191", color: "text-green-400" },   // ↑
-  biggest_loser:   { icon: "\u2193", color: "text-red-400" },     // ↓
-  comeback:        { icon: "\u21c8", color: "text-emerald-400" }, // ⇈
-  dominant_win:    { icon: "\u2605", color: "text-yellow-400" },  // ★
-  undercut:        { icon: "\u2694", color: "text-orange-400" },  // ⚔
-  close_battle:    { icon: "\u2623", color: "text-blue-400" },    // ☣ → using ⚡ visually
-  attrition:       { icon: "\u26a0", color: "text-amber-400" },   // ⚠
+  biggest_gainer: { icon: "+", color: "text-white" },
+  biggest_loser: { icon: "-", color: "text-red-400" },
+  comeback: { icon: "+", color: "text-white" },
+  dominant_win: { icon: "*", color: "text-white" },
+  undercut: { icon: "/", color: "text-red-400" },
+  close_battle: { icon: "!", color: "text-red-400" },
+  attrition: { icon: "!", color: "text-red-400" },
 };
 
 export default function KeyMoments({
   year,
   track,
+  limit,
+  showHeader = true,
 }: {
   year: string;
   track: string;
+  limit?: number;
+  showHeader?: boolean;
 }) {
   const [moments, setMoments] = useState<Moment[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/moments`)
       .then((r) => {
         if (!r.ok) return [];
@@ -67,16 +70,20 @@ export default function KeyMoments({
 
   if (moments.length === 0) return null;
 
+  const visibleMoments = limit ? moments.slice(0, limit) : moments;
+
   return (
     <div>
-      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">
-        Key Moments
-      </p>
+      {showHeader && (
+        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-5">
+          Key Moments
+        </p>
+      )}
       <div className="space-y-4">
-        {moments.map((m, i) => {
-          const style = MOMENT_STYLE[m.type] || { icon: "?", color: "text-zinc-400" };
+        {visibleMoments.map((moment, index) => {
+          const style = MOMENT_STYLE[moment.type] || { icon: "!", color: "text-red-400" };
           return (
-            <div key={i} className="glass-card p-5 flex gap-4 items-start">
+            <div key={index} className="glass-card p-5 flex gap-4 items-start">
               <span
                 className={`w-10 h-10 rounded-full glass flex items-center justify-center text-lg shrink-0 ${style.color}`}
               >
@@ -84,10 +91,10 @@ export default function KeyMoments({
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-zinc-100">
-                  <HighlightedText text={m.headline} />
+                  <HighlightedText text={moment.headline} />
                 </p>
                 <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                  <HighlightedText text={m.detail} />
+                  <HighlightedText text={moment.detail} />
                 </p>
               </div>
             </div>
