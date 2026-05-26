@@ -23,25 +23,38 @@ const racingFont = Racing_Sans_One({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://raceday-khaki.vercel.app";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Raceday | F1 Race Intelligence",
+    default: "RaceDay | F1 Race Stories And Strategy",
     template: "%s | Raceday",
   },
   description:
-    "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for every F1 season from 2010 to 2025.",
+    "F1 race stories, strategy insights, live companion tools, and what-if simulations without the clutter.",
   openGraph: {
-    title: "Raceday | F1 Race Intelligence",
+    title: "RaceDay | F1 Race Stories And Strategy",
     description:
-      "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for Formula 1.",
+      "Feel the chaos. Understand the strategy. Explore race stories, strategy calls, championship context, and live demo mode.",
+    url: siteUrl,
     type: "website",
     siteName: "Raceday",
+    images: [
+      {
+        url: "/images/race-flyby-still.webp",
+        width: 1200,
+        height: 630,
+        alt: "RaceDay Formula 1 race story interface",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Raceday | F1 Race Intelligence",
+    title: "RaceDay | F1 Race Stories And Strategy",
     description:
-      "Race stories, strategy breakdowns, championship standings, and historical pattern analysis for Formula 1.",
+      "F1 race stories, strategy insights, live companion tools, and what-if simulations without the clutter.",
+    images: ["/images/race-flyby-still.webp"],
   },
 };
 
