@@ -167,7 +167,7 @@ function StintBar({
 }) {
   return (
     <div>
-      <p className="text-[10px] text-zinc-600 mb-1">{label}</p>
+      <p className="text-[10px] text-zinc-400 mb-1">{label}</p>
       <div className="flex h-6 rounded overflow-hidden min-w-0">
         {stints.map((s, i) => {
           const width = ((s.lap_end - s.lap_start + 1) / totalLaps) * 100;
@@ -373,7 +373,7 @@ export default function StrategySimulator({
   if (!expanded) {
     return (
       <div className="glass-card p-6 text-center">
-        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-3">
+        <p className="text-xs text-zinc-400 uppercase tracking-widest mb-3">
           Strategy Simulator
         </p>
         <p className="text-sm text-zinc-400 mb-5">
@@ -405,7 +405,7 @@ export default function StrategySimulator({
 
   return (
     <div className="space-y-4">
-      <p className="text-xs text-zinc-500 uppercase tracking-widest">
+      <p className="text-xs text-zinc-400 uppercase tracking-widest">
         Strategy Simulator
       </p>
       <div className="glass-card p-5">
@@ -424,7 +424,7 @@ export default function StrategySimulator({
             className={`flex-1 rounded-lg py-2 text-xs font-medium transition-all duration-200 ${
               mode === m
                 ? "glass-button-active text-white"
-                : "text-zinc-500 hover:text-zinc-300"
+                : "text-zinc-400 hover:text-zinc-200"
             }`}
           >
             {m === "strategy" ? "Strategy" : "Driver Swap"}
@@ -437,7 +437,7 @@ export default function StrategySimulator({
         <div className="glass-card p-6 space-y-5">
           {/* Driver selector */}
           <div>
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">Put this driver</label>
+            <label className="text-[10px] text-zinc-400 uppercase mb-1.5 block">Put this driver</label>
             <select
               value={swapDriver}
               onChange={(e) => { setSwapDriver(e.target.value); setSwapResult(null); }}
@@ -453,7 +453,7 @@ export default function StrategySimulator({
 
           {/* Target team selector */}
           <div>
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">In this car</label>
+            <label className="text-[10px] text-zinc-400 uppercase mb-1.5 block">In this car</label>
             <select
               value={targetTeam}
               onChange={(e) => { setTargetTeam(e.target.value); setSwapResult(null); }}
@@ -472,7 +472,7 @@ export default function StrategySimulator({
             const team = swapContext.teams.find((t) => t.name === targetTeam);
             if (!team) return null;
             return (
-              <div className="text-[10px] text-zinc-600">
+              <div className="text-[10px] text-zinc-400">
                 Currently driven by:{" "}
                 {team.drivers.map((d) => `${d.code} (P${d.finish ?? "DNF"})`).join(", ")}
               </div>
@@ -505,7 +505,7 @@ export default function StrategySimulator({
             <div className="glass p-5 rounded-xl space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-zinc-400">
                     {swapResult.driver.name} in the {swapResult.target_team}
                   </p>
                   <p className={`text-2xl font-bold ${
@@ -523,7 +523,7 @@ export default function StrategySimulator({
                   <div className="text-right">
                     <p className="text-sm text-zinc-300">
                       P{swapResult.driver.actual_finish}
-                      <span className="text-zinc-600 mx-1.5">&rarr;</span>
+                      <span className="text-zinc-400 mx-1.5">&rarr;</span>
                       <span className={
                         (swapResult.prediction.position_change ?? 0) > 0
                           ? "text-red-300 font-bold"
@@ -534,7 +534,7 @@ export default function StrategySimulator({
                         P{swapResult.prediction.predicted_finish}
                       </span>
                     </p>
-                    <p className="text-[10px] text-zinc-600">{swapResult.model_used}</p>
+                    <p className="text-[10px] text-zinc-400">{swapResult.model_used}</p>
                   </div>
                 )}
               </div>
@@ -542,14 +542,14 @@ export default function StrategySimulator({
               {/* Factor breakdown */}
               <div className="grid grid-cols-2 gap-2 text-[10px]">
                 <div className="rounded-lg glass p-3">
-                  <p className="text-zinc-500">Car gap</p>
+                  <p className="text-zinc-400">Car gap</p>
                   <p className="text-zinc-300 font-medium">
                     {swapResult.factors.car_gap_per_lap > 0 ? "+" : ""}
                     {swapResult.factors.car_gap_per_lap.toFixed(2)}s/lap
                   </p>
                 </div>
                 <div className="rounded-lg glass p-3">
-                  <p className="text-zinc-500">Tyre management</p>
+                  <p className="text-zinc-400">Tyre management</p>
                   <p className="text-zinc-300 font-medium">{swapResult.factors.tyre_label}</p>
                 </div>
               </div>
@@ -559,7 +559,7 @@ export default function StrategySimulator({
               </p>
 
               {/* Model disclaimer */}
-              <p className="text-[9px] text-zinc-600 border-t border-white/[0.06] pt-2 mt-2">
+              <p className="text-[9px] text-zinc-400 border-t border-white/[0.06] pt-2 mt-2">
                 {swapResult.model_used === "grid-estimate"
                   ? "Pre-2018 estimate — based on grid positions only (no lap timing data available)."
                   : "Estimate based on lap timing data, qualifying gaps, and tyre degradation patterns. Actual results would vary."}
@@ -576,7 +576,7 @@ export default function StrategySimulator({
       {/* Swap mode unavailable */}
       {mode === "swap" && !swapContext && (
         <div className="glass-card p-6 text-center">
-          <p className="text-xs text-zinc-500">Driver Swap data unavailable for this race.</p>
+          <p className="text-xs text-zinc-400">Driver Swap data unavailable for this race.</p>
         </div>
       )}
 
@@ -586,7 +586,7 @@ export default function StrategySimulator({
         {/* Row 1: Driver + Stops */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1">
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">1. Choose driver</label>
+            <label className="text-[10px] text-zinc-400 uppercase mb-1.5 block">1. Choose driver</label>
             <select
               value={selectedDriver}
               onChange={(e) => {
@@ -603,7 +603,7 @@ export default function StrategySimulator({
             </select>
           </div>
           <div className="w-full sm:w-32">
-            <label className="text-[10px] text-zinc-500 uppercase mb-1.5 block">2. Pit stops</label>
+            <label className="text-[10px] text-zinc-400 uppercase mb-1.5 block">2. Pit stops</label>
             <div className="flex gap-1">
               {[0, 1, 2, 3, 4].map((n) => (
                 <button
@@ -614,7 +614,7 @@ export default function StrategySimulator({
                   className={`flex-1 rounded-lg py-2.5 sm:py-2 text-xs font-medium transition-all duration-200 ${
                     numStops === n
                       ? "glass-button-active text-white"
-                      : "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.04]"
+                      : "text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]"
                   }`}
                 >
                   {n}
@@ -627,13 +627,13 @@ export default function StrategySimulator({
         {/* Row 2: Pit lap inputs */}
         {numStops > 0 && (
           <div>
-            <label className="text-[10px] text-zinc-600 uppercase mb-2 block">
+            <label className="text-[10px] text-zinc-400 uppercase mb-2 block">
               Choose pit lap(s)
             </label>
             <div className="flex gap-3 flex-wrap">
               {pitLaps.map((lap, i) => (
                 <div key={i} className="flex items-center gap-2 w-full sm:w-auto">
-                  <span className="text-[10px] text-zinc-600 shrink-0">Stop {i + 1}:</span>
+                  <span className="text-[10px] text-zinc-400 shrink-0">Stop {i + 1}:</span>
                   <input
                     type="range"
                     min={i === 0 ? 2 : pitLaps[i - 1] + 2}
@@ -656,16 +656,16 @@ export default function StrategySimulator({
 
         {/* Row 3: Compound selectors per stint */}
         <div>
-          <label className="text-[10px] text-zinc-600 uppercase mb-2 block">
+          <label className="text-[10px] text-zinc-400 uppercase mb-2 block">
             3. Choose tyres
           </label>
           <div className="flex gap-3 flex-wrap">
             {compounds.map((comp, i) => (
               <div key={i} className="space-y-1">
-                <p className="text-[9px] text-zinc-600 text-center">
+                <p className="text-[9px] text-zinc-400 text-center">
                   Stint {i + 1}
                   {userStints[i] && (
-                    <span className="text-zinc-700">
+                    <span className="text-zinc-500">
                       {" "}(L{userStints[i].lap_start}-{userStints[i].lap_end})
                     </span>
                   )}
@@ -693,7 +693,7 @@ export default function StrategySimulator({
         {/* Stint bars: actual vs user */}
         {driver && driver.actual_stints.length > 0 && (
           <div className="space-y-2 pt-3 border-t border-white/[0.06]">
-            <p className="text-[10px] text-zinc-600 uppercase tracking-widest">Actual vs simulated strategy</p>
+            <p className="text-[10px] text-zinc-400 uppercase tracking-widest">Actual vs simulated strategy</p>
             <StintBar
               stints={driver.actual_stints}
               totalLaps={totalLaps}
@@ -708,7 +708,7 @@ export default function StrategySimulator({
         )}
 
         <div className="rounded-md border border-white/[0.08] bg-white/[0.03] p-4">
-          <p className="text-[10px] uppercase tracking-widest text-zinc-600">Pit stop summary</p>
+          <p className="text-[10px] uppercase tracking-widest text-zinc-400">Pit stop summary</p>
           <p className="mt-2 text-sm text-zinc-300">{pitSummary(numStops, pitLaps)}</p>
         </div>
 
@@ -740,43 +740,43 @@ export default function StrategySimulator({
             </div>
 
             <div className="rounded-md border border-white/[0.08] bg-black/30 p-4">
-              <p className="text-[10px] uppercase tracking-widest text-zinc-600">Why</p>
-              <p className="mt-2 text-xs leading-relaxed text-zinc-400">
+              <p className="text-[10px] uppercase tracking-widest text-zinc-400">Why</p>
+              <p className="mt-2 text-xs leading-relaxed text-zinc-300">
                 {strategyWhy(result)}
               </p>
             </div>
 
             {result.predicted_position !== null && result.driver.actual_finish !== null && (
               <div className="flex items-center justify-between rounded-md border border-white/[0.08] bg-white/[0.03] px-4 py-3">
-                <span className="text-xs text-zinc-500">Actual finish</span>
+                <span className="text-xs text-zinc-400">Actual finish</span>
                 <span className="text-sm text-zinc-300">
                   P{result.driver.actual_finish}
-                  <span className="mx-2 text-zinc-600">to</span>
+                  <span className="mx-2 text-zinc-400">to</span>
                   <span className="font-semibold text-white">P{result.predicted_position}</span>
                 </span>
               </div>
             )}
 
             <ProgressiveDetail label="Why this result?">
-              <div className="grid gap-2 text-xs text-zinc-400">
+              <div className="grid gap-2 text-xs text-zinc-300">
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
-                  <span className="text-zinc-600">Pit loss used</span>
+                  <span className="text-zinc-400">Pit loss used</span>
                   <span>Estimated from race pace</span>
                 </p>
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
-                  <span className="text-zinc-600">Compound delta</span>
+                  <span className="text-zinc-400">Compound delta</span>
                   <span>{compounds.map(formatCompound).join(" / ")}</span>
                 </p>
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
-                  <span className="text-zinc-600">Degradation rate</span>
+                  <span className="text-zinc-400">Degradation rate</span>
                   <span>Fitted from stint timing</span>
                 </p>
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
-                  <span className="text-zinc-600">Weather mismatch</span>
+                  <span className="text-zinc-400">Weather mismatch</span>
                   <span>false</span>
                 </p>
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
-                  <span className="text-zinc-600">Model</span>
+                  <span className="text-zinc-400">Model</span>
                   <span>{result.model_used === "data-driven" ? "data-driven regression" : "physics estimate"}</span>
                 </p>
               </div>
