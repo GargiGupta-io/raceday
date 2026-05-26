@@ -7,7 +7,7 @@ import Image from "next/image";
 import { getCircuitSvg } from "@/app/lib/circuits";
 import DataLoader from "@/app/components/DataLoader";
 
-import { API } from "@/app/lib/api";
+import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
 
 interface SeasonSummary {
   year: number;
@@ -32,21 +32,10 @@ interface Race {
   total_laps?: number;
 }
 
-const TEAM_COLOR: Record<string, string> = {
-  "Red Bull Racing": "bg-blue-500",
-  "Red Bull": "bg-blue-500",
-  "Mercedes": "bg-emerald-400",
-  "Ferrari": "bg-red-500",
-  "McLaren": "bg-orange-400",
-  "Williams": "bg-white",
-  "Renault": "bg-yellow-400",
-  "Brawn": "bg-lime-400",
-};
-
 const WEATHER_BADGE: Record<string, { bg: string; text: string; label: string }> = {
-  dry:   { bg: "bg-amber-900/60", text: "text-amber-400", label: "DRY" },
-  wet:   { bg: "bg-blue-900/60",  text: "text-blue-400",  label: "WET" },
-  damp:  { bg: "bg-cyan-900/60",  text: "text-cyan-400",  label: "MIXED" },
+  dry: { bg: "bg-white/10", text: "text-zinc-300", label: "DRY" },
+  wet: { bg: "bg-red-500/10", text: "text-red-300", label: "WET" },
+  damp: { bg: "bg-white/10", text: "text-zinc-300", label: "MIXED" },
 };
 
 export default function RacesPage() {
@@ -64,18 +53,23 @@ function Races() {
   const [year, setYear] = useState<number | null>(urlYear ? parseInt(urlYear) : null);
   const [seasons, setSeasons] = useState<SeasonSummary[]>([]);
   const [races, setRaces] = useState<Race[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [raceState, setRaceState] = useState<FetchState>("loading");
+  const [seasonsState, setSeasonsState] = useState<FetchState>("loading");
   const [error, setError] = useState<string | null>(null);
   const [weatherFilter, setWeatherFilter] = useState<string>("ALL");
   const [seasonsError, setSeasonsError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const loading = raceState === "loading" || raceState === "slowLoading" || raceState === "retrying";
 
   useEffect(() => {
     if (urlYear) setYear(parseInt(urlYear));
   }, [urlYear]);
 
   useEffect(() => {
-    fetch(`${API}/seasons/summary`)
-      .then((r) => { if (!r.ok) throw new Error(); return r.json(); })
+    fetchWithTimeout<SeasonSummary[]>(`${API}/seasons/summary`, {
+      onState: setSeasonsState,
+    })
       .then((data: SeasonSummary[]) => {
         setSeasons(data);
         if (year === null && data.length > 0) {
@@ -90,29 +84,30 @@ function Races() {
 
   useEffect(() => {
     if (year === null) return;
-    setLoading(true);
-    setError(null);
-    fetch(`${API}/races/${year}`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`${r.status}`);
-        return r.json();
-      })
+    fetchWithTimeout<Race[]>(`${API}/races/${year}`, {
+      onState: (state) => {
+        setRaceState(state);
+        if (state !== "error") setError(null);
+      },
+    })
       .then((data) => {
         setRaces(data);
-        setLoading(false);
       })
       .catch((e) => {
         setError(e.message);
-        setLoading(false);
       });
-  }, [year]);
+  }, [year, retryCount]);
 
   return (
     <div className="min-h-screen text-zinc-100">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 pt-32 sm:pt-40 pb-8 sm:pb-12">
 
         {seasonsError && (
-          <p className="text-red-400 text-sm text-center mb-4">Could not load seasons — is the backend running?</p>
+          <p className="text-red-400 text-sm text-center mb-4">Could not load seasons. The backend is taking longer than expected.</p>
+        )}
+
+        {seasonsState === "slowLoading" && !seasonsError && (
+          <p className="text-zinc-400 text-sm text-center mb-4">Waking up the race data service...</p>
         )}
 
         {year !== null && (
@@ -132,7 +127,7 @@ function Races() {
                 >
                   <p className="text-sm font-bold tracking-tight">{s.year}</p>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className={`w-1.5 h-1.5 rounded-full ${TEAM_COLOR[s.team] || "bg-zinc-400"}`} />
+                    <span className={`w-1.5 h-1.5 rounded-full ${s.year === year ? "bg-red-500" : "bg-white/40"}`} />
                     <span className="text-xs text-zinc-400">{s.champion}</span>
                   </div>
                 </button>
@@ -187,7 +182,7 @@ function Races() {
                   </div>
                   <div className="ml-auto text-right shrink-0">
                     <p className="text-xs text-zinc-500">Round {latest.round}</p>
-                    <p className="text-sm text-emerald-400 font-semibold mt-1">
+                    <p className="text-sm text-red-400 font-semibold mt-1">
                       P1 {latest.winner}
                     </p>
                   </div>
@@ -199,12 +194,28 @@ function Races() {
 
           <div aria-live="polite">
             {loading && (
-              <DataLoader size="lg" label="Loading races..." />
+              <DataLoader
+                size="lg"
+                label={
+                  raceState === "slowLoading"
+                    ? "Waking up the race data service..."
+                    : raceState === "retrying"
+                      ? "Retrying race data..."
+                      : "Loading races..."
+                }
+              />
             )}
 
             {error && (
               <div className="glass-card p-8 text-center">
-                <p className="text-red-400 text-sm">Could not load season — is the backend running?</p>
+                <p className="text-red-400 text-sm">The backend is taking longer than expected.</p>
+                <button
+                  type="button"
+                  onClick={() => setRetryCount((value) => value + 1)}
+                  className="mt-5 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+                >
+                  Retry
+                </button>
               </div>
             )}
 
@@ -260,7 +271,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
       <div className="mt-auto flex items-center gap-2 flex-wrap pt-2">
         {race.winner ? (
           <span className="text-xs text-zinc-300">
-            <span className="text-emerald-400 font-semibold mr-1">P1</span>
+            <span className="text-red-400 font-semibold mr-1">P1</span>
             {race.winner}
           </span>
         ) : isUpcoming && race.date ? (
@@ -285,7 +296,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
             </span>
           )}
           {race.format === "sprint" && (
-            <span className="glass-badge text-yellow-400">
+            <span className="glass-badge text-red-300">
               SPRINT
             </span>
           )}
