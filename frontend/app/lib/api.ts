@@ -10,6 +10,15 @@ if (!url) {
 
 export const API = url || "http://localhost:8888";
 
+export function wsUrl(path: string) {
+  const base = API.replace(/\/+$/, "");
+  const wsBase = base.startsWith("https://")
+    ? base.replace("https://", "wss://")
+    : base.replace("http://", "ws://");
+
+  return `${wsBase}${path}`;
+}
+
 export type FetchState = "loading" | "slowLoading" | "success" | "empty" | "error" | "retrying";
 
 interface FetchWithTimeoutOptions extends RequestInit {
