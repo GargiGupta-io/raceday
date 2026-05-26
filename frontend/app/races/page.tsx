@@ -57,6 +57,7 @@ function Races() {
   const [seasonsState, setSeasonsState] = useState<FetchState>("loading");
   const [error, setError] = useState<string | null>(null);
   const [weatherFilter, setWeatherFilter] = useState<string>("ALL");
+  const [raceSearch, setRaceSearch] = useState("");
   const [seasonsError, setSeasonsError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
 
@@ -139,6 +140,7 @@ function Races() {
         {year !== null && (<>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+            <div>
             <h2 className="text-3xl sm:text-4xl font-light text-white tracking-wide">
               {year} Season <span className="text-zinc-500 font-light text-lg sm:text-xl">— {(() => {
                 const indexed = races.filter((r) => r.indexed).length;
@@ -147,6 +149,24 @@ function Races() {
                   : `${races.length} Races`;
               })()}</span>
             </h2>
+              {!loading && !error && races.length > 0 && (
+                <p className="mt-2 text-xs text-zinc-600">
+                  Data indexed through {(() => {
+                    const indexedRaces = races.filter((race) => race.indexed && race.winner);
+                    const latest = indexedRaces[indexedRaces.length - 1];
+                    return latest ? `${latest.name}, round ${latest.round}` : "the published schedule";
+                  })()}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-3 sm:items-end">
+            <input
+              type="search"
+              value={raceSearch}
+              onChange={(event) => setRaceSearch(event.target.value)}
+              placeholder="Search races or winners"
+              className="glass-input w-full sm:w-56 px-3 py-2 text-sm"
+            />
             <div className="flex gap-2" role="group" aria-label="Weather filter">
               {["ALL", "DRY", "WET", "MIXED"].map((f) => (
                 <button
@@ -163,6 +183,7 @@ function Races() {
                   {f}
                 </button>
               ))}
+            </div>
             </div>
           </div>
 
@@ -221,9 +242,16 @@ function Races() {
 
             {!loading && !error && (() => {
               const weatherMap: Record<string, string> = { DRY: "dry", WET: "wet", MIXED: "damp" };
-              const filtered = weatherFilter === "ALL"
+              const query = raceSearch.trim().toLowerCase();
+              const byWeather = weatherFilter === "ALL"
                 ? races
                 : races.filter((r) => r.weather === weatherMap[weatherFilter]);
+              const filtered = query
+                ? byWeather.filter((race) =>
+                    [race.name, race.location, race.country, race.winner || "", race.winner_team || ""]
+                      .some((value) => value.toLowerCase().includes(query))
+                  )
+                : byWeather;
               return filtered.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {filtered.map((race) => (
@@ -231,9 +259,12 @@ function Races() {
                   ))}
                 </div>
               ) : (
-                <p className="text-zinc-600 text-sm text-center py-12">
-                  No {weatherFilter.toLowerCase()} races in the {year} season.
-                </p>
+                <div className="glass-card p-8 text-center">
+                  <p className="text-sm font-semibold text-zinc-300">No races found</p>
+                  <p className="mt-2 text-xs text-zinc-600">
+                    Try clearing the search or switching the weather filter.
+                  </p>
+                </div>
               );
             })()}
           </div>
