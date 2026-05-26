@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import { API } from "@/app/lib/api";
+import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 interface RaceResult {
   year: number;
@@ -437,9 +438,11 @@ export default function PatternFinderPage() {
                       </div>
                         <span className="text-zinc-600 text-xs">-&gt;</span>
                       </div>
-                      <p className="mt-3 border-t border-white/[0.06] pt-3 text-xs leading-relaxed text-zinc-500">
-                        {describeMatch(race, activePreset)}
-                      </p>
+                      <div className="mt-3 border-t border-white/[0.06] pt-3">
+                        <ProgressiveDetail label="Why it matched">
+                          {describeMatch(race, activePreset)}
+                        </ProgressiveDetail>
+                      </div>
                     </Link>
                   );
                 })}
