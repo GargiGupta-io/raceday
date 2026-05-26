@@ -1,15 +1,175 @@
 # RaceDay
 
-A full-stack Formula 1 analytics platform that combines historical race data, real-time monitoring, and interactive strategy simulation. Explore every F1 season from 2010 to the present with detailed race breakdowns, championship progression charts, pattern discovery, and live race telemetry.
+RaceDay is a full-stack Formula 1 companion platform that turns historical and live race data into clean race stories, strategy insights, championship views, and interactive what-if simulations.
 
-## Features
+## What It Does
 
-- **Race Analysis** - Results, pit strategies, key moments, radio clips with transcription, and AI-generated race narratives for every Grand Prix
-- **Strategy Simulator** - Interactive tool to explore alternate pit strategies and compare outcomes
-- **Championship Tracker** - Standings tables and points progression charts across full seasons
-- **Pattern Finder** - Search historical races by circuit, weather, driver, grid position, and more with preset filters like "Wet race upsets" and "Won from P10+"
-- **Live Race Monitor** - Real-time driver positions, tyre data, pit window predictions, and what-if strategy comparisons via WebSocket
-- **Chrome Extension** - Browser popup displaying live race data during sessions
+RaceDay helps fans explore Formula 1 through race breakdowns, strategy tools, championship history, live telemetry, and beginner-friendly storytelling.
+
+It is built for both new fans who want the sport explained clearly and serious F1 fans who want deeper context without clutter, confusion, or ad-heavy pages.
+
+Core features:
+
+- Race-by-race breakdowns from 2010 onward
+- Championship standings and points progression
+- Strategy simulator for alternate pit stop scenarios
+- Historical pattern finder for similar races and conditions
+- Live race monitor using real-time session data
+- Chrome extension for live companion views
+- Beginner-friendly explanations alongside deeper analytics
+
+## Why I Built It
+
+I built RaceDay as an F1 fan platform for both beginners and hardcore knowledge fans.
+
+Formula 1 is full of strategy, data, emotion, and split-second decisions, but it can be hard to understand what is actually happening during a race. New fans often get lost in tyre strategy, pit windows, team orders, weather changes, and championship math. Experienced fans want deeper context, but most existing experiences are either too fragmented, too technical, or overloaded with noise and ads.
+
+RaceDay is meant to make the sport easier and more exciting to follow: no confusion, no clutter, no endless ads, just the thrill of the race explained through clean data, interactive tools, and storytelling.
+
+## Product Direction
+
+RaceDay is designed around story-first analytics: simple race explanations first, deeper data only when the user wants it.
+
+The goal is to make F1 easier to follow without overwhelming users with dense tables, cluttered pages, or disconnected data sources.
+
+## Current Status
+
+- Frontend is deployed on Vercel.
+- Backend supports local and hosted deployment.
+- Historical race browsing, strategy views, championship views, and pattern search are implemented.
+- Live race data depends on active OpenF1 session availability.
+- Demo replay mode is planned so the live companion can be shown outside race weekends.
+
+## Architecture
+
+```text
+FastF1 / Jolpica / OpenMeteo / OpenF1
+        |
+        v
+Python loaders + normalizers
+        |
+        v
+JSON index / cached race data
+        |
+        v
+FastAPI backend
+        |
+        v
+Next.js frontend + extension
+```
+
+RaceDay is split into three main parts:
+
+- **Backend**: FastAPI service that loads, normalizes, indexes, and serves race data.
+- **Frontend**: Next.js application for race browsing, storytelling, championship views, live monitoring, and strategy tools.
+- **Extension**: Browser extension that can show live race companion data during sessions.
+
+## Data Pipeline
+
+RaceDay combines multiple motorsport data sources and normalizes them into a consistent backend format.
+
+| Source | Purpose |
+|--------|---------|
+| FastF1 | Historical timing, lap, session, tyre, and race data |
+| Jolpica | Older historical race and result data where FastF1 coverage is limited |
+| OpenMeteo | Weather context for race conditions |
+| OpenF1 | Live race/session data for real-time updates |
+
+The backend loaders fetch raw data, clean it, normalize field names, and store indexed JSON files. This keeps the frontend fast because most pages read from cached race data instead of repeatedly calling upstream providers.
+
+The indexing layer supports:
+
+- season summaries
+- race schedules
+- race results
+- pit strategy data
+- key moments
+- championship standings
+- progression charts
+- pattern search data
+- live race snapshots
+
+## Live Race Updates
+
+Live race updates are powered by the backend live feed service.
+
+The backend polls OpenF1 for current session data, normalizes the response, and exposes it in two ways:
+
+| Interface | Purpose |
+|-----------|---------|
+| `GET /live` | Returns the current live race state for polling clients |
+| `WS /ws/live` | Streams live updates to connected clients |
+
+The frontend live dashboard polls the backend and updates the race companion view with current driver positions, tyre data, stint age, pit windows, predictions, and pattern alerts.
+
+The browser extension can consume the same backend data and display live race context while a user watches or follows a session elsewhere.
+
+## Strategy Simulator
+
+The strategy simulator lets users test alternate pit stop plans for a selected driver and race.
+
+It uses indexed race data, lap data, tyre compounds, stint lengths, and race-specific performance patterns to estimate how a changed strategy might affect the result.
+
+The simulator considers:
+
+- selected driver
+- race year and track
+- pit stop laps
+- tyre compound sequence
+- historical stint behavior
+- lap and degradation patterns
+- race context from indexed data
+
+The goal is not to perfectly recreate a Formula 1 team simulator. It is designed as an explainable fan tool that shows how strategy decisions can change race outcomes and helps users understand why pit timing, tyre choice, and stint length matter.
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Backend health check |
+| GET | `/indexing/status` | Current background indexing status |
+| POST | `/refresh/{year}` | Manually refresh indexed data for a season |
+| GET | `/seasons/summary` | Season summaries with champion and race metadata |
+| GET | `/races/{year}` | Race calendar and indexed race status for a season |
+| GET | `/races/{year}/{track}/results` | Race result summary |
+| GET | `/races/{year}/{track}/strategy` | Pit stop and tyre strategy breakdown |
+| GET | `/races/{year}/{track}/strategy/narrative` | Strategy explanation for a race |
+| GET | `/races/{year}/{track}/strategy/stats` | Strategy statistics for a race |
+| GET | `/races/{year}/{track}/moments` | Key race moments |
+| GET | `/races/{year}/{track}/season-story` | Season context around a race |
+| GET | `/races/{year}/{track}/sidebar` | Supporting race facts and context |
+| GET | `/races/{year}/{track}/story` | Race story and tagline |
+| GET | `/races/{year}/{track}/radio` | Radio clips and transcripts when available |
+| GET | `/races/{year}/{track}/sim-context` | Data needed by the strategy simulator |
+| POST | `/races/{year}/{track}/simulate` | Run a pit strategy simulation |
+| GET | `/races/{year}/{track}/swap-context` | Driver/team swap simulation context |
+| POST | `/races/{year}/{track}/simulate-swap` | Simulate a driver in another team context |
+| GET | `/races/{year}/{track}/precedents` | Similar historical race precedents |
+| POST | `/patterns/search` | Search historical races by conditions and filters |
+| GET | `/seasons/{year}/insights` | Season-level insights |
+| GET | `/championship/{year}/drivers` | Driver championship standings |
+| GET | `/championship/{year}/progression` | Championship points progression |
+| GET | `/live` | Current live race state |
+| WS | `/ws/live` | Live race WebSocket stream |
+| GET | `/debug/transcription` | Radio transcription backend status |
+
+## Screenshots
+
+Production screenshots are being finalized. The video walkthrough shows the current app flow.
+
+## Demo
+
+Live app: https://raceday-khaki.vercel.app/
+
+Video walkthrough: https://www.loom.com/share/7df534de3e6848f094580612fe1341e7
+
+## Best Demo Path
+
+1. Open the live app.
+2. Explore a completed race from the race browser.
+3. Open the race story and strategy sections.
+4. Try the strategy simulator.
+5. Watch the Loom walkthrough for the live companion and extension flow.
 
 ## Tech Stack
 
@@ -17,24 +177,20 @@ A full-stack Formula 1 analytics platform that combines historical race data, re
 |-------|-------|
 | Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, GSAP, Recharts |
 | Backend | Python 3.11, FastAPI, Uvicorn |
-| Data Sources | FastF1 (2018+), Jolpica (2015-2017), OpenF1 (live), OpenMeteo (weather) |
-| Transcription | Groq / OpenAI / local Whisper (optional) |
-| Deployment | Vercel (frontend), Railway (backend), Docker |
+| Data Sources | FastF1, Jolpica, OpenMeteo, OpenF1 |
+| Storage | JSON index and cached race data |
+| Live Updates | REST polling and WebSocket endpoint |
+| Extension | Chrome Extension, React, Vite |
+| Deployment | Vercel frontend, Railway/Docker backend |
 
-## Getting Started
+## Local Setup
 
 ### Prerequisites
 
 - Node.js 18+
 - Python 3.11+
-
-### Environment Setup
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` as needed. Defaults work for local development. Groq/OpenAI keys are optional (only needed for radio transcription).
+- npm
+- pip
 
 ### Backend
 
@@ -44,7 +200,13 @@ pip install -r requirements.txt
 python -c "import uvicorn; uvicorn.run('backend.api:app', host='0.0.0.0', port=8888)"
 ```
 
-The backend starts on `http://localhost:8888` and begins indexing seasons in the background.
+The backend runs on:
+
+```text
+http://localhost:8888
+```
+
+On startup, it begins indexing race data in the background.
 
 ### Frontend
 
@@ -54,7 +216,23 @@ npm install
 npm run dev
 ```
 
-The frontend runs on `http://localhost:3000` and connects to the backend API.
+The frontend runs on:
+
+```text
+http://localhost:3000
+```
+
+By default, the frontend connects to:
+
+```text
+http://localhost:8888
+```
+
+For production, set:
+
+```text
+NEXT_PUBLIC_API_URL=<your-backend-url>
+```
 
 ### Chrome Extension
 
@@ -64,65 +242,51 @@ npm install
 npm run build
 ```
 
-Load the `extension/dist` folder as an unpacked extension in Chrome.
+Then load the generated `extension/dist` folder as an unpacked extension in Chrome.
 
-## Project Structure
+## Failure Handling
 
-```
-raceday/
-├── backend/
-│   ├── api.py                 # FastAPI routes
-│   ├── core/
-│   │   ├── loader.py          # FastF1 data fetcher
-│   │   ├── indexer.py         # JSON file indexer
-│   │   ├── insights.py        # Race analysis & narratives
-│   │   ├── strategy_sim.py    # Pit strategy simulator
-│   │   ├── live_feed.py       # Real-time OpenF1 polling
-│   │   ├── radio_transcriber.py
-│   │   ├── jolpica_loader.py  # Historical data (pre-2018)
-│   │   └── openmeteo_loader.py
-│   └── requirements.txt
-├── frontend/
-│   ├── app/
-│   │   ├── page.tsx           # Home - season selector
-│   │   ├── races/[year]/[track]/  # Race detail page
-│   │   ├── championship/[year]/   # Championship standings
-│   │   ├── patterns/          # Pattern finder
-│   │   ├── live/              # Live race monitor
-│   │   └── components/        # ~25 reusable components
-│   └── package.json
-├── extension/                 # Chrome extension (React + Vite)
-├── data/
-│   ├── cache/                 # FastF1 session cache
-│   └── index/                 # Indexed race JSON files
-├── Dockerfile
-├── Procfile
-└── .env.example
-```
+RaceDay is designed to keep the user experience usable even when data sources are incomplete or temporarily unavailable.
 
-## API Endpoints
+Failure handling includes:
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/seasons/summary` | All seasons with champions |
-| GET | `/races/{year}` | Races in a season |
-| GET | `/races/{year}/{track}/results` | Race results |
-| GET | `/races/{year}/{track}/strategy` | Pit stop strategies |
-| GET | `/races/{year}/{track}/story` | Race narrative |
-| GET | `/races/{year}/{track}/radio` | Radio clips + transcripts |
-| POST | `/races/{year}/{track}/simulate` | Simulate pit strategy |
-| GET | `/championship/{year}/drivers` | Driver standings |
-| GET | `/championship/{year}/progression` | Points over rounds |
-| POST | `/patterns/search` | Find matching historical races |
-| GET | `/live` | Current live race status |
-| WS | `/ws/live` | Live race WebSocket |
+- cached JSON index data to avoid unnecessary repeated upstream requests
+- background indexing so pages can still load existing data while new data is processed
+- graceful empty states when a race, season, radio clip, or live session is unavailable
+- optional radio transcription so the app still works without Groq or OpenAI keys
+- API error responses for missing race data or invalid simulation inputs
+- frontend loading states for slower backend calls
+- live page fallback when no active session is available
 
-## Deployment
+Because the app depends on third-party motorsport data sources, availability can vary by season, race weekend, and provider support.
 
-**Frontend** - Deploy to Vercel. Set `NEXT_PUBLIC_API_URL` to your backend URL.
+## Scaling Plan
 
-**Backend** - Deploy to Railway or any Docker host. Set `PORT` and optional API keys as environment variables.
+The current architecture is designed for a project-scale deployment, but it can be expanded into a more production-grade system.
+
+Planned scaling improvements:
+
+- move JSON index data into a database such as Postgres or object storage-backed cache
+- run indexing as scheduled jobs instead of only backend startup work
+- add a queue for long-running data processing and transcription tasks
+- separate live race ingestion from the public API service
+- add Redis or another pub/sub layer for WebSocket fanout
+- cache common API responses at the edge
+- add observability for indexing failures, live feed health, and API latency
+- add automated tests for core data normalization and simulation logic
+- package the extension for Chrome Web Store distribution
+- add replay mode for showcasing live race behavior outside active race sessions
+
+## Known Limitations
+
+- Live race functionality depends on OpenF1 and session availability.
+- Historical data quality varies by year and provider.
+- Some pre-2018 data may have less detail than newer FastF1-supported seasons.
+- Strategy simulation is an estimate, not a professional team-grade race model.
+- Radio transcription depends on optional API keys or local transcription support.
+- AI-generated summaries are grounded in available race data but can still require review.
+- Public demo behavior depends on whether the deployed backend is healthy.
 
 ## License
 
-Private project.
+All rights reserved.
