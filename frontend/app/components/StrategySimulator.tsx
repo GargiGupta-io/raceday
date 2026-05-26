@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { API } from "@/app/lib/api";
+import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 interface ActualStint {
   compound: string;
@@ -209,7 +210,6 @@ export default function StrategySimulator({
   const [result, setResult] = useState<SimResult | null>(null);
   const [simulating, setSimulating] = useState(false);
   const [simError, setSimError] = useState<string | null>(null);
-  const [technicalOpen, setTechnicalOpen] = useState(false);
 
   // Swap mode state
   const [swapContext, setSwapContext] = useState<SwapContext | null>(null);
@@ -227,7 +227,6 @@ export default function StrategySimulator({
       setLoading(true);
       setResult(null);
       setExpanded(false);
-      setTechnicalOpen(false);
     }, 0);
 
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/sim-context`)
@@ -287,7 +286,6 @@ export default function StrategySimulator({
       }
       setCompounds(newCompounds);
       setResult(null);
-      setTechnicalOpen(false);
     }, 0);
 
     return () => window.clearTimeout(resetTimer);
@@ -303,7 +301,6 @@ export default function StrategySimulator({
     setSimulating(true);
     setResult(null);
     setSimError(null);
-    setTechnicalOpen(false);
 
     fetch(`${API}/races/${year}/${encodeURIComponent(track)}/simulate`, {
       method: "POST",
@@ -321,7 +318,6 @@ export default function StrategySimulator({
       .then((d) => {
         setResult(d);
         setSimulating(false);
-        setTechnicalOpen(false);
       })
       .catch((e) => {
         setSimError(e.message || "Simulation failed");
@@ -596,7 +592,6 @@ export default function StrategySimulator({
               onChange={(e) => {
                 setSelectedDriver(e.target.value);
                 setResult(null);
-                setTechnicalOpen(false);
               }}
               className="glass-input w-full px-3 py-2.5 text-sm"
             >
@@ -615,7 +610,6 @@ export default function StrategySimulator({
                   key={n}
                   onClick={() => {
                     setNumStops(n);
-                    setTechnicalOpen(false);
                   }}
                   className={`flex-1 rounded-lg py-2.5 sm:py-2 text-xs font-medium transition-all duration-200 ${
                     numStops === n
@@ -650,7 +644,6 @@ export default function StrategySimulator({
                       newLaps[i] = parseInt(e.target.value);
                       setPitLaps(newLaps);
                       setResult(null);
-                      setTechnicalOpen(false);
                     }}
                     className="flex-1 sm:w-24 sm:flex-none accent-red-600 h-6"
                   />
@@ -688,7 +681,6 @@ export default function StrategySimulator({
                         newCompounds[i] = c;
                         setCompounds(newCompounds);
                         setResult(null);
-                        setTechnicalOpen(false);
                       }}
                     />
                   ))}
@@ -765,15 +757,7 @@ export default function StrategySimulator({
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => setTechnicalOpen((value) => !value)}
-              className="w-full rounded-md border border-white/[0.08] px-4 py-2 text-left text-xs font-medium text-zinc-300 transition hover:border-red-500/30 hover:text-white"
-            >
-              Why this result?
-            </button>
-
-            {technicalOpen && (
+            <ProgressiveDetail label="Why this result?">
               <div className="grid gap-2 text-xs text-zinc-400">
                 <p className="flex justify-between gap-4 rounded-md bg-white/[0.03] px-3 py-2">
                   <span className="text-zinc-600">Pit loss used</span>
@@ -796,7 +780,7 @@ export default function StrategySimulator({
                   <span>{result.model_used === "data-driven" ? "data-driven regression" : "physics estimate"}</span>
                 </p>
               </div>
-            )}
+            </ProgressiveDetail>
           </div>
         )}
 
