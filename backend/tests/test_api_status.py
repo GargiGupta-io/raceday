@@ -12,6 +12,16 @@ def test_health_response_reports_backend_status():
     assert response["indexing_running"] in (True, False)
 
 
+def test_cors_origins_include_production_frontend(monkeypatch):
+    monkeypatch.setenv("FRONTEND_URLS", "https://portfolio.example, https://raceday.example")
+
+    origins = api._cors_origins()
+
+    assert "https://raceday-khaki.vercel.app" in origins
+    assert "https://portfolio.example" in origins
+    assert "https://raceday.example" in origins
+
+
 def test_data_source_health_includes_live_source():
     response = api.data_source_health()
     names = {source["name"] for source in response}

@@ -43,6 +43,19 @@ _indexing_status = {
 }
 
 
+def _cors_origins() -> list[str]:
+    configured = os.environ.get("FRONTEND_URLS") or os.environ.get("FRONTEND_URL", "")
+    configured_origins = [origin.strip() for origin in configured.split(",") if origin.strip()]
+
+    return [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        "https://raceday-khaki.vercel.app",
+        *configured_origins,
+    ]
+
+
 class HealthResponse(BaseModel):
     status: str
     service: str
@@ -151,13 +164,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:3002",
-        os.environ.get("FRONTEND_URL", ""),
-        "https://*.vercel.app",
-    ],
+    allow_origins=_cors_origins(),
     allow_origin_regex=r"https://.*\.vercel\.app",
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
