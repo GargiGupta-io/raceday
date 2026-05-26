@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { API, FetchState, fetchWithTimeout, wsUrl } from "@/app/lib/api";
+import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 interface DriverLive {
   code: string;
@@ -161,6 +162,14 @@ function statusCopy(status: ConnectionStatus) {
   if (status === "demo") return "Demo Mode";
   if (status === "no-session") return "No Live Session";
   return "Offline";
+}
+
+function splitInsight(text: string) {
+  const sentences = text.split(/(?<=\.)\s+/).filter(Boolean);
+  return {
+    summary: sentences[0] || text,
+    detail: sentences.slice(1).join(" ") || "This alert is based on the current live timing, tyre state, and race position context.",
+  };
 }
 
 function TyreIndicator({ compound, stintAge, tyreLife }: { compound: string; stintAge: number; tyreLife: number }) {
@@ -561,13 +570,15 @@ function LiveCompanion({
           {data.predictions && data.predictions.length > 0 && (
             <LivePanel title="Pit Predictions">
               {data.predictions.map((prediction, index) => (
-                <div key={index} className="flex justify-between items-center py-2 border-b border-white/[0.04] last:border-0">
-                  <span className="text-xs font-semibold text-zinc-200">{prediction.driver}</span>
-                  <div className="text-right">
-                    <span className="text-[10px] text-zinc-400">{prediction.prediction}</span>
-                    <span className="text-[8px] ml-1.5 glass-badge text-zinc-500">
-                      {prediction.confidence}
-                    </span>
+                <div key={index} className="py-2 border-b border-white/[0.04] last:border-0">
+                  <div className="flex justify-between items-center gap-3">
+                    <span className="text-xs font-semibold text-zinc-200">{prediction.driver}</span>
+                    <span className="text-[10px] text-zinc-400 text-right">{prediction.prediction}</span>
+                  </div>
+                  <div className="mt-2">
+                    <ProgressiveDetail label="Prediction detail">
+                      Confidence is {prediction.confidence}. The pit window is estimated from tyre life, stint age, current lap, and track position.
+                    </ProgressiveDetail>
                   </div>
                 </div>
               ))}
@@ -596,12 +607,22 @@ function LiveCompanion({
 
           {data.alerts && data.alerts.length > 0 && (
             <LivePanel title="Simple Alerts">
-              {data.alerts.map((alert, index) => (
-                <p key={index} className="text-xs leading-relaxed py-1.5 text-zinc-400">
-                  <span className="text-red-400">{alert.type === "warning" ? "! " : ""}</span>
-                  {alert.text}
-                </p>
-              ))}
+              {data.alerts.map((alert, index) => {
+                const insight = splitInsight(alert.text);
+                return (
+                  <div key={index} className="py-2 border-b border-white/[0.04] last:border-0">
+                    <p className="text-xs leading-relaxed text-zinc-400">
+                      <span className="text-red-400">{alert.type === "warning" ? "! " : ""}</span>
+                      {insight.summary}
+                    </p>
+                    <div className="mt-2">
+                      <ProgressiveDetail label="More context">
+                        {insight.detail}
+                      </ProgressiveDetail>
+                    </div>
+                  </div>
+                );
+              })}
             </LivePanel>
           )}
         </div>
