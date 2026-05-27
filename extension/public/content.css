@@ -54,11 +54,19 @@
   white-space: nowrap;
 }
 
-.raceday-lap {
+.raceday-lap,
+.raceday-moment {
   flex-shrink: 0;
   color: #a1a1aa;
   font-size: 11px;
   font-weight: 700;
+}
+
+.raceday-moment {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .raceday-status-dot {

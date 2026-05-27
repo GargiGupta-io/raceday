@@ -74,12 +74,15 @@
     const headline = data ? notes[0] : replayHeadline(context);
     const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
     const sessionLabel = "RaceDay companion";
+    const headerContext = data
+      ? `Lap ${data.lap}`
+      : context.chapterTitle || context.moment?.label || "";
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
         <span class="raceday-session">${sessionLabel}</span>
-        ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
+        ${headerContext ? `<span class="raceday-moment">${escapeHtml(headerContext)}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
         <button class="raceday-close" id="raceday-close" type="button" aria-label="Close RaceDay companion">&times;</button>
       </div>
