@@ -27,9 +27,9 @@ function statusLabel(status: ConnectionStatus) {
   if (status === "connected") return "Watching live race";
   if (status === "checking") return "Checking race data";
   if (status === "demo") return "Demo race";
-  if (status === "no-session") return "No live race";
+  if (status === "no-session") return "Replay ready";
   if (status === "stopped") return "Ready";
-  return "RaceDay unavailable";
+  return "Replay ready";
 }
 
 function statusColor(status: ConnectionStatus) {
@@ -147,17 +147,17 @@ function Popup() {
       </div>
 
       <div style={{ marginBottom: 10, color: "#d4d4d8", fontSize: 12, lineHeight: 1.35 }}>
-        RaceDay is watching for strategy moments.
+        RaceDay picks up live races or replay videos automatically.
       </div>
 
       <div style={{ display: "grid", gap: 7 }}>
         <Toggle
-          label="Show notes on video"
-          checked={settings.overlayEnabled}
-          onChange={(checked) => saveSettings({ overlayEnabled: checked })}
+          label="Live mode"
+          checked={settings.overlayEnabled && !settings.demoMode}
+          onChange={(checked) => saveSettings({ overlayEnabled: checked, demoMode: false })}
         />
         <Toggle
-          label="Try demo race"
+          label="Demo mode"
           checked={settings.demoMode}
           onChange={(checked) => saveSettings({ demoMode: checked })}
         />

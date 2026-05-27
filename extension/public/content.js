@@ -70,7 +70,7 @@
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
-        <span class="raceday-session">RaceDay note</span>
+        <span class="raceday-session">RaceDay companion</span>
         ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
       </div>
@@ -165,10 +165,11 @@
   }
 
   function renderIdleContent() {
+    const replayNotes = replayCompanionNotes();
     return `
       <div class="raceday-main-note">${escapeHtml(statusCopy(connectionStatus))}</div>
       <div class="raceday-note-list">
-        <div class="raceday-note-item">Turn on demo race in the extension popup to preview simple strategy notes.</div>
+        ${replayNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(note)}</div>`).join("")}
       </div>
     `;
   }
@@ -177,9 +178,33 @@
     if (status === "connected") return "RaceDay is watching for strategy moments.";
     if (status === "checking") return "Checking race data...";
     if (status === "demo") return "Demo race is running.";
-    if (status === "no-session") return "No live race right now.";
+    if (status === "no-session") return "RaceDay is watching this replay or highlight.";
     if (status === "stopped") return "RaceDay notes are hidden.";
-    return "RaceDay cannot reach race data right now.";
+    return "RaceDay is watching this replay or highlight.";
+  }
+
+  function replayCompanionNotes() {
+    const title = currentVideoTitle().toLowerCase();
+    const notes = [];
+
+    if (/highlight|race|grand prix|gp|qualifying|sprint|replay|onboard/.test(title)) {
+      notes.push("Watch for pit stops, safety cars, and drivers gaining time after fresh tyres.");
+    } else {
+      notes.push("When race action starts, RaceDay will help explain the strategy moments in plain English.");
+    }
+
+    notes.push("Live race data will appear automatically when a real session is active.");
+    notes.push("Use Demo mode anytime to preview the strategy-note style.");
+    return notes;
+  }
+
+  function currentVideoTitle() {
+    return (
+      document.querySelector("h1 yt-formatted-string")?.textContent ||
+      document.querySelector("h1")?.textContent ||
+      document.title ||
+      ""
+    ).trim();
   }
 
   function escapeHtml(value) {
