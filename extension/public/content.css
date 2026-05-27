@@ -84,6 +84,13 @@
   line-height: 1.32;
 }
 
+.raceday-video-title {
+  margin-top: 8px;
+  color: #a1a1aa;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .raceday-note-list {
   display: grid;
   gap: 8px;

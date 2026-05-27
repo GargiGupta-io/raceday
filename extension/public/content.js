@@ -18,6 +18,7 @@
   let liveData = null;
   let connectionStatus = "checking";
   let dragState = { dragging: false, offsetX: 0, offsetY: 0 };
+  let lastVideoKey = "";
 
   const overlay = document.createElement("div");
   overlay.id = "raceday-overlay";
@@ -65,14 +66,16 @@
     overlay.className = "raceday-panel raceday-full";
 
     const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
+    const context = videoContext();
     const notes = data ? beginnerNotes(data) : [];
-    const headline = notes[0] || statusCopy(connectionStatus);
-    const detailNotes = notes.slice(1, 4);
+    const headline = data ? notes[0] : replayHeadline(context);
+    const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
+    const sessionLabel = data ? "RaceDay live companion" : "RaceDay replay companion";
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
-        <span class="raceday-session">RaceDay companion</span>
+        <span class="raceday-session">${sessionLabel}</span>
         ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
       </div>
@@ -85,7 +88,7 @@
             </div>
           ` : ""}
           ${settings.demoMode && connectionStatus === "demo" ? `<div class="raceday-demo-label">Demo race preview</div>` : ""}
-        ` : renderIdleContent()}
+        ` : renderIdleContent(context, headline, detailNotes)}
       </div>
     `;
 
@@ -166,38 +169,45 @@
     return Array.from(new Set(notes));
   }
 
-  function renderIdleContent() {
-    const replayNotes = replayCompanionNotes();
+  function renderIdleContent(context, headline, replayNotes) {
     return `
-      <div class="raceday-main-note">${escapeHtml(statusCopy(connectionStatus))}</div>
+      <div class="raceday-main-note">${escapeHtml(headline)}</div>
+      ${context.title ? `<div class="raceday-video-title">${escapeHtml(context.title)}</div>` : ""}
       <div class="raceday-note-list">
         ${replayNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(note)}</div>`).join("")}
       </div>
     `;
   }
 
-  function statusCopy(status) {
-    if (status === "connected") return "RaceDay is watching for strategy moments.";
-    if (status === "checking") return "Checking race data...";
-    if (status === "demo") return "Demo race is running.";
-    if (status === "no-session") return "RaceDay is watching this replay or highlight.";
-    if (status === "stopped") return "RaceDay notes are hidden.";
-    return "RaceDay is watching this replay or highlight.";
+  function replayHeadline(context) {
+    if (settings.demoMode) return "Demo race is running.";
+    if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
+    if (context.isF1Video) return "RaceDay detected this F1 video.";
+    if (context.isVideoPage) return "RaceDay detected this video.";
+    return "Open an F1 video and RaceDay will follow along.";
   }
 
-  function replayCompanionNotes() {
-    const title = currentVideoTitle().toLowerCase();
-    const notes = [];
-
-    if (/highlight|race|grand prix|gp|qualifying|sprint|replay|onboard/.test(title)) {
-      notes.push("Watch for pit stops, safety cars, and drivers gaining time after fresh tyres.");
-    } else {
-      notes.push("When race action starts, RaceDay will help explain the strategy moments in plain English.");
+  function replayCompanionNotes(context) {
+    if (!context.isVideoPage) {
+      return [
+        "Open a race, replay, highlight, qualifying, sprint, or onboard video.",
+        "RaceDay will show simple strategy notes over the video.",
+      ];
     }
 
-    notes.push("Live race data will appear automatically when a real session is active.");
-    notes.push("Use Demo mode anytime to preview the strategy-note style.");
-    return notes;
+    if (context.isF1Video) {
+      return [
+        "Watch the first pit stops. Fresh tyres can quickly change who is under pressure.",
+        "If a safety car, rain, or traffic appears, the best strategy can change fast.",
+        "When live race data is active, RaceDay will switch into real-time strategy notes automatically.",
+      ];
+    }
+
+    return [
+      "This video does not look like an F1 race yet.",
+      "RaceDay works best on F1 race highlights, replays, qualifying, sprints, and onboard videos.",
+      "Demo mode still shows the strategy-note style anytime.",
+    ];
   }
 
   function isDemoSnapshot(data) {
@@ -208,9 +218,24 @@
     return (
       document.querySelector("h1 yt-formatted-string")?.textContent ||
       document.querySelector("h1")?.textContent ||
+      document.querySelector('meta[property="og:title"]')?.getAttribute("content") ||
       document.title ||
       ""
-    ).trim();
+    ).replace(/\s+-\s+YouTube$/i, "").trim();
+  }
+
+  function videoContext() {
+    const title = currentVideoTitle();
+    const url = new URL(window.location.href);
+    const isYouTube = /(^|\.)youtube\.com$/i.test(url.hostname);
+    const isVideoPage = isYouTube ? url.pathname === "/watch" && Boolean(url.searchParams.get("v")) : true;
+    const f1Pattern = /formula\s*1|formula one|\bf1\b|grand prix|\bgp\b|race highlights|qualifying|sprint|onboard|verstappen|hamilton|leclerc|norris|piastri|ferrari|mclaren|red bull|mercedes/i;
+
+    return {
+      title,
+      isVideoPage,
+      isF1Video: isVideoPage && f1Pattern.test(title),
+    };
   }
 
   function escapeHtml(value) {
@@ -290,6 +315,13 @@
   });
 
   setInterval(refreshLiveData, 5000);
+
+  setInterval(() => {
+    const nextVideoKey = `${location.href}|${currentVideoTitle()}`;
+    if (nextVideoKey === lastVideoKey) return;
+    lastVideoKey = nextVideoKey;
+    render();
+  }, 1000);
 
   document.addEventListener("fullscreenchange", () => {
     attachToBestContainer();
