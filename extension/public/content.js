@@ -19,6 +19,8 @@
   let connectionStatus = "checking";
   let dragState = { dragging: false, offsetX: 0, offsetY: 0 };
   let lastVideoKey = "";
+  const raceContextCache = new Map();
+  const raceContextPending = new Set();
 
   const overlay = document.createElement("div");
   overlay.id = "raceday-overlay";
@@ -67,6 +69,7 @@
 
     const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
     const context = videoContext();
+    loadRaceContext(context);
     const notes = data ? beginnerNotes(data) : [];
     const headline = data ? notes[0] : replayHeadline(context);
     const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
@@ -182,6 +185,8 @@
   function replayHeadline(context) {
     if (settings.demoMode) return "Demo race is running.";
     if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
+    if (context.chapterTitle && context.raceName) return `${context.raceName}: ${context.chapterTitle}`;
+    if (context.chapterTitle) return `F1 replay: ${context.chapterTitle}`;
     if (context.isF1Video && context.raceName) return `${context.raceName}: ${context.moment.label}`;
     if (context.isF1Video) return `F1 replay: ${context.moment.label}`;
     if (context.isVideoPage) return "RaceDay detected this video.";
@@ -234,6 +239,7 @@
     const race = detectRace(title);
     const phase = racePhase(progress);
     const moment = replayMoment(progress);
+    const chapterTitle = currentChapterTitle();
 
     return {
       title,
@@ -241,10 +247,12 @@
       isF1Video: isVideoPage && f1Pattern.test(title),
       year: detectYear(title),
       raceName: race?.name || "",
+      track: race?.track || "",
       totalLaps: race?.laps || null,
       phase,
       phaseLabel: phase.label,
       moment,
+      chapterTitle,
     };
   }
 
@@ -255,30 +263,30 @@
   function detectRace(title) {
     const normalized = title.toLowerCase();
     const races = [
-      { keys: ["australian", "australia", "melbourne"], name: "Australian GP", laps: 58 },
-      { keys: ["chinese", "china", "shanghai"], name: "Chinese GP", laps: 56 },
-      { keys: ["japanese", "japan", "suzuka"], name: "Japanese GP", laps: 53 },
-      { keys: ["bahrain", "sakhir"], name: "Bahrain GP", laps: 57 },
-      { keys: ["saudi", "jeddah"], name: "Saudi Arabian GP", laps: 50 },
-      { keys: ["miami"], name: "Miami GP", laps: 57 },
-      { keys: ["emilia", "imola"], name: "Emilia Romagna GP", laps: 63 },
-      { keys: ["monaco", "monte carlo"], name: "Monaco GP", laps: 78 },
-      { keys: ["canadian", "canada", "montreal"], name: "Canadian GP", laps: 70 },
-      { keys: ["spanish", "spain", "barcelona"], name: "Spanish GP", laps: 66 },
-      { keys: ["austrian", "austria", "spielberg"], name: "Austrian GP", laps: 71 },
-      { keys: ["british", "silverstone"], name: "British GP", laps: 52 },
-      { keys: ["hungarian", "hungary", "hungaroring"], name: "Hungarian GP", laps: 70 },
-      { keys: ["belgian", "belgium", "spa"], name: "Belgian GP", laps: 44 },
-      { keys: ["dutch", "netherlands", "zandvoort"], name: "Dutch GP", laps: 72 },
-      { keys: ["italian", "monza"], name: "Italian GP", laps: 53 },
-      { keys: ["azerbaijan", "baku"], name: "Azerbaijan GP", laps: 51 },
-      { keys: ["singapore", "marina bay"], name: "Singapore GP", laps: 62 },
-      { keys: ["united states", "austin", "cota"], name: "United States GP", laps: 56 },
-      { keys: ["mexico", "mexican"], name: "Mexico City GP", laps: 71 },
-      { keys: ["brazil", "sao paulo", "interlagos"], name: "Sao Paulo GP", laps: 71 },
-      { keys: ["las vegas", "vegas"], name: "Las Vegas GP", laps: 50 },
-      { keys: ["qatar", "lusail"], name: "Qatar GP", laps: 57 },
-      { keys: ["abu dhabi", "yas marina"], name: "Abu Dhabi GP", laps: 58 },
+      { keys: ["australian", "australia", "melbourne"], name: "Australian GP", track: "Australian Grand Prix", laps: 58 },
+      { keys: ["chinese", "china", "shanghai"], name: "Chinese GP", track: "Chinese Grand Prix", laps: 56 },
+      { keys: ["japanese", "japan", "suzuka"], name: "Japanese GP", track: "Japanese Grand Prix", laps: 53 },
+      { keys: ["bahrain", "sakhir"], name: "Bahrain GP", track: "Bahrain Grand Prix", laps: 57 },
+      { keys: ["saudi", "jeddah"], name: "Saudi Arabian GP", track: "Saudi Arabian Grand Prix", laps: 50 },
+      { keys: ["miami"], name: "Miami GP", track: "Miami Grand Prix", laps: 57 },
+      { keys: ["emilia", "imola"], name: "Emilia Romagna GP", track: "Emilia Romagna Grand Prix", laps: 63 },
+      { keys: ["monaco", "monte carlo"], name: "Monaco GP", track: "Monaco Grand Prix", laps: 78 },
+      { keys: ["canadian", "canada", "montreal"], name: "Canadian GP", track: "Canadian Grand Prix", laps: 70 },
+      { keys: ["spanish", "spain", "barcelona"], name: "Spanish GP", track: "Spanish Grand Prix", laps: 66 },
+      { keys: ["austrian", "austria", "spielberg"], name: "Austrian GP", track: "Austrian Grand Prix", laps: 71 },
+      { keys: ["british", "silverstone"], name: "British GP", track: "British Grand Prix", laps: 52 },
+      { keys: ["hungarian", "hungary", "hungaroring"], name: "Hungarian GP", track: "Hungarian Grand Prix", laps: 70 },
+      { keys: ["belgian", "belgium", "spa"], name: "Belgian GP", track: "Belgian Grand Prix", laps: 44 },
+      { keys: ["dutch", "netherlands", "zandvoort"], name: "Dutch GP", track: "Dutch Grand Prix", laps: 72 },
+      { keys: ["italian", "monza"], name: "Italian GP", track: "Italian Grand Prix", laps: 53 },
+      { keys: ["azerbaijan", "baku"], name: "Azerbaijan GP", track: "Azerbaijan Grand Prix", laps: 51 },
+      { keys: ["singapore", "marina bay"], name: "Singapore GP", track: "Singapore Grand Prix", laps: 62 },
+      { keys: ["united states", "austin", "cota"], name: "United States GP", track: "United States Grand Prix", laps: 56 },
+      { keys: ["mexico", "mexican"], name: "Mexico City GP", track: "Mexico City Grand Prix", laps: 71 },
+      { keys: ["brazil", "sao paulo", "interlagos"], name: "Sao Paulo GP", track: "São Paulo Grand Prix", laps: 71 },
+      { keys: ["las vegas", "vegas"], name: "Las Vegas GP", track: "Las Vegas Grand Prix", laps: 50 },
+      { keys: ["qatar", "lusail"], name: "Qatar GP", track: "Qatar Grand Prix", laps: 57 },
+      { keys: ["abu dhabi", "yas marina"], name: "Abu Dhabi GP", track: "Abu Dhabi Grand Prix", laps: 58 },
     ];
 
     return races.find((race) => race.keys.some((key) => normalized.includes(key)));
@@ -306,6 +314,12 @@
 
   function replayStrategyNotes(context) {
     const raceText = context.raceName ? ` in the ${context.raceName}` : "";
+    const backendNotes = backendReplayNotes(context);
+    const chapterNotes = chapterReplayNotes(context);
+    if (chapterNotes.length || backendNotes.length) {
+      return [...chapterNotes, ...backendNotes].slice(0, 3);
+    }
+
     const notesByMoment = {
       lights: [
         `This is the launch phase${raceText}. Track position matters most because cars are still packed together.`,
@@ -355,6 +369,93 @@
     };
 
     return notesByMoment[context.moment.id] || notesByMoment["middle-stint"];
+  }
+
+  function chapterReplayNotes(context) {
+    if (!context.chapterTitle) return [];
+    return [
+      `Video chapter: ${context.chapterTitle}. RaceDay is using this as the current replay moment.`,
+    ];
+  }
+
+  function backendReplayNotes(context) {
+    const raceData = cachedRaceContext(context);
+    if (!raceData) return [];
+
+    const moments = Array.isArray(raceData.moments) ? raceData.moments : [];
+    const narrative = Array.isArray(raceData.story?.narrative) ? raceData.story.narrative : [];
+    const pickedMoment = pickBackendMoment(context, moments);
+    const notes = [];
+
+    if (pickedMoment?.headline) notes.push(pickedMoment.headline);
+    if (pickedMoment?.detail) notes.push(beginnerize(pickedMoment.detail));
+    if (notes.length < 2 && narrative.length) {
+      notes.push(beginnerize(narrative[Math.min(context.moment.step, narrative.length - 1)]));
+    }
+
+    return notes;
+  }
+
+  function pickBackendMoment(context, moments) {
+    if (!moments.length) return null;
+
+    const chapter = context.chapterTitle.toLowerCase();
+    if (chapter) {
+      const chapterMatch = moments.find((moment) => {
+        const text = `${moment.headline || ""} ${moment.detail || ""}`.toLowerCase();
+        return chapter.split(/\s+/).filter((word) => word.length > 3).some((word) => text.includes(word));
+      });
+      if (chapterMatch) return chapterMatch;
+    }
+
+    return moments[Math.min(context.moment.step, moments.length - 1)];
+  }
+
+  function beginnerize(text) {
+    return String(text || "")
+      .replace(/\bundercut\b/gi, "early-stop advantage")
+      .replace(/\bovercut\b/gi, "staying out longer")
+      .replace(/\btyre cliff\b/gi, "tyres suddenly losing pace")
+      .replace(/\bcompound\b/gi, "tyre type")
+      .replace(/\bstint\b/gi, "run on one set of tyres");
+  }
+
+  function cachedRaceContext(context) {
+    if (!context.year || !context.track) return null;
+    return raceContextCache.get(raceContextKey(context)) || null;
+  }
+
+  function loadRaceContext(context) {
+    if (!context.isF1Video || !context.year || !context.track) return;
+
+    const key = raceContextKey(context);
+    if (raceContextCache.has(key) || raceContextPending.has(key)) return;
+
+    raceContextPending.add(key);
+    chrome.runtime.sendMessage(
+      { type: "GET_RACE_CONTEXT", year: context.year, track: context.track },
+      (response) => {
+        raceContextPending.delete(key);
+        if (response?.ok) {
+          raceContextCache.set(key, response);
+          render();
+        }
+      },
+    );
+  }
+
+  function raceContextKey(context) {
+    return `${context.year}:${context.track}`;
+  }
+
+  function currentChapterTitle() {
+    const candidates = [
+      document.querySelector(".ytp-chapter-title-content")?.textContent,
+      document.querySelector(".ytp-chapter-title")?.textContent,
+      document.querySelector("[class*='chapter'][class*='title']")?.textContent,
+    ];
+
+    return (candidates.find(Boolean) || "").replace(/\s+/g, " ").trim();
   }
 
   function escapeHtml(value) {

@@ -55,6 +55,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
+  if (msg.type === "GET_RACE_CONTEXT") {
+    getRaceContext(msg.year, msg.track).then(sendResponse);
+    return true;
+  }
+
   if (msg.type === "SAVE_SETTINGS") {
     saveSettings(msg.settings || {}).then(() => {
       sendResponse({ settings, status: connectionStatus });
@@ -216,6 +221,35 @@ function broadcastToAll(message) {
 
 function isDemoSnapshot(data) {
   return data?.session === "Demo Grand Prix";
+}
+
+async function getRaceContext(year, track) {
+  if (!year || !track) return { ok: false };
+
+  const base = settings.backendUrl.replace(/\/+$/, "");
+  const encodedTrack = encodeURIComponent(track);
+  const endpoints = {
+    moments: `${base}/races/${year}/${encodedTrack}/moments`,
+    story: `${base}/races/${year}/${encodedTrack}/story`,
+  };
+
+  try {
+    const [momentsResponse, storyResponse] = await Promise.allSettled([
+      fetch(endpoints.moments, { signal: AbortSignal.timeout(6000) }),
+      fetch(endpoints.story, { signal: AbortSignal.timeout(6000) }),
+    ]);
+
+    const moments = momentsResponse.status === "fulfilled" && momentsResponse.value.ok
+      ? await momentsResponse.value.json()
+      : [];
+    const story = storyResponse.status === "fulfilled" && storyResponse.value.ok
+      ? await storyResponse.value.json()
+      : null;
+
+    return { ok: true, moments, story };
+  } catch (error) {
+    return { ok: false, error: String(error) };
+  }
 }
 
 chrome.runtime.onInstalled.addListener(() => {
