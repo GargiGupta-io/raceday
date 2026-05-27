@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "build:firefox": "npm run build && node scripts/build-firefox-package.mjs"
+    "build:firefox": "npm run build && node scripts/build-firefox-package.mjs",
+    "copy:zips": "powershell -ExecutionPolicy Bypass -File scripts/copy-extension-zips-to-downloads.ps1"
   },
   "dependencies": {
     "react": "^19.0.0",
