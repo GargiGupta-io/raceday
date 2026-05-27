@@ -76,7 +76,7 @@
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
         <span class="raceday-session">${sessionLabel}</span>
-        ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
+        ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : context.lapText ? `<span class="raceday-lap">${escapeHtml(context.lapText)}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
       </div>
       <div class="raceday-body">
@@ -182,7 +182,8 @@
   function replayHeadline(context) {
     if (settings.demoMode) return "Demo race is running.";
     if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
-    if (context.isF1Video) return "RaceDay detected this F1 video.";
+    if (context.isF1Video && context.raceName) return `${context.raceName}: ${context.phaseLabel}`;
+    if (context.isF1Video) return `F1 replay: ${context.phaseLabel}`;
     if (context.isVideoPage) return "RaceDay detected this video.";
     return "Open an F1 video and RaceDay will follow along.";
   }
@@ -196,11 +197,7 @@
     }
 
     if (context.isF1Video) {
-      return [
-        "Watch the first pit stops. Fresh tyres can quickly change who is under pressure.",
-        "If a safety car, rain, or traffic appears, the best strategy can change fast.",
-        "When live race data is active, RaceDay will switch into real-time strategy notes automatically.",
-      ];
+      return replayStrategyNotes(context);
     }
 
     return [
@@ -230,12 +227,115 @@
     const isYouTube = /(^|\.)youtube\.com$/i.test(url.hostname);
     const isVideoPage = isYouTube ? url.pathname === "/watch" && Boolean(url.searchParams.get("v")) : true;
     const f1Pattern = /formula\s*1|formula one|\bf1\b|grand prix|\bgp\b|race highlights|qualifying|sprint|onboard|verstappen|hamilton|leclerc|norris|piastri|ferrari|mclaren|red bull|mercedes/i;
+    const video = document.querySelector("video");
+    const progress = video && Number.isFinite(video.duration) && video.duration > 0
+      ? Math.max(0, Math.min(1, video.currentTime / video.duration))
+      : 0;
+    const race = detectRace(title);
+    const estimatedLap = race?.laps ? Math.max(1, Math.min(race.laps, Math.round(progress * race.laps) || 1)) : null;
+    const phase = racePhase(progress);
 
     return {
       title,
       isVideoPage,
       isF1Video: isVideoPage && f1Pattern.test(title),
+      year: detectYear(title),
+      raceName: race?.name || "",
+      totalLaps: race?.laps || null,
+      estimatedLap,
+      lapText: estimatedLap && race?.laps ? `~Lap ${estimatedLap}/${race.laps}` : "",
+      phase,
+      phaseLabel: phase.label,
     };
+  }
+
+  function detectYear(title) {
+    return title.match(/\b20\d{2}\b/)?.[0] || "";
+  }
+
+  function detectRace(title) {
+    const normalized = title.toLowerCase();
+    const races = [
+      { keys: ["australian", "australia", "melbourne"], name: "Australian GP", laps: 58 },
+      { keys: ["chinese", "china", "shanghai"], name: "Chinese GP", laps: 56 },
+      { keys: ["japanese", "japan", "suzuka"], name: "Japanese GP", laps: 53 },
+      { keys: ["bahrain", "sakhir"], name: "Bahrain GP", laps: 57 },
+      { keys: ["saudi", "jeddah"], name: "Saudi Arabian GP", laps: 50 },
+      { keys: ["miami"], name: "Miami GP", laps: 57 },
+      { keys: ["emilia", "imola"], name: "Emilia Romagna GP", laps: 63 },
+      { keys: ["monaco", "monte carlo"], name: "Monaco GP", laps: 78 },
+      { keys: ["canadian", "canada", "montreal"], name: "Canadian GP", laps: 70 },
+      { keys: ["spanish", "spain", "barcelona"], name: "Spanish GP", laps: 66 },
+      { keys: ["austrian", "austria", "spielberg"], name: "Austrian GP", laps: 71 },
+      { keys: ["british", "silverstone"], name: "British GP", laps: 52 },
+      { keys: ["hungarian", "hungary", "hungaroring"], name: "Hungarian GP", laps: 70 },
+      { keys: ["belgian", "belgium", "spa"], name: "Belgian GP", laps: 44 },
+      { keys: ["dutch", "netherlands", "zandvoort"], name: "Dutch GP", laps: 72 },
+      { keys: ["italian", "monza"], name: "Italian GP", laps: 53 },
+      { keys: ["azerbaijan", "baku"], name: "Azerbaijan GP", laps: 51 },
+      { keys: ["singapore", "marina bay"], name: "Singapore GP", laps: 62 },
+      { keys: ["united states", "austin", "cota"], name: "United States GP", laps: 56 },
+      { keys: ["mexico", "mexican"], name: "Mexico City GP", laps: 71 },
+      { keys: ["brazil", "sao paulo", "interlagos"], name: "Sao Paulo GP", laps: 71 },
+      { keys: ["las vegas", "vegas"], name: "Las Vegas GP", laps: 50 },
+      { keys: ["qatar", "lusail"], name: "Qatar GP", laps: 57 },
+      { keys: ["abu dhabi", "yas marina"], name: "Abu Dhabi GP", laps: 58 },
+    ];
+
+    return races.find((race) => race.keys.some((key) => normalized.includes(key)));
+  }
+
+  function racePhase(progress) {
+    if (progress < 0.18) return { id: "start", label: "race start" };
+    if (progress < 0.38) return { id: "early", label: "early strategy window" };
+    if (progress < 0.66) return { id: "middle", label: "middle stint pressure" };
+    if (progress < 0.86) return { id: "late", label: "late-race strategy" };
+    return { id: "finish", label: "finish phase" };
+  }
+
+  function replayStrategyNotes(context) {
+    const raceText = context.raceName ? ` in the ${context.raceName}` : "";
+    const lapText = context.estimatedLap && context.totalLaps
+      ? `RaceDay estimates this highlight is around lap ${context.estimatedLap} of ${context.totalLaps}.`
+      : "RaceDay cannot read the exact lap from YouTube video pixels yet, so it estimates from the video timeline.";
+
+    if (context.phase.id === "start") {
+      return [
+        lapText,
+        `This is the launch phase${raceText}. Track position matters most because cars are still close together.`,
+        "Watch who keeps clean air, who gets trapped behind traffic, and whether anyone has early tyre damage.",
+      ];
+    }
+
+    if (context.phase.id === "early") {
+      return [
+        lapText,
+        "This is where teams start choosing between stopping early for fresh tyres or staying out for track position.",
+        "A driver who stops early can gain time if the fresh tyres are much faster.",
+      ];
+    }
+
+    if (context.phase.id === "middle") {
+      return [
+        lapText,
+        "This is usually the main strategy fight. Tyres are older, gaps matter, and pit timing can decide positions.",
+        "If two drivers are close before a stop, the first clean pit stop can flip the order.",
+      ];
+    }
+
+    if (context.phase.id === "late") {
+      return [
+        lapText,
+        "Late in the race, fresh tyres can attack but track position is harder to recover.",
+        "Watch for drivers closing quickly or defending with worn tyres.",
+      ];
+    }
+
+    return [
+      lapText,
+      "The final laps are usually about tyre life, pressure, and mistakes.",
+      "A small lock-up, traffic, or poor exit can decide the finish when gaps are tight.",
+    ];
   }
 
   function escapeHtml(value) {
