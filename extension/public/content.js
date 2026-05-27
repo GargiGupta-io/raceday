@@ -62,7 +62,7 @@
     overlay.style.display = settings.overlayEnabled ? "block" : "none";
     overlay.className = "raceday-panel raceday-full";
 
-    const data = liveData;
+    const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
     const notes = data ? beginnerNotes(data) : [];
     const headline = notes[0] || statusCopy(connectionStatus);
     const detailNotes = notes.slice(1, 4);
@@ -82,7 +82,7 @@
               ${detailNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(note)}</div>`).join("")}
             </div>
           ` : ""}
-          ${settings.demoMode ? `<div class="raceday-demo-label">Demo race preview</div>` : ""}
+          ${settings.demoMode && connectionStatus === "demo" ? `<div class="raceday-demo-label">Demo race preview</div>` : ""}
         ` : renderIdleContent()}
       </div>
     `;
@@ -196,6 +196,10 @@
     notes.push("Live race data will appear automatically when a real session is active.");
     notes.push("Use Demo mode anytime to preview the strategy-note style.");
     return notes;
+  }
+
+  function isDemoSnapshot(data) {
+    return data?.session === "Demo Grand Prix";
   }
 
   function currentVideoTitle() {

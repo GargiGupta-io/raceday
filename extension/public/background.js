@@ -110,6 +110,10 @@ async function saveSettings(nextSettings) {
     return;
   }
 
+  liveData = null;
+  connectionStatus = "checking";
+  broadcastToAll({ type: "WS_STATUS", status: connectionStatus });
+  broadcastToAll({ type: "LIVE_UPDATE", data: null });
   restartPolling();
 }
 
