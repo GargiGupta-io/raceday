@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { use } from "react";
 
-import { API } from "@/app/lib/api";
+import { API, FetchState, fetchWithTimeout } from "@/app/lib/api";
 import ProgressionChart from "@/app/components/ProgressionChart";
 
 interface StandingEntry {
@@ -25,24 +25,27 @@ export default function ChampionshipPage({
   const [standings, setStandings] = useState<StandingEntry[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<FetchState>("loading");
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`${API}/championship/${year}/drivers`)
-      .then((r) => {
-        if (!r.ok) throw new Error(`${r.status}`);
-        return r.json();
-      })
+    fetchWithTimeout<StandingEntry[]>(`${API}/championship/${year}/drivers`, {
+      onState: (nextState) => {
+        setState(nextState);
+        if (nextState !== "error") setError(null);
+      },
+    })
       .then((data) => {
         setStandings(data);
         setLoading(false);
       })
       .catch((e) => {
-        setError(e.message);
+        setError(e instanceof Error ? e.message : "Request failed");
         setLoading(false);
       });
-  }, [year]);
+  }, [year, retryCount]);
 
   const racesIndexed = standings?.[0]?.races ?? 0;
   const leader = standings?.[0];
@@ -93,28 +96,42 @@ export default function ChampionshipPage({
                 </div>
               ))}
             </div>
+            <p className="text-center text-sm text-zinc-400">
+              {state === "slowLoading"
+                ? "Waking up the race data service..."
+                : state === "retrying"
+                  ? "Retrying championship data..."
+                  : "Loading championship data..."}
+            </p>
           </div>
         )}
         {error && (
           <div className="glass-card p-8 text-center">
             <p className="text-red-400 text-sm">Could not load standings.</p>
-            <p className="text-zinc-500 text-xs mt-2">Check that the backend is running on the correct port.</p>
+            <p className="text-zinc-400 text-xs mt-2">The backend is taking longer than expected.</p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((value) => value + 1)}
+              className="mt-5 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-500"
+            >
+              Retry standings
+            </button>
           </div>
         )}
 
         {!loading && !error && standings && (
           <div className="space-y-8">
 
-            {/* Leader card — glass with gold glow */}
+            {/* Leader card */}
             {leader && (
-              <div className="glass-card p-6 sm:p-8 flex items-center justify-between gap-4" style={{ boxShadow: "0 0 30px rgba(234, 179, 8, 0.08), inset 0 1px 0 rgba(234, 179, 8, 0.1)" }}>
+              <div className="glass-card p-6 sm:p-8 flex items-center justify-between gap-4" style={{ boxShadow: "0 0 30px rgba(239, 68, 68, 0.08), inset 0 1px 0 rgba(239, 68, 68, 0.1)" }}>
                 <div className="min-w-0">
                   <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Championship leader</p>
                   <p className="text-2xl sm:text-3xl font-bold text-white tracking-tight truncate">{leader.driver}</p>
                   <p className="mt-1.5 text-sm text-zinc-400 truncate">{leader.team}</p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-2xl sm:text-3xl font-bold text-yellow-400">{leader.points}</p>
+                  <p className="text-2xl sm:text-3xl font-bold text-red-400">{leader.points}</p>
                   <p className="text-xs text-zinc-500 mt-1">points</p>
                 </div>
               </div>
@@ -139,14 +156,14 @@ export default function ChampionshipPage({
                 <div
                   key={entry.driver}
                   className={`grid grid-cols-[2.5rem_1fr_4rem_3rem_3rem] gap-2 sm:gap-3 items-center px-4 sm:px-6 py-3.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.02] transition-colors ${
-                    entry.position === 1 ? "bg-yellow-500/[0.03]" : ""
+                    entry.position === 1 ? "bg-red-500/[0.04]" : ""
                   }`}
                 >
                   {/* Position */}
                   <span className={`text-sm font-mono text-right font-semibold ${
-                    entry.position === 1 ? "text-yellow-400" :
+                    entry.position === 1 ? "text-red-400" :
                     entry.position === 2 ? "text-zinc-300" :
-                    entry.position === 3 ? "text-amber-600" :
+                    entry.position === 3 ? "text-zinc-400" :
                     "text-zinc-600"
                   }`}>
                     {entry.position}
@@ -160,7 +177,7 @@ export default function ChampionshipPage({
 
                   {/* Points */}
                   <span className={`text-sm font-semibold text-right ${
-                    entry.position === 1 ? "text-yellow-400" : "text-zinc-200"
+                    entry.position === 1 ? "text-red-400" : "text-zinc-200"
                   }`}>
                     {entry.points}
                   </span>
