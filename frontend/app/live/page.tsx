@@ -680,10 +680,9 @@ function ExtensionBanner() {
         </p>
       </div>
       <a
-        href="https://github.com/GargiGupta-io/raceday/tree/master/extension"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Download Raceday browser extension from GitHub"
+        href="/downloads/raceday-extension.zip"
+        download
+        aria-label="Download Raceday browser extension"
         className="shrink-0 glass-button px-5 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
       >
         Get Extension
