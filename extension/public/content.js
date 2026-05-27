@@ -76,7 +76,7 @@
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
         <span class="raceday-session">${sessionLabel}</span>
-        ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : context.lapText ? `<span class="raceday-lap">${escapeHtml(context.lapText)}</span>` : ""}
+        ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
       </div>
       <div class="raceday-body">
@@ -182,8 +182,8 @@
   function replayHeadline(context) {
     if (settings.demoMode) return "Demo race is running.";
     if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
-    if (context.isF1Video && context.raceName) return `${context.raceName}: ${context.phaseLabel}`;
-    if (context.isF1Video) return `F1 replay: ${context.phaseLabel}`;
+    if (context.isF1Video && context.raceName) return `${context.raceName}: ${context.moment.label}`;
+    if (context.isF1Video) return `F1 replay: ${context.moment.label}`;
     if (context.isVideoPage) return "RaceDay detected this video.";
     return "Open an F1 video and RaceDay will follow along.";
   }
@@ -232,8 +232,8 @@
       ? Math.max(0, Math.min(1, video.currentTime / video.duration))
       : 0;
     const race = detectRace(title);
-    const estimatedLap = race?.laps ? Math.max(1, Math.min(race.laps, Math.round(progress * race.laps) || 1)) : null;
     const phase = racePhase(progress);
+    const moment = replayMoment(progress);
 
     return {
       title,
@@ -242,10 +242,9 @@
       year: detectYear(title),
       raceName: race?.name || "",
       totalLaps: race?.laps || null,
-      estimatedLap,
-      lapText: estimatedLap && race?.laps ? `~Lap ${estimatedLap}/${race.laps}` : "",
       phase,
       phaseLabel: phase.label,
+      moment,
     };
   }
 
@@ -293,49 +292,69 @@
     return { id: "finish", label: "finish phase" };
   }
 
+  function replayMoment(progress) {
+    if (progress < 0.08) return { id: "lights", label: "race start", step: 0 };
+    if (progress < 0.18) return { id: "settle", label: "opening laps", step: 1 };
+    if (progress < 0.30) return { id: "first-window", label: "first pit choices", step: 2 };
+    if (progress < 0.42) return { id: "undercut", label: "undercut threat", step: 3 };
+    if (progress < 0.54) return { id: "middle-stint", label: "middle stint", step: 4 };
+    if (progress < 0.66) return { id: "second-window", label: "second strategy window", step: 5 };
+    if (progress < 0.78) return { id: "late-attack", label: "late attack", step: 6 };
+    if (progress < 0.90) return { id: "defend", label: "defending phase", step: 7 };
+    return { id: "finish", label: "final laps", step: 8 };
+  }
+
   function replayStrategyNotes(context) {
     const raceText = context.raceName ? ` in the ${context.raceName}` : "";
-    const lapText = context.estimatedLap && context.totalLaps
-      ? `RaceDay estimates this highlight is around lap ${context.estimatedLap} of ${context.totalLaps}.`
-      : "RaceDay cannot read the exact lap from YouTube video pixels yet, so it estimates from the video timeline.";
+    const notesByMoment = {
+      lights: [
+        `This is the launch phase${raceText}. Track position matters most because cars are still packed together.`,
+        "Watch who gets clean air and who gets trapped behind traffic.",
+        "Early contact or tyre damage can ruin the race before strategy even starts.",
+      ],
+      settle: [
+        "The field is starting to spread out. Teams are learning who has pace and who is stuck.",
+        "A driver following closely may overheat tyres, which makes attacking harder later.",
+        "Clean air helps the car feel calmer and protects the tyres.",
+      ],
+      "first-window": [
+        "The first pit choices are starting to matter.",
+        "Stopping early can give fresh tyres, but it also risks coming out behind slower traffic.",
+        "Staying out keeps track position, but old tyres can become a problem quickly.",
+      ],
+      undercut: [
+        "This is where the early-stop advantage can appear.",
+        "If one driver pits first and goes faster on fresh tyres, they can jump a rival who stays out.",
+        "The risk is traffic: fresh tyres are wasted if the driver gets stuck.",
+      ],
+      "middle-stint": [
+        "This is the main strategy fight. The gaps, tyre age, and pit timing all start linking together.",
+        "A small gap can become important if a pit stop drops a driver into traffic.",
+        "Watch who is catching quickly and who is protecting old tyres.",
+      ],
+      "second-window": [
+        "Teams may now choose between another stop or stretching tyres to the end.",
+        "A second stop gives speed, but the driver must regain the lost track position.",
+        "A one-stop plan is safer only if the tyres survive.",
+      ],
+      "late-attack": [
+        "Fresh tyres are now dangerous because there is less race left to respond.",
+        "A driver closing fast may force the car ahead to defend every corner.",
+        "This is where tyre life turns into pressure.",
+      ],
+      defend: [
+        "Now the question is who can hold position under pressure.",
+        "The attacking driver needs speed; the defending driver needs clean exits and no mistakes.",
+        "Traffic or one bad corner can decide the fight.",
+      ],
+      finish: [
+        "The final laps are about pressure, mistakes, and tyre survival.",
+        "If gaps are tight, one lock-up or poor exit can change the result.",
+        "Strategy is mostly done now; execution matters most.",
+      ],
+    };
 
-    if (context.phase.id === "start") {
-      return [
-        lapText,
-        `This is the launch phase${raceText}. Track position matters most because cars are still close together.`,
-        "Watch who keeps clean air, who gets trapped behind traffic, and whether anyone has early tyre damage.",
-      ];
-    }
-
-    if (context.phase.id === "early") {
-      return [
-        lapText,
-        "This is where teams start choosing between stopping early for fresh tyres or staying out for track position.",
-        "A driver who stops early can gain time if the fresh tyres are much faster.",
-      ];
-    }
-
-    if (context.phase.id === "middle") {
-      return [
-        lapText,
-        "This is usually the main strategy fight. Tyres are older, gaps matter, and pit timing can decide positions.",
-        "If two drivers are close before a stop, the first clean pit stop can flip the order.",
-      ];
-    }
-
-    if (context.phase.id === "late") {
-      return [
-        lapText,
-        "Late in the race, fresh tyres can attack but track position is harder to recover.",
-        "Watch for drivers closing quickly or defending with worn tyres.",
-      ];
-    }
-
-    return [
-      lapText,
-      "The final laps are usually about tyre life, pressure, and mistakes.",
-      "A small lock-up, traffic, or poor exit can decide the finish when gaps are tight.",
-    ];
+    return notesByMoment[context.moment.id] || notesByMoment["middle-stint"];
   }
 
   function escapeHtml(value) {
@@ -417,11 +436,12 @@
   setInterval(refreshLiveData, 5000);
 
   setInterval(() => {
-    const nextVideoKey = `${location.href}|${currentVideoTitle()}`;
+    const context = videoContext();
+    const nextVideoKey = `${location.href}|${context.title}|${context.moment.id}`;
     if (nextVideoKey === lastVideoKey) return;
     lastVideoKey = nextVideoKey;
     render();
-  }, 1000);
+  }, 1500);
 
   document.addEventListener("fullscreenchange", () => {
     attachToBestContainer();
