@@ -5,7 +5,7 @@
  */
 
 const DEFAULT_SETTINGS = {
-  backendUrl: "http://localhost:8888",
+  backendUrl: "https://web-production-b8406.up.railway.app",
   overlayEnabled: true,
   overlayMode: "compact",
   demoMode: false,
@@ -33,6 +33,7 @@ const DEMO_DATA = {
   ],
   alerts: [
     { text: "Norris and Verstappen are inside the same pit window. Track position is now the pressure point.", type: "warning" },
+    { text: "Hamilton has fresh hard tyres after the stop. Watch for an undercut attempt over the next two laps.", type: "opportunity" },
   ],
 };
 
@@ -75,6 +76,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 async function loadSettings() {
   const stored = await chrome.storage.local.get(DEFAULT_SETTINGS);
   settings = { ...DEFAULT_SETTINGS, ...stored };
+  if (!settings.backendUrl || settings.backendUrl === "http://localhost:8888") {
+    settings.backendUrl = DEFAULT_SETTINGS.backendUrl;
+    await chrome.storage.local.set({ backendUrl: settings.backendUrl });
+  }
 }
 
 async function saveSettings(nextSettings) {
@@ -164,7 +169,12 @@ function restartPolling() {
 }
 
 function broadcastToAll(message) {
-  chrome.runtime.sendMessage(message).catch(() => {});
+  try {
+    const result = chrome.runtime.sendMessage(message);
+    if (result && typeof result.catch === "function") result.catch(() => {});
+  } catch {
+    // No active extension views to receive the message.
+  }
 }
 
 chrome.runtime.onInstalled.addListener(() => {

@@ -19,6 +19,9 @@ interface LiveData {
   totalLaps: number;
   session: string;
   drivers: DriverLive[];
+  predictions?: { driver: string; prediction: string; confidence: string }[];
+  whatIf?: { driver: string; pitNow: string; stayOut: string; recommendation: "pit" | "stay" | "neutral" }[];
+  alerts?: { text: string; type: "warning" | "info" | "opportunity" }[];
 }
 
 interface ExtensionSettings {
@@ -31,7 +34,7 @@ interface ExtensionSettings {
 type ConnectionStatus = "connected" | "checking" | "offline" | "demo" | "no-session" | "stopped" | "disconnected";
 
 const DEFAULT_SETTINGS: ExtensionSettings = {
-  backendUrl: "http://localhost:8888",
+  backendUrl: "https://web-production-b8406.up.railway.app",
   overlayEnabled: true,
   overlayMode: "compact",
   demoMode: false,
@@ -44,12 +47,12 @@ function sendMessage<T>(message: Record<string, unknown>): Promise<T> {
 }
 
 function statusLabel(status: ConnectionStatus) {
-  if (status === "connected") return "Connected";
-  if (status === "checking") return "Checking";
-  if (status === "demo") return "Demo Mode";
-  if (status === "no-session") return "No Live Session";
+  if (status === "connected") return "Live strategy on";
+  if (status === "checking") return "Checking race data";
+  if (status === "demo") return "Demo preview";
+  if (status === "no-session") return "No live race";
   if (status === "stopped") return "Overlay Off";
-  return "Offline";
+  return "RaceDay unavailable";
 }
 
 function statusColor(status: ConnectionStatus) {
@@ -114,6 +117,7 @@ function Popup() {
   const [backendDraft, setBackendDraft] = useState(DEFAULT_SETTINGS.backendUrl);
   const [status, setStatus] = useState<ConnectionStatus>("checking");
   const [liveData, setLiveData] = useState<LiveData | null>(null);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
 
   useEffect(() => {
     sendMessage<{ settings: ExtensionSettings; status: ConnectionStatus; data?: LiveData | null }>({ type: "GET_LIVE_DATA" })
@@ -176,56 +180,20 @@ function Popup() {
       </div>
 
       <Card>
-        <div style={{ fontSize: 9, color: "#71717a", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
-          Backend URL
-        </div>
-        <div style={{ display: "flex", gap: 6 }}>
-          <input
-            value={backendDraft}
-            onChange={(event) => setBackendDraft(event.target.value)}
-            placeholder="https://your-backend.railway.app"
-            style={{
-              flex: 1,
-              minWidth: 0,
-              border: "1px solid #27272a",
-              borderRadius: 6,
-              background: "#09090b",
-              color: "#e4e4e7",
-              fontSize: 10,
-              padding: "8px",
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => saveSettings({ backendUrl: backendDraft.trim() || DEFAULT_SETTINGS.backendUrl })}
-            style={{
-              border: "1px solid rgba(220, 38, 38, 0.35)",
-              borderRadius: 6,
-              background: "rgba(220, 38, 38, 0.14)",
-              color: "#fff",
-              fontSize: 10,
-              fontWeight: 700,
-              padding: "0 10px",
-              cursor: "pointer",
-            }}
-          >
-            Save
-          </button>
-        </div>
-      </Card>
-
-      <Card>
         <div style={{ display: "grid", gap: 8 }}>
           <Toggle
-            label="Overlay"
+            label="Show RaceDay overlay"
             checked={settings.overlayEnabled}
             onChange={(checked) => saveSettings({ overlayEnabled: checked })}
           />
           <Toggle
-            label="Demo mode"
+            label="Preview with demo data"
             checked={settings.demoMode}
             onChange={(checked) => saveSettings({ demoMode: checked })}
           />
+          <div style={{ fontSize: 9, color: "#71717a", textTransform: "uppercase", letterSpacing: 0.8 }}>
+            Overlay size
+          </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
             {(["compact", "full"] as const).map((mode) => (
               <button
@@ -253,34 +221,87 @@ function Popup() {
 
       {liveData ? (
         <Card>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#fafafa" }}>
-                {liveData.session.replace(" Grand Prix", "")}
-              </div>
-              <div style={{ fontSize: 9, color: settings.demoMode ? "#dc2626" : "#71717a", marginTop: 2 }}>
-                {settings.demoMode ? "Demo data" : "Live data"}
-              </div>
-            </div>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#fafafa" }}>
-              {liveData.lap}<span style={{ fontSize: 11, color: "#71717a", fontWeight: 400 }}>/{liveData.totalLaps}</span>
-            </div>
+          <div style={{ fontSize: 9, color: "#71717a", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 7 }}>
+            RaceDay signal
           </div>
-          <div style={{ marginTop: 10, display: "grid", gap: 5 }}>
-            {liveData.drivers.slice(0, 5).map((driver) => (
-              <div key={driver.code} style={{ display: "grid", gridTemplateColumns: "26px 1fr 46px", gap: 8, fontSize: 10, color: "#d4d4d8" }}>
-                <span>P{driver.position}</span>
-                <span>{driver.code}</span>
-                <span style={{ textAlign: "right", color: "#71717a" }}>{driver.gap}</span>
+          <div style={{ fontSize: 13, fontWeight: 750, color: "#fafafa", lineHeight: 1.35 }}>
+            {liveData.alerts?.[0]?.text || liveData.predictions?.[0]?.prediction || "Strategy insight will appear as race data changes."}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 10, color: settings.demoMode ? "#dc2626" : "#71717a" }}>
+            {settings.demoMode ? "Demo preview" : liveData.session.replace(" Grand Prix", "")} · Lap {liveData.lap}/{liveData.totalLaps}
+          </div>
+          <div style={{ marginTop: 12, display: "grid", gap: 6 }}>
+            {(liveData.predictions || []).slice(0, 2).map((prediction) => (
+              <div key={`${prediction.driver}-${prediction.prediction}`} style={{ display: "grid", gridTemplateColumns: "34px 1fr", gap: 8, fontSize: 10 }}>
+                <span style={{ color: "#fca5a5", fontWeight: 800 }}>{prediction.driver}</span>
+                <span style={{ color: "#d4d4d8" }}>{prediction.prediction}</span>
               </div>
             ))}
           </div>
         </Card>
       ) : (
         <Card>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>No live session active</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#f4f4f5" }}>No live race right now</div>
           <div style={{ fontSize: 10, color: "#71717a", lineHeight: 1.5, marginTop: 5 }}>
-            The overlay will wake up automatically during race weekends. Turn on demo mode to preview the flow now.
+            Use demo preview to see RaceDay strategy signals before the next race weekend.
+          </div>
+        </Card>
+      )}
+
+      <button
+        type="button"
+        onClick={() => setAdvancedOpen((value) => !value)}
+        style={{
+          width: "100%",
+          border: "none",
+          background: "transparent",
+          color: "#71717a",
+          fontSize: 10,
+          textAlign: "left",
+          cursor: "pointer",
+          marginBottom: advancedOpen ? 8 : 0,
+        }}
+      >
+        Advanced connection {advancedOpen ? "↑" : "↓"}
+      </button>
+
+      {advancedOpen && (
+        <Card>
+          <div style={{ fontSize: 9, color: "#71717a", textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>
+            RaceDay data service
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            <input
+              value={backendDraft}
+              onChange={(event) => setBackendDraft(event.target.value)}
+              placeholder={DEFAULT_SETTINGS.backendUrl}
+              style={{
+                flex: 1,
+                minWidth: 0,
+                border: "1px solid #27272a",
+                borderRadius: 6,
+                background: "#09090b",
+                color: "#e4e4e7",
+                fontSize: 10,
+                padding: "8px",
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => saveSettings({ backendUrl: backendDraft.trim() || DEFAULT_SETTINGS.backendUrl })}
+              style={{
+                border: "1px solid rgba(220, 38, 38, 0.35)",
+                borderRadius: 6,
+                background: "rgba(220, 38, 38, 0.14)",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 700,
+                padding: "0 10px",
+                cursor: "pointer",
+              }}
+            >
+              Save
+            </button>
           </div>
         </Card>
       )}
