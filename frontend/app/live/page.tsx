@@ -679,14 +679,24 @@ function ExtensionBanner() {
           Works with F1TV, YouTube, and any broadcast.
         </p>
       </div>
-      <a
-        href="/downloads/raceday-extension.zip"
-        download
-        aria-label="Download Raceday browser extension"
-        className="shrink-0 glass-button px-5 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
-      >
-        Get Extension
-      </a>
+      <div className="shrink-0 flex flex-col sm:flex-row gap-2">
+        <a
+          href="/downloads/raceday-extension.zip"
+          download
+          aria-label="Download Raceday browser extension for Chrome or Edge"
+          className="glass-button px-4 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
+        >
+          Chrome / Edge
+        </a>
+        <a
+          href="/downloads/raceday-extension-firefox.zip"
+          download
+          aria-label="Download Raceday browser extension for Firefox"
+          className="glass-button px-4 py-2.5 text-xs font-medium text-white border-white/15 hover:border-red-500/40 transition-all"
+        >
+          Firefox
+        </a>
+      </div>
     </div>
   );
 }
