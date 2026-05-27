@@ -44,7 +44,9 @@ let connectionStatus = "checking";
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_LIVE_DATA") {
-    sendResponse({ data: liveData, status: connectionStatus, settings });
+    const data = !settings.demoMode && isDemoSnapshot(liveData) ? null : liveData;
+    const status = !settings.demoMode && connectionStatus === "demo" ? "no-session" : connectionStatus;
+    sendResponse({ data, status, settings });
     return true;
   }
 
@@ -93,6 +95,7 @@ async function loadSettings() {
 async function saveSettings(nextSettings) {
   settings = { ...settings, ...nextSettings, overlayMode: "full" };
   if (settings.demoMode) settings.overlayEnabled = true;
+  if (!settings.demoMode && isDemoSnapshot(liveData)) liveData = null;
   await chrome.storage.local.set(settings);
   broadcastToAll({ type: "SETTINGS_UPDATE", settings });
 
@@ -209,6 +212,10 @@ function broadcastToAll(message) {
       }
     },
   );
+}
+
+function isDemoSnapshot(data) {
+  return data?.session === "Demo Grand Prix";
 }
 
 chrome.runtime.onInstalled.addListener(() => {

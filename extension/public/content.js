@@ -6,7 +6,7 @@
 
 (async function () {
   const existing = document.getElementById("raceday-overlay");
-  if (existing) return;
+  if (existing) existing.remove();
 
   const DEFAULT_SETTINGS = {
     overlayEnabled: true,
@@ -39,7 +39,9 @@
     chrome.runtime.sendMessage({ type: "GET_LIVE_DATA" }, (response) => {
       if (response?.settings) settings = { ...settings, ...response.settings, overlayMode: "full" };
       if (response?.status) connectionStatus = response.status;
-      liveData = response?.data || null;
+      const nextData = response?.data || null;
+      liveData = !settings.demoMode && isDemoSnapshot(nextData) ? null : nextData;
+      if (!settings.demoMode && connectionStatus === "demo") connectionStatus = "no-session";
       render();
     });
   }
@@ -254,15 +256,20 @@
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.type === "LIVE_UPDATE") {
-      liveData = msg.data || null;
+      const nextData = msg.data || null;
+      liveData = !settings.demoMode && isDemoSnapshot(nextData) ? null : nextData;
       render();
     }
     if (msg.type === "WS_STATUS") {
-      connectionStatus = msg.status;
+      connectionStatus = !settings.demoMode && msg.status === "demo" ? "no-session" : msg.status;
       render();
     }
     if (msg.type === "SETTINGS_UPDATE") {
       settings = { ...settings, ...msg.settings, overlayMode: "full" };
+      if (!settings.demoMode) {
+        liveData = null;
+        if (connectionStatus === "demo") connectionStatus = "no-session";
+      }
       render();
     }
   });
@@ -274,6 +281,10 @@
       if (changes[key]) nextSettings[key] = changes[key].newValue;
     }
     settings = { ...nextSettings, overlayMode: "full" };
+    if (!settings.demoMode) {
+      liveData = null;
+      if (connectionStatus === "demo") connectionStatus = "no-session";
+    }
     render();
     setTimeout(refreshLiveData, 250);
   });
