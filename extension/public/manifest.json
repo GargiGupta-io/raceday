@@ -10,7 +10,12 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.formula1.com/*", "https://f1tv.formula1.com/*"],
+      "matches": [
+        "https://www.formula1.com/*",
+        "https://f1tv.formula1.com/*",
+        "https://www.youtube.com/*",
+        "https://youtube.com/*"
+      ],
       "js": ["content.js"],
       "css": ["content.css"]
     }

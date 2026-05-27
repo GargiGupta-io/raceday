@@ -7,7 +7,7 @@
 const DEFAULT_SETTINGS = {
   backendUrl: "https://web-production-b8406.up.railway.app",
   overlayEnabled: true,
-  overlayMode: "compact",
+  overlayMode: "full",
   demoMode: false,
 };
 
@@ -80,10 +80,19 @@ async function loadSettings() {
     settings.backendUrl = DEFAULT_SETTINGS.backendUrl;
     await chrome.storage.local.set({ backendUrl: settings.backendUrl });
   }
+  if (settings.demoMode && !settings.overlayEnabled) {
+    settings.overlayEnabled = true;
+    await chrome.storage.local.set({ overlayEnabled: true });
+  }
+  if (settings.overlayMode !== "full") {
+    settings.overlayMode = "full";
+    await chrome.storage.local.set({ overlayMode: "full" });
+  }
 }
 
 async function saveSettings(nextSettings) {
-  settings = { ...settings, ...nextSettings };
+  settings = { ...settings, ...nextSettings, overlayMode: "full" };
+  if (settings.demoMode) settings.overlayEnabled = true;
   await chrome.storage.local.set(settings);
   broadcastToAll({ type: "SETTINGS_UPDATE", settings });
 
@@ -175,6 +184,27 @@ function broadcastToAll(message) {
   } catch {
     // No active extension views to receive the message.
   }
+
+  chrome.tabs?.query(
+    {
+      url: [
+        "https://www.formula1.com/*",
+        "https://f1tv.formula1.com/*",
+        "https://www.youtube.com/*",
+        "https://youtube.com/*",
+      ],
+    },
+    (tabs) => {
+      for (const tab of tabs || []) {
+        if (!tab.id) continue;
+        chrome.tabs.sendMessage(tab.id, message, () => {
+          if (chrome.runtime.lastError) {
+            // The tab may not have the RaceDay content script active yet.
+          }
+        });
+      }
+    },
+  );
 }
 
 chrome.runtime.onInstalled.addListener(() => {

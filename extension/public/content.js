@@ -32,6 +32,10 @@
     settings = { ...DEFAULT_SETTINGS, ...stored, overlayMode: "full" };
     applyStoredPosition(stored.overlayPosition);
 
+    refreshLiveData();
+  }
+
+  function refreshLiveData() {
     chrome.runtime.sendMessage({ type: "GET_LIVE_DATA" }, (response) => {
       if (response?.settings) settings = { ...settings, ...response.settings, overlayMode: "full" };
       if (response?.status) connectionStatus = response.status;
@@ -233,6 +237,19 @@
       render();
     }
   });
+
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "local") return;
+    const nextSettings = { ...settings };
+    for (const key of ["overlayEnabled", "overlayMode", "demoMode"]) {
+      if (changes[key]) nextSettings[key] = changes[key].newValue;
+    }
+    settings = { ...nextSettings, overlayMode: "full" };
+    render();
+    setTimeout(refreshLiveData, 250);
+  });
+
+  setInterval(refreshLiveData, 5000);
 
   document.addEventListener("fullscreenchange", () => {
     attachToBestContainer();
