@@ -73,7 +73,7 @@
     const notes = data ? beginnerNotes(data) : [];
     const headline = data ? notes[0] : replayHeadline(context);
     const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
-    const sessionLabel = data ? "RaceDay live companion" : "RaceDay replay companion";
+    const sessionLabel = "RaceDay companion";
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
@@ -81,6 +81,7 @@
         <span class="raceday-session">${sessionLabel}</span>
         ${data ? `<span class="raceday-lap">Lap ${data.lap}</span>` : ""}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
+        <button class="raceday-close" id="raceday-close" type="button" aria-label="Close RaceDay companion">&times;</button>
       </div>
       <div class="raceday-body">
         ${data ? `
@@ -96,6 +97,7 @@
     `;
 
     document.getElementById("raceday-header")?.addEventListener("mousedown", startDrag);
+    document.getElementById("raceday-close")?.addEventListener("click", closeOverlay);
   }
 
   function beginnerNotes(data) {
@@ -496,6 +498,18 @@
         x: overlay.getBoundingClientRect().left,
         y: overlay.getBoundingClientRect().top,
       },
+    });
+  }
+
+  function closeOverlay(event) {
+    event?.stopPropagation();
+    settings = { ...settings, overlayEnabled: false, demoMode: false };
+    liveData = null;
+    overlay.style.display = "none";
+    chrome.storage.local.set({ overlayEnabled: false, demoMode: false });
+    chrome.runtime.sendMessage({
+      type: "SAVE_SETTINGS",
+      settings: { overlayEnabled: false, demoMode: false, overlayMode: "full" },
     });
   }
 

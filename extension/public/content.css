@@ -69,6 +69,25 @@
   background: #dc2626;
 }
 
+.raceday-close {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #a1a1aa;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.raceday-close:hover {
+  background: rgba(220, 38, 38, 0.16);
+  color: #ffffff;
+}
+
 .raceday-dot-demo {
   background: #ef4444;
 }
