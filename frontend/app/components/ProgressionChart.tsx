@@ -10,25 +10,25 @@ interface ProgressionData {
 }
 
 const TEAM_COLOR: Record<string, string> = {
-  "Red Bull Racing": "#b91c1c",
-  "Red Bull": "#b91c1c",
-  "Mercedes": "#fafafa",
+  "Red Bull Racing": "#3b82f6",
+  "Red Bull": "#3b82f6",
+  "Mercedes": "#34d399",
   "Ferrari": "#ef4444",
-  "McLaren": "#d4d4d8",
+  "McLaren": "#fb923c",
   "Williams": "#e4e4e7",
-  "Alpine": "#a1a1aa",
-  "Aston Martin": "#71717a",
+  "Alpine": "#f472b6",
+  "Aston Martin": "#22c55e",
   "Haas F1 Team": "#a1a1aa",
   "AlphaTauri": "#94a3b8",
   "RB": "#94a3b8",
   "Alfa Romeo": "#991b1b",
-  "Sauber": "#d4d4d8",
-  "Renault": "#ef4444",
-  "Racing Point": "#a1a1aa",
-  "Force India": "#a1a1aa",
-  "Toro Rosso": "#d4d4d8",
-  "Lotus F1": "#ef4444",
-  "Brawn": "#fafafa",
+  "Sauber": "#4ade80",
+  "Renault": "#facc15",
+  "Racing Point": "#f9a8d4",
+  "Force India": "#f9a8d4",
+  "Toro Rosso": "#60a5fa",
+  "Lotus F1": "#d97706",
+  "Brawn": "#a3e635",
 };
 
 export default function ProgressionChart({ year }: { year: string }) {
