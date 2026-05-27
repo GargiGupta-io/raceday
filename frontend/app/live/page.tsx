@@ -662,6 +662,8 @@ function LivePanel({ title, children }: { title: string; children: React.ReactNo
 }
 
 function ExtensionBanner() {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="glass-card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-5">
       <div className="shrink-0 w-12 h-12 rounded-md bg-red-500/10 border border-red-500/20 flex items-center justify-center">
@@ -679,24 +681,63 @@ function ExtensionBanner() {
           Works with F1TV, YouTube, and any broadcast.
         </p>
       </div>
-      <div className="shrink-0 flex flex-col sm:flex-row gap-2">
-        <a
-          href="/downloads/raceday-extension.zip"
-          download
-          aria-label="Download Raceday browser extension for Chrome or Edge"
-          className="glass-button px-4 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
+      <div className="relative shrink-0">
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          aria-haspopup="menu"
+          className="glass-button px-5 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
         >
-          Chrome / Edge
-        </a>
-        <a
-          href="/downloads/raceday-extension-firefox.zip"
-          download
-          aria-label="Download Raceday browser extension for Firefox"
-          className="glass-button px-4 py-2.5 text-xs font-medium text-white border-white/15 hover:border-red-500/40 transition-all"
-        >
-          Firefox
-        </a>
+          Get Extension
+          <span className="ml-2 text-red-400">{open ? "↑" : "↓"}</span>
+        </button>
+
+        {open && (
+          <div
+            role="menu"
+            className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-md border border-white/10 bg-black/95 shadow-2xl shadow-black/50 backdrop-blur"
+          >
+            <ExtensionDownloadLink
+              href="/downloads/raceday-extension.zip"
+              title="Chrome"
+              detail="Developer build zip"
+            />
+            <ExtensionDownloadLink
+              href="/downloads/raceday-extension.zip"
+              title="Edge"
+              detail="Developer build zip"
+            />
+            <ExtensionDownloadLink
+              href="/downloads/raceday-extension-firefox.zip"
+              title="Firefox"
+              detail="Firefox-compatible zip"
+            />
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+function ExtensionDownloadLink({
+  href,
+  title,
+  detail,
+}: {
+  href: string;
+  title: string;
+  detail: string;
+}) {
+  return (
+    <a
+      href={href}
+      download
+      role="menuitem"
+      className="block border-b border-white/[0.06] px-4 py-3 text-left transition last:border-0 hover:bg-red-500/10"
+    >
+      <span className="block text-sm font-semibold text-white">{title}</span>
+      <span className="mt-0.5 block text-xs text-zinc-400">{detail}</span>
+    </a>
   );
 }
