@@ -16,7 +16,7 @@
 }
 
 .raceday-compact {
-  width: 180px;
+  width: 260px;
 }
 
 .raceday-full {
@@ -78,6 +78,16 @@
   flex-shrink: 0;
   width: 16px;
   text-align: center;
+}
+
+.raceday-signal {
+  font-size: 11px;
+  line-height: 1.35;
+  color: #f4f4f5;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.16);
 }
 
 .raceday-status-dot {
@@ -183,6 +193,24 @@
   font-size: 7px;
   font-weight: 700;
   flex-shrink: 0;
+}
+
+.raceday-risk-row {
+  display: grid;
+  grid-template-columns: 32px 18px 1fr 28px;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 10px;
+}
+
+.raceday-risk-text {
+  color: #a1a1aa;
+  font-size: 9px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .raceday-tyre-soft {

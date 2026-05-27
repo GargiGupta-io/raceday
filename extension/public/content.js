@@ -55,14 +55,15 @@
     overlay.className = `raceday-panel raceday-${settings.overlayMode}`;
 
     const data = liveData;
+    const signal = data ? primarySignal(data) : statusCopy(connectionStatus);
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
         ${data ? `
-          <span class="raceday-session">${(data.session || "").replace(" Grand Prix", "")}</span>
-          <span class="raceday-lap">${data.lap}/${data.totalLaps}</span>
+          <span class="raceday-session">${signal}</span>
+          <span class="raceday-lap">L${data.lap}</span>
         ` : `
-          <span class="raceday-session">${statusCopy(connectionStatus)}</span>
+          <span class="raceday-session">${signal}</span>
         `}
         <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
         <button class="raceday-toggle-btn" id="raceday-toggle" type="button">
@@ -85,14 +86,15 @@
   }
 
   function renderLiveContent(data) {
-    const driversHtml = (data.drivers || []).slice(0, 5).map((driver, index) => {
+    const tyreRiskHtml = (data.drivers || [])
+      .filter((driver) => driver.pitWindow || driver.tyreLife <= 50)
+      .slice(0, 4)
+      .map((driver) => {
       return `
-        <div class="raceday-driver-row">
-          <span class="raceday-pos">P${driver.position}</span>
-          <span class="raceday-team-bar ${index === 0 ? "raceday-team-lead" : ""}"></span>
+        <div class="raceday-risk-row">
           <span class="raceday-code">${driver.code}</span>
-          <span class="raceday-gap">${driver.gap}</span>
           <span class="raceday-compound ${compoundClass(driver.compound)}">${driver.compound.charAt(0)}</span>
+          <span class="raceday-risk-text">${driver.pitWindow || `${driver.tyreLife}% tyre life`}</span>
           <div class="raceday-life-bar">
             <div class="raceday-life-fill ${lifeClass(driver.tyreLife)}" style="width:${driver.tyreLife}%"></div>
           </div>
@@ -123,10 +125,11 @@
 
     return `
       <div class="raceday-section">
-        <div class="raceday-section-label">Standings</div>
-        ${driversHtml}
+        <div class="raceday-section-label">RaceDay signal</div>
+        <div class="raceday-signal">${primarySignal(data)}</div>
       </div>
       ${predictionsHtml ? `<div class="raceday-section"><div class="raceday-section-label">Pit predictions</div>${predictionsHtml}</div>` : ""}
+      ${tyreRiskHtml ? `<div class="raceday-section"><div class="raceday-section-label">Tyre risk</div>${tyreRiskHtml}</div>` : ""}
       ${whatIfHtml ? `<div class="raceday-section"><div class="raceday-section-label">What if pit now?</div>${whatIfHtml}</div>` : ""}
       ${alertsHtml ? `<div class="raceday-section"><div class="raceday-section-label">Alerts</div>${alertsHtml}</div>` : ""}
     `;
@@ -158,12 +161,22 @@
   }
 
   function statusCopy(status) {
-    if (status === "connected") return "Connected";
-    if (status === "checking") return "Checking backend";
-    if (status === "demo") return "Demo Mode";
-    if (status === "no-session") return "No Live Session";
+    if (status === "connected") return "Live strategy on";
+    if (status === "checking") return "Checking race data";
+    if (status === "demo") return "Demo preview";
+    if (status === "no-session") return "No live race";
     if (status === "stopped") return "Overlay Off";
-    return "Offline";
+    return "RaceDay unavailable";
+  }
+
+  function primarySignal(data) {
+    const alert = (data.alerts || [])[0]?.text;
+    if (alert) return alert;
+    const prediction = (data.predictions || [])[0];
+    if (prediction) return `${prediction.driver}: ${prediction.prediction}`;
+    const risk = (data.drivers || []).find((driver) => driver.pitWindow || driver.tyreLife <= 45);
+    if (risk) return `${risk.code} is entering a strategy window`;
+    return "Watching for strategy shifts";
   }
 
   function startDrag(event) {
