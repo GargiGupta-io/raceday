@@ -391,3 +391,4 @@ page/video/live session
 - 2026-05-28 — Added transcript and chapter context support so the companion can use on-screen captions as an extra clue, not just the chapter title or live state.
 - 2026-05-28 — Added a media-signal layer that turns strong caption or transcript text into a clearer race clue before the note is shown.
 - 2026-05-28 — Added caption-number detail parsing so lap numbers and position cues inside transcript text can sharpen the race moment.
+- 2026-05-28 — Updated note selection so race-specific backend notes win before the fixed phase fallback, which stops the companion from repeating the same generic answers across different races.
