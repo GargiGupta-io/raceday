@@ -197,6 +197,9 @@ def build_companion_note(
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
         "source": moment.get("source") or analysis.get("source") or "backend-companion",
     }
+    radio_context = _radio_context(payload, analysis=analysis, live_state=live_state)
+    if radio_context:
+        note = _merge_context_note(note, radio_context)
     return _refine_with_ai(payload, note, analysis=analysis)
 
 
@@ -244,7 +247,7 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
     if not notes:
         notes.append("Watch tyre age, gaps, and pit timing. Those usually explain the next big move.")
 
-    return {
+    note = {
         "ok": True,
         "mode": "live",
         "headline": headline,
@@ -253,6 +256,10 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
         "confidence": "medium",
         "source": "live-state",
     }
+    radio_context = _radio_context({}, live_state=live_state)
+    if radio_context:
+        note = _merge_context_note(note, radio_context)
+    return note
 
 
 def build_replay_timeline(year: int, track: str, duration: float = 0) -> list[dict[str, Any]]:
@@ -583,6 +590,121 @@ def _stint_notes(profile: dict[str, Any]) -> list[str]:
         notes.append(f"{count} drivers used a {common_stops}-stop race, making it the main strategy pattern.")
 
     return notes
+
+
+def _radio_context(
+    payload: dict[str, Any],
+    analysis: dict[str, Any] | None = None,
+    live_state: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """
+    Pull a short radio/transcript hint for the current race context.
+    """
+    year = _detect_year(
+        (live_state or {}).get("year") or payload.get("year") or (analysis or {}).get("year"),
+        _clean_text((live_state or {}).get("session") or payload.get("title") or payload.get("raceName")),
+    )
+    track = _detect_race(
+        _clean_text((live_state or {}).get("session") or payload.get("title") or payload.get("raceName")),
+        payload.get("track") or (analysis or {}).get("track") or payload.get("raceName"),
+    )
+
+    if not year or not track:
+        return None
+
+    radio = _safe_call(insights.get_radio_moments, year, track["track"])
+    if not radio or not radio.get("available"):
+        return None
+
+    clips = [clip for clip in radio.get("clips", []) if isinstance(clip, dict)]
+    if not clips:
+        return None
+
+    clip = clips[0]
+    transcript = _clean_text(clip.get("transcript"))
+    sentiment = _clean_text(clip.get("sentiment"))
+    driver = _clean_text(clip.get("driver_name") or clip.get("driver_code"))
+    lap = clip.get("lap")
+    tags = clip.get("tags") or []
+
+    headline = _radio_headline(transcript, sentiment, driver)
+    notes = _radio_notes(transcript, sentiment, driver, lap, tags)
+
+    if not headline and not notes:
+        return None
+
+    return {
+        "headline": headline or "Team radio adds another clue.",
+        "notes": notes[:2],
+        "momentLabel": "team radio",
+        "confidence": "high" if transcript else "medium",
+        "source": "radio-transcript",
+    }
+
+
+def _radio_headline(transcript: str, sentiment: str, driver: str) -> str:
+    if transcript:
+        text = _beginnerize(transcript)
+        if len(text) > 110:
+            text = f"{text[:107].rstrip()}..."
+        return text
+
+    if sentiment == "strategy":
+        return f"{driver or 'The team'} is talking strategy."
+    if sentiment == "frustration":
+        return f"{driver or 'The driver'} sounds under pressure on the radio."
+    if sentiment == "celebration":
+        return f"{driver or 'The team'} sounds happy on the radio."
+    return ""
+
+
+def _radio_notes(
+    transcript: str,
+    sentiment: str,
+    driver: str,
+    lap: Any,
+    tags: list[Any],
+) -> list[str]:
+    notes: list[str] = []
+    clean_tags = [str(tag) for tag in tags if _clean_text(tag)]
+
+    if transcript:
+        summary = _beginnerize(transcript)
+        if len(summary) > 160:
+            summary = f"{summary[:157].rstrip()}..."
+        notes.append(summary)
+
+    if driver and lap:
+        notes.append(f"{driver} was talking on lap {lap}, so this radio may line up with the key race moment.")
+
+    if sentiment == "strategy" or any(tag in {"strategy", "pit", "race_control"} for tag in clean_tags):
+        notes.append("The radio sounds like strategy is changing, which can affect position fast.")
+    elif sentiment == "frustration" or any(tag in {"frustration", "tyre_deg", "technical"} for tag in clean_tags):
+        notes.append("The radio sounds tense, which usually means tyres, traffic, or a problem is building.")
+    elif sentiment == "celebration" or any(tag in {"celebration", "praise", "result"} for tag in clean_tags):
+        notes.append("The radio sounds positive, so the team may have just hit the right call.")
+
+    return _dedupe(notes)
+
+
+def _merge_context_note(base_note: dict[str, Any], extra_note: dict[str, Any]) -> dict[str, Any]:
+    merged_notes = _dedupe([
+        *(extra_note.get("notes", []) or []),
+        *(base_note.get("notes", []) or []),
+    ])[:3]
+
+    if not merged_notes:
+        merged_notes = list(base_note.get("notes", []) or [])[:3]
+
+    return {
+        **base_note,
+        "headline": base_note.get("headline") or extra_note.get("headline"),
+        "notes": merged_notes,
+        "radioHeadline": extra_note.get("headline"),
+        "radioSource": extra_note.get("source"),
+        "radioMomentLabel": extra_note.get("momentLabel"),
+        "source": base_note.get("source"),
+    }
 
 
 def _moment_slot(moment: dict[str, Any], index: int, timeline_length: int) -> int:
