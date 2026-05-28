@@ -268,6 +268,7 @@ function companionContextKey(context) {
     context.year || "",
     context.track || context.raceName || "",
     context.chapter || "",
+    context.transcript || "",
     context.mode || "replay",
   ].join("|");
 }

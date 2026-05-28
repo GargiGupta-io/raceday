@@ -19,6 +19,10 @@
   let connectionStatus = "checking";
   let dragState = { dragging: false, offsetX: 0, offsetY: 0 };
   let lastVideoKey = "";
+  const transcriptState = {
+    lastText: "",
+    recent: [],
+  };
   const raceContextCache = new Map();
   const raceContextPending = new Set();
   const backendCompanionCache = new Map();
@@ -249,6 +253,7 @@
     const phase = racePhase(progress);
     const moment = replayMoment(progress);
     const chapterTitle = currentChapterTitle();
+    const transcriptText = currentTranscriptText();
 
     return {
       title,
@@ -262,6 +267,7 @@
       phaseLabel: phase.label,
       moment,
       chapterTitle,
+      transcriptText,
     };
   }
 
@@ -507,6 +513,7 @@
           currentTime: getCurrentVideoTime(),
           duration: getCurrentVideoDuration(),
           chapter: context.chapterTitle,
+          transcript: context.transcriptText,
           mode: data ? "live" : "replay",
           momentId: context.moment?.id,
           liveState: data,
@@ -539,6 +546,7 @@
       context.raceName || "",
       context.track || "",
       context.chapterTitle || "",
+      context.transcriptText || "",
       context.moment?.id || "",
       liveKey,
     ].join("|");
@@ -571,6 +579,36 @@
     }
 
     return "";
+  }
+
+  function currentTranscriptText() {
+    const candidates = [
+      ...document.querySelectorAll(".ytp-caption-window-container .ytp-caption-segment"),
+      ...document.querySelectorAll(".ytp-caption-window-container span"),
+      ...document.querySelectorAll(".ytp-caption-segment"),
+    ];
+
+    const text = normalizeTranscriptText(candidates.map((node) => node.textContent).join(" "));
+    if (!text) return transcriptState.recent.join(" ").trim();
+
+    if (text !== transcriptState.lastText) {
+      transcriptState.lastText = text;
+      transcriptState.recent.push(text);
+      transcriptState.recent = transcriptState.recent
+        .filter(Boolean)
+        .slice(-6);
+    }
+
+    return transcriptState.recent.join(" ").trim();
+  }
+
+  function normalizeTranscriptText(value) {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    if (!text) return "";
+    if (text.length < 3) return "";
+    if (!/[a-z0-9]/i.test(text)) return "";
+    if (/^(captions?|subtitles?)$/i.test(text)) return "";
+    return text;
   }
 
   function normalizeChapterTitle(value) {

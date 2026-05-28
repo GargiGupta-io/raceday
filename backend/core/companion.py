@@ -133,6 +133,7 @@ def analyze_video_context(payload: dict[str, Any]) -> dict[str, Any]:
     """
     title = _clean_text(payload.get("title"))
     chapter = _clean_text(payload.get("chapter"))
+    transcript = _normalize_transcript(payload.get("transcript") or payload.get("transcriptText"))
     url = _clean_text(payload.get("url"))
     year = _detect_year(payload.get("year"), title)
     race = _detect_race(title, payload.get("raceName") or payload.get("track"))
@@ -158,6 +159,7 @@ def analyze_video_context(payload: dict[str, Any]) -> dict[str, Any]:
         "duration": duration,
         "currentTime": current_time,
         "chapter": chapter,
+        "transcript": transcript,
         "confidence": confidence,
         "source": source,
         "timeline": timeline,
@@ -183,6 +185,7 @@ def build_companion_note(
         _to_float(payload.get("currentTime"), analysis.get("currentTime") or 0),
         _to_float(payload.get("duration"), analysis.get("duration") or 0),
         payload.get("chapter") or analysis.get("chapter"),
+        payload.get("transcript") or payload.get("transcriptText") or analysis.get("transcript"),
     )
 
     headline = moment.get("headline") or "RaceDay is watching this race moment."
@@ -324,6 +327,7 @@ def pick_timeline_moment(
     current_time: float,
     duration: float,
     chapter: str | None = None,
+    transcript: str | None = None,
 ) -> dict[str, Any]:
     if not timeline:
         return FALLBACK_MOMENTS[0]
@@ -353,6 +357,31 @@ def pick_timeline_moment(
                 ])[:3],
                 "confidence": "high",
                 "source": "timestamp-and-chapter",
+            }
+
+    clean_transcript = _normalize_transcript(transcript)
+    if clean_transcript:
+        transcript_match, transcript_score = _match_chapter(timeline, clean_transcript)
+        if transcript_match and transcript_score >= 0.58:
+            return {
+                **transcript_match,
+                "notes": _dedupe([
+                    f"The transcript points to {clean_transcript.lower()}. Watch how it changes the strategy picture.",
+                    *transcript_match.get("notes", []),
+                ])[:3],
+                "confidence": "high",
+                "source": "video-transcript",
+            }
+
+        if transcript_match and transcript_score >= 0.35 and transcript_match.get("id") == time_match.get("id"):
+            return {
+                **time_match,
+                "notes": _dedupe([
+                    f"The transcript lines up with this race phase, so the commentary is reinforcing the same moment.",
+                    *time_match.get("notes", []),
+                ])[:3],
+                "confidence": "high",
+                "source": "timestamp-and-transcript",
             }
 
     return time_match
@@ -451,6 +480,15 @@ def _normalize_chapter(value: Any) -> str:
     if title.lower() in {"chapter", "chapters", "key moment", "key moments"}:
         return ""
     return title
+
+
+def _normalize_transcript(value: Any) -> str:
+    text = _clean_text(value)
+    if not text or len(text) < 4:
+        return ""
+    if not re.search(r"[a-z0-9]", text, re.IGNORECASE):
+        return ""
+    return text
 
 
 def _content_tokens(value: str) -> set[str]:

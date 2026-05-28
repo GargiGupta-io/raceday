@@ -96,3 +96,50 @@ def test_live_companion_merges_radio_context(monkeypatch):
     assert note["radioSource"] == "radio-transcript"
     assert "sliding" in " ".join(note["notes"]).lower()
     assert note["notes"]
+
+
+def test_replay_companion_uses_transcript_context(monkeypatch):
+    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        companion.insights,
+        "get_radio_moments",
+        lambda *args, **kwargs: {"available": False, "clips": []},
+    )
+
+    payload = {
+        "mode": "replay",
+        "title": "Race Highlights | 2024 Las Vegas Grand Prix",
+        "year": 2024,
+        "raceName": "Las Vegas GP",
+        "currentTime": 80,
+        "duration": 494,
+        "transcript": "Box box, box this lap. The tyres are gone.",
+    }
+    analysis = {
+        "ok": True,
+        "mode": "replay",
+        "year": 2024,
+        "track": "Las Vegas Grand Prix",
+        "currentTime": 80,
+        "duration": 494,
+        "transcript": "Box box, box this lap. The tyres are gone.",
+        "timeline": [
+            {
+                "id": "first-pit-window",
+                "label": "first pit choices",
+                "startRatio": 0.25,
+                "endRatio": 0.45,
+                "headline": "The first pit choices can change the order.",
+                "notes": [
+                    "Stopping early gives fresh tyres, but traffic can ruin the gain.",
+                ],
+                "source": "race-story",
+            }
+        ],
+    }
+
+    note = companion.build_companion_note(payload, analysis=analysis)
+
+    assert note["source"] == "video-transcript"
+    assert note["momentLabel"] == "first pit choices"
+    assert "transcript" in " ".join(note["notes"]).lower()
