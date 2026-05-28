@@ -200,6 +200,9 @@ def build_companion_note(
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
         "source": moment.get("source") or analysis.get("source") or "backend-companion",
     }
+    media_context = _media_context(payload, analysis=analysis, live_state=live_state)
+    if media_context:
+        note = _merge_context_note(note, media_context)
     radio_context = _radio_context(payload, analysis=analysis, live_state=live_state)
     if radio_context:
         note = _merge_context_note(note, radio_context)
@@ -680,6 +683,106 @@ def _radio_context(
     }
 
 
+def _media_context(
+    payload: dict[str, Any],
+    analysis: dict[str, Any] | None = None,
+    live_state: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """
+    Turn chapter/caption text into a short race clue before the note is built.
+    """
+    transcript = _normalize_transcript(
+        payload.get("transcript")
+        or payload.get("transcriptText")
+        or (analysis or {}).get("transcript")
+    )
+    chapter = _normalize_chapter(
+        payload.get("chapter") or (analysis or {}).get("chapter")
+    )
+
+    text = " ".join(part for part in [transcript, chapter] if part)
+    if not text:
+        return None
+
+    signal = _infer_media_signal(text)
+    if not signal:
+        return None
+
+    notes = list(signal.get("notes", []))
+    if transcript:
+        transcript_line = _beginnerize(transcript)
+        if len(transcript_line) > 150:
+            transcript_line = f"{transcript_line[:147].rstrip()}..."
+        notes.insert(0, f"The video/audio clue says: {transcript_line}")
+
+    if live_state and live_state.get("lap") and live_state.get("totalLaps"):
+        notes.append(f"That clue lands on lap {live_state.get('lap')}/{live_state.get('totalLaps')}, so the timing matters.")
+
+    return {
+        "headline": signal.get("headline") or "The video clue changes what RaceDay should say.",
+        "notes": _dedupe(notes)[:3],
+        "momentLabel": signal.get("momentLabel") or "video clue",
+        "confidence": "high" if transcript else "medium",
+        "source": "video-analysis",
+    }
+
+
+def _infer_media_signal(text: str) -> dict[str, Any] | None:
+    lowered = text.lower()
+    patterns = [
+        (
+            {"box", "pit", "stop", "stops", "undercut", "overcut"},
+            {
+                "headline": "A pit call looks close.",
+                "momentLabel": "pit call",
+                "notes": [
+                    "Someone may be about to stop, so track position can change fast.",
+                    "Fresh tyres now could mean an early move for position.",
+                ],
+            },
+        ),
+        (
+            {"tyre", "tyres", "tire", "tires", "sliding", "grip", "dead", "gone", "fading"},
+            {
+                "headline": "Tyres are becoming the story.",
+                "momentLabel": "tyre watch",
+                "notes": [
+                    "The car may slow down soon if grip keeps dropping.",
+                    "That usually opens the door for an overtake or an earlier stop.",
+                ],
+            },
+        ),
+        (
+            {"battle", "fight", "pressure", "close", "gap", "chasing", "defend", "attack", "drs"},
+            {
+                "headline": "Two cars are close enough to fight.",
+                "momentLabel": "battle",
+                "notes": [
+                    "Position could change if one driver gets a better exit or cleaner air.",
+                    "Small mistakes matter a lot when the gap is this tight.",
+                ],
+            },
+        ),
+        (
+            {"safety", "car", "yellow", "red", "flag", "rain", "wet", "intermediate", "weather"},
+            {
+                "headline": "The race conditions may change quickly.",
+                "momentLabel": "race control",
+                "notes": [
+                    "Weather or race control can flip the strategy picture fast.",
+                    "Teams may need to react sooner than they wanted.",
+                ],
+            },
+        ),
+    ]
+
+    for keywords, signal in patterns:
+        if any(word in lowered for word in keywords):
+            return signal
+
+    return None
+
+
 def _radio_headline(transcript: str, sentiment: str, driver: str) -> str:
     if transcript:
         text = _beginnerize(transcript)
@@ -734,10 +837,21 @@ def _merge_context_note(base_note: dict[str, Any], extra_note: dict[str, Any]) -
     if not merged_notes:
         merged_notes = list(base_note.get("notes", []) or [])[:3]
 
+    base_headline = base_note.get("headline")
+    extra_headline = extra_note.get("headline")
+    headline = base_headline
+    if extra_note.get("source") == "video-analysis" and extra_headline:
+        headline = extra_headline
+    elif not headline:
+        headline = extra_headline
+
     return {
         **base_note,
-        "headline": base_note.get("headline") or extra_note.get("headline"),
+        "headline": headline,
         "notes": merged_notes,
+        "mediaHeadline": extra_note.get("headline") if extra_note.get("source") == "video-analysis" else base_note.get("mediaHeadline"),
+        "mediaSource": extra_note.get("source") if extra_note.get("source") == "video-analysis" else base_note.get("mediaSource"),
+        "mediaMomentLabel": extra_note.get("momentLabel") if extra_note.get("source") == "video-analysis" else base_note.get("mediaMomentLabel"),
         "radioHeadline": extra_note.get("headline"),
         "radioSource": extra_note.get("source"),
         "radioMomentLabel": extra_note.get("momentLabel"),

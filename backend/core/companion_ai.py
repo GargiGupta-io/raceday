@@ -79,9 +79,15 @@ def _build_prompt(
     notes = base_note.get("notes") or []
     race_name = payload.get("raceName") or analysis.get("raceName") if analysis else payload.get("raceName") or ""
     track = payload.get("track") or analysis.get("track") if analysis else payload.get("track") or ""
-    chapter = payload.get("chapter") or analysis.get("chapter") if analysis else payload.get("chapter") or ""
-    current_time = payload.get("currentTime") or analysis.get("currentTime") if analysis else payload.get("currentTime") or 0
-    duration = payload.get("duration") or analysis.get("duration") if analysis else payload.get("duration") or 0
+    chapter = payload.get("chapter") or ""
+    transcript = payload.get("transcript") or ""
+    current_time = payload.get("currentTime") or 0
+    duration = payload.get("duration") or 0
+    if analysis:
+        chapter = chapter or analysis.get("chapter") or ""
+        transcript = transcript or analysis.get("transcript") or ""
+        current_time = current_time or analysis.get("currentTime") or 0
+        duration = duration or analysis.get("duration") or 0
 
     live_bits = []
     if live_state:
@@ -94,6 +100,7 @@ def _build_prompt(
         "raceName": race_name,
         "track": track,
         "chapter": chapter,
+        "transcript": transcript[:250] if isinstance(transcript, str) else "",
         "currentTime": current_time,
         "duration": duration,
         "baseHeadline": headline,
