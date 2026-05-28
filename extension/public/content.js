@@ -83,7 +83,6 @@
         <span class="raceday-logo">RD</span>
         <span class="raceday-session">${sessionLabel}</span>
         ${headerContext ? `<span class="raceday-moment">${escapeHtml(headerContext)}</span>` : ""}
-        <span class="raceday-status-dot ${settings.demoMode ? "raceday-dot-demo" : ""}"></span>
         <button class="raceday-close" id="raceday-close" type="button" aria-label="Close RaceDay companion">&times;</button>
       </div>
       <div class="raceday-body">
@@ -318,13 +317,27 @@
   }
 
   function replayStrategyNotes(context) {
-    const raceText = context.raceName ? ` in the ${context.raceName}` : "";
-    const backendNotes = backendReplayNotes(context);
     const chapterNotes = chapterReplayNotes(context);
-    if (chapterNotes.length || backendNotes.length) {
-      return [...chapterNotes, ...backendNotes].slice(0, 3);
+    const localNotes = localReplayStrategyNotes(context);
+
+    if (chapterNotes.length) {
+      return [...chapterNotes, ...localNotes].slice(0, 3);
     }
 
+    if (localNotes.length >= 2) {
+      return localNotes.slice(0, 3);
+    }
+
+    const backendNotes = backendReplayNotes(context);
+    if (backendNotes.length) {
+      return [...localNotes, ...backendNotes].slice(0, 3);
+    }
+
+    return localNotes;
+  }
+
+  function localReplayStrategyNotes(context) {
+    const raceText = context.raceName ? ` in the ${context.raceName}` : "";
     const notesByMoment = {
       lights: [
         `This is the launch phase${raceText}. Track position matters most because cars are still packed together.`,

@@ -44,7 +44,7 @@
 }
 
 .raceday-session {
-  flex: 1;
+  flex: 0 0 auto;
   min-width: 0;
   overflow: hidden;
   color: #ffffff;
@@ -63,18 +63,14 @@
 }
 
 .raceday-moment {
-  max-width: 120px;
+  max-width: 150px;
+  margin-left: auto;
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  padding-left: 8px;
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.raceday-status-dot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 999px;
-  background: #dc2626;
 }
 
 .raceday-close {
@@ -94,10 +90,6 @@
 .raceday-close:hover {
   background: rgba(220, 38, 38, 0.16);
   color: #ffffff;
-}
-
-.raceday-dot-demo {
-  background: #ef4444;
 }
 
 .raceday-body {
