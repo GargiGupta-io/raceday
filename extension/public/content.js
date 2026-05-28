@@ -77,15 +77,16 @@
     const context = videoContext();
     loadRaceContext(context);
     loadBackendCompanion(context, data);
+    const replayBackend = cachedBackendCompanion(context);
     const notes = data ? beginnerNotes(data, context) : [];
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
-    const headline = data ? liveNotes[0] : replayHeadline(context);
-    const detailNotes = data ? liveNotes.slice(1, 4) : replayCompanionNotes(context);
+    const headline = data ? liveNotes[0] : replayHeadline(context, replayBackend);
+    const detailNotes = data ? liveNotes.slice(1, 4) : replayDetailNotes(context, replayBackend);
     const sessionLabel = "RaceDay companion";
     const headerContext = data
       ? `Lap ${data.lap}`
-      : context.moment?.label || context.chapterTitle || "";
+      : replayHeaderContext(context, replayBackend);
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
@@ -204,15 +205,38 @@
     `;
   }
 
-  function replayHeadline(context) {
+  function replayHeadline(context, backendNote = null) {
     if (settings.demoMode) return "Demo race is running.";
     if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
+    if (backendNote?.headline) return backendNote.headline;
+    const raceData = cachedRaceContext(context);
+    const storyHeadline = raceData?.story?.headline || raceData?.story?.narrative?.[0];
+    if (storyHeadline) return beginnerize(storyHeadline);
     if (context.chapterTitle && context.raceName) return `${context.raceName}: ${context.chapterTitle}`;
     if (context.chapterTitle) return `F1 replay: ${context.chapterTitle}`;
-    if (context.isF1Video && context.raceName) return `${context.raceName}: ${context.moment.label}`;
-    if (context.isF1Video) return `F1 replay: ${context.moment.label}`;
+    if (context.isF1Video && context.raceName) return `${context.raceName}`;
+    if (context.isF1Video) return "F1 replay";
     if (context.isVideoPage) return "RaceDay detected this video.";
     return "Open an F1 video and RaceDay will follow along.";
+  }
+
+  function replayHeaderContext(context, backendNote = null) {
+    if (backendNote?.momentLabel) return backendNote.momentLabel;
+    const raceData = cachedRaceContext(context);
+    const storyHeadline = raceData?.story?.headline || raceData?.story?.narrative?.[0];
+    if (storyHeadline) return beginnerize(storyHeadline);
+    if (context.chapterTitle) return context.chapterTitle;
+    if (context.isF1Video && context.raceName) return context.raceName;
+    if (context.isF1Video) return "F1 replay";
+    return "";
+  }
+
+  function replayDetailNotes(context, backendNote = null) {
+    const backendNotes = backendNote?.notes?.length
+      ? backendNote.notes
+      : backendReplayNotes(context);
+    if (backendNotes.length) return backendNotes.slice(0, 3);
+    return replayCompanionNotes(context);
   }
 
   function replayCompanionNotes(context) {
@@ -337,16 +361,13 @@
   }
 
   function replayStrategyNotes(context) {
-    const chapterNotes = chapterReplayNotes(context);
-    const localNotes = localReplayStrategyNotes(context);
     const backendNotes = backendCompanionNotes(context);
     const raceNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
+    if (raceNotes.length) {
+      return dedupe([...raceNotes, ...chapterReplayNotes(context)]).slice(0, 3);
+    }
 
-    return dedupe([
-      ...raceNotes,
-      ...chapterNotes,
-      ...localNotes,
-    ]).slice(0, 3);
+    return localReplayStrategyNotes(context);
   }
 
   function localReplayStrategyNotes(context) {
@@ -357,49 +378,49 @@
     const pickedMoment = moments[Math.min(context.moment.step, moments.length - 1)] || null;
     const notesByMoment = {
       lights: [
-        `This is the launch phase${raceText}. Track position matters most because cars are still packed together.`,
-        "Watch who gets clean air and who gets trapped behind traffic.",
-        "Early contact or tyre damage can ruin the race before strategy even starts.",
+        `The field is still packed${raceText}, so one small mistake can change the order fast.`,
+        "Clean air matters because it lets a driver settle and save the tyres.",
+        "A bad launch or wheel-to-wheel fight can rewrite the whole race early.",
       ],
       settle: [
-        "The field is starting to spread out. Teams are learning who has pace and who is stuck.",
-        "A driver following closely may overheat tyres, which makes attacking harder later.",
-        "Clean air helps the car feel calmer and protects the tyres.",
+        "The race is settling, and teams are starting to learn who has real pace.",
+        "Following another car closely can overheat the tyres and make the next attack harder.",
+        "Clean air is calmer for the driver and easier on the tyres.",
       ],
       "first-window": [
-        "The first pit choices are starting to matter.",
-        "Stopping early can give fresh tyres, but it also risks coming out behind slower traffic.",
-        "Staying out keeps track position, but old tyres can become a problem quickly.",
+        "The first strategy decisions are starting to matter.",
+        "A stop now can give a speed boost, but it can also drop the car into traffic.",
+        "Waiting keeps track position, but older tyres can start to fade fast.",
       ],
       undercut: [
-        "This is where the early-stop advantage can appear.",
-        "If one driver pits first and goes faster on fresh tyres, they can jump a rival who stays out.",
-        "The risk is traffic: fresh tyres are wasted if the driver gets stuck.",
+        "An early stop can flip the order if the fresh tyres are much faster.",
+        "The gain only works if the car rejoins in clean air.",
+        "If the driver gets stuck behind traffic, the stop loses its edge.",
       ],
       "middle-stint": [
-        "This is the main strategy fight. The gaps, tyre age, and pit timing all start linking together.",
-        "A small gap can become important if a pit stop drops a driver into traffic.",
-        "Watch who is catching quickly and who is protecting old tyres.",
+        "The race is now about gaps, tyre age, and who can keep the pace alive.",
+        "A small gap can matter a lot if a pit stop puts a driver in traffic.",
+        "Watch who is pulling away and who is protecting worn tyres.",
       ],
       "second-window": [
-        "Teams may now choose between another stop or stretching tyres to the end.",
-        "A second stop gives speed, but the driver must regain the lost track position.",
-        "A one-stop plan is safer only if the tyres survive.",
+        "Teams are deciding whether to stop again or stretch the tyres to the flag.",
+        "A second stop can bring speed, but the driver has to earn back the lost track position.",
+        "A one-stop call only works if the tyres can survive the pressure.",
       ],
       "late-attack": [
-        "Fresh tyres are now dangerous because there is less race left to respond.",
-        "A driver closing fast may force the car ahead to defend every corner.",
-        "This is where tyre life turns into pressure.",
+        "Fresh tyres are dangerous here because there is less time to answer back.",
+        "A driver closing fast can force the car ahead into defence mode.",
+        "Tyre life now turns directly into pressure.",
       ],
       defend: [
-        "Now the question is who can hold position under pressure.",
-        "The attacking driver needs speed; the defending driver needs clean exits and no mistakes.",
+        "The battle is now about who can hold position under pressure.",
+        "The attacker needs speed, while the defender needs clean exits and no mistakes.",
         "Traffic or one bad corner can decide the fight.",
       ],
       finish: [
         "The final laps are about pressure, mistakes, and tyre survival.",
-        "If gaps are tight, one lock-up or poor exit can change the result.",
-        "Strategy is mostly done now; execution matters most.",
+        "If the gaps are tight, one lock-up or poor exit can change the result.",
+        "At this point, execution matters more than the plan.",
       ],
     };
 
