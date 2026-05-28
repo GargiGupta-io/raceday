@@ -15,7 +15,7 @@ Core features:
 - Strategy simulator for alternate pit stop scenarios
 - Historical pattern finder for similar races and conditions
 - Live race monitor using real-time session data
-- Chrome extension for live companion views
+- Browser extension for simple strategy notes on F1 videos and live sessions
 - Beginner-friendly explanations alongside deeper analytics
 
 ## Why I Built It
@@ -62,7 +62,7 @@ RaceDay is split into three main parts:
 
 - **Backend**: FastAPI service that loads, normalizes, indexes, and serves race data.
 - **Frontend**: Next.js application for race browsing, storytelling, championship views, live monitoring, and strategy tools.
-- **Extension**: Browser extension that can show live race companion data during sessions.
+- **Extension**: RaceDay Companion browser extension that shows simple strategy notes on top of live races, replays, and highlight videos.
 
 ## Data Pipeline
 
@@ -102,7 +102,30 @@ The backend polls OpenF1 for current session data, normalizes the response, and 
 
 The frontend live dashboard polls the backend and updates the race companion view with current driver positions, tyre data, stint age, pit windows, predictions, and pattern alerts.
 
-The browser extension can consume the same backend data and display live race context while a user watches or follows a session elsewhere.
+The browser extension can use the same backend context as the web app, then display beginner-friendly strategy notes while a user watches a live race, replay, or highlight video elsewhere.
+
+## Browser Extension
+
+RaceDay Companion is the extension layer for watching F1 with context on top of the video.
+
+It is designed to feel like a small race companion, not a technical dashboard. The extension detects supported F1 video pages, shows a draggable note card, and explains race pressure in plain language: who is under pressure, who may pit soon, who has tyre advantage, and why the moment matters.
+
+Current extension behavior:
+
+- Works as an overlay on supported F1 video and replay pages.
+- Supports live mode and demo mode from the same simple popup.
+- Uses RaceDay race context when available, but keeps the visible notes short and beginner-friendly.
+- Can be closed from the overlay without opening the popup.
+- Provides downloadable builds for Edge/Chrome and Firefox.
+
+Download builds:
+
+| Browser | File |
+|---------|------|
+| Edge / Chrome | [`frontend/public/downloads/raceday-extension.zip`](frontend/public/downloads/raceday-extension.zip) |
+| Firefox | [`frontend/public/downloads/raceday-extension-firefox.zip`](frontend/public/downloads/raceday-extension-firefox.zip) |
+
+The live app also exposes these downloads from the Live Companion page through the **Get Extension** menu.
 
 ## Strategy Simulator
 
@@ -213,7 +236,7 @@ Video walkthrough: https://www.loom.com/share/7df534de3e6848f094580612fe1341e7
 | Data Sources | FastF1, Jolpica, OpenMeteo, OpenF1 |
 | Storage | JSON index and cached race data |
 | Live Updates | REST polling and WebSocket endpoint |
-| Extension | Chrome Extension, React, Vite |
+| Extension | Edge/Chrome and Firefox browser extension, React, Vite |
 | Deployment | Vercel frontend, Railway/Docker backend |
 
 ## Local Setup
@@ -267,7 +290,7 @@ For production, set:
 NEXT_PUBLIC_API_URL=<your-backend-url>
 ```
 
-### Chrome Extension
+### Browser Extension
 
 ```bash
 cd extension
@@ -275,7 +298,12 @@ npm install
 npm run build
 ```
 
-Then load the generated `extension/dist` folder as an unpacked extension in Chrome.
+For local development, load the generated `extension/dist` folder as an unpacked extension.
+
+For the production ZIP downloads:
+
+- Edge / Chrome: download `raceday-extension.zip`, unzip it, open `chrome://extensions` or `edge://extensions`, turn on Developer mode, and load the unzipped folder.
+- Firefox: download `raceday-extension-firefox.zip`, unzip it, open `about:debugging#/runtime/this-firefox`, choose **Load Temporary Add-on**, and select `manifest.json` from the unzipped folder.
 
 ## Failure Handling
 
@@ -307,7 +335,7 @@ Planned scaling improvements:
 - cache common API responses at the edge
 - add observability for indexing failures, live feed health, and API latency
 - add automated tests for core data normalization and simulation logic
-- package the extension for Chrome Web Store distribution
+- package the extension for browser store distribution where possible, while keeping direct ZIP downloads available
 - add replay mode for showcasing live race behavior outside active race sessions
 
 ## Known Limitations
