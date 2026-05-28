@@ -81,18 +81,14 @@
     const notes = data ? beginnerNotes(data, context) : [];
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
-    const headline = data ? liveNotes[0] : replayHeadline(context, replayBackend);
-    const detailNotes = data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend);
-    const sessionLabel = "RaceDay companion";
-    const headerContext = data
-      ? `Lap ${data.lap}`
-      : replayHeaderContext(context, replayBackend);
+    const headline = displayLine(data ? liveNotes[0] : replayHeadline(context, replayBackend));
+    const detailNotes = (data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend)).map(displayLine);
+    const sessionLabel = buildHeaderTitle(context, data, replayBackend);
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
         <span class="raceday-session">${sessionLabel}</span>
-        ${headerContext ? `<span class="raceday-moment">${escapeHtml(headerContext)}</span>` : ""}
         <button class="raceday-close" id="raceday-close" type="button" aria-label="Close RaceDay companion">&times;</button>
       </div>
       <div class="raceday-body">
@@ -140,7 +136,7 @@
 
     for (const driver of drivers) {
       if (driver.tyreLife <= 35) {
-        notes.push(`${driver.name || driver.code}'s tyres are fading, so they may slow down soon.`);
+        notes.push(`${(driver.name || driver.code || "").split(" ")[0]}'s tyres are fading, so they may slow down soon.`);
       }
     }
 
@@ -157,7 +153,7 @@
       notes.push("RaceDay is watching for pit stops, tyre trouble, and strategy changes.");
     }
 
-    return dedupe(notes).slice(0, 4);
+    return dedupe(notes.map(displayLine)).slice(0, 4);
   }
 
   function beginnerAlert(text) {
@@ -191,16 +187,120 @@
     return driver?.name?.split(" ")[0] || code;
   }
 
+  function displayLine(text) {
+    return String(text || "")
+      .replace(/\s*\(([A-Z0-9]{2,4})\)/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function shortBodyLead(text) {
+    const clean = displayLine(text);
+    if (!clean) return "";
+
+    const patterns = [
+      [/converted pole position into victory/i, "Leading from the front."],
+      [/finished second/i, "Running second."],
+      [/completed the podium/i, "Completing the podium."],
+      [/is starting to matter more/i, "This part matters more now."],
+      [/is where the race starts to lean one way/i, "The race is starting to lean."],
+      [/the next stop could change who stays ahead/i, "A stop could flip the order."],
+      [/someone is making a real move through the field/i, "A move through the field is building."],
+      [/the race is getting messy enough to matter/i, "The race is getting messy."],
+      [/the leader is setting the tone now/i, "The leader is setting the pace."],
+      [/this part of the race is starting to matter more/i, "This part matters more now."],
+      [/the finish is starting to decide the order/i, "The finish is deciding it."],
+    ];
+
+    for (const [pattern, replacement] of patterns) {
+      if (pattern.test(clean)) return replacement;
+    }
+
+    return clean;
+  }
+
+  function buildHeaderTitle(context, data = null, backendNote = null) {
+    const raceLabel = shortRaceLabel(context, data);
+    const phrase = shortHeaderPhrase(context, data, backendNote);
+    return phrase ? `${raceLabel}: ${phrase}` : raceLabel;
+  }
+
+  function shortRaceLabel(context, data = null) {
+    const raw = displayLine(
+      data?.session ||
+      data?.raceName ||
+      context.raceName ||
+      context.track ||
+      "RaceDay",
+    )
+      .replace(/\bGrand Prix\b/gi, "GP")
+      .replace(/\bRace Highlights\b/gi, "")
+      .replace(/\bRace Replay\b/gi, "")
+      .replace(/\bFormula 1\b/gi, "F1")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!raw) return "RaceDay";
+    if (/\bGP\b/i.test(raw)) return raw;
+    return `${raw} GP`.replace(/\s+/g, " ").trim();
+  }
+
+  function shortHeaderPhrase(context, data = null, backendNote = null) {
+    const candidates = [
+      backendNote?.momentLabel,
+      backendNote?.headline,
+      data?.lap ? `Lap ${data.lap}` : "",
+      context.chapterTitle,
+      context.moment?.label,
+    ].filter(Boolean);
+
+    for (const candidate of candidates) {
+      const phrase = phraseFromText(candidate);
+      if (phrase) return phrase;
+    }
+
+    return context.isF1Video ? "Race pressure" : "Watching now";
+  }
+
+  function phraseFromText(value) {
+    const text = displayLine(value).toLowerCase();
+    if (!text) return "";
+
+    const patterns = [
+      [/pit|stop|box/, "Pit pressure"],
+      [/tyre|tire|fading|grip|sliding|dead|gone/, "Tyre pressure"],
+      [/lead|front|chasing|closing|attack|defend|battle|fight/, "Lead fight"],
+      [/weather|rain|wet|damp|intermediate/, "Weather swing"],
+      [/start|launch|lights|opening/, "Launch phase"],
+      [/finish|podium|result|victory|win/, "Final push"],
+      [/traffic|gap/, "Track pressure"],
+      [/overtake|pass|move|charge/, "Move forward"],
+    ];
+
+    for (const [pattern, phrase] of patterns) {
+      if (pattern.test(text)) return phrase;
+    }
+
+    const words = text
+      .replace(/[:–—-]/g, " ")
+      .split(/\s+/)
+      .filter((word) => word && !/^\(?[A-Z0-9]{2,4}\)?$/.test(word) && !/^(the|a|an|and|or|to|of|for|with|is|are|this|that)$/i.test(word))
+      .slice(0, 3);
+
+    if (!words.length) return "";
+    return words.map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+  }
+
   function dedupe(notes) {
     return Array.from(new Set(notes));
   }
 
   function renderIdleContent(context, headline, replayNotes) {
     return `
-      <div class="raceday-main-note">${escapeHtml(headline)}</div>
+      <div class="raceday-main-note">${escapeHtml(displayLine(headline))}</div>
       ${context.title ? `<div class="raceday-video-title">${escapeHtml(context.title)}</div>` : ""}
       <div class="raceday-note-list">
-        ${replayNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(note)}</div>`).join("")}
+        ${replayNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(displayLine(note))}</div>`).join("")}
       </div>
     `;
   }
@@ -208,14 +308,14 @@
   function replayHeadline(context, backendNote = null) {
     if (settings.demoMode) return "Demo race is running.";
     if (connectionStatus === "stopped") return "RaceDay notes are hidden.";
-    if (backendNote?.headline) return backendNote.headline;
+    if (backendNote?.headline) return shortBodyLead(backendNote.headline);
     const raceData = cachedRaceContext(context);
     const storyHeadline = raceData?.story?.headline || raceData?.story?.narrative?.[0];
-    if (storyHeadline) return beginnerize(storyHeadline);
-    if (context.chapterTitle && context.raceName) return `${context.raceName}: ${context.chapterTitle}`;
-    if (context.chapterTitle) return `F1 replay: ${context.chapterTitle}`;
-    if (context.isF1Video && context.raceName) return `${context.raceName}`;
-    if (context.isF1Video) return "F1 replay";
+    if (storyHeadline) return shortBodyLead(beginnerize(storyHeadline));
+    if (context.chapterTitle && context.raceName) return shortBodyLead(context.chapterTitle);
+    if (context.chapterTitle) return shortBodyLead(context.chapterTitle);
+    if (context.isF1Video && context.raceName) return "Track position matters.";
+    if (context.isF1Video) return "F1 replay is running.";
     if (context.isVideoPage) return "RaceDay detected this video.";
     return "Open an F1 video and RaceDay will follow along.";
   }
@@ -235,7 +335,7 @@
     const backendNotes = backendNote?.notes?.length
       ? backendNote.notes
       : backendReplayNotes(context);
-    if (backendNotes.length) return backendNotes.slice(0, 4);
+    if (backendNotes.length) return backendNotes.slice(0, 4).map(displayLine);
     return replayCompanionNotes(context);
   }
 
@@ -462,7 +562,7 @@
       notes.push(beginnerize(narrative[Math.min(context.moment.step, narrative.length - 1)]));
     }
 
-    return notes;
+    return notes.map(displayLine);
   }
 
   function backendCompanionNotes(context, data = null) {
@@ -473,7 +573,7 @@
     if (note.headline) notes.push(note.headline);
     if (Array.isArray(note.notes)) notes.push(...note.notes);
     if (data?.session && note.momentLabel) notes.unshift(`Live update: ${note.momentLabel}.`);
-    return dedupe(notes).slice(0, 4);
+    return dedupe(notes.map(displayLine)).slice(0, 4);
   }
 
   function pickBackendMoment(context, moments) {
@@ -564,6 +664,9 @@
   }
 
   function backendCompanionKey(context, data = null) {
+    const videoTimeBucket = data
+      ? ""
+      : `:${Math.floor(getCurrentVideoTime() / 4)}`;
     const liveKey = data
       ? [
           data.session || "",
@@ -581,7 +684,7 @@
       context.track || "",
       context.chapterTitle || "",
       context.transcriptText || "",
-      context.moment?.id || "",
+      `${context.moment?.id || ""}${videoTimeBucket}`,
       liveKey,
     ].join("|");
   }

@@ -118,6 +118,7 @@ Rules:
 - Keep it unique to this specific race moment.
 - Avoid recap-style wording like a news summary.
 - Do not mention driver codes in the text.
+- Do not quote transcript or caption text verbatim.
 - Do not turn the note into a result recap unless the race is actually at the finish.
 - Return only JSON.
 - JSON shape: {{"headline":"...", "notes":["...","...","..."]}}

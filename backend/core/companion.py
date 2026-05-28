@@ -214,15 +214,6 @@ def build_companion_note(
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
         "source": replay_note.get("source") or moment.get("source") or analysis.get("source") or "backend-companion",
     }
-    media_context = _media_context(payload, analysis=analysis, live_state=live_state)
-    if media_context:
-        note = _merge_context_note(note, media_context)
-    detail_context = _media_detail_context(payload, analysis=analysis, live_state=live_state)
-    if detail_context:
-        note = _merge_context_note(note, detail_context)
-    radio_context = _radio_context(payload, analysis=analysis, live_state=live_state)
-    if radio_context:
-        note = _merge_context_note(note, radio_context)
     return _refine_with_ai(payload, note, analysis=analysis)
 
 
@@ -281,9 +272,6 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
         "confidence": "medium",
         "source": "live-state",
     }
-    radio_context = _radio_context({}, live_state=live_state)
-    if radio_context:
-        note = _merge_context_note(note, radio_context)
     return note
 
 
@@ -295,24 +283,17 @@ def build_replay_timeline(year: int, track: str, duration: float = 0) -> list[di
     profile = _race_profile(race_data)
     moments = _safe_call(insights.get_key_moments, year, track) or []
     story = _safe_call(insights.get_race_story, year, track) or {}
-    tagline = _safe_call(insights.generate_race_tagline, year, track)
     strategy = _safe_call(insights.get_strategy_breakdown, year, track) or []
 
     timeline = _fallback_timeline(duration)
     _apply_profile_context(timeline, profile)
 
-    if tagline:
-        timeline[0] = {
-            **timeline[0],
-            "headline": tagline,
-            "notes": _dedupe([*timeline[0]["notes"], *_podium_notes(profile)])[:3],
-            "source": "race-story",
-            "confidence": "medium",
-        }
-
     story_lines = [line for line in story.get("narrative", []) if isinstance(line, str)]
     for index, line in enumerate(story_lines[: min(3, len(timeline))]):
-        timeline[index]["notes"] = [_beginnerize(line), *timeline[index]["notes"][:1]]
+        line_text = _beginnerize(line)
+        if _looks_like_recap(line_text):
+            line_text = _trim_replay_line(_clean_talky_line(line_text))
+        timeline[index]["notes"] = [line_text, *timeline[index]["notes"][:1]]
         timeline[index]["source"] = "race-story"
         timeline[index]["confidence"] = "high"
 
@@ -617,17 +598,6 @@ def _apply_profile_context(timeline: list[dict[str, Any]], profile: dict[str, An
         timeline[target]["source"] = "race-results"
 
 
-def _podium_notes(profile: dict[str, Any]) -> list[str]:
-    podium = profile.get("podium") or []
-    if len(podium) < 3:
-        return []
-
-    winner, second, third = podium[:3]
-    return [
-        f"{winner.get('driver')} won, with {second.get('driver')} second and {third.get('driver')} third.",
-    ]
-
-
 def _stint_notes(profile: dict[str, Any]) -> list[str]:
     notes = []
     first_stops = profile.get("firstStops") or []
@@ -670,7 +640,7 @@ def _build_replay_companion_note(
 
 def _replay_headline(moment: dict[str, Any], profile: dict[str, Any], ratio: float) -> str:
     if ratio >= 0.88:
-        return "The finish is starting to decide the order."
+        return "The result is starting to settle."
 
     condition = _clean_text((profile.get("weather") or {}).get("condition"))
     if condition and condition != "dry":
@@ -693,7 +663,7 @@ def _replay_headline(moment: dict[str, Any], profile: dict[str, Any], ratio: flo
         return "The leader is setting the tone now."
 
     if headline and not _looks_like_recap(headline):
-        return _clean_talky_line(headline)
+        return _trim_replay_line(_clean_talky_line(headline))
 
     return "This part of the race is starting to matter more."
 
@@ -746,7 +716,14 @@ def _summary_line_from_moment(moment: dict[str, Any], ratio: float) -> str:
             return _clean_talky_line(f"{label} is where the race starts to lean one way.")
         return "This is where the race starts to lean one way."
 
-    return _clean_talky_line(headline)
+    if _looks_like_recap(headline):
+        if ratio >= 0.88:
+            return "The race is close to being decided."
+        if label:
+            return _clean_talky_line(f"{label} is where the race starts to matter more.")
+        return "This is where the race starts to matter more."
+
+    return _trim_replay_line(_clean_talky_line(headline))
 
 
 def _why_this_matters(
@@ -852,312 +829,28 @@ def _clean_talky_line(text: str) -> str:
     return clean
 
 
+def _trim_replay_line(text: str) -> str:
+    line = _clean_text(text)
+    if not line:
+        return ""
+
+    for separator in [". ", "; ", " - ", " — ", ", "]:
+        if separator in line:
+            line = line.split(separator, 1)[0]
+            break
+
+    line = re.sub(r"\s+", " ", line).strip(" -")
+    if len(line) > 120:
+        line = f"{line[:117].rstrip()}..."
+    return line
+
+
 def _cleanup_replay_line(text: str) -> str:
     line = _clean_talky_line(text)
     line = re.sub(r"\s+", " ", line).strip(" -")
     if len(line) > 170:
         line = f"{line[:167].rstrip()}..."
     return line
-
-
-def _radio_context(
-    payload: dict[str, Any],
-    analysis: dict[str, Any] | None = None,
-    live_state: dict[str, Any] | None = None,
-) -> dict[str, Any] | None:
-    """
-    Pull a short radio/transcript hint for the current race context.
-    """
-    year = _detect_year(
-        (live_state or {}).get("year") or payload.get("year") or (analysis or {}).get("year"),
-        _clean_text((live_state or {}).get("session") or payload.get("title") or payload.get("raceName")),
-    )
-    track = _detect_race(
-        _clean_text((live_state or {}).get("session") or payload.get("title") or payload.get("raceName")),
-        payload.get("track") or (analysis or {}).get("track") or payload.get("raceName"),
-    )
-
-    if not year or not track:
-        return None
-
-    radio = _safe_call(insights.get_radio_moments, year, track["track"])
-    if not radio or not radio.get("available"):
-        return None
-
-    clips = [clip for clip in radio.get("clips", []) if isinstance(clip, dict)]
-    if not clips:
-        return None
-
-    clip = clips[0]
-    transcript = _clean_text(clip.get("transcript"))
-    sentiment = _clean_text(clip.get("sentiment"))
-    driver = _clean_text(clip.get("driver_name") or clip.get("driver_code"))
-    lap = clip.get("lap")
-    tags = clip.get("tags") or []
-
-    headline = _radio_headline(transcript, sentiment, driver)
-    notes = _radio_notes(transcript, sentiment, driver, lap, tags)
-
-    if not headline and not notes:
-        return None
-
-    return {
-        "headline": headline or "Team radio adds another clue.",
-        "notes": notes[:2],
-        "momentLabel": "team radio",
-        "confidence": "high" if transcript else "medium",
-        "source": "radio-transcript",
-    }
-
-
-def _media_context(
-    payload: dict[str, Any],
-    analysis: dict[str, Any] | None = None,
-    live_state: dict[str, Any] | None = None,
-) -> dict[str, Any] | None:
-    """
-    Turn chapter/caption text into a short race clue before the note is built.
-    """
-    transcript = _normalize_transcript(
-        payload.get("transcript")
-        or payload.get("transcriptText")
-        or (analysis or {}).get("transcript")
-    )
-    chapter = _normalize_chapter(
-        payload.get("chapter") or (analysis or {}).get("chapter")
-    )
-
-    text = " ".join(part for part in [transcript, chapter] if part)
-    if not text:
-        return None
-
-    signal = _infer_media_signal(text)
-    if not signal:
-        return None
-
-    notes = list(signal.get("notes", []))
-    if transcript:
-        transcript_line = _beginnerize(transcript)
-        if len(transcript_line) > 150:
-            transcript_line = f"{transcript_line[:147].rstrip()}..."
-        notes.insert(0, f"The video/audio clue says: {transcript_line}")
-
-    if live_state and live_state.get("lap") and live_state.get("totalLaps"):
-        notes.append(f"That clue lands on lap {live_state.get('lap')}/{live_state.get('totalLaps')}, so the timing matters.")
-
-    return {
-        "headline": signal.get("headline") or "The video clue changes what RaceDay should say.",
-        "notes": _dedupe(notes)[:3],
-        "momentLabel": signal.get("momentLabel") or "video clue",
-        "confidence": "high" if transcript else "medium",
-        "source": "video-analysis",
-    }
-
-
-def _media_detail_context(
-    payload: dict[str, Any],
-    analysis: dict[str, Any] | None = None,
-    live_state: dict[str, Any] | None = None,
-) -> dict[str, Any] | None:
-    """
-    Pull small numeric cues from captions/transcripts and turn them into race details.
-    """
-    transcript = _normalize_transcript(
-        payload.get("transcript")
-        or payload.get("transcriptText")
-        or (analysis or {}).get("transcript")
-    )
-    if not transcript:
-        return None
-
-    clues = _extract_media_clues(transcript)
-    if not clues:
-        return None
-
-    notes = clues.get("notes", [])
-    if live_state and live_state.get("lap") and live_state.get("totalLaps"):
-        notes.append(f"This also lines up with lap {live_state.get('lap')}/{live_state.get('totalLaps')}.")
-
-    return {
-        "headline": clues.get("headline") or "A small caption clue gives RaceDay more context.",
-        "notes": _dedupe(notes)[:3],
-        "momentLabel": clues.get("momentLabel") or "caption detail",
-        "confidence": "high",
-        "source": "video-detail",
-    }
-
-
-def _infer_media_signal(text: str) -> dict[str, Any] | None:
-    lowered = text.lower()
-    patterns = [
-        (
-            {"box", "pit", "stop", "stops", "undercut", "overcut"},
-            {
-                "headline": "A pit call looks close.",
-                "momentLabel": "pit call",
-                "notes": [
-                    "Someone may be about to stop, so track position can change fast.",
-                    "Fresh tyres now could mean an early move for position.",
-                ],
-            },
-        ),
-        (
-            {"tyre", "tyres", "tire", "tires", "sliding", "grip", "dead", "gone", "fading"},
-            {
-                "headline": "Tyres are becoming the story.",
-                "momentLabel": "tyre watch",
-                "notes": [
-                    "The car may slow down soon if grip keeps dropping.",
-                    "That usually opens the door for an overtake or an earlier stop.",
-                ],
-            },
-        ),
-        (
-            {"battle", "fight", "pressure", "close", "gap", "chasing", "defend", "attack", "drs"},
-            {
-                "headline": "Two cars are close enough to fight.",
-                "momentLabel": "battle",
-                "notes": [
-                    "Position could change if one driver gets a better exit or cleaner air.",
-                    "Small mistakes matter a lot when the gap is this tight.",
-                ],
-            },
-        ),
-        (
-            {"safety", "car", "yellow", "red", "flag", "rain", "wet", "intermediate", "weather"},
-            {
-                "headline": "The race conditions may change quickly.",
-                "momentLabel": "race control",
-                "notes": [
-                    "Weather or race control can flip the strategy picture fast.",
-                    "Teams may need to react sooner than they wanted.",
-                ],
-            },
-        ),
-    ]
-
-    for keywords, signal in patterns:
-        if any(word in lowered for word in keywords):
-            return signal
-
-    return None
-
-
-def _extract_media_clues(text: str) -> dict[str, Any] | None:
-    lowered = text.lower()
-    clues: list[str] = []
-    moment_label = ""
-    headline = ""
-
-    lap_match = re.search(r"\blap\s*(\d{1,3})\b", lowered)
-    if lap_match:
-        lap_no = int(lap_match.group(1))
-        headline = f"The video mentions lap {lap_no}, so the timing is more precise now."
-        moment_label = "lap cue"
-        clues.append(f"RaceDay can anchor this to lap {lap_no} instead of only using the video progress bar.")
-
-    if re.search(r"\bp\s?([1-9]|1[0-9])\b", lowered):
-        if not headline:
-            headline = "The caption mentions position, so the lead fight may be in focus."
-        moment_label = moment_label or "position cue"
-        clues.append("Position words like P1 or P2 usually mean the fight for track position matters right now.")
-
-    if re.search(r"\b(lead|leader|leading|chasing|closing)\b", lowered):
-        if not headline:
-            headline = "The caption sounds like a battle for the lead."
-        moment_label = moment_label or "battle cue"
-        clues.append("Words about leading or chasing usually mean the front group is the part to watch.")
-
-    if re.search(r"\b(box|pit|stop|stops)\b", lowered):
-        if not headline:
-            headline = "The caption points to a pit stop clue."
-        moment_label = moment_label or "pit detail"
-        clues.append("Pit language in the caption often means the strategy story is about to change.")
-
-    if not clues:
-        return None
-
-    return {
-        "headline": headline or "A caption detail sharpens the race moment.",
-        "momentLabel": moment_label or "caption detail",
-        "notes": clues,
-    }
-
-
-def _radio_headline(transcript: str, sentiment: str, driver: str) -> str:
-    if transcript:
-        text = _beginnerize(transcript)
-        if len(text) > 110:
-            text = f"{text[:107].rstrip()}..."
-        return text
-
-    if sentiment == "strategy":
-        return f"{driver or 'The team'} is talking strategy."
-    if sentiment == "frustration":
-        return f"{driver or 'The driver'} sounds under pressure on the radio."
-    if sentiment == "celebration":
-        return f"{driver or 'The team'} sounds happy on the radio."
-    return ""
-
-
-def _radio_notes(
-    transcript: str,
-    sentiment: str,
-    driver: str,
-    lap: Any,
-    tags: list[Any],
-) -> list[str]:
-    notes: list[str] = []
-    clean_tags = [str(tag) for tag in tags if _clean_text(tag)]
-
-    if transcript:
-        summary = _beginnerize(transcript)
-        if len(summary) > 160:
-            summary = f"{summary[:157].rstrip()}..."
-        notes.append(summary)
-
-    if driver and lap:
-        notes.append(f"{driver} was talking on lap {lap}, so this radio may line up with the key race moment.")
-
-    if sentiment == "strategy" or any(tag in {"strategy", "pit", "race_control"} for tag in clean_tags):
-        notes.append("The radio sounds like strategy is changing, which can affect position fast.")
-    elif sentiment == "frustration" or any(tag in {"frustration", "tyre_deg", "technical"} for tag in clean_tags):
-        notes.append("The radio sounds tense, which usually means tyres, traffic, or a problem is building.")
-    elif sentiment == "celebration" or any(tag in {"celebration", "praise", "result"} for tag in clean_tags):
-        notes.append("The radio sounds positive, so the team may have just hit the right call.")
-
-    return _dedupe(notes)
-
-
-def _merge_context_note(base_note: dict[str, Any], extra_note: dict[str, Any]) -> dict[str, Any]:
-    merged_notes = _dedupe([
-        *(extra_note.get("notes", []) or []),
-        *(base_note.get("notes", []) or []),
-    ])[:3]
-
-    if not merged_notes:
-        merged_notes = list(base_note.get("notes", []) or [])[:3]
-
-    base_headline = base_note.get("headline")
-    extra_headline = extra_note.get("headline")
-    headline = base_headline
-    if extra_note.get("source") == "video-analysis" and extra_headline:
-        headline = extra_headline
-    elif not headline:
-        headline = extra_headline
-
-    return {
-        **base_note,
-        "headline": headline,
-        "notes": merged_notes,
-        "mediaHeadline": extra_note.get("headline") if extra_note.get("source") == "video-analysis" else base_note.get("mediaHeadline"),
-        "mediaSource": extra_note.get("source") if extra_note.get("source") == "video-analysis" else base_note.get("mediaSource"),
-        "mediaMomentLabel": extra_note.get("momentLabel") if extra_note.get("source") == "video-analysis" else base_note.get("mediaMomentLabel"),
-        "radioHeadline": extra_note.get("headline"),
-        "radioSource": extra_note.get("source"),
-        "radioMomentLabel": extra_note.get("momentLabel"),
-        "source": base_note.get("source"),
-    }
 
 
 def _moment_slot(moment: dict[str, Any], index: int, timeline_length: int) -> int:
