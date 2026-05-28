@@ -155,7 +155,40 @@ The goal is not to perfectly recreate a Formula 1 team simulator. It is designed
 
 ## Screenshots
 
-Production screenshots are being finalized. The video walkthrough shows the current app flow.
+<table>
+  <tr>
+    <td><strong>Home Hero</strong></td>
+    <td><strong>Race Browser</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/home-hero.png" alt="RaceDay home hero" width="420"></td>
+    <td><img src="docs/screenshots/race-browser.png" alt="RaceDay race browser" width="420"></td>
+  </tr>
+  <tr>
+    <td><strong>Race Story</strong></td>
+    <td><strong>Strategy Simulator</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/race-story.png" alt="RaceDay race story view" width="420"></td>
+    <td><img src="docs/screenshots/strategy-simulator.png" alt="RaceDay strategy simulator" width="420"></td>
+  </tr>
+  <tr>
+    <td><strong>Pattern Finder</strong></td>
+    <td><strong>Live Companion</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/pattern-finder.png" alt="RaceDay pattern finder" width="420"></td>
+    <td><img src="docs/screenshots/live-companion.png" alt="RaceDay live companion demo" width="420"></td>
+  </tr>
+  <tr>
+    <td><strong>Championship Tracker</strong></td>
+    <td><strong>Browser Extension</strong></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/championship-tracker.png" alt="RaceDay championship tracker" width="420"></td>
+    <td>Extension screenshot coming next. The current extension flow is shown in the Loom walkthrough.</td>
+  </tr>
+</table>
 
 ## Demo
 
