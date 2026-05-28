@@ -80,14 +80,16 @@
     const notes = data ? beginnerNotes(data, context) : [];
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
-    const headline = displayLine(data ? liveNotes[0] : replayHeadline(context, replayBackend));
-    const detailNotes = (data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend)).map(displayLine);
+    const headline = companionHeadlineLine(data ? liveNotes[0] : replayHeadline(context, replayBackend));
+    const detailNotes = (data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend))
+      .map(companionNoteLine)
+      .filter(Boolean);
     const sessionLabel = buildHeaderTitle(context, data, replayBackend);
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
         <span class="raceday-logo">RD</span>
-        <span class="raceday-session">${sessionLabel}</span>
+        <span class="raceday-session">${escapeHtml(sessionLabel)}</span>
         <button class="raceday-close" id="raceday-close" type="button" aria-label="Close RaceDay companion">&times;</button>
       </div>
       <div class="raceday-body">
@@ -135,7 +137,7 @@
 
     for (const driver of drivers) {
       if (driver.tyreLife <= 35) {
-        notes.push(`${(driver.name || driver.code || "").split(" ")[0]}'s tyres are fading, so they may slow down soon.`);
+        notes.push(`${readableDriverToken((driver.name || "").split(" ")[0])}'s tyres are fading, so they may slow down soon.`);
       }
     }
 
@@ -152,7 +154,7 @@
       notes.push("RaceDay is watching for pit stops, tyre trouble, and strategy changes.");
     }
 
-    return dedupe(notes.map(displayLine)).slice(0, 4);
+    return dedupe(notes.map(companionNoteLine).filter(Boolean)).slice(0, 4);
   }
 
   function beginnerAlert(text) {
@@ -163,11 +165,11 @@
       return "Two close drivers may stop soon, and the first stop could change who is ahead.";
     }
     if (/tyre cliff|tires? are fading|tyres? are fading/i.test(clean)) {
-      const driver = clean.split(" ")[0];
+      const driver = readableDriverToken(clean.split(" ")[0]);
       return `${driver}'s tyres are fading, so they may slow down soon.`;
     }
     if (/undercut|stopped earlier/i.test(clean)) {
-      const driver = clean.split(" ")[0];
+      const driver = readableDriverToken(clean.split(" ")[0]);
       return `${driver} stopped earlier and may gain time while others stay out.`;
     }
     if (/fresh/i.test(clean) && /behind|attack/i.test(clean)) {
@@ -183,7 +185,13 @@
 
   function driverName(code, drivers) {
     const driver = drivers.find((entry) => entry.code === code);
-    return driver?.name?.split(" ")[0] || code;
+    return driver?.name?.split(" ")[0] || "That driver";
+  }
+
+  function readableDriverToken(value) {
+    const token = displayLine(value).replace(/'s$/i, "");
+    if (!token || /^[A-Z0-9]{2,4}$/.test(token)) return "That driver";
+    return token;
   }
 
   function displayLine(text) {
@@ -197,10 +205,13 @@
     const clean = displayLine(text);
     if (!clean) return "";
 
+    const explained = explainDisplayHeadline(clean);
+    if (explained) return explained;
+
     const patterns = [
-      [/converted pole position into victory/i, "Leading from the front."],
-      [/finished second/i, "Running second."],
-      [/completed the podium/i, "Completing the podium."],
+      [/converted pole position into victory/i, "Clean air matters."],
+      [/finished second/i, "The chase is alive."],
+      [/completed the podium/i, "The front group is settling."],
       [/is starting to matter more/i, "This part matters more now."],
       [/is where the race starts to lean one way/i, "The race is starting to lean."],
       [/the next stop could change who stays ahead/i, "A stop could flip the order."],
@@ -215,7 +226,146 @@
       if (pattern.test(clean)) return replacement;
     }
 
+    if (isUnsafeCompanionFact(clean)) {
+      return "This moment matters because it changes who has pressure, clean air, or tyre advantage.";
+    }
+
     return clean;
+  }
+
+  function companionHeadlineLine(text, fallback = "Track position matters now.") {
+    const clean = displayLine(text);
+    if (!clean) return fallback;
+    const explained = explainDisplayHeadline(clean);
+    if (explained) return explained;
+    if (isUnsafeCompanionFact(clean) || isTechnicalStatusLine(clean)) return fallback;
+    return clean;
+  }
+
+  function companionNoteLine(text) {
+    const clean = displayLine(text);
+    if (!clean) return "";
+    const explained = explainDisplayNote(clean);
+    if (!explained) return "";
+    if (isUnsafeCompanionFact(explained) || isTechnicalStatusLine(explained)) {
+      return "This moment matters because it changes who has pressure, clean air, or tyre advantage.";
+    }
+    return explained;
+  }
+
+  function isUnsafeCompanionFact(text) {
+    const clean = displayLine(text).toLowerCase();
+    if (!clean) return false;
+    return [
+      /\brace highlights?\b/,
+      /\bstarted p\d+/,
+      /\bfinished p\d+/,
+      /\bfinished second\b/,
+      /\bfinished third\b/,
+      /\bgained \d+ places?\b/,
+      /\bdropped \d+ places?\b/,
+      /\bbiggest forward charge\b/,
+      /\bconverted pole\b/,
+      /\bclaimed victory\b/,
+      /\bwon\b/,
+      /\bwins\b/,
+      /\bwinner\b/,
+      /\btakes the win\b/,
+      /\btook the win\b/,
+      /\bvictory\b/,
+      /\bpole position\b/,
+      /\bcompleted the podium\b/,
+      /\bpodium\b/,
+      /\bclassified\b/,
+      /\bgrid position\b/,
+      /\bp\d+\b/,
+      /\bthe full result\b/,
+    ].some((pattern) => pattern.test(clean));
+  }
+
+  function isTechnicalStatusLine(text) {
+    const clean = displayLine(text).toLowerCase();
+    return [
+      /^live update:/,
+      /^lap \d+/,
+      /\bvideo chapter\b/,
+      /\btranscript\b/,
+      /\bradio\b/,
+      /\bdetected this f1 video\b/,
+      /\bdetected this video\b/,
+    ].some((pattern) => pattern.test(clean));
+  }
+
+  function explainDisplayHeadline(text) {
+    const clean = displayLine(text);
+    if (!clean) return "";
+    const subject = lineSubject(clean);
+
+    if (/gained \d+ places|stormed from p\d+/i.test(clean)) {
+      return subject ? `${subject} is moving forward.` : "A recovery drive is building.";
+    }
+    if (/dropped \d+ places|fell to p\d+/i.test(clean)) {
+      return subject ? `${subject} is under pressure.` : "Pressure is starting to bite.";
+    }
+    if (/converted pole|led from|won|wins|winner|victory|takes the win|took the win/i.test(clean)) {
+      return "Clean air matters here.";
+    }
+    if (/undercut|pitted on lap|early stop/i.test(clean)) {
+      return subject ? `${subject} gets first chance.` : "The pit call can flip it.";
+    }
+    if (/retired|failed to see|attrition/i.test(clean)) {
+      return "Survival is part of the race.";
+    }
+    if (/started p\d+|finished p\d+|finished second|finished third|podium/i.test(clean)) {
+      return "Track position matters now.";
+    }
+
+    return "";
+  }
+
+  function explainDisplayNote(text) {
+    const clean = displayLine(text);
+    if (!clean) return "";
+    const subject = lineSubject(clean);
+
+    if (/video chapter|this part is about|transcript points/i.test(clean)) {
+      return "The video has moved into a strategy moment, so watch who is attacking and who is protecting tyres.";
+    }
+
+    if (/gained \d+ places|stormed from p\d+/i.test(clean)) {
+      return subject
+        ? `${subject} moving forward usually means the car has pace, the strategy is opening up, or traffic ahead is vulnerable.`
+        : "That move usually means the car has pace, the strategy is opening up, or traffic ahead is vulnerable.";
+    }
+    if (/started p\d+.*finished p\d+|started p\d+|finished p\d+/i.test(clean)) {
+      return "That position change matters because clean air is calmer, while traffic makes tyres hotter and attacks harder.";
+    }
+    if (/dropped \d+ places|fell to p\d+/i.test(clean)) {
+      return `${subject || "The driver"} now needs a sharper pit call or cleaner air, because falling back makes every recovery move harder.`;
+    }
+    if (/converted pole|led from|won|wins|winner|victory|takes the win|took the win/i.test(clean)) {
+      return "Clean air lets the leader manage pace, so the cars behind may need a pit gamble rather than a straight fight.";
+    }
+    if (/undercut|pitted on lap|early stop/i.test(clean)) {
+      return "Stopping first can work because fresh tyres buy lap time before the rival has a chance to answer.";
+    }
+    if (/retired|failed to see|attrition/i.test(clean)) {
+      return "When cars drop out, staying clean can gain places without a big move.";
+    }
+    if (/podium|finished second|finished third/i.test(clean)) {
+      return "The front group is settling, so small mistakes matter more now.";
+    }
+
+    return clean;
+  }
+
+  function lineSubject(text) {
+    const clean = displayLine(text)
+      .replace(/\b[A-Z]{2,3}\b/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+    const match = clean.match(/^([A-Z][a-z]+)(?:\s+[A-Z][a-z]+)?\s+(?:gained|dropped|stormed|converted|led|won|pitted|retired|finished|started|fell)/);
+    return match ? match[1] : "";
   }
 
   function buildHeaderTitle(context, data = null, backendNote = null) {
@@ -240,6 +390,7 @@
       .trim();
 
     if (!raw) return "RaceDay";
+    if (isUnsafeCompanionFact(raw) || isTechnicalStatusLine(raw)) return "RaceDay";
     if (/\bGP\b/i.test(raw)) return raw;
     return `${raw} GP`.replace(/\s+/g, " ").trim();
   }
@@ -248,7 +399,6 @@
     const candidates = [
       backendNote?.momentLabel,
       backendNote?.headline,
-      data?.lap ? `Lap ${data.lap}` : "",
       context.chapterTitle,
       context.moment?.label,
     ].filter(Boolean);
@@ -264,10 +414,11 @@
   function phraseFromText(value, backendNote = null) {
     const text = displayLine(value).toLowerCase();
     if (!text) return "";
+    if (isUnsafeCompanionFact(text) || isTechnicalStatusLine(text)) return "";
 
     if (backendNote?.momentLabel) {
       const label = displayLine(backendNote.momentLabel);
-      if (label && label.length <= 18) return label;
+      if (label && label.length <= 18 && !isUnsafeCompanionFact(label) && !isTechnicalStatusLine(label)) return label;
     }
 
     const patterns = [
@@ -300,13 +451,23 @@
   }
 
   function renderIdleContent(context, headline, replayNotes) {
+    const subtitle = replaySubtitle(context);
     return `
-      <div class="raceday-main-note">${escapeHtml(displayLine(headline))}</div>
-      ${context.title ? `<div class="raceday-video-title">${escapeHtml(context.title)}</div>` : ""}
+      <div class="raceday-main-note">${escapeHtml(companionHeadlineLine(headline))}</div>
+      ${subtitle ? `<div class="raceday-video-title">${escapeHtml(subtitle)}</div>` : ""}
       <div class="raceday-note-list">
-        ${replayNotes.map((note) => `<div class="raceday-note-item">${escapeHtml(displayLine(note))}</div>`).join("")}
+        ${replayNotes.map(companionNoteLine).filter(Boolean).map((note) => `<div class="raceday-note-item">${escapeHtml(note)}</div>`).join("")}
       </div>
     `;
+  }
+
+  function replaySubtitle(context) {
+    if (context.isF1Video && context.year && context.raceName) {
+      return `${context.year} ${context.raceName}`.replace(/\s+/g, " ").trim();
+    }
+    const title = displayLine(context.title);
+    if (!title || isUnsafeCompanionFact(title) || isTechnicalStatusLine(title)) return "";
+    return title;
   }
 
   function replayHeadline(context, backendNote = null) {
@@ -320,7 +481,7 @@
     if (context.chapterTitle) return shortBodyLead(context.chapterTitle);
     if (context.isF1Video && context.raceName) return "Track position matters.";
     if (context.isF1Video) return "F1 replay is running.";
-    if (context.isVideoPage) return "RaceDay detected this video.";
+    if (context.isVideoPage) return "RaceDay is ready to follow along.";
     return "Open an F1 video and RaceDay will follow along.";
   }
 
@@ -339,7 +500,7 @@
     const backendNotes = backendNote?.notes?.length
       ? backendNote.notes
       : backendReplayNotes(context);
-    if (backendNotes.length) return backendNotes.slice(0, 4).map(displayLine);
+    if (backendNotes.length) return backendNotes.slice(0, 4).map(companionNoteLine).filter(Boolean);
     return replayCompanionNotes(context);
   }
 
@@ -498,7 +659,7 @@
       ],
       undercut: [
         "An early stop can flip the order if the fresh tyres are much faster.",
-        "The gain only works if the car rejoins in clean air.",
+        "The move only works if the car rejoins in clean air.",
         "If the driver gets stuck behind traffic, the stop loses its edge.",
       ],
       "middle-stint": [
@@ -538,7 +699,10 @@
     }
 
     if (raceNotes.length) {
-      return dedupe(raceNotes).slice(0, 3);
+      return dedupe([
+        ...(notesByMoment[context.moment.id] || notesByMoment["middle-stint"]),
+        ...raceNotes.map(companionNoteLine),
+      ]).filter(Boolean).slice(0, 4);
     }
 
     return notesByMoment[context.moment.id] || notesByMoment["middle-stint"];
@@ -547,7 +711,7 @@
   function chapterReplayNotes(context) {
     if (!context.chapterTitle) return [];
     return [
-      `This part of the video is about ${context.chapterTitle.toLowerCase()}. Watch how it changes the strategy picture.`,
+      "The video has moved into a strategy moment, so watch who is attacking and who is protecting tyres.",
     ];
   }
 
@@ -560,13 +724,13 @@
     const pickedMoment = pickBackendMoment(context, moments);
     const notes = [];
 
-    if (pickedMoment?.headline) notes.push(pickedMoment.headline);
-    if (pickedMoment?.detail) notes.push(beginnerize(pickedMoment.detail));
+    if (pickedMoment?.headline) notes.push(companionHeadlineLine(pickedMoment.headline));
+    if (pickedMoment?.detail) notes.push(companionNoteLine(beginnerize(pickedMoment.detail)));
     if (notes.length < 2 && narrative.length) {
-      notes.push(beginnerize(narrative[Math.min(context.moment.step, narrative.length - 1)]));
+      notes.push(companionNoteLine(beginnerize(narrative[Math.min(context.moment.step, narrative.length - 1)])));
     }
 
-    return notes.map(displayLine);
+    return notes.map(companionNoteLine).filter(Boolean);
   }
 
   function backendCompanionNotes(context, data = null) {
@@ -574,10 +738,9 @@
     if (!note) return [];
 
     const notes = [];
-    if (note.headline) notes.push(note.headline);
-    if (Array.isArray(note.notes)) notes.push(...note.notes);
-    if (data?.session && note.momentLabel) notes.unshift(`Live update: ${note.momentLabel}.`);
-    return dedupe(notes.map(displayLine)).slice(0, 4);
+    if (note.headline) notes.push(companionHeadlineLine(note.headline));
+    if (Array.isArray(note.notes)) notes.push(...note.notes.map(companionNoteLine));
+    return dedupe(notes.map(companionNoteLine).filter(Boolean)).slice(0, 4);
   }
 
   function pickBackendMoment(context, moments) {
