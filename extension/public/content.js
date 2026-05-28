@@ -77,7 +77,7 @@
     const context = videoContext();
     loadRaceContext(context);
     loadBackendCompanion(context, data);
-    const notes = data ? beginnerNotes(data) : [];
+    const notes = data ? beginnerNotes(data, context) : [];
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
     const headline = data ? liveNotes[0] : replayHeadline(context);
@@ -111,12 +111,21 @@
     document.getElementById("raceday-close")?.addEventListener("click", closeOverlay);
   }
 
-  function beginnerNotes(data) {
+  function beginnerNotes(data, context = null) {
     const notes = [];
     const alerts = data.alerts || [];
     const predictions = data.predictions || [];
     const drivers = data.drivers || [];
     const whatIf = data.whatIf || [];
+    const raceData = context ? cachedRaceContext(context) : null;
+
+    if (raceData?.story?.headline) {
+      notes.push(beginnerize(raceData.story.headline));
+    }
+    if (Array.isArray(raceData?.story?.narrative)) {
+      const narrative = raceData.story.narrative.find(Boolean);
+      if (narrative) notes.push(beginnerize(narrative));
+    }
 
     for (const alert of alerts) {
       const translated = beginnerAlert(alert.text);
@@ -331,30 +340,21 @@
     const chapterNotes = chapterReplayNotes(context);
     const localNotes = localReplayStrategyNotes(context);
     const backendNotes = backendCompanionNotes(context);
-    const fallbackBackendNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
-    const shouldUseBackend = ["middle-stint", "second-window", "late-attack", "defend", "finish"].includes(context.moment.id);
+    const raceNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
 
-    if (chapterNotes.length) {
-      return [...chapterNotes, ...(fallbackBackendNotes.length ? fallbackBackendNotes : localNotes)].slice(0, 3);
-    }
-
-    if (fallbackBackendNotes.length && shouldUseBackend) {
-      return [...localNotes.slice(0, 1), ...fallbackBackendNotes].slice(0, 3);
-    }
-
-    if (localNotes.length >= 2) {
-      return localNotes.slice(0, 3);
-    }
-
-    if (fallbackBackendNotes.length) {
-      return [...localNotes, ...fallbackBackendNotes].slice(0, 3);
-    }
-
-    return localNotes;
+    return dedupe([
+      ...raceNotes,
+      ...chapterNotes,
+      ...localNotes,
+    ]).slice(0, 3);
   }
 
   function localReplayStrategyNotes(context) {
+    const raceData = cachedRaceContext(context);
     const raceText = context.raceName ? ` in the ${context.raceName}` : "";
+    const narrative = Array.isArray(raceData?.story?.narrative) ? raceData.story.narrative : [];
+    const moments = Array.isArray(raceData?.moments) ? raceData.moments : [];
+    const pickedMoment = moments[Math.min(context.moment.step, moments.length - 1)] || null;
     const notesByMoment = {
       lights: [
         `This is the launch phase${raceText}. Track position matters most because cars are still packed together.`,
@@ -402,6 +402,19 @@
         "Strategy is mostly done now; execution matters most.",
       ],
     };
+
+    const raceNotes = [];
+    if (pickedMoment?.headline) raceNotes.push(beginnerize(pickedMoment.headline));
+    if (pickedMoment?.detail) raceNotes.push(beginnerize(pickedMoment.detail));
+    if (narrative.length) {
+      const narrativeIndex = Math.min(context.moment.step, narrative.length - 1);
+      const line = narrative[narrativeIndex];
+      if (line) raceNotes.push(beginnerize(line));
+    }
+
+    if (raceNotes.length) {
+      return dedupe(raceNotes).slice(0, 3);
+    }
 
     return notesByMoment[context.moment.id] || notesByMoment["middle-stint"];
   }
