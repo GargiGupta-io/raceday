@@ -72,10 +72,12 @@
     const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
     const context = videoContext();
     loadRaceContext(context);
-    loadBackendCompanion(context);
+    loadBackendCompanion(context, data);
     const notes = data ? beginnerNotes(data) : [];
-    const headline = data ? notes[0] : replayHeadline(context);
-    const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
+    const backendNotes = data ? backendCompanionNotes(context, data) : [];
+    const liveNotes = data && backendNotes.length ? backendNotes : notes;
+    const headline = data ? liveNotes[0] : replayHeadline(context);
+    const detailNotes = data ? liveNotes.slice(1, 4) : replayCompanionNotes(context);
     const sessionLabel = "RaceDay companion";
     const headerContext = data
       ? `Lap ${data.lap}`
@@ -423,13 +425,14 @@
     return notes;
   }
 
-  function backendCompanionNotes(context) {
-    const note = cachedBackendCompanion(context);
+  function backendCompanionNotes(context, data = null) {
+    const note = cachedBackendCompanion(context, data);
     if (!note) return [];
 
     const notes = [];
     if (note.headline) notes.push(note.headline);
     if (Array.isArray(note.notes)) notes.push(...note.notes);
+    if (data?.session && note.momentLabel) notes.unshift(`Live update: ${note.momentLabel}.`);
     return dedupe(notes).slice(0, 3);
   }
 
@@ -462,8 +465,8 @@
     return raceContextCache.get(raceContextKey(context)) || null;
   }
 
-  function cachedBackendCompanion(context) {
-    return backendCompanionCache.get(backendCompanionKey(context)) || null;
+  function cachedBackendCompanion(context, data = null) {
+    return backendCompanionCache.get(backendCompanionKey(context, data)) || null;
   }
 
   function loadRaceContext(context) {
@@ -485,10 +488,10 @@
     );
   }
 
-  function loadBackendCompanion(context) {
+  function loadBackendCompanion(context, data = null) {
     if (!context.isVideoPage || !context.year || !context.track) return;
 
-    const key = backendCompanionKey(context);
+    const key = backendCompanionKey(context, data);
     if (backendCompanionCache.has(key) || backendCompanionPending.has(key)) return;
 
     backendCompanionPending.add(key);
@@ -504,8 +507,9 @@
           currentTime: getCurrentVideoTime(),
           duration: getCurrentVideoDuration(),
           chapter: context.chapterTitle,
-          mode: "replay",
+          mode: data ? "live" : "replay",
           momentId: context.moment?.id,
+          liveState: data,
         },
       },
       (response) => {
@@ -518,7 +522,16 @@
     );
   }
 
-  function backendCompanionKey(context) {
+  function backendCompanionKey(context, data = null) {
+    const liveKey = data
+      ? [
+          data.session || "",
+          data.lap || 0,
+          data.totalLaps || 0,
+          data.alerts?.[0]?.text || "",
+          data.predictions?.[0]?.driver || "",
+        ].join(":")
+      : "";
     return [
       location.href,
       context.title || "",
@@ -527,6 +540,7 @@
       context.track || "",
       context.chapterTitle || "",
       context.moment?.id || "",
+      liveKey,
     ].join("|");
   }
 

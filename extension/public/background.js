@@ -276,6 +276,15 @@ function companionNoteKey(context) {
   return [
     companionContextKey(context),
     context.momentId || context.moment?.id || context.currentTime || 0,
+    context.mode === "live"
+      ? [
+          context.liveState?.session || "",
+          context.liveState?.lap || 0,
+          context.liveState?.totalLaps || 0,
+          context.liveState?.alerts?.[0]?.text || "",
+          context.liveState?.predictions?.[0]?.driver || "",
+        ].join(":")
+      : "",
   ].join("::");
 }
 

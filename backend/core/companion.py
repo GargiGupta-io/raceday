@@ -207,6 +207,8 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
 
     notes: list[str] = []
     headline = ""
+    lap = live_state.get("lap")
+    total_laps = live_state.get("totalLaps")
 
     if alerts:
         headline = _beginnerize(str(alerts[0].get("text", "")))
@@ -214,10 +216,17 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
     if not headline and len(drivers) >= 2:
         first = drivers[0].get("name") or drivers[0].get("code") or "The leader"
         second = drivers[1].get("name") or drivers[1].get("code") or "second place"
-        headline = f"{_first_name(second)} is chasing {_first_name(first)}."
+        gap = _parse_gap(drivers[1].get("gap"))
+        if gap is not None and gap <= 1.5:
+            headline = f"{_first_name(second)} is close enough to pressure {_first_name(first)}."
+        else:
+            headline = f"{_first_name(second)} is chasing {_first_name(first)}."
 
     if not headline:
         headline = "RaceDay is watching for strategy changes."
+
+    if lap and total_laps:
+        notes.append(f"Lap {lap}/{total_laps} is where the next move may matter most.")
 
     for prediction in predictions[:2]:
         driver = _driver_name(prediction.get("driver"), drivers)
@@ -619,6 +628,19 @@ def _to_float(value: Any, default: float = 0) -> float:
         return float(value)
     except (TypeError, ValueError):
         return default
+
+
+def _parse_gap(value: Any) -> float | None:
+    text = _clean_text(value)
+    if not text or text.upper() == "LEADER":
+        return None
+    match = re.search(r"([-+]?\d+(?:\.\d+)?)", text)
+    if not match:
+        return None
+    try:
+        return abs(float(match.group(1)))
+    except ValueError:
+        return None
 
 
 def _dedupe(items: list[str]) -> list[str]:
