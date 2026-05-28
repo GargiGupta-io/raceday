@@ -76,7 +76,7 @@
     const sessionLabel = "RaceDay companion";
     const headerContext = data
       ? `Lap ${data.lap}`
-      : context.chapterTitle || context.moment?.label || "";
+      : context.moment?.label || context.chapterTitle || "";
 
     overlay.innerHTML = `
       <div class="raceday-header" id="raceday-header">
@@ -392,7 +392,7 @@
   function chapterReplayNotes(context) {
     if (!context.chapterTitle) return [];
     return [
-      `Video chapter: ${context.chapterTitle}. RaceDay is using this as the current replay moment.`,
+      `This part of the video is about ${context.chapterTitle.toLowerCase()}. Watch how it changes the strategy picture.`,
     ];
   }
 
@@ -473,7 +473,22 @@
       document.querySelector("[class*='chapter'][class*='title']")?.textContent,
     ];
 
-    return (candidates.find(Boolean) || "").replace(/\s+/g, " ").trim();
+    for (const candidate of candidates) {
+      const title = normalizeChapterTitle(candidate);
+      if (title) return title;
+    }
+
+    return "";
+  }
+
+  function normalizeChapterTitle(value) {
+    const title = String(value || "").replace(/\s+/g, " ").trim();
+    if (!title) return "";
+    if (title.length < 3) return "";
+    if (!/[a-z0-9]/i.test(title)) return "";
+    if (/^[.\-_:;|/\\()[\]{}]+$/.test(title)) return "";
+    if (/^(chapter|chapters|key moments?)$/i.test(title)) return "";
+    return title;
   }
 
   function escapeHtml(value) {
