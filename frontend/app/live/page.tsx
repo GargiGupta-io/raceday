@@ -690,28 +690,23 @@ function ExtensionBanner() {
           className="glass-button px-5 py-2.5 text-xs font-medium text-white border-red-500/30 hover:border-red-500/50 hover:shadow-lg hover:shadow-red-500/10 transition-all"
         >
           Get Extension
-          <span className="ml-2 text-red-400">{open ? "↑" : "↓"}</span>
+          <span className="ml-2 text-red-400">{open ? "-" : "+"}</span>
         </button>
 
         {open && (
           <div
             role="menu"
-            className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-md border border-white/10 bg-black/95 shadow-2xl shadow-black/50 backdrop-blur"
+            className="absolute right-0 z-20 mt-2 w-80 max-w-[calc(100vw-2rem)] overflow-hidden rounded-md border border-white/10 bg-black/95 shadow-2xl shadow-black/50 backdrop-blur"
           >
             <ExtensionDownloadLink
               href="/downloads/raceday-extension.zip"
-              title="Chrome"
-              detail="Developer build zip"
-            />
-            <ExtensionDownloadLink
-              href="/downloads/raceday-extension.zip"
-              title="Edge"
-              detail="Developer build zip"
+              title="Edge / Chrome"
+              detail="Download ZIP, unzip it, then load the folder from chrome://extensions or edge://extensions with Developer mode on."
             />
             <ExtensionDownloadLink
               href="/downloads/raceday-extension-firefox.zip"
               title="Firefox"
-              detail="Firefox-compatible zip"
+              detail="Download ZIP, open about:debugging#/runtime/this-firefox, choose Load Temporary Add-on, then select manifest.json from the unzipped folder."
             />
           </div>
         )}
@@ -734,10 +729,10 @@ function ExtensionDownloadLink({
       href={href}
       download
       role="menuitem"
-      className="block border-b border-white/[0.06] px-4 py-3 text-left transition last:border-0 hover:bg-red-500/10"
+      className="block border-b border-white/[0.06] px-4 py-3.5 text-left transition last:border-0 hover:bg-red-500/10"
     >
       <span className="block text-sm font-semibold text-white">{title}</span>
-      <span className="mt-0.5 block text-xs text-zinc-400">{detail}</span>
+      <span className="mt-1.5 block text-[11px] leading-relaxed text-zinc-400">{detail}</span>
     </a>
   );
 }
