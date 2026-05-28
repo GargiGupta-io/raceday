@@ -21,6 +21,8 @@
   let lastVideoKey = "";
   const raceContextCache = new Map();
   const raceContextPending = new Set();
+  const backendCompanionCache = new Map();
+  const backendCompanionPending = new Set();
 
   const overlay = document.createElement("div");
   overlay.id = "raceday-overlay";
@@ -70,6 +72,7 @@
     const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
     const context = videoContext();
     loadRaceContext(context);
+    loadBackendCompanion(context);
     const notes = data ? beginnerNotes(data) : [];
     const headline = data ? notes[0] : replayHeadline(context);
     const detailNotes = data ? notes.slice(1, 4) : replayCompanionNotes(context);
@@ -319,18 +322,24 @@
   function replayStrategyNotes(context) {
     const chapterNotes = chapterReplayNotes(context);
     const localNotes = localReplayStrategyNotes(context);
+    const backendNotes = backendCompanionNotes(context);
+    const fallbackBackendNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
+    const shouldUseBackend = ["middle-stint", "second-window", "late-attack", "defend", "finish"].includes(context.moment.id);
 
     if (chapterNotes.length) {
-      return [...chapterNotes, ...localNotes].slice(0, 3);
+      return [...chapterNotes, ...(fallbackBackendNotes.length ? fallbackBackendNotes : localNotes)].slice(0, 3);
+    }
+
+    if (fallbackBackendNotes.length && shouldUseBackend) {
+      return [...localNotes.slice(0, 1), ...fallbackBackendNotes].slice(0, 3);
     }
 
     if (localNotes.length >= 2) {
       return localNotes.slice(0, 3);
     }
 
-    const backendNotes = backendReplayNotes(context);
-    if (backendNotes.length) {
-      return [...localNotes, ...backendNotes].slice(0, 3);
+    if (fallbackBackendNotes.length) {
+      return [...localNotes, ...fallbackBackendNotes].slice(0, 3);
     }
 
     return localNotes;
@@ -414,6 +423,16 @@
     return notes;
   }
 
+  function backendCompanionNotes(context) {
+    const note = cachedBackendCompanion(context);
+    if (!note) return [];
+
+    const notes = [];
+    if (note.headline) notes.push(note.headline);
+    if (Array.isArray(note.notes)) notes.push(...note.notes);
+    return dedupe(notes).slice(0, 3);
+  }
+
   function pickBackendMoment(context, moments) {
     if (!moments.length) return null;
 
@@ -443,6 +462,10 @@
     return raceContextCache.get(raceContextKey(context)) || null;
   }
 
+  function cachedBackendCompanion(context) {
+    return backendCompanionCache.get(backendCompanionKey(context)) || null;
+  }
+
   function loadRaceContext(context) {
     if (!context.isF1Video || !context.year || !context.track) return;
 
@@ -460,6 +483,61 @@
         }
       },
     );
+  }
+
+  function loadBackendCompanion(context) {
+    if (!context.isVideoPage || !context.year || !context.track) return;
+
+    const key = backendCompanionKey(context);
+    if (backendCompanionCache.has(key) || backendCompanionPending.has(key)) return;
+
+    backendCompanionPending.add(key);
+    chrome.runtime.sendMessage(
+      {
+        type: "GET_COMPANION_NOTE",
+        context: {
+          url: location.href,
+          title: context.title,
+          year: context.year,
+          raceName: context.raceName,
+          track: context.track,
+          currentTime: getCurrentVideoTime(),
+          duration: getCurrentVideoDuration(),
+          chapter: context.chapterTitle,
+          mode: "replay",
+          momentId: context.moment?.id,
+        },
+      },
+      (response) => {
+        backendCompanionPending.delete(key);
+        if (response?.ok) {
+          backendCompanionCache.set(key, response);
+          render();
+        }
+      },
+    );
+  }
+
+  function backendCompanionKey(context) {
+    return [
+      location.href,
+      context.title || "",
+      context.year || "",
+      context.raceName || "",
+      context.track || "",
+      context.chapterTitle || "",
+      context.moment?.id || "",
+    ].join("|");
+  }
+
+  function getCurrentVideoTime() {
+    const video = document.querySelector("video");
+    return video && Number.isFinite(video.currentTime) ? video.currentTime : 0;
+  }
+
+  function getCurrentVideoDuration() {
+    const video = document.querySelector("video");
+    return video && Number.isFinite(video.duration) ? video.duration : 0;
   }
 
   function raceContextKey(context) {

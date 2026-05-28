@@ -41,6 +41,10 @@ let settings = { ...DEFAULT_SETTINGS };
 let liveData = null;
 let pollInterval = null;
 let connectionStatus = "checking";
+const companionAnalysisCache = new Map();
+const companionAnalysisPending = new Map();
+const companionNoteCache = new Map();
+const companionNotePending = new Map();
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === "GET_LIVE_DATA") {
@@ -57,6 +61,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === "GET_RACE_CONTEXT") {
     getRaceContext(msg.year, msg.track).then(sendResponse);
+    return true;
+  }
+
+  if (msg.type === "GET_COMPANION_NOTE") {
+    getCompanionNote(msg.context || {}).then(sendResponse);
     return true;
   }
 
@@ -250,6 +259,99 @@ async function getRaceContext(year, track) {
   } catch (error) {
     return { ok: false, error: String(error) };
   }
+}
+
+function companionContextKey(context) {
+  return [
+    context.url || "",
+    context.title || "",
+    context.year || "",
+    context.track || context.raceName || "",
+    context.chapter || "",
+    context.mode || "replay",
+  ].join("|");
+}
+
+function companionNoteKey(context) {
+  return [
+    companionContextKey(context),
+    context.momentId || context.moment?.id || context.currentTime || 0,
+  ].join("::");
+}
+
+async function getCompanionAnalysis(context) {
+  const key = companionContextKey(context);
+  if (companionAnalysisCache.has(key)) return companionAnalysisCache.get(key);
+  if (companionAnalysisPending.has(key)) return companionAnalysisPending.get(key);
+
+  const pending = (async () => {
+    const base = settings.backendUrl.replace(/\/+$/, "");
+    try {
+      const resp = await fetch(`${base}/companion/analyze-video`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(context),
+        signal: AbortSignal.timeout(6000),
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (data?.ok) {
+        companionAnalysisCache.set(key, data);
+        return data;
+      }
+    } catch (error) {
+      // Fall through to a null analysis. The content script will keep local notes.
+    } finally {
+      companionAnalysisPending.delete(key);
+    }
+    return null;
+  })();
+
+  companionAnalysisPending.set(key, pending);
+  return pending;
+}
+
+async function getCompanionNote(context) {
+  const key = companionNoteKey(context);
+  if (companionNoteCache.has(key)) return companionNoteCache.get(key);
+  if (companionNotePending.has(key)) return companionNotePending.get(key);
+
+  const pending = (async () => {
+    const base = settings.backendUrl.replace(/\/+$/, "");
+    try {
+      const analysis = await getCompanionAnalysis(context);
+      const payload = {
+        ...context,
+        analysis,
+        mode: context.mode || "replay",
+      };
+
+      if ((payload.mode || "replay") === "live") {
+        payload.liveState = liveData;
+      }
+
+      const resp = await fetch(`${base}/companion/note`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(6000),
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      if (data?.ok) {
+        companionNoteCache.set(key, data);
+        return data;
+      }
+    } catch (error) {
+      // Return null and let the content script fall back to local replay notes.
+    } finally {
+      companionNotePending.delete(key);
+    }
+    return null;
+  })();
+
+  companionNotePending.set(key, pending);
+  return pending;
 }
 
 chrome.runtime.onInstalled.addListener(() => {

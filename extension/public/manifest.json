@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Raceday — Live F1 Strategy Companion",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Real-time F1 strategy predictions, tyre life, and pattern alerts during live races.",
   "permissions": ["storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
