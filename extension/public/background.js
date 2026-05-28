@@ -7,7 +7,6 @@
 const DEFAULT_SETTINGS = {
   backendUrl: "https://web-production-b8406.up.railway.app",
   overlayEnabled: true,
-  overlayMode: "full",
   demoMode: false,
 };
 
@@ -100,14 +99,10 @@ async function loadSettings() {
     settings.overlayEnabled = true;
     await chrome.storage.local.set({ overlayEnabled: true });
   }
-  if (settings.overlayMode !== "full") {
-    settings.overlayMode = "full";
-    await chrome.storage.local.set({ overlayMode: "full" });
-  }
 }
 
 async function saveSettings(nextSettings) {
-  settings = { ...settings, ...nextSettings, overlayMode: "full" };
+  settings = { ...settings, ...nextSettings };
   if (settings.demoMode) settings.overlayEnabled = true;
   if (!settings.demoMode && isDemoSnapshot(liveData)) liveData = null;
   await chrome.storage.local.set(settings);
@@ -284,6 +279,12 @@ function companionNoteKey(context) {
           context.liveState?.totalLaps || 0,
           context.liveState?.alerts?.[0]?.text || "",
           context.liveState?.predictions?.[0]?.driver || "",
+          context.liveState?.drivers?.[0]?.position || "",
+          context.liveState?.drivers?.[0]?.gap || "",
+          context.liveState?.drivers?.[0]?.tyreLife || "",
+          context.liveState?.drivers?.[1]?.position || "",
+          context.liveState?.drivers?.[1]?.gap || "",
+          context.liveState?.drivers?.[1]?.tyreLife || "",
         ].join(":")
       : "",
   ].join("::");

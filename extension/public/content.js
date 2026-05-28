@@ -10,7 +10,6 @@
 
   const DEFAULT_SETTINGS = {
     overlayEnabled: true,
-    overlayMode: "full",
     demoMode: false,
   };
 
@@ -38,7 +37,7 @@
 
   async function loadInitialState() {
     const stored = await chrome.storage.local.get({ ...DEFAULT_SETTINGS, overlayPosition: null });
-    settings = { ...DEFAULT_SETTINGS, ...stored, overlayMode: "full" };
+    settings = { ...DEFAULT_SETTINGS, ...stored };
     applyStoredPosition(stored.overlayPosition);
 
     refreshLiveData();
@@ -46,7 +45,7 @@
 
   function refreshLiveData() {
     chrome.runtime.sendMessage({ type: "GET_LIVE_DATA" }, (response) => {
-      if (response?.settings) settings = { ...settings, ...response.settings, overlayMode: "full" };
+      if (response?.settings) settings = { ...settings, ...response.settings };
       if (response?.status) connectionStatus = response.status;
       const nextData = response?.data || null;
       liveData = !settings.demoMode && isDemoSnapshot(nextData) ? null : nextData;
@@ -255,16 +254,21 @@
     ].filter(Boolean);
 
     for (const candidate of candidates) {
-      const phrase = phraseFromText(candidate);
+      const phrase = phraseFromText(candidate, backendNote);
       if (phrase) return phrase;
     }
 
-    return context.isF1Video ? "Race pressure" : "Watching now";
+    return context.isF1Video ? "Race day" : "Watching now";
   }
 
-  function phraseFromText(value) {
+  function phraseFromText(value, backendNote = null) {
     const text = displayLine(value).toLowerCase();
     if (!text) return "";
+
+    if (backendNote?.momentLabel) {
+      const label = displayLine(backendNote.momentLabel);
+      if (label && label.length <= 18) return label;
+    }
 
     const patterns = [
       [/pit|stop|box/, "Pit pressure"],
@@ -726,7 +730,11 @@
     ];
 
     const text = normalizeTranscriptText(candidates.map((node) => node.textContent).join(" "));
-    if (!text) return transcriptState.recent.join(" ").trim();
+    if (!text) {
+      transcriptState.lastText = "";
+      transcriptState.recent = [];
+      return "";
+    }
 
     if (text !== transcriptState.lastText) {
       transcriptState.lastText = text;
@@ -807,7 +815,7 @@
     chrome.storage.local.set({ overlayEnabled: false, demoMode: false });
     chrome.runtime.sendMessage({
       type: "SAVE_SETTINGS",
-      settings: { overlayEnabled: false, demoMode: false, overlayMode: "full" },
+      settings: { overlayEnabled: false, demoMode: false },
     });
   }
 
@@ -822,7 +830,7 @@
       render();
     }
     if (msg.type === "SETTINGS_UPDATE") {
-      settings = { ...settings, ...msg.settings, overlayMode: "full" };
+      settings = { ...settings, ...msg.settings };
       if (!settings.demoMode) {
         liveData = null;
         if (connectionStatus === "demo") connectionStatus = "no-session";
@@ -834,10 +842,10 @@
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName !== "local") return;
     const nextSettings = { ...settings };
-    for (const key of ["overlayEnabled", "overlayMode", "demoMode"]) {
+    for (const key of ["overlayEnabled", "demoMode"]) {
       if (changes[key]) nextSettings[key] = changes[key].newValue;
     }
-    settings = { ...nextSettings, overlayMode: "full" };
+    settings = { ...nextSettings };
     if (!settings.demoMode) {
       liveData = null;
       if (connectionStatus === "demo") connectionStatus = "no-session";
