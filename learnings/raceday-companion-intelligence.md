@@ -393,3 +393,4 @@ page/video/live session
 - 2026-05-28 — Added caption-number detail parsing so lap numbers and position cues inside transcript text can sharpen the race moment.
 - 2026-05-28 — Updated note selection so race-specific backend notes win before the fixed phase fallback, which stops the companion from repeating the same generic answers across different races.
 - 2026-05-28 — Removed the visible replay phase label from the overlay headline so the backend story note can lead instead of `race start` / `first pit choices` text.
+- 2026-05-28 — Reworked the replay and live note shape so the companion speaks in a conversational 3-to-5-line format, explains why the moment matters, and avoids recap-style winner/podium language in the middle of the race.
