@@ -309,10 +309,12 @@ def pick_timeline_moment(
     if not timeline:
         return FALLBACK_MOMENTS[0]
 
-    clean_chapter = _clean_text(chapter)
+    ratio = _time_ratio(current_time, duration)
+    time_match = _match_time(timeline, ratio)
+    clean_chapter = _normalize_chapter(chapter)
     if clean_chapter:
-        chapter_match = _match_chapter(timeline, clean_chapter)
-        if chapter_match:
+        chapter_match, chapter_score = _match_chapter(timeline, clean_chapter)
+        if chapter_match and chapter_score >= 0.58:
             return {
                 **chapter_match,
                 "notes": _dedupe([
@@ -323,12 +325,18 @@ def pick_timeline_moment(
                 "source": "video-chapter",
             }
 
-    ratio = 0 if duration <= 0 else max(0, min(1, current_time / duration))
-    for moment in timeline:
-        if moment.get("startRatio", 0) <= ratio < moment.get("endRatio", 1):
-            return moment
+        if chapter_match and chapter_score >= 0.35 and chapter_match.get("id") == time_match.get("id"):
+            return {
+                **time_match,
+                "notes": _dedupe([
+                    f"The video chapter mentions {clean_chapter.lower()}, which lines up with this race phase.",
+                    *time_match.get("notes", []),
+                ])[:3],
+                "confidence": "high",
+                "source": "timestamp-and-chapter",
+            }
 
-    return timeline[-1]
+    return time_match
 
 
 def _detect_year(raw_year: Any, title: str) -> int | None:
@@ -354,23 +362,101 @@ def _fallback_timeline(duration: float = 0) -> list[dict[str, Any]]:
     return timeline
 
 
-def _match_chapter(timeline: list[dict[str, Any]], chapter: str) -> dict[str, Any] | None:
+def _time_ratio(current_time: float, duration: float) -> float:
+    if duration <= 0:
+        return 0
+    if 0 <= current_time <= 1:
+        return current_time
+    return max(0, min(1, current_time / duration))
+
+
+def _match_time(timeline: list[dict[str, Any]], ratio: float) -> dict[str, Any]:
+    best_moment = timeline[-1]
+    best_distance = 2.0
+    for moment in timeline:
+        start = float(moment.get("startRatio", 0))
+        end = float(moment.get("endRatio", 1))
+        if start <= ratio < end:
+            return {
+                **moment,
+                "confidence": moment.get("confidence") or "medium",
+                "source": moment.get("source") or "timestamp",
+            }
+        midpoint = start + ((end - start) / 2)
+        distance = abs(ratio - midpoint)
+        if distance < best_distance:
+            best_distance = distance
+            best_moment = moment
+    return {
+        **best_moment,
+        "confidence": best_moment.get("confidence") or "low",
+        "source": best_moment.get("source") or "nearest-timestamp",
+    }
+
+
+def _match_chapter(timeline: list[dict[str, Any]], chapter: str) -> tuple[dict[str, Any] | None, float]:
     chapter_lower = chapter.lower()
+    chapter_tokens = _content_tokens(chapter_lower)
+    if not chapter_tokens:
+        return None, 0
+
     best_score = 0.0
     best_moment = None
     for moment in timeline:
         text = " ".join([
+            str(moment.get("id", "")),
             str(moment.get("label", "")),
             str(moment.get("headline", "")),
             " ".join(moment.get("notes", [])),
         ]).lower()
-        score = SequenceMatcher(None, chapter_lower, text).ratio()
-        if any(word in text for word in chapter_lower.split() if len(word) > 3):
+        moment_tokens = _content_tokens(text)
+        overlap = len(chapter_tokens & moment_tokens) / max(1, len(chapter_tokens))
+        fuzzy = SequenceMatcher(None, chapter_lower, text[:160]).ratio()
+        score = (overlap * 0.7) + (fuzzy * 0.3)
+        if _chapter_keyword_bonus(chapter_tokens, moment):
             score += 0.25
         if score > best_score:
             best_score = score
             best_moment = moment
-    return best_moment if best_score >= 0.35 else None
+    return best_moment, best_score
+
+
+def _normalize_chapter(value: Any) -> str:
+    title = _clean_text(value)
+    if not title or len(title) < 3:
+        return ""
+    if not re.search(r"[a-z0-9]", title, re.IGNORECASE):
+        return ""
+    if re.fullmatch(r"[.\-_:;|/\\()[\]{}]+", title):
+        return ""
+    if title.lower() in {"chapter", "chapters", "key moment", "key moments"}:
+        return ""
+    return title
+
+
+def _content_tokens(value: str) -> set[str]:
+    stop_words = {
+        "race", "races", "formula", "grand", "prix", "highlight", "highlights",
+        "chapter", "video", "this", "that", "with", "from", "into", "about",
+    }
+    return {
+        token for token in re.findall(r"[a-z0-9]+", value.lower())
+        if len(token) > 2 and token not in stop_words
+    }
+
+
+def _chapter_keyword_bonus(tokens: set[str], moment: dict[str, Any]) -> bool:
+    moment_id = str(moment.get("id", ""))
+    label = str(moment.get("label", "")).lower()
+    haystack = f"{moment_id} {label}"
+    keyword_groups = {
+        "race start": {"start", "lights", "launch", "lap"},
+        "first pit choices": {"pit", "stop", "stops", "strategy"},
+        "middle stint": {"battle", "fight", "pressure", "tyre", "tire"},
+        "late-race pressure": {"late", "attack", "defend", "finish"},
+        "final laps": {"finish", "flag", "final", "podium"},
+    }
+    return any(name in haystack and tokens & words for name, words in keyword_groups.items())
 
 
 def _strategy_notes(strategy: list[dict[str, Any]]) -> list[str]:
