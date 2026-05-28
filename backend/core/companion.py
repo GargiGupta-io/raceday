@@ -203,6 +203,9 @@ def build_companion_note(
     media_context = _media_context(payload, analysis=analysis, live_state=live_state)
     if media_context:
         note = _merge_context_note(note, media_context)
+    detail_context = _media_detail_context(payload, analysis=analysis, live_state=live_state)
+    if detail_context:
+        note = _merge_context_note(note, detail_context)
     radio_context = _radio_context(payload, analysis=analysis, live_state=live_state)
     if radio_context:
         note = _merge_context_note(note, radio_context)
@@ -727,6 +730,39 @@ def _media_context(
     }
 
 
+def _media_detail_context(
+    payload: dict[str, Any],
+    analysis: dict[str, Any] | None = None,
+    live_state: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """
+    Pull small numeric cues from captions/transcripts and turn them into race details.
+    """
+    transcript = _normalize_transcript(
+        payload.get("transcript")
+        or payload.get("transcriptText")
+        or (analysis or {}).get("transcript")
+    )
+    if not transcript:
+        return None
+
+    clues = _extract_media_clues(transcript)
+    if not clues:
+        return None
+
+    notes = clues.get("notes", [])
+    if live_state and live_state.get("lap") and live_state.get("totalLaps"):
+        notes.append(f"This also lines up with lap {live_state.get('lap')}/{live_state.get('totalLaps')}.")
+
+    return {
+        "headline": clues.get("headline") or "A small caption clue gives RaceDay more context.",
+        "notes": _dedupe(notes)[:3],
+        "momentLabel": clues.get("momentLabel") or "caption detail",
+        "confidence": "high",
+        "source": "video-detail",
+    }
+
+
 def _infer_media_signal(text: str) -> dict[str, Any] | None:
     lowered = text.lower()
     patterns = [
@@ -781,6 +817,47 @@ def _infer_media_signal(text: str) -> dict[str, Any] | None:
             return signal
 
     return None
+
+
+def _extract_media_clues(text: str) -> dict[str, Any] | None:
+    lowered = text.lower()
+    clues: list[str] = []
+    moment_label = ""
+    headline = ""
+
+    lap_match = re.search(r"\blap\s*(\d{1,3})\b", lowered)
+    if lap_match:
+        lap_no = int(lap_match.group(1))
+        headline = f"The video mentions lap {lap_no}, so the timing is more precise now."
+        moment_label = "lap cue"
+        clues.append(f"RaceDay can anchor this to lap {lap_no} instead of only using the video progress bar.")
+
+    if re.search(r"\bp\s?([1-9]|1[0-9])\b", lowered):
+        if not headline:
+            headline = "The caption mentions position, so the lead fight may be in focus."
+        moment_label = moment_label or "position cue"
+        clues.append("Position words like P1 or P2 usually mean the fight for track position matters right now.")
+
+    if re.search(r"\b(lead|leader|leading|chasing|closing)\b", lowered):
+        if not headline:
+            headline = "The caption sounds like a battle for the lead."
+        moment_label = moment_label or "battle cue"
+        clues.append("Words about leading or chasing usually mean the front group is the part to watch.")
+
+    if re.search(r"\b(box|pit|stop|stops)\b", lowered):
+        if not headline:
+            headline = "The caption points to a pit stop clue."
+        moment_label = moment_label or "pit detail"
+        clues.append("Pit language in the caption often means the strategy story is about to change.")
+
+    if not clues:
+        return None
+
+    return {
+        "headline": headline or "A caption detail sharpens the race moment.",
+        "momentLabel": moment_label or "caption detail",
+        "notes": clues,
+    }
 
 
 def _radio_headline(transcript: str, sentiment: str, driver: str) -> str:

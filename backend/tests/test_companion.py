@@ -190,3 +190,50 @@ def test_replay_companion_uses_video_analysis_context(monkeypatch):
     assert note["mediaSource"] == "video-analysis"
     assert note["headline"] == "A pit call looks close."
     assert "video/audio clue" in " ".join(note["notes"]).lower()
+
+
+def test_replay_companion_uses_caption_number_clues(monkeypatch):
+    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        companion.insights,
+        "get_radio_moments",
+        lambda *args, **kwargs: {"available": False, "clips": []},
+    )
+
+    payload = {
+        "mode": "replay",
+        "title": "Race Highlights | 2024 Las Vegas Grand Prix",
+        "year": 2024,
+        "raceName": "Las Vegas GP",
+        "currentTime": 60,
+        "duration": 494,
+        "transcript": "Lap 5. P1 and P2 are covered by less than a second.",
+    }
+    analysis = {
+        "ok": True,
+        "mode": "replay",
+        "year": 2024,
+        "track": "Las Vegas Grand Prix",
+        "currentTime": 60,
+        "duration": 494,
+        "transcript": "Lap 5. P1 and P2 are covered by less than a second.",
+        "timeline": [
+            {
+                "id": "opening-laps",
+                "label": "opening laps",
+                "startRatio": 0.1,
+                "endRatio": 0.25,
+                "headline": "Teams are learning who has real pace.",
+                "notes": [
+                    "Drivers close behind another car can overheat their tyres.",
+                ],
+                "source": "race-story",
+            }
+        ],
+    }
+
+    note = companion.build_companion_note(payload, analysis=analysis)
+
+    joined = " ".join(note["notes"]).lower()
+    assert "lap 5" in joined
+    assert "position" in joined or "lead fight" in joined
