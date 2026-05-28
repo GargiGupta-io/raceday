@@ -394,3 +394,5 @@ page/video/live session
 - 2026-05-28 — Updated note selection so race-specific backend notes win before the fixed phase fallback, which stops the companion from repeating the same generic answers across different races.
 - 2026-05-28 — Removed the visible replay phase label from the overlay headline so the backend story note can lead instead of `race start` / `first pit choices` text.
 - 2026-05-28 — Reworked the replay and live note shape so the companion speaks in a conversational 3-to-5-line format, explains why the moment matters, and avoids recap-style winner/podium language in the middle of the race.
+- 2026-05-28 — Removed radio/transcript merging from the note path, deleted the dead radio/media helper flow, and tightened the replay cache bucket so the companion stops repeating the same note across a long chunk of video.
+- 2026-05-28 — Trimmed recap-style replay headlines down to short race-moment language, so late-race output says what is happening now instead of restating the full result.
