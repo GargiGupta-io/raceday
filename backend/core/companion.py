@@ -15,6 +15,7 @@ from difflib import SequenceMatcher
 from typing import Any
 
 from backend.core import indexer, insights
+from backend.core import companion_ai
 
 logger = logging.getLogger(__name__)
 
@@ -173,7 +174,8 @@ def build_companion_note(
     """
     mode = payload.get("mode") or (analysis or {}).get("mode") or "replay"
     if mode == "live" and live_state:
-        return build_live_note(live_state)
+        note = build_live_note(live_state)
+        return _refine_with_ai(payload, note, analysis=analysis, live_state=live_state)
 
     analysis = analysis or analyze_video_context(payload)
     moment = pick_timeline_moment(
@@ -186,7 +188,7 @@ def build_companion_note(
     headline = moment.get("headline") or "RaceDay is watching this race moment."
     notes = [note for note in moment.get("notes", []) if note][:3]
 
-    return {
+    note = {
         "ok": True,
         "mode": "replay",
         "headline": headline,
@@ -195,6 +197,7 @@ def build_companion_note(
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
         "source": moment.get("source") or analysis.get("source") or "backend-companion",
     }
+    return _refine_with_ai(payload, note, analysis=analysis)
 
 
 def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
@@ -652,3 +655,26 @@ def _dedupe(items: list[str]) -> list[str]:
             seen.add(clean)
             result.append(clean)
     return result
+
+
+def _refine_with_ai(
+    payload: dict[str, Any],
+    base_note: dict[str, Any],
+    analysis: dict[str, Any] | None = None,
+    live_state: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    refined = companion_ai.refine_companion_note(payload, base_note, analysis=analysis, live_state=live_state)
+    if not refined:
+        return base_note
+
+    notes = _dedupe([
+        *refined.get("notes", []),
+        *base_note.get("notes", []),
+    ])[:3]
+
+    return {
+        **base_note,
+        "headline": refined.get("headline") or base_note.get("headline"),
+        "notes": notes,
+        "source": refined.get("source", "ai-explainer"),
+    }
