@@ -82,7 +82,7 @@
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
     const headline = data ? liveNotes[0] : replayHeadline(context, replayBackend);
-    const detailNotes = data ? liveNotes.slice(1, 4) : replayDetailNotes(context, replayBackend);
+    const detailNotes = data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend);
     const sessionLabel = "RaceDay companion";
     const headerContext = data
       ? `Lap ${data.lap}`
@@ -235,7 +235,7 @@
     const backendNotes = backendNote?.notes?.length
       ? backendNote.notes
       : backendReplayNotes(context);
-    if (backendNotes.length) return backendNotes.slice(0, 3);
+    if (backendNotes.length) return backendNotes.slice(0, 4);
     return replayCompanionNotes(context);
   }
 
@@ -364,7 +364,7 @@
     const backendNotes = backendCompanionNotes(context);
     const raceNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
     if (raceNotes.length) {
-      return dedupe([...raceNotes, ...chapterReplayNotes(context)]).slice(0, 3);
+      return dedupe([...raceNotes, ...chapterReplayNotes(context)]).slice(0, 4);
     }
 
     return localReplayStrategyNotes(context);
@@ -473,7 +473,7 @@
     if (note.headline) notes.push(note.headline);
     if (Array.isArray(note.notes)) notes.push(...note.notes);
     if (data?.session && note.momentLabel) notes.unshift(`Live update: ${note.momentLabel}.`);
-    return dedupe(notes).slice(0, 3);
+    return dedupe(notes).slice(0, 4);
   }
 
   function pickBackendMoment(context, moments) {

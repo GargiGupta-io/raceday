@@ -180,6 +180,12 @@ def build_companion_note(
         return _refine_with_ai(payload, note, analysis=analysis, live_state=live_state)
 
     analysis = analysis or analyze_video_context(payload)
+    race_data = _safe_call(indexer.load_race_index, analysis.get("year"), analysis.get("track")) or {}
+    profile = _race_profile(race_data) if race_data else {}
+    ratio = _time_ratio(
+        _to_float(payload.get("currentTime"), analysis.get("currentTime") or 0),
+        _to_float(payload.get("duration"), analysis.get("duration") or 0),
+    )
     moment = pick_timeline_moment(
         analysis.get("timeline") or [],
         _to_float(payload.get("currentTime"), analysis.get("currentTime") or 0),
@@ -188,17 +194,25 @@ def build_companion_note(
         payload.get("transcript") or payload.get("transcriptText") or analysis.get("transcript"),
     )
 
-    headline = moment.get("headline") or "RaceDay is watching this race moment."
-    notes = [note for note in moment.get("notes", []) if note][:3]
+    replay_note = _build_replay_companion_note(
+        payload=payload,
+        analysis=analysis,
+        moment=moment,
+        profile=profile,
+        ratio=ratio,
+    )
+
+    headline = replay_note.get("headline") or "RaceDay is watching this race moment."
+    notes = [note for note in replay_note.get("notes", []) if note][:4]
 
     note = {
         "ok": True,
         "mode": "replay",
         "headline": headline,
         "notes": notes,
-        "momentLabel": moment.get("label") or "race moment",
+        "momentLabel": replay_note.get("momentLabel") or moment.get("label") or "race moment",
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
-        "source": moment.get("source") or analysis.get("source") or "backend-companion",
+        "source": replay_note.get("source") or moment.get("source") or analysis.get("source") or "backend-companion",
     }
     media_context = _media_context(payload, analysis=analysis, live_state=live_state)
     if media_context:
@@ -241,26 +255,28 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
         headline = "RaceDay is watching for strategy changes."
 
     if lap and total_laps:
-        notes.append(f"Lap {lap}/{total_laps} is where the next move may matter most.")
+        notes.append(f"Lap {lap}/{total_laps} is where the next move could change the race.")
 
     for prediction in predictions[:2]:
         driver = _driver_name(prediction.get("driver"), drivers)
         if driver:
-            notes.append(f"{driver} may stop soon for fresh tyres.")
+            notes.append(f"{driver} may stop soon, and that can flip track position fast.")
 
     for driver in drivers[:6]:
         tyre_life = driver.get("tyreLife")
         if isinstance(tyre_life, (int, float)) and tyre_life <= 35:
-            notes.append(f"{_first_name(driver.get('name') or driver.get('code'))}'s tyres are fading, so they may slow down soon.")
+            notes.append(f"{_first_name(driver.get('name') or driver.get('code'))}'s tyres are fading, so the pace may drop soon.")
 
     if not notes:
-        notes.append("Watch tyre age, gaps, and pit timing. Those usually explain the next big move.")
+        notes.append("Watch tyre age, gaps, and pit timing. That usually explains the next big move.")
+        if len(drivers) >= 2:
+            notes.append(f"{_first_name(drivers[1].get('name') or drivers[1].get('code'))} is the first one to watch.")
 
     note = {
         "ok": True,
         "mode": "live",
         "headline": headline,
-        "notes": _dedupe(notes)[:3],
+        "notes": _dedupe(notes)[:4],
         "momentLabel": f"Lap {live_state.get('lap')}" if live_state.get("lap") else "live race",
         "confidence": "medium",
         "source": "live-state",
@@ -583,11 +599,6 @@ def _race_profile(data: dict[str, Any]) -> dict[str, Any]:
 
 
 def _apply_profile_context(timeline: list[dict[str, Any]], profile: dict[str, Any]) -> None:
-    podium_notes = _podium_notes(profile)
-    if podium_notes:
-        timeline[0]["notes"] = _dedupe([*podium_notes, *timeline[0]["notes"]])[:3]
-        timeline[0]["source"] = "race-results"
-
     condition = _clean_text((profile.get("weather") or {}).get("condition"))
     if condition and condition != "dry":
         timeline[1]["notes"] = _dedupe([
@@ -598,11 +609,12 @@ def _apply_profile_context(timeline: list[dict[str, Any]], profile: dict[str, An
 
     retired_count = profile.get("retiredCount") or 0
     if retired_count >= 4:
-        timeline[4]["notes"] = _dedupe([
+        target = min(len(timeline) - 1, 4)
+        timeline[target]["notes"] = _dedupe([
             f"{retired_count} drivers retired, so staying out of trouble was part of the strategy.",
-            *timeline[4]["notes"],
+            *timeline[target]["notes"],
         ])[:3]
-        timeline[4]["source"] = "race-results"
+        timeline[target]["source"] = "race-results"
 
 
 def _podium_notes(profile: dict[str, Any]) -> list[str]:
@@ -634,6 +646,218 @@ def _stint_notes(profile: dict[str, Any]) -> list[str]:
         notes.append(f"{count} drivers used a {common_stops}-stop race, making it the main strategy pattern.")
 
     return notes
+
+
+def _build_replay_companion_note(
+    payload: dict[str, Any],
+    analysis: dict[str, Any],
+    moment: dict[str, Any],
+    profile: dict[str, Any],
+    ratio: float,
+) -> dict[str, Any]:
+    race_name = _clean_text(payload.get("raceName") or analysis.get("raceName") or "")
+    track = _clean_text(payload.get("track") or analysis.get("track") or race_name)
+    headline = _replay_headline(moment, profile, ratio)
+    notes = _replay_notes(moment, profile, ratio, race_name, track)
+
+    return {
+        "headline": headline,
+        "notes": notes,
+        "momentLabel": _replay_moment_label(moment, profile, ratio),
+        "source": moment.get("source") or analysis.get("source") or "backend-companion",
+    }
+
+
+def _replay_headline(moment: dict[str, Any], profile: dict[str, Any], ratio: float) -> str:
+    if ratio >= 0.88:
+        return "The finish is starting to decide the order."
+
+    condition = _clean_text((profile.get("weather") or {}).get("condition"))
+    if condition and condition != "dry":
+        return "The weather is changing how this race feels."
+
+    label = _clean_text(moment.get("label")).lower()
+    moment_type = _clean_text(moment.get("type")).lower()
+    headline = _clean_text(moment.get("headline"))
+
+    if "pit" in label or "stop" in label or moment_type == "undercut":
+        return "The next stop could change who stays ahead."
+
+    if moment_type in {"biggest_gainer", "comeback"}:
+        return "Someone is making a real move through the field."
+
+    if moment_type in {"biggest_loser", "attrition"}:
+        return "The race is getting messy enough to matter."
+
+    if moment_type == "dominant_win":
+        return "The leader is setting the tone now."
+
+    if headline and not _looks_like_recap(headline):
+        return _clean_talky_line(headline)
+
+    return "This part of the race is starting to matter more."
+
+
+def _replay_notes(
+    moment: dict[str, Any],
+    profile: dict[str, Any],
+    ratio: float,
+    race_name: str,
+    track: str,
+) -> list[str]:
+    notes: list[str] = []
+    moment_notes = [n for n in moment.get("notes", []) if n]
+    summary = _summary_line_from_moment(moment, ratio)
+    if summary:
+        notes.append(summary)
+
+    why = _why_this_matters(moment, profile, ratio, race_name, track)
+    if why:
+        notes.append(why)
+
+    race_texture = _race_texture_line(profile, ratio)
+    if race_texture:
+        notes.append(race_texture)
+
+    filtered_moment_notes = []
+    for line in moment_notes:
+        if ratio < 0.85 and _looks_like_recap(line):
+            continue
+        filtered_moment_notes.append(_clean_talky_line(line))
+
+    if filtered_moment_notes:
+        notes.append(filtered_moment_notes[0])
+        if len(filtered_moment_notes) > 1:
+            notes.append(filtered_moment_notes[1])
+    elif not summary:
+        notes.append("This is where the race starts to lean one way.")
+
+    return _dedupe([_cleanup_replay_line(note) for note in notes])[:4]
+
+
+def _summary_line_from_moment(moment: dict[str, Any], ratio: float) -> str:
+    headline = _clean_text(moment.get("headline"))
+    label = _clean_text(moment.get("label"))
+    if not headline:
+        return ""
+
+    if ratio < 0.85 and _looks_like_recap(headline):
+        if label:
+            return _clean_talky_line(f"{label} is where the race starts to lean one way.")
+        return "This is where the race starts to lean one way."
+
+    return _clean_talky_line(headline)
+
+
+def _why_this_matters(
+    moment: dict[str, Any],
+    profile: dict[str, Any],
+    ratio: float,
+    race_name: str,
+    track: str,
+) -> str:
+    label = _clean_text(moment.get("label")).lower()
+    moment_type = _clean_text(moment.get("type")).lower()
+    condition = _clean_text((profile.get("weather") or {}).get("condition"))
+    stop_counts = profile.get("stopCounts") or {}
+    retired_count = profile.get("retiredCount") or 0
+
+    if ratio >= 0.88:
+        return "This part matters because one mistake now can decide the podium."
+
+    if moment_type in {"dominant_win", "biggest_gainer", "comeback"}:
+        return "This matters because clean air and timing are deciding who gets the advantage."
+
+    if "pit" in label or "stop" in label or moment_type == "undercut":
+        return "A pit stop here could flip track position before the race settles."
+
+    if condition and condition != "dry":
+        return f"The {condition} conditions are making grip and timing more important than raw pace."
+
+    if len(stop_counts) >= 2 and max(stop_counts) - min(stop_counts) >= 1:
+        return "The field split on strategy, so one stop timing mistake can matter more than speed."
+
+    if retired_count >= 4:
+        return "The attrition is high enough that staying clean is part of the strategy now."
+
+    if race_name or track:
+        return "This is the part where the race story starts to narrow down to a few key fights."
+
+    return "This is the part where the next move matters more than the last one."
+
+
+def _race_texture_line(profile: dict[str, Any], ratio: float) -> str:
+    condition = _clean_text((profile.get("weather") or {}).get("condition"))
+    retired_count = profile.get("retiredCount") or 0
+    stop_counts = profile.get("stopCounts") or {}
+    first_stops = profile.get("firstStops") or []
+
+    if condition and condition != "dry":
+        return f"The race has been {condition}, so every lap is asking more of the tyres."
+
+    if len(stop_counts) >= 2:
+        common_stop = max(stop_counts, key=stop_counts.get)
+        return f"The grid is split between {common_stop}-stop and other plans, which keeps the strategy picture open."
+
+    if first_stops:
+        first = first_stops[0]
+        lap = first.get("lap")
+        driver = _clean_text(first.get("driver"))
+        if lap:
+            if driver:
+                return f"{driver} was one of the first to stop, so the pit timing story is already moving."
+            return f"The first pit call came on lap {lap}, which usually means the tyre story is already changing."
+
+    if retired_count >= 4:
+        return f"{retired_count} drivers have already dropped out, so staying out of trouble matters."
+
+    if ratio >= 0.7:
+        return "The tyres are getting old enough that one clean lap can matter more than a full push."
+
+    return ""
+
+
+def _replay_moment_label(moment: dict[str, Any], profile: dict[str, Any], ratio: float) -> str:
+    if ratio >= 0.88:
+        return "final laps"
+
+    moment_type = _clean_text(moment.get("type")).lower()
+    label = _clean_text(moment.get("label"))
+
+    if moment_type in {"biggest_gainer", "comeback"}:
+        return "someone is moving through the field"
+    if moment_type in {"biggest_loser", "attrition"}:
+        return "the race is getting messy"
+    if "pit" in label.lower() or "stop" in label.lower() or moment_type == "undercut":
+        return "the pit call is the key"
+    if _clean_text((profile.get("weather") or {}).get("condition")) not in {"", "dry"}:
+        return "the weather is shaping the race"
+    return "this race is opening up"
+
+
+def _looks_like_recap(text: str) -> bool:
+    lowered = _clean_text(text).lower()
+    return any(word in lowered for word in ["won", "finished", "podium", "victory", "converted pole", "claimed victory"])
+
+
+def _clean_talky_line(text: str) -> str:
+    clean = _clean_text(text)
+    clean = re.sub(r"\s*\([A-Z0-9]{2,4}\)", "", clean)
+    clean = re.sub(r"\bwon\b", "is in control", clean, flags=re.I)
+    clean = re.sub(r"\bfinished second\b", "is running second", clean, flags=re.I)
+    clean = re.sub(r"\bfinished third\b", "is running third", clean, flags=re.I)
+    clean = re.sub(r"\bconverted pole position into victory\b", "is controlling the race from the front", clean, flags=re.I)
+    clean = re.sub(r"\bstormed from P\d+\s+to win\b", "is charging through the field", clean, flags=re.I)
+    clean = re.sub(r"\bpodium\b", "the front group", clean, flags=re.I)
+    return clean
+
+
+def _cleanup_replay_line(text: str) -> str:
+    line = _clean_talky_line(text)
+    line = re.sub(r"\s+", " ", line).strip(" -")
+    if len(line) > 170:
+        line = f"{line[:167].rstrip()}..."
+    return line
 
 
 def _radio_context(

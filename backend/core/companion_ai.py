@@ -111,15 +111,20 @@ def _build_prompt(
     return f"""
 You are RaceDay, a friendly F1 companion for beginners.
 
-Rewrite the note below so it sounds like a smart fan explaining the race to a friend.
+Rewrite the note below so it sounds like a smart fan explaining the race to a friend sitting beside them.
 Rules:
 - Keep the same meaning.
-- Use simple language.
-- Avoid jargon unless it is immediately explained.
+- Use simple, conversational language.
+- Keep it unique to this specific race moment.
+- Avoid recap-style wording like a news summary.
+- Do not mention driver codes in the text.
+- Do not turn the note into a result recap unless the race is actually at the finish.
 - Return only JSON.
-- JSON shape: {{"headline":"...", "notes":["...","..."]}}
-- headline: one sentence, max 18 words.
-- notes: 1 to 3 short bullets, each max 18 words.
+- JSON shape: {{"headline":"...", "notes":["...","...","..."]}}
+- headline: one short sentence, max 14 words.
+- notes: 2 to 4 short lines, each max 22 words.
+- The full result should not be the focus unless the context is the last part of the race.
+- At least one line should explain why the moment matters.
 - Do not add filler or markdown.
 
 Context:
@@ -192,7 +197,7 @@ def _normalize_ai_note(raw: str, fallback: dict[str, Any]) -> dict[str, Any] | N
         if headline or notes:
             return {
                 "headline": headline or fallback.get("headline") or "",
-                "notes": notes[:3] or list(fallback.get("notes") or [])[:3],
+                "notes": notes[:4] or list(fallback.get("notes") or [])[:4],
                 "source": "ai-explainer",
             }
 
@@ -204,7 +209,7 @@ def _normalize_ai_note(raw: str, fallback: dict[str, Any]) -> dict[str, Any] | N
     notes = lines[1:4]
     return {
         "headline": headline or fallback.get("headline") or "",
-        "notes": notes or list(fallback.get("notes") or [])[:3],
+        "notes": notes or list(fallback.get("notes") or [])[:4],
         "source": "ai-explainer",
     }
 
