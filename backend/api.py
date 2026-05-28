@@ -17,13 +17,14 @@ import time
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from contextlib import asynccontextmanager
 from datetime import datetime
+from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import indexer, insights, storage
+from backend.core import companion, indexer, insights, storage
 from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
@@ -99,6 +100,29 @@ class StorageStatusResponse(BaseModel):
     database_url_configured: bool
     postgres_ready: bool
     active_store: str
+
+
+class CompanionVideoRequest(BaseModel):
+    url: str | None = None
+    title: str | None = None
+    year: int | str | None = None
+    raceName: str | None = None
+    track: str | None = None
+    currentTime: float | None = None
+    duration: float | None = None
+    chapter: str | None = None
+    mode: str | None = None
+
+
+class CompanionNoteRequest(CompanionVideoRequest):
+    analysis: dict[str, Any] | None = None
+    liveState: dict[str, Any] | None = None
+
+
+def _payload_dict(payload: BaseModel) -> dict[str, Any]:
+    if hasattr(payload, "model_dump"):
+        return payload.model_dump(exclude_none=True)
+    return payload.dict(exclude_none=True)
 
 
 def _background_index_all():
@@ -272,6 +296,35 @@ def live_demo_snapshot(index: int = 0):
 @app.get("/live/status", response_model=LiveStatusResponse)
 def live_feed_status():
     return live_feed.get_live_status()
+
+
+@app.post("/companion/analyze-video")
+def companion_analyze_video(payload: CompanionVideoRequest):
+    """
+    Identify a replay/live video and prepare a reusable RaceDay companion timeline.
+    """
+    try:
+        return companion.analyze_video_context(_payload_dict(payload))
+    except Exception as exc:
+        logger.exception("companion_analyze_video_failed")
+        raise HTTPException(status_code=500, detail=f"Companion analysis failed: {exc}")
+
+
+@app.post("/companion/note")
+def companion_note(payload: CompanionNoteRequest):
+    """
+    Return the current short RaceDay companion note for a replay or live session.
+    """
+    try:
+        data = _payload_dict(payload)
+        analysis = data.get("analysis")
+        live_state = data.get("liveState")
+        if data.get("mode") == "live" and live_state is None:
+            live_state = live_feed.get_live_state()
+        return companion.build_companion_note(data, analysis=analysis, live_state=live_state)
+    except Exception as exc:
+        logger.exception("companion_note_failed")
+        raise HTTPException(status_code=500, detail=f"Companion note failed: {exc}")
 
 
 @app.websocket("/ws/live")
