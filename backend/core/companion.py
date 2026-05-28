@@ -344,7 +344,7 @@ def pick_timeline_moment(
             return {
                 **chapter_match,
                 "notes": _dedupe([
-                    f"This part is about {clean_chapter.lower()}. Watch how it changes the strategy picture.",
+                    "The video has moved into a strategy moment, so watch who is attacking and who is protecting tyres.",
                     *chapter_match.get("notes", []),
                 ])[:3],
                 "confidence": "high",
@@ -355,7 +355,7 @@ def pick_timeline_moment(
             return {
                 **time_match,
                 "notes": _dedupe([
-                    f"The video chapter mentions {clean_chapter.lower()}, which lines up with this race phase.",
+                    "The video title and timing point to the same strategy moment.",
                     *time_match.get("notes", []),
                 ])[:3],
                 "confidence": "high",
@@ -369,7 +369,7 @@ def pick_timeline_moment(
             return {
                 **transcript_match,
                 "notes": _dedupe([
-                    f"The transcript points to {clean_transcript.lower()}. Watch how it changes the strategy picture.",
+                    "The race audio points to a pressure moment, so the next call matters.",
                     *transcript_match.get("notes", []),
                 ])[:3],
                 "confidence": "high",
@@ -606,14 +606,14 @@ def _stint_notes(profile: dict[str, Any]) -> list[str]:
     if first_stops:
         first = first_stops[0]
         last = first_stops[-1]
-        notes.append(f"{first.get('driver')} was one of the first to stop around lap {first.get('lap')}.")
+        first_driver = _first_name(getattr(insights, "_DRIVER_NAMES", {}).get(first.get("driver"), first.get("driver")))
+        notes.append(f"{first_driver or 'The early stopper'} forced everyone else to answer the pit timing.")
         if last.get("lap") and first.get("lap") and last["lap"] - first["lap"] >= 8:
             notes.append("The first pit window was spread out, which usually means teams disagreed on tyre life.")
 
     if stop_counts:
         common_stops = max(stop_counts, key=stop_counts.get)
-        count = stop_counts[common_stops]
-        notes.append(f"{count} drivers used a {common_stops}-stop race, making it the main strategy pattern.")
+        notes.append(f"The {common_stops}-stop plan became the main route, so timing mattered more than just pace.")
 
     return notes
 
@@ -649,21 +649,22 @@ def _replay_headline(moment: dict[str, Any], profile: dict[str, Any], ratio: flo
     label = _clean_text(moment.get("label")).lower()
     moment_type = _clean_text(moment.get("type")).lower()
     headline = _clean_text(moment.get("headline"))
+    driver = _moment_driver_name(moment)
 
     if "pit" in label or "stop" in label or moment_type == "undercut":
-        return "The next stop could change who stays ahead."
+        return "The pit call can flip this fight."
 
     if moment_type in {"biggest_gainer", "comeback"}:
-        return "Someone is making a real move through the field."
+        return f"{driver} is turning this into a recovery drive." if driver else "A recovery drive is building."
 
     if moment_type in {"biggest_loser", "attrition"}:
-        return "The race is getting messy enough to matter."
+        return "The race is getting messy enough to change the order."
 
     if moment_type == "dominant_win":
-        return "The leader is setting the tone now."
+        return f"{driver} has clean air and control." if driver else "The leader has clean air and control."
 
     if headline and not _looks_like_recap(headline):
-        return _trim_replay_line(_clean_talky_line(headline))
+        return _explain_fact_headline(moment, headline, ratio)
 
     return "This part of the race is starting to matter more."
 
@@ -689,17 +690,12 @@ def _replay_notes(
     if race_texture:
         notes.append(race_texture)
 
-    filtered_moment_notes = []
-    for line in moment_notes:
-        if ratio < 0.85 and _looks_like_recap(line):
-            continue
-        filtered_moment_notes.append(_clean_talky_line(line))
+    notes.extend(_moment_explainer_lines(moment, profile, ratio))
 
-    if filtered_moment_notes:
-        notes.append(filtered_moment_notes[0])
-        if len(filtered_moment_notes) > 1:
-            notes.append(filtered_moment_notes[1])
-    elif not summary:
+    if not summary and len(notes) < 2 and moment_notes:
+        notes.append(_explain_fact_line(moment, moment_notes[0], ratio))
+
+    if len(notes) < 2:
         notes.append("This is where the race starts to lean one way.")
 
     return _dedupe([_cleanup_replay_line(note) for note in notes])[:4]
@@ -711,19 +707,111 @@ def _summary_line_from_moment(moment: dict[str, Any], ratio: float) -> str:
     if not headline:
         return ""
 
-    if ratio < 0.85 and _looks_like_recap(headline):
-        if label:
-            return _clean_talky_line(f"{label} is where the race starts to lean one way.")
-        return "This is where the race starts to lean one way."
-
     if _looks_like_recap(headline):
-        if ratio >= 0.88:
-            return "The race is close to being decided."
-        if label:
-            return _clean_talky_line(f"{label} is where the race starts to matter more.")
-        return "This is where the race starts to matter more."
+        return _explain_fact_headline(moment, headline, ratio)
 
+    explained = _explain_fact_headline(moment, headline, ratio)
+    if explained:
+        return explained
+
+    if label:
+        return _clean_talky_line(f"{label} is where the race starts to matter more.")
     return _trim_replay_line(_clean_talky_line(headline))
+
+
+def _explain_fact_headline(moment: dict[str, Any], text: str, ratio: float) -> str:
+    moment_type = _clean_text(moment.get("type")).lower()
+    label = _clean_text(moment.get("label")).lower()
+    driver = _moment_driver_name(moment)
+    clean = _clean_talky_line(text)
+
+    if moment_type in {"biggest_gainer", "comeback"}:
+        return f"{driver} is making the strategy work." if driver else "A recovery drive is starting to matter."
+    if moment_type == "biggest_loser":
+        return f"{driver} is losing the easy race." if driver else "Someone is falling into trouble."
+    if moment_type == "dominant_win":
+        return f"{driver} is controlling the race from clean air." if driver else "Clean air is controlling this race."
+    if moment_type == "undercut":
+        return f"{driver} gets the first chance to flip track position." if driver else "The early stop can flip track position."
+    if moment_type == "close_battle":
+        return "This fight is about track position now."
+    if moment_type == "attrition":
+        return "Surviving the race is becoming part of the strategy."
+    if ratio >= 0.88:
+        return "The race is close to being decided."
+
+    if "pit" in label or "stop" in label:
+        return "The pit timing is becoming the pressure point."
+    if "battle" in label or "fight" in label:
+        return "This fight is about clean air and timing now."
+    if clean:
+        return "This moment matters because it changes who has pressure and who has control."
+    return "The race is starting to lean one way."
+
+
+def _moment_explainer_lines(
+    moment: dict[str, Any],
+    profile: dict[str, Any],
+    ratio: float,
+) -> list[str]:
+    moment_type = _clean_text(moment.get("type")).lower()
+    driver = _moment_driver_name(moment)
+
+    if moment_type in {"biggest_gainer", "comeback"}:
+        subject = driver or "That driver"
+        return [
+            f"{subject} moving forward means the car has pace or the strategy is opening doors.",
+            "This matters because every place gained changes who has clean air and who gets stuck in traffic.",
+        ]
+
+    if moment_type == "biggest_loser":
+        subject = driver or "That driver"
+        return [
+            f"{subject} dropping back usually means tyres, traffic, or timing has started to bite.",
+            "That matters because once a driver loses track position, the next pit call has to be sharper.",
+        ]
+
+    if moment_type == "dominant_win":
+        subject = driver or "The leader"
+        return [
+            f"{subject} can manage pace from the front instead of fighting dirty air.",
+            "That matters because the cars behind may need a pit gamble to change the story.",
+        ]
+
+    if moment_type == "undercut":
+        subject = driver or "The early stopper"
+        return [
+            f"{subject} gets fresh tyres first, so the next laps can decide the position.",
+            "This is important because a stop here can beat a faster car without overtaking on track.",
+        ]
+
+    if moment_type == "close_battle":
+        return [
+            "The gap is small enough that one corner, one exit, or one pit call can swing it.",
+            "This matters because defending costs tyre life, while attacking needs clean air and timing.",
+        ]
+
+    if moment_type == "attrition":
+        return [
+            "When cars start dropping out, staying clean becomes a strategy by itself.",
+            "This matters because a calm race from here can gain places without needing a big overtake.",
+        ]
+
+    condition = _clean_text((profile.get("weather") or {}).get("condition"))
+    if condition and condition != "dry":
+        return [
+            "Grip is less predictable here, so drivers have to leave more margin.",
+            "This matters because one wrong tyre call can undo the whole race.",
+        ]
+
+    return []
+
+
+def _explain_fact_line(moment: dict[str, Any], text: str, ratio: float) -> str:
+    explained = _explain_fact_headline(moment, text, ratio)
+    if explained:
+        return explained
+    return "This is useful because it shows where the pressure is building."
 
 
 def _why_this_matters(
@@ -810,6 +898,21 @@ def _replay_moment_label(moment: dict[str, Any], profile: dict[str, Any], ratio:
     if _clean_text((profile.get("weather") or {}).get("condition")) not in {"", "dry"}:
         return "the weather is shaping the race"
     return "this race is opening up"
+
+
+def _moment_driver_name(moment: dict[str, Any]) -> str:
+    code_or_name = _clean_text(moment.get("driver"))
+    if not code_or_name:
+        headline = _clean_text(moment.get("headline"))
+        match = re.match(r"([A-Z][A-Za-z]+)", headline)
+        code_or_name = match.group(1) if match else ""
+
+    if not code_or_name:
+        return ""
+
+    driver_names = getattr(insights, "_DRIVER_NAMES", {})
+    full_name = driver_names.get(code_or_name, code_or_name)
+    return _first_name(full_name)
 
 
 def _looks_like_recap(text: str) -> bool:
