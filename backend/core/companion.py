@@ -14,7 +14,7 @@ import re
 from difflib import SequenceMatcher
 from typing import Any
 
-from backend.core import insights
+from backend.core import indexer, insights
 
 logger = logging.getLogger(__name__)
 
@@ -247,17 +247,21 @@ def build_replay_timeline(year: int, track: str, duration: float = 0) -> list[di
     """
     Build a race-aware replay timeline using existing RaceDay data.
     """
+    race_data = _safe_call(indexer.load_race_index, year, track) or {}
+    profile = _race_profile(race_data)
     moments = _safe_call(insights.get_key_moments, year, track) or []
     story = _safe_call(insights.get_race_story, year, track) or {}
     tagline = _safe_call(insights.generate_race_tagline, year, track)
     strategy = _safe_call(insights.get_strategy_breakdown, year, track) or []
 
     timeline = _fallback_timeline(duration)
+    _apply_profile_context(timeline, profile)
+
     if tagline:
         timeline[0] = {
             **timeline[0],
             "headline": tagline,
-            "notes": timeline[0]["notes"],
+            "notes": _dedupe([*timeline[0]["notes"], *_podium_notes(profile)])[:3],
             "source": "race-story",
             "confidence": "medium",
         }
@@ -269,7 +273,7 @@ def build_replay_timeline(year: int, track: str, duration: float = 0) -> list[di
         timeline[index]["confidence"] = "high"
 
     for index, moment in enumerate(moments[: len(timeline)]):
-        target = min(index + 1, len(timeline) - 1)
+        target = _moment_slot(moment, index, len(timeline))
         headline = _clean_text(moment.get("headline")) or timeline[target]["headline"]
         detail = _clean_text(moment.get("detail"))
         notes = [_beginnerize(detail)] if detail else timeline[target]["notes"]
@@ -285,6 +289,13 @@ def build_replay_timeline(year: int, track: str, duration: float = 0) -> list[di
     if strategy_notes:
         timeline[2]["notes"] = _dedupe([*strategy_notes, *timeline[2]["notes"]])[:3]
         timeline[2]["source"] = "race-strategy"
+
+    stint_notes = _stint_notes(profile)
+    if stint_notes:
+        timeline[2]["notes"] = _dedupe([*stint_notes[:2], *timeline[2]["notes"]])[:3]
+        timeline[3]["notes"] = _dedupe([*stint_notes[2:], *timeline[3]["notes"]])[:3]
+        timeline[2]["source"] = "race-stints"
+        timeline[3]["source"] = "race-stints"
 
     return timeline
 
@@ -379,6 +390,115 @@ def _strategy_notes(strategy: list[dict[str, Any]]) -> list[str]:
     return [
         f"Most drivers used a {common_stops}-stop plan, so pit timing mattered more than raw speed.",
     ]
+
+
+def _race_profile(data: dict[str, Any]) -> dict[str, Any]:
+    results = data.get("results") or []
+    weather = data.get("weather") or {}
+    stints = data.get("stints") or {}
+    finishers = sorted(
+        [row for row in results if row.get("finish_position") is not None],
+        key=lambda row: row.get("finish_position", 99),
+    )
+    retired = [
+        row for row in results
+        if row.get("status") not in ("Finished",)
+        and not str(row.get("status", "")).startswith("+")
+    ]
+
+    first_stops = []
+    stop_counts: dict[int, int] = {}
+    for driver, driver_stints in stints.items():
+        if not isinstance(driver_stints, list) or not driver_stints:
+            continue
+        stops = max(0, len(driver_stints) - 1)
+        stop_counts[stops] = stop_counts.get(stops, 0) + 1
+        if len(driver_stints) >= 2:
+            first_stops.append({
+                "driver": driver,
+                "lap": driver_stints[0].get("lap_end"),
+                "nextCompound": driver_stints[1].get("compound"),
+            })
+
+    first_stops = [stop for stop in first_stops if isinstance(stop.get("lap"), int)]
+    first_stops.sort(key=lambda stop: stop["lap"])
+
+    return {
+        "winner": finishers[0] if finishers else None,
+        "podium": finishers[:3],
+        "weather": weather,
+        "retiredCount": len(retired),
+        "firstStops": first_stops,
+        "stopCounts": stop_counts,
+    }
+
+
+def _apply_profile_context(timeline: list[dict[str, Any]], profile: dict[str, Any]) -> None:
+    podium_notes = _podium_notes(profile)
+    if podium_notes:
+        timeline[0]["notes"] = _dedupe([*podium_notes, *timeline[0]["notes"]])[:3]
+        timeline[0]["source"] = "race-results"
+
+    condition = _clean_text((profile.get("weather") or {}).get("condition"))
+    if condition and condition != "dry":
+        timeline[1]["notes"] = _dedupe([
+            f"The race was {condition}, so grip and timing mattered more than usual.",
+            *timeline[1]["notes"],
+        ])[:3]
+        timeline[1]["source"] = "race-weather"
+
+    retired_count = profile.get("retiredCount") or 0
+    if retired_count >= 4:
+        timeline[4]["notes"] = _dedupe([
+            f"{retired_count} drivers retired, so staying out of trouble was part of the strategy.",
+            *timeline[4]["notes"],
+        ])[:3]
+        timeline[4]["source"] = "race-results"
+
+
+def _podium_notes(profile: dict[str, Any]) -> list[str]:
+    podium = profile.get("podium") or []
+    if len(podium) < 3:
+        return []
+
+    winner, second, third = podium[:3]
+    return [
+        f"{winner.get('driver')} won, with {second.get('driver')} second and {third.get('driver')} third.",
+    ]
+
+
+def _stint_notes(profile: dict[str, Any]) -> list[str]:
+    notes = []
+    first_stops = profile.get("firstStops") or []
+    stop_counts = profile.get("stopCounts") or {}
+
+    if first_stops:
+        first = first_stops[0]
+        last = first_stops[-1]
+        notes.append(f"{first.get('driver')} was one of the first to stop around lap {first.get('lap')}.")
+        if last.get("lap") and first.get("lap") and last["lap"] - first["lap"] >= 8:
+            notes.append("The first pit window was spread out, which usually means teams disagreed on tyre life.")
+
+    if stop_counts:
+        common_stops = max(stop_counts, key=stop_counts.get)
+        count = stop_counts[common_stops]
+        notes.append(f"{count} drivers used a {common_stops}-stop race, making it the main strategy pattern.")
+
+    return notes
+
+
+def _moment_slot(moment: dict[str, Any], index: int, timeline_length: int) -> int:
+    moment_type = _clean_text(moment.get("type"))
+    preferred = {
+        "dominant_win": 0,
+        "biggest_gainer": 1,
+        "biggest_loser": 1,
+        "comeback": 3,
+        "undercut": 2,
+        "close_battle": 4,
+        "attrition": 4,
+    }
+    return min(preferred.get(moment_type, index + 1), timeline_length - 1)
 
 
 def _safe_call(func, *args):
