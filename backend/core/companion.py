@@ -246,7 +246,7 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
         headline = "RaceDay is watching for strategy changes."
 
     if lap and total_laps:
-        notes.append(f"Lap {lap}/{total_laps} is where the next move could change the race.")
+        notes.append("This is a strategy window where the next stop can change track position.")
 
     for prediction in predictions[:2]:
         driver = _driver_name(prediction.get("driver"), drivers)
@@ -266,8 +266,8 @@ def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
     note = {
         "ok": True,
         "mode": "live",
-        "headline": headline,
-        "notes": _dedupe(notes)[:4],
+        "headline": _safe_companion_line(headline, "RaceDay is watching for strategy changes."),
+        "notes": _dedupe([_safe_companion_line(note) for note in notes if note])[:4],
         "momentLabel": f"Lap {live_state.get('lap')}" if live_state.get("lap") else "live race",
         "confidence": "medium",
         "source": "live-state",
@@ -380,7 +380,7 @@ def pick_timeline_moment(
             return {
                 **time_match,
                 "notes": _dedupe([
-                    f"The transcript lines up with this race phase, so the commentary is reinforcing the same moment.",
+                    "The commentary is pointing at the same pressure moment.",
                     *time_match.get("notes", []),
                 ])[:3],
                 "confidence": "high",
@@ -532,9 +532,8 @@ def _strategy_notes(strategy: list[dict[str, Any]]) -> list[str]:
     if not stop_counts:
         return []
 
-    common_stops = max(stop_counts, key=stop_counts.get)
     return [
-        f"Most drivers used a {common_stops}-stop plan, so pit timing mattered more than raw speed.",
+        "Most drivers followed the same pit rhythm, so timing mattered more than raw speed.",
     ]
 
 
@@ -592,7 +591,7 @@ def _apply_profile_context(timeline: list[dict[str, Any]], profile: dict[str, An
     if retired_count >= 4:
         target = min(len(timeline) - 1, 4)
         timeline[target]["notes"] = _dedupe([
-            f"{retired_count} drivers retired, so staying out of trouble was part of the strategy.",
+            "Several cars dropped out, so staying out of trouble became part of the strategy.",
             *timeline[target]["notes"],
         ])[:3]
         timeline[target]["source"] = "race-results"
@@ -627,7 +626,7 @@ def _build_replay_companion_note(
 ) -> dict[str, Any]:
     race_name = _clean_text(payload.get("raceName") or analysis.get("raceName") or "")
     track = _clean_text(payload.get("track") or analysis.get("track") or race_name)
-    headline = _replay_headline(moment, profile, ratio)
+    headline = _safe_companion_line(_replay_headline(moment, profile, ratio), "Track position matters now.")
     notes = _replay_notes(moment, profile, ratio, race_name, track)
 
     return {
@@ -661,7 +660,7 @@ def _replay_headline(moment: dict[str, Any], profile: dict[str, Any], ratio: flo
         return "The race is getting messy enough to change the order."
 
     if moment_type == "dominant_win":
-        return f"{driver} has clean air and control." if driver else "The leader has clean air and control."
+        return "Clean air is controlling this race."
 
     if headline and not _looks_like_recap(headline):
         return _explain_fact_headline(moment, headline, ratio)
@@ -730,7 +729,7 @@ def _explain_fact_headline(moment: dict[str, Any], text: str, ratio: float) -> s
     if moment_type == "biggest_loser":
         return f"{driver} is losing the easy race." if driver else "Someone is falling into trouble."
     if moment_type == "dominant_win":
-        return f"{driver} is controlling the race from clean air." if driver else "Clean air is controlling this race."
+        return "Clean air is controlling this race."
     if moment_type == "undercut":
         return f"{driver} gets the first chance to flip track position." if driver else "The early stop can flip track position."
     if moment_type == "close_battle":
@@ -761,7 +760,7 @@ def _moment_explainer_lines(
         subject = driver or "That driver"
         return [
             f"{subject} moving forward means the car has pace or the strategy is opening doors.",
-            "This matters because every place gained changes who has clean air and who gets stuck in traffic.",
+            "This matters because every move forward changes who has clean air and who gets stuck in traffic.",
         ]
 
     if moment_type == "biggest_loser":
@@ -772,9 +771,8 @@ def _moment_explainer_lines(
         ]
 
     if moment_type == "dominant_win":
-        subject = driver or "The leader"
         return [
-            f"{subject} can manage pace from the front instead of fighting dirty air.",
+            "The leader can manage pace from the front instead of fighting dirty air.",
             "That matters because the cars behind may need a pit gamble to change the story.",
         ]
 
@@ -794,7 +792,7 @@ def _moment_explainer_lines(
     if moment_type == "attrition":
         return [
             "When cars start dropping out, staying clean becomes a strategy by itself.",
-            "This matters because a calm race from here can gain places without needing a big overtake.",
+            "This matters because a calm race from here can move a driver forward without needing a big overtake.",
         ]
 
     condition = _clean_text((profile.get("weather") or {}).get("condition"))
@@ -828,7 +826,7 @@ def _why_this_matters(
     retired_count = profile.get("retiredCount") or 0
 
     if ratio >= 0.88:
-        return "This part matters because one mistake now can decide the podium."
+        return "This part matters because one mistake now can decide the front group."
 
     if moment_type in {"dominant_win", "biggest_gainer", "comeback"}:
         return "This matters because clean air and timing are deciding who gets the advantage."
@@ -862,7 +860,7 @@ def _race_texture_line(profile: dict[str, Any], ratio: float) -> str:
 
     if len(stop_counts) >= 2:
         common_stop = max(stop_counts, key=stop_counts.get)
-        return f"The grid is split between {common_stop}-stop and other plans, which keeps the strategy picture open."
+        return "Teams are choosing different pit plans, which keeps the strategy picture open."
 
     if first_stops:
         first = first_stops[0]
@@ -870,11 +868,11 @@ def _race_texture_line(profile: dict[str, Any], ratio: float) -> str:
         driver = _clean_text(first.get("driver"))
         if lap:
             if driver:
-                return f"{driver} was one of the first to stop, so the pit timing story is already moving."
-            return f"The first pit call came on lap {lap}, which usually means the tyre story is already changing."
+                return "One of the first stops has landed, so the pit timing story is already moving."
+            return "The first pit call has landed, which usually means the tyre story is already changing."
 
     if retired_count >= 4:
-        return f"{retired_count} drivers have already dropped out, so staying out of trouble matters."
+        return "Several cars have already dropped out, so staying out of trouble matters."
 
     if ratio >= 0.7:
         return "The tyres are getting old enough that one clean lap can matter more than a full push."
@@ -912,12 +910,28 @@ def _moment_driver_name(moment: dict[str, Any]) -> str:
 
     driver_names = getattr(insights, "_DRIVER_NAMES", {})
     full_name = driver_names.get(code_or_name, code_or_name)
+    if re.fullmatch(r"[A-Z0-9]{2,4}", full_name):
+        return ""
     return _first_name(full_name)
 
 
 def _looks_like_recap(text: str) -> bool:
     lowered = _clean_text(text).lower()
-    return any(word in lowered for word in ["won", "finished", "podium", "victory", "converted pole", "claimed victory"])
+    return any(word in lowered for word in [
+        "won",
+        "wins",
+        "winner",
+        "finished",
+        "podium",
+        "victory",
+        "pole position",
+        "converted pole",
+        "claimed victory",
+        "gained",
+        "dropped",
+        "started p",
+        "classified",
+    ])
 
 
 def _clean_talky_line(text: str) -> str:
@@ -930,6 +944,68 @@ def _clean_talky_line(text: str) -> str:
     clean = re.sub(r"\bstormed from P\d+\s+to win\b", "is charging through the field", clean, flags=re.I)
     clean = re.sub(r"\bpodium\b", "the front group", clean, flags=re.I)
     return clean
+
+
+def _is_unsafe_companion_fact(text: str) -> bool:
+    lowered = _clean_text(text).lower()
+    if not lowered:
+        return False
+    patterns = [
+        r"\brace highlights?\b",
+        r"\bstarted p\d+",
+        r"\bfinished p\d+",
+        r"\bfinished second\b",
+        r"\bfinished third\b",
+        r"\bgained \d+ places?\b",
+        r"\bdropped \d+ places?\b",
+        r"\bbiggest forward charge\b",
+        r"\bconverted pole\b",
+        r"\bclaimed victory\b",
+        r"\bwon\b",
+        r"\bwins\b",
+        r"\bwinner\b",
+        r"\btakes the win\b",
+        r"\btook the win\b",
+        r"\bvictory\b",
+        r"\bpole position\b",
+        r"\bcompleted the podium\b",
+        r"\bpodium\b",
+        r"\bclassified\b",
+        r"\bgrid position\b",
+        r"\bp\d+\b",
+        r"\bthe full result\b",
+    ]
+    return any(re.search(pattern, lowered) for pattern in patterns)
+
+
+def _is_technical_companion_line(text: str) -> bool:
+    lowered = _clean_text(text).lower()
+    return any(re.search(pattern, lowered) for pattern in [
+        r"^live update:",
+        r"^lap \d+",
+        r"\bvideo chapter\b",
+        r"\btranscript\b",
+        r"\bradio\b",
+        r"\bdetected this f1 video\b",
+        r"\bdetected this video\b",
+    ])
+
+
+def _safe_companion_line(
+    text: str,
+    fallback: str = "This moment matters because it changes who has pressure, clean air, or tyre advantage.",
+) -> str:
+    raw = _clean_text(text)
+    if _is_unsafe_companion_fact(raw) or _is_technical_companion_line(raw):
+        return fallback
+
+    line = _clean_talky_line(text)
+    line = re.sub(r"\s+", " ", line).strip(" -")
+    if not line:
+        return ""
+    if _is_unsafe_companion_fact(line) or _is_technical_companion_line(line):
+        return fallback
+    return line
 
 
 def _trim_replay_line(text: str) -> str:
@@ -949,8 +1025,7 @@ def _trim_replay_line(text: str) -> str:
 
 
 def _cleanup_replay_line(text: str) -> str:
-    line = _clean_talky_line(text)
-    line = re.sub(r"\s+", " ", line).strip(" -")
+    line = _safe_companion_line(text)
     if len(line) > 170:
         line = f"{line[:167].rstrip()}..."
     return line
@@ -985,8 +1060,9 @@ def _beginnerize(text: str) -> str:
 def _driver_name(code: Any, drivers: list[dict[str, Any]]) -> str:
     for driver in drivers:
         if driver.get("code") == code:
-            return _first_name(driver.get("name") or driver.get("code"))
-    return _clean_text(code)
+            name = _first_name(driver.get("name") or "")
+            return name or "That driver"
+    return "That driver"
 
 
 def _first_name(value: Any) -> str:
@@ -1036,16 +1112,31 @@ def _refine_with_ai(
 ) -> dict[str, Any]:
     refined = companion_ai.refine_companion_note(payload, base_note, analysis=analysis, live_state=live_state)
     if not refined:
-        return base_note
+        return {
+            **base_note,
+            "headline": _safe_companion_line(
+                base_note.get("headline"),
+                "RaceDay is watching this race moment.",
+            ),
+            "notes": [
+                note
+                for note in (_safe_companion_line(note) for note in base_note.get("notes", []))
+                if note
+            ][:4],
+        }
 
     notes = _dedupe([
-        *refined.get("notes", []),
-        *base_note.get("notes", []),
+        *[_safe_companion_line(note) for note in refined.get("notes", [])],
+        *[_safe_companion_line(note) for note in base_note.get("notes", [])],
     ])[:3]
+    headline = _safe_companion_line(
+        refined.get("headline") or base_note.get("headline"),
+        "Track position matters now.",
+    )
 
     return {
         **base_note,
-        "headline": refined.get("headline") or base_note.get("headline"),
-        "notes": notes,
+        "headline": headline,
+        "notes": [note for note in notes if note],
         "source": refined.get("source", "ai-explainer"),
     }
