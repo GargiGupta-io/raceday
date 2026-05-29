@@ -80,12 +80,10 @@ def _build_prompt(
     race_name = payload.get("raceName") or analysis.get("raceName") if analysis else payload.get("raceName") or ""
     track = payload.get("track") or analysis.get("track") if analysis else payload.get("track") or ""
     chapter = payload.get("chapter") or ""
-    transcript = payload.get("transcript") or ""
     current_time = payload.get("currentTime") or 0
     duration = payload.get("duration") or 0
     if analysis:
         chapter = chapter or analysis.get("chapter") or ""
-        transcript = transcript or analysis.get("transcript") or ""
         current_time = current_time or analysis.get("currentTime") or 0
         duration = duration or analysis.get("duration") or 0
 
@@ -100,7 +98,6 @@ def _build_prompt(
         "raceName": race_name,
         "track": track,
         "chapter": chapter,
-        "transcript": transcript[:250] if isinstance(transcript, str) else "",
         "currentTime": current_time,
         "duration": duration,
         "baseHeadline": headline,
@@ -118,7 +115,7 @@ Rules:
 - Keep it unique to this specific race moment.
 - Avoid recap-style wording like a news summary.
 - Do not mention driver codes in the text.
-- Do not quote transcript or caption text verbatim.
+- Do not use radio, transcript, caption, or commentator text.
 - Do not turn the note into a result recap unless the race is actually at the finish.
 - Return only JSON.
 - JSON shape: {{"headline":"...", "notes":["...","...","..."]}}
