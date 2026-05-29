@@ -71,13 +71,14 @@
     const data = isDemoSnapshot(liveData) && !settings.demoMode ? null : liveData;
     const context = videoContext();
     loadRaceContext(context);
-    loadBackendCompanion(context, data);
+    if (data) loadBackendCompanion(context, data);
     const replayBackend = cachedBackendCompanion(context);
     const notes = data ? beginnerNotes(data, context) : [];
     const backendNotes = data ? backendCompanionNotes(context, data) : [];
     const liveNotes = data && backendNotes.length ? backendNotes : notes;
-    const headline = companionHeadlineLine(data ? liveNotes[0] : replayHeadline(context, replayBackend));
-    const detailNotes = (data ? liveNotes.slice(1, 5) : replayDetailNotes(context, replayBackend))
+    const replayNotes = data ? [] : replayDetailNotes(context, replayBackend);
+    const headline = companionHeadlineLine(data ? liveNotes[0] : replayNotes[0] || replayHeadline(context, replayBackend));
+    const detailNotes = (data ? liveNotes.slice(1, 5) : replayNotes.slice(1, 5))
       .map(companionNoteLine)
       .filter(Boolean);
     const sessionLabel = buildHeaderTitle(context, data, replayBackend);
@@ -393,10 +394,10 @@
 
   function shortHeaderPhrase(context, data = null, backendNote = null) {
     const candidates = [
-      backendNote?.momentLabel,
-      backendNote?.headline,
       context.chapterTitle,
       context.moment?.label,
+      backendNote?.momentLabel,
+      backendNote?.headline,
     ].filter(Boolean);
 
     for (const candidate of candidates) {
@@ -493,10 +494,6 @@
   }
 
   function replayDetailNotes(context, backendNote = null) {
-    const backendNotes = backendNote?.notes?.length
-      ? backendNote.notes
-      : backendReplayNotes(context);
-    if (backendNotes.length) return backendNotes.slice(0, 4).map(companionNoteLine).filter(Boolean);
     return replayCompanionNotes(context);
   }
 
@@ -608,25 +605,23 @@
   }
 
   function replayMoment(progress) {
-    if (progress < 0.08) return { id: "lights", label: "race start", step: 0 };
-    if (progress < 0.18) return { id: "settle", label: "opening laps", step: 1 };
-    if (progress < 0.30) return { id: "first-window", label: "first pit choices", step: 2 };
-    if (progress < 0.42) return { id: "undercut", label: "undercut threat", step: 3 };
-    if (progress < 0.54) return { id: "middle-stint", label: "middle stint", step: 4 };
-    if (progress < 0.66) return { id: "second-window", label: "second strategy window", step: 5 };
-    if (progress < 0.78) return { id: "late-attack", label: "late attack", step: 6 };
-    if (progress < 0.90) return { id: "defend", label: "defending phase", step: 7 };
-    return { id: "finish", label: "final laps", step: 8 };
+    if (progress < 0.06) return { id: "lights", label: "race start", step: 0 };
+    if (progress < 0.14) return { id: "first-fight", label: "first fight", step: 1 };
+    if (progress < 0.22) return { id: "settle", label: "pace check", step: 2 };
+    if (progress < 0.30) return { id: "first-window", label: "pit window", step: 3 };
+    if (progress < 0.38) return { id: "undercut", label: "early stop", step: 4 };
+    if (progress < 0.46) return { id: "traffic", label: "traffic risk", step: 5 };
+    if (progress < 0.56) return { id: "middle-stint", label: "tyre pressure", step: 6 };
+    if (progress < 0.66) return { id: "second-window", label: "second call", step: 7 };
+    if (progress < 0.74) return { id: "tyre-offset", label: "tyre offset", step: 8 };
+    if (progress < 0.82) return { id: "late-attack", label: "late attack", step: 9 };
+    if (progress < 0.91) return { id: "defend", label: "defence mode", step: 10 };
+    return { id: "finish", label: "final push", step: 11 };
   }
 
   function replayStrategyNotes(context) {
-    const backendNotes = backendCompanionNotes(context);
-    const raceNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
-    if (raceNotes.length) {
-      return dedupe(raceNotes).slice(0, 4);
-    }
-
-    return localReplayStrategyNotes(context);
+    const localNotes = localReplayStrategyNotes(context).map(companionNoteLine).filter(Boolean);
+    return dedupe(localNotes).slice(0, 5);
   }
 
   function localReplayStrategyNotes(context) {
@@ -640,6 +635,11 @@
         `The field is still packed${raceText}, so one small mistake can change the order fast.`,
         "Clean air matters because it lets a driver settle and save the tyres.",
         "A bad launch or wheel-to-wheel fight can rewrite the whole race early.",
+      ],
+      "first-fight": [
+        "The first proper fight is about space, not just speed.",
+        "A driver stuck behind another car can overheat the tyres before strategy even begins.",
+        "This matters because early dirty air can force a quicker pit call.",
       ],
       settle: [
         "The race is settling, and teams are starting to learn who has real pace.",
@@ -656,6 +656,11 @@
         "The move only works if the car rejoins in clean air.",
         "If the driver gets stuck behind traffic, the stop loses its edge.",
       ],
+      traffic: [
+        "Traffic is the hidden risk in this part of the race.",
+        "Fresh tyres only help if the driver has room to use them.",
+        "A slower car after the stop can ruin a strategy that looked perfect on paper.",
+      ],
       "middle-stint": [
         "The race is now about gaps, tyre age, and who can keep the pace alive.",
         "A small gap can matter a lot if a pit stop puts a driver in traffic.",
@@ -665,6 +670,11 @@
         "Teams are deciding whether to stop again or stretch the tyres to the flag.",
         "A second stop can bring speed, but the driver has to earn back the lost track position.",
         "A one-stop call only works if the tyres can survive the pressure.",
+      ],
+      "tyre-offset": [
+        "Different tyre ages are starting to matter more than the running order.",
+        "The car behind may look calm now but become dangerous when the tyres line up.",
+        "This is why teams care so much about when the next stop happens.",
       ],
       "late-attack": [
         "Fresh tyres are dangerous here because there is less time to answer back.",
@@ -817,9 +827,6 @@
   }
 
   function backendCompanionKey(context, data = null) {
-    const videoTimeBucket = data
-      ? ""
-      : `:${Math.floor(getCurrentVideoTime() / 4)}`;
     const liveKey = data
       ? [
           data.session || "",
@@ -836,7 +843,7 @@
       context.raceName || "",
       context.track || "",
       context.chapterTitle || "",
-      `${context.moment?.id || ""}${videoTimeBucket}`,
+      context.moment?.id || "",
       liveKey,
     ].join("|");
   }
