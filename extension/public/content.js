@@ -18,10 +18,6 @@
   let connectionStatus = "checking";
   let dragState = { dragging: false, offsetX: 0, offsetY: 0 };
   let lastVideoKey = "";
-  const transcriptState = {
-    lastText: "",
-    recent: [],
-  };
   const raceContextCache = new Map();
   const raceContextPending = new Set();
   const backendCompanionCache = new Map();
@@ -328,7 +324,7 @@
     if (!clean) return "";
     const subject = lineSubject(clean);
 
-    if (/video chapter|this part is about|transcript points/i.test(clean)) {
+    if (/video chapter|this part is about/i.test(clean)) {
       return "The video has moved into a strategy moment, so watch who is attacking and who is protecting tyres.";
     }
 
@@ -551,7 +547,6 @@
     const phase = racePhase(progress);
     const moment = replayMoment(progress);
     const chapterTitle = currentChapterTitle();
-    const transcriptText = currentTranscriptText();
 
     return {
       title,
@@ -565,7 +560,6 @@
       phaseLabel: phase.label,
       moment,
       chapterTitle,
-      transcriptText,
     };
   }
 
@@ -629,7 +623,7 @@
     const backendNotes = backendCompanionNotes(context);
     const raceNotes = backendNotes.length ? backendNotes : backendReplayNotes(context);
     if (raceNotes.length) {
-      return dedupe([...raceNotes, ...chapterReplayNotes(context)]).slice(0, 4);
+      return dedupe(raceNotes).slice(0, 4);
     }
 
     return localReplayStrategyNotes(context);
@@ -706,13 +700,6 @@
     }
 
     return notesByMoment[context.moment.id] || notesByMoment["middle-stint"];
-  }
-
-  function chapterReplayNotes(context) {
-    if (!context.chapterTitle) return [];
-    return [
-      "The video has moved into a strategy moment, so watch who is attacking and who is protecting tyres.",
-    ];
   }
 
   function backendReplayNotes(context) {
@@ -814,7 +801,6 @@
           currentTime: getCurrentVideoTime(),
           duration: getCurrentVideoDuration(),
           chapter: context.chapterTitle,
-          transcript: context.transcriptText,
           mode: data ? "live" : "replay",
           momentId: context.moment?.id,
           liveState: data,
@@ -850,7 +836,6 @@
       context.raceName || "",
       context.track || "",
       context.chapterTitle || "",
-      context.transcriptText || "",
       `${context.moment?.id || ""}${videoTimeBucket}`,
       liveKey,
     ].join("|");
@@ -883,40 +868,6 @@
     }
 
     return "";
-  }
-
-  function currentTranscriptText() {
-    const candidates = [
-      ...document.querySelectorAll(".ytp-caption-window-container .ytp-caption-segment"),
-      ...document.querySelectorAll(".ytp-caption-window-container span"),
-      ...document.querySelectorAll(".ytp-caption-segment"),
-    ];
-
-    const text = normalizeTranscriptText(candidates.map((node) => node.textContent).join(" "));
-    if (!text) {
-      transcriptState.lastText = "";
-      transcriptState.recent = [];
-      return "";
-    }
-
-    if (text !== transcriptState.lastText) {
-      transcriptState.lastText = text;
-      transcriptState.recent.push(text);
-      transcriptState.recent = transcriptState.recent
-        .filter(Boolean)
-        .slice(-6);
-    }
-
-    return transcriptState.recent.join(" ").trim();
-  }
-
-  function normalizeTranscriptText(value) {
-    const text = String(value || "").replace(/\s+/g, " ").trim();
-    if (!text) return "";
-    if (text.length < 3) return "";
-    if (!/[a-z0-9]/i.test(text)) return "";
-    if (/^(captions?|subtitles?)$/i.test(text)) return "";
-    return text;
   }
 
   function normalizeChapterTitle(value) {
