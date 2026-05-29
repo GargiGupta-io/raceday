@@ -209,7 +209,7 @@ The goal is not to perfectly recreate a Formula 1 team simulator. It is designed
   </tr>
   <tr>
     <td><img src="docs/screenshots/championship-tracker.png" alt="RaceDay championship tracker" width="420"></td>
-    <td>Extension screenshot coming next. The current extension flow is shown in the Loom walkthrough.</td>
+    <td><img src="docs/screenshots/browser-extension.png" alt="RaceDay browser extension companion overlay" width="420"></td>
   </tr>
 </table>
 
