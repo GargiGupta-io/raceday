@@ -80,17 +80,29 @@ def _index_race_fastf1(year: int, track: str) -> bool:
     """Index a race using FastF1 (2018+ path). Original logic."""
     race_dir = _race_dir(year, track)
 
-    results = loader.get_race_results(year, track)
+    try:
+        results = loader.get_race_results(year, track)
+    except Exception as exc:
+        logger.warning("index_race: could not load results for %s %s — %s", year, track, exc)
+        return False
     if results is None:
         logger.warning("index_race: no results returned for %s %s — skipping", year, track)
         return False
 
-    weather = loader.get_weather_summary(year, track)
+    try:
+        weather = loader.get_weather_summary(year, track)
+    except Exception as exc:
+        logger.warning("index_race: could not load weather for %s %s — %s", year, track, exc)
+        weather = None
     if weather is None:
         logger.warning("index_race: no weather for %s %s — storing empty dict", year, track)
         weather = {}
 
-    stints = loader.get_stint_data(year, track)
+    try:
+        stints = loader.get_stint_data(year, track)
+    except Exception as exc:
+        logger.warning("index_race: could not load stint data for %s %s — %s", year, track, exc)
+        stints = None
     if stints is None:
         logger.warning("index_race: no stint data for %s %s — storing empty dict", year, track)
         stints = {}
@@ -100,7 +112,11 @@ def _index_race_fastf1(year: int, track: str) -> bool:
     # Save lap-by-lap timing data for strategy simulation (2018+ only)
     laps_path = race_dir / "laps.json"
     if not laps_path.exists():
-        lap_data = loader.get_lap_times(year, track)
+        try:
+            lap_data = loader.get_lap_times(year, track)
+        except Exception as exc:
+            logger.warning("index_race: could not load lap data for %s %s — %s", year, track, exc)
+            lap_data = None
         if lap_data:
             _store().save_lap_data(year, track, lap_data)
             logger.info("Saved lap timing data for %s %s (%d drivers)",
@@ -220,7 +236,11 @@ def load_race_index(year: int, track: str) -> dict | None:
     """
     if not is_indexed(year, track):
         logger.info("load_race_index: %s %s not indexed — indexing now", year, track)
-        success = index_race(year, track)
+        try:
+            success = index_race(year, track)
+        except Exception as exc:
+            logger.warning("index_season: error indexing %s %s — %s", year, track, exc)
+            success = False
         if not success:
             return None
 
