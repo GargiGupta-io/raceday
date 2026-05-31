@@ -147,14 +147,14 @@ function Races() {
         {year !== null && (<>
 
           <div className="mb-10 grid gap-3 sm:grid-cols-2">
-            <Link href={STABLE_DEMO_RACE} className="glass-card p-5 transition hover:border-red-500/30">
+            <Link href={STABLE_DEMO_RACE} className="glass-card xray-card p-5 transition hover:border-red-500/30">
               <p className="text-[10px] uppercase tracking-widest text-red-400">Recruiter path</p>
               <p className="mt-2 text-lg font-semibold text-white">Start with 2021 Abu Dhabi</p>
               <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                 A stable indexed race story with strategy and simulation data.
               </p>
             </Link>
-            <Link href="/live?demo=1" className="glass-card p-5 transition hover:border-red-500/30">
+            <Link href="/live?demo=1" className="glass-card xray-card p-5 transition hover:border-red-500/30">
               <p className="text-[10px] uppercase tracking-widest text-red-400">Anytime demo</p>
               <p className="mt-2 text-lg font-semibold text-white">Try Live Demo</p>
               <p className="mt-1 text-xs leading-relaxed text-zinc-400">
@@ -220,7 +220,7 @@ function Races() {
                 href={`/races/${year}/${encodeURIComponent(latest.name)}`}
                 className="block mb-10 group"
               >
-                <div className="glass-card p-5 sm:p-6 flex items-center gap-4 transition-all duration-200">
+                <div className="glass-card xray-card p-5 sm:p-6 flex items-center gap-4 transition-all duration-200">
                   <div className="shrink-0">
                     <p className="text-[9px] text-zinc-500 uppercase tracking-widest">Latest</p>
                     <p className="text-lg sm:text-xl font-bold text-white mt-1">{latest.name.replace(" Grand Prix", "")}</p>
@@ -331,7 +331,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
   const isUpcoming = race.date && new Date(race.date) > new Date();
 
   const content = (
-    <div className="glass-card p-6 h-full flex flex-col relative overflow-hidden transition-all duration-200">
+    <div className={`glass-card ${race.indexed ? "xray-card" : ""} p-6 h-full flex flex-col relative overflow-hidden transition-all duration-200`}>
       {circuitSvg && (
         <div className="absolute top-4 right-4 w-20 h-14 opacity-[0.12]">
           <Image src={circuitSvg} alt="" width={80} height={56} className="invert" />
@@ -389,7 +389,7 @@ function RaceCard({ race, year }: { race: Race; year: number }) {
     return (
       <Link
         href={`/races/${year}/${encodeURIComponent(race.name)}`}
-        className="block group hover:scale-[1.015] transition-all duration-200"
+        className="block group transition-all duration-200"
       >
         {content}
       </Link>

@@ -183,7 +183,7 @@ export default function PatternFinderPage() {
                 key={preset.label}
                 aria-label={`Apply preset: ${preset.label}`}
                 onClick={() => applyPreset(preset)}
-                className={`glass-card p-5 text-left transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/[0.04] ${
+                className={`glass-card xray-card p-5 text-left transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/[0.04] ${
                   activePreset === preset.label ? "border-red-500/40 bg-red-500/[0.06]" : ""
                 }`}
               >
@@ -427,7 +427,7 @@ export default function PatternFinderPage() {
                     <Link
                       key={`${race.year}-${race.track}`}
                       href={`/races/${race.year}/${encodeURIComponent(race.track)}`}
-                      className="glass-card block px-5 py-4 transition-all duration-200 hover:border-red-500/25"
+                      className="glass-card xray-card block px-5 py-4 transition-all duration-200 hover:border-red-500/25"
                     >
                       <div className="flex flex-wrap items-center gap-4">
                         <span className="text-sm font-mono text-zinc-500 w-10">
