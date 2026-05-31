@@ -1,0 +1,7075 @@
+{
+  "GAS": [
+    {
+      "lap": 1,
+      "time": 101.359,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.074,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.681,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.413,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 96.32,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 95.913,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 96.111,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 96.275,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.406,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.225,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.513,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.373,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.532,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.394,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.753,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.807,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.873,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 99.231,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 19,
+      "time": 115.704,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.554,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.178,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.372,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 96.501,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 95.979,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 95.448,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 95.386,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.659,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.464,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.452,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.549,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 96.125,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.47,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.637,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 96.889,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.739,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.7,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 95.486,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 95.498,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 95.395,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.33,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 95.5,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 95.322,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.321,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 95.484,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 95.385,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.277,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.946,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 96.578,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 96.791,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 98.157,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 97.266,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 98.781,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "PER": [
+    {
+      "lap": 1,
+      "time": 102.821,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.455,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.096,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.568,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 96.947,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 96.53,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 96.193,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 96.296,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.123,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.401,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.657,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.755,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.533,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.631,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 97.809,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.513,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.792,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 96.785,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 99.894,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 20,
+      "time": 114.627,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 95.407,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 95.573,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 95.758,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 95.559,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 97.647,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 96.044,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.644,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.017,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.881,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 96.033,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 95.868,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.259,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.698,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.297,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.278,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.474,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 95.473,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 95.609,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 95.728,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.295,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 98.643,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 42,
+      "time": 112.784,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 93.336,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 93.56,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 92.747,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 92.621,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 92.846,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 93.455,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.95,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 95.361,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 96.894,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "LEC": [
+    {
+      "lap": 1,
+      "time": 97.57,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 95.314,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.624,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 4,
+      "time": 121.142,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 94.17,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 94.705,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 95.658,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 95.647,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 95.977,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.379,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.921,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.978,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.975,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.009,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.718,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 95.812,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 97.155,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 95.66,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 95.276,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.193,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 95.373,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 95.332,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 95.425,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 95.98,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 99.203,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 26,
+      "time": 113.364,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 93.687,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 93.973,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.248,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 94.724,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 94.949,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 94.194,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 94.022,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.362,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 93.16,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 92.794,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 92.785,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 93.293,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 93.311,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 93.579,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.573,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 93.471,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 93.858,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 93.799,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 95.286,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.816,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": true
+    },
+    {
+      "lap": 47,
+      "time": 115.048,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 91.611,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.305,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 94.19,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 95.133,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 91.728,
+      "compound": "SOFT",
+      "stint": 4,
+      "pit_stop": false
+    }
+  ],
+  "STR": [
+    {
+      "lap": 1,
+      "time": 101.898,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.142,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.7,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.597,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 96.406,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 96.043,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 96.135,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 96.381,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.415,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.239,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.456,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.464,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.473,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.469,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.824,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.599,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.947,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 99.403,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 19,
+      "time": 115.171,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.622,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.293,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.246,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 96.36,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 97.205,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.373,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 94.713,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.115,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.322,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.75,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.758,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 95.698,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.597,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 96.182,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.807,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.751,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.599,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 95.436,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 95.568,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 95.416,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.312,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 95.449,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 95.396,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.345,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 96.306,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 96.153,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.587,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.928,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 97.765,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 97.212,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 96.892,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 97.482,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 97.11,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "MAG": [
+    {
+      "lap": 1,
+      "time": 104.206,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.92,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.315,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 97.217,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.143,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 98.286,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 97.436,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.244,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.202,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.318,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.991,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.333,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.49,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 97.199,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 98.582,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 97.7,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 100.843,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 18,
+      "time": 116.677,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.402,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 96.347,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.474,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.806,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 97.191,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.545,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.656,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 96.431,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 96.402,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 97.846,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 96.19,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 96.169,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 97.943,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 98.538,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 96.577,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 96.576,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.95,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 96.032,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 97.338,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 96.103,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 96.226,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.927,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 96.209,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.15,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.959,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 96.235,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 97.95,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.827,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 98.974,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 48,
+      "time": 117.551,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 91.732,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 93.807,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 93.223,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 95.653,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "ALB": [
+    {
+      "lap": 1,
+      "time": 100.558,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 96.527,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.384,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.353,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 95.228,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 95.372,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 95.324,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 95.758,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 95.968,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.053,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.138,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.09,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.348,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.322,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 98.401,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 16,
+      "time": 113.192,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 93.959,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 94.437,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 94.817,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 94.942,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 94.209,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 94.714,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 94.414,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 94.386,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 95.056,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 94.94,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 94.305,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 94.406,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.496,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 94.501,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 94.512,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 94.325,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 94.352,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 96.582,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 35,
+      "time": 113.575,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 92.775,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 93.399,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 93.583,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 93.57,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 93.644,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.717,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 93.64,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 93.735,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 93.497,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 93.37,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 93.628,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 93.21,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 93.397,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.505,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 93.609,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 93.312,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 93.757,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 96.37,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "KVY": [
+    {
+      "lap": 1,
+      "time": 105.922,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 98.223,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.498,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 97.785,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.565,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 97.659,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 97.013,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.393,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.248,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.359,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 98.089,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.436,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.217,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.894,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.909,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.737,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 95.923,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 96.519,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.226,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 96.032,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 97.696,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.605,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 97.108,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.988,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 98.45,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 98.486,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 102.118,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 28,
+      "time": 115.952,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.228,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.324,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 95.133,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 94.777,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 96.754,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.666,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 94.912,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 94.997,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 96.797,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 96.034,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 96.231,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.727,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 94.883,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 94.97,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 94.172,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 94.37,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 94.418,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 94.369,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 93.239,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 93.692,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.655,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 93.712,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 94.005,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 94.744,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "HUL": [
+    {
+      "lap": 1,
+      "time": 102.139,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.446,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.985,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.748,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 96.494,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 96.316,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 96.172,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 96.261,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.421,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.392,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.398,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.814,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.319,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.298,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.702,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.525,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.704,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 97.024,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 98.582,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 20,
+      "time": 116.138,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 95.725,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 95.799,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 96.243,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.13,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.621,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 97.673,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 94.928,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.096,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.116,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.273,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 96.431,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.339,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.377,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.324,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.56,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.497,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 95.235,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 95.508,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 95.564,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.318,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 95.318,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 95.35,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.316,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 96.483,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 96.985,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 95.391,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 94.921,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 95.99,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 97.445,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 97.154,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 97.792,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 98.282,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "RIC": [
+    {
+      "lap": 1,
+      "time": 105.391,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 98.216,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.625,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 96.741,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 96.183,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 96.123,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 95.567,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 96.083,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.034,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.061,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.165,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.548,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 96.459,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.236,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.168,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.544,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.536,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 96.807,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.331,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 96.046,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 97.325,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.721,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 96.795,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.57,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 97.066,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 97.431,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 97.328,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 97.491,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 100.221,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 30,
+      "time": 114.884,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 94.297,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 94.112,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 94.124,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 94.303,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 94.254,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 94.649,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 94.713,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 94.669,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 94.658,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 94.885,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 94.366,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 95.067,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.199,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 95.337,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 93.965,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.782,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.151,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 93.481,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 94.563,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 94.178,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 94.009,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 94.101,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "VER": [
+    {
+      "lap": 1,
+      "time": 106.658,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 98.122,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.608,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 98.075,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.396,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 97.461,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 97.378,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.789,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.922,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.249,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 97.318,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.371,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.724,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 99.949,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    }
+  ],
+  "NOR": [
+    {
+      "lap": 1,
+      "time": 100.013,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 96.708,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.235,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 99.822,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 5,
+      "time": 116.571,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 95.655,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 94.748,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 95.78,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.543,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 95.801,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.151,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.641,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.103,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 97.578,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.068,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.842,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.56,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 96.083,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.111,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.848,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.612,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.552,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 97.348,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 97.777,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 101.533,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 26,
+      "time": 118.225,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 94.756,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.207,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 96.078,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 96.062,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 94.116,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.189,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 96.276,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.882,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.326,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.158,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 97.283,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 94.529,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 95.731,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 95.356,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 94.746,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.368,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 94.428,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 94.515,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 94.48,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 94.957,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.011,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 94.997,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 94.895,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 95.04,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 95.21,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 96.385,
+      "compound": "HARD",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "HAM": [
+    {
+      "lap": 1,
+      "time": 97.881,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 95.402,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 94.89,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 94.565,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 94.622,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 94.464,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 94.63,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 94.667,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 94.635,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 94.856,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 95.121,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 94.762,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 95.07,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 94.938,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 95.262,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 95.597,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 94.707,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 94.908,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 95.223,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.35,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 98.272,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 22,
+      "time": 113.893,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 92.874,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 92.763,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 93.075,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 93.175,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 93.028,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 92.824,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 92.8,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 92.738,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 93.025,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 92.513,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 93.065,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 94.503,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 93.224,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 92.54,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 92.551,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 92.605,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 92.646,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 92.841,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.097,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 95.867,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 43,
+      "time": 112.303,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 91.538,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 90.983,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 91.635,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 92.329,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 93.065,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.51,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 94.357,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 92.943,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 92.481,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 92.683,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "VET": [
+    {
+      "lap": 1,
+      "time": 95.943,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 94.549,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 94.565,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 94.646,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 94.456,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 94.92,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 94.823,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 94.899,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 94.701,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 95.082,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 95.127,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 95.059,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 95.19,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 95.518,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 95.509,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 98.208,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 17,
+      "time": 113.529,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 94.11,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 93.141,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 93.02,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 93.319,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 93.519,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 93.273,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 93.386,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 93.543,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 93.537,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 93.421,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 93.699,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.033,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 93.714,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 97.594,
+      "compound": "SOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 32,
+      "time": 112.791,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 92.192,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 92.405,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 92.609,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 92.937,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 92.82,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 92.122,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 93.351,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 93.495,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.35,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 92.361,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 92.733,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 92.701,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 92.504,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 92.646,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 92.772,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 92.83,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 93.637,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 94.66,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 92.526,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 92.623,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 92.788,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "SAI": [
+    {
+      "lap": 1,
+      "time": 99.2,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 96.089,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 96.075,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 95.988,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 95.933,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 95.855,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 95.597,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 95.962,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 95.879,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 96.094,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.037,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 96.063,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 95.888,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.199,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 96.124,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 96.298,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.132,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 97.1,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.461,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 96.18,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.526,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 97.029,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 96.415,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.693,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.983,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 100.522,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 27,
+      "time": 114.282,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 94.646,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 94.604,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 94.975,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 94.614,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 94.22,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 94.623,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 94.623,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 94.413,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 94.197,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 93.864,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 93.789,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 93.804,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 93.608,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.708,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 93.592,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 93.677,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 93.741,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 94.037,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 93.563,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 93.691,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 94.362,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 94.029,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 94.097,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 93.955,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 93.82,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 94.735,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "RUS": [
+    {
+      "lap": 1,
+      "time": 107.714,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 98.422,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.739,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 98.117,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.568,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 98.082,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 98.802,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.938,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 98.335,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 98.982,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 98.22,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 98.287,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 98.477,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 98.527,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 98.185,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 98.175,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 97.752,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 97.437,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 97.396,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 97.027,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 97.461,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 97.449,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 100.934,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 99.143,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 100.548,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 26,
+      "time": 117.869,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.458,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.603,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.626,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.741,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 96.961,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.94,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.977,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.78,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.795,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 96.25,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 97.624,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 96.087,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 96.549,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 96.591,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 96.034,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.166,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 98.643,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 98.12,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 97.329,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 97.007,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.878,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 98.237,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 97.883,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 97.113,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 99.249,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "RAI": [
+    {
+      "lap": 1,
+      "time": 105.158,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 98.163,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.895,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 97.89,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.492,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 97.52,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 97.261,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.223,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.329,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.099,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 97.357,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.267,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.907,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 98.491,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 100.313,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 16,
+      "time": 117.01,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.07,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 96.031,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 96.215,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 96.362,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.308,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 96.417,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 97.494,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.436,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.472,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 96.061,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.87,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 97.93,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.64,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 96.031,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 95.684,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 96.193,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 96.634,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 98.548,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 96.925,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 99.631,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 37,
+      "time": 113.786,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 93.36,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 93.543,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 94.553,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 93.908,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 94.245,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 94.884,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 94.036,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 94.771,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 93.876,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 94.226,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 94.808,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 96.254,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 93.19,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 93.724,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 95.937,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "BOT": [
+    {
+      "lap": 1,
+      "time": 94.571,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 94.6,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 94.195,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 94.496,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 94.384,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 94.344,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 94.669,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 94.935,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 94.652,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 94.687,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 94.649,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 94.551,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 94.608,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 94.408,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 94.546,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 94.698,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 96.449,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 18,
+      "time": 111.522,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 92.137,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 92.689,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 92.957,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 93.524,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 93.21,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 93.309,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 93.513,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 93.937,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 94.002,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 93.582,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 93.42,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 94.53,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 93.45,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 93.909,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 93.166,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 93.185,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 94.021,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.853,
+      "compound": "MEDIUM",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 37,
+      "time": 112.033,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 92.565,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 92.894,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 92.656,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 92.484,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 92.494,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 92.333,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 92.204,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 92.409,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 93.553,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 93.216,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 92.267,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 91.862,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 92.505,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 92.736,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 93.186,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 94.755,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "GRO": [
+    {
+      "lap": 1,
+      "time": 104.665,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.986,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.416,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 97.732,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 98.188,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 97.332,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 97.116,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.315,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 97.149,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.333,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 97.555,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.274,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.3,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 97.962,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 97.565,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 101.398,
+      "compound": "SOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 17,
+      "time": 114.853,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 94.988,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 95.547,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.66,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 97.006,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 97.385,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 95.609,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.795,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.116,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 95.749,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 95.546,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.773,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 95.696,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.909,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 97.916,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.836,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.935,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 95.918,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 95.913,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 97.434,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 96.001,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 97.986,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 96.185,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 100.359,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 96.75,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.13,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 95.918,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 96.802,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 96.187,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 95.946,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.308,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 96.219,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 96.751,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 97.287,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 96.815,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 100.159,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "KUB": [
+    {
+      "lap": 1,
+      "time": 109.502,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 99.314,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 98.884,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 98.735,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 99.209,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 99.326,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 100.013,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 99.422,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 99.057,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 99.224,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 99.391,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 99.513,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 99.082,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 98.812,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 98.712,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 99.329,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 98.953,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 99.205,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 99.616,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 99.245,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 100.732,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 102.435,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 23,
+      "time": 123.231,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 97.065,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 97.742,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 98.261,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 98.277,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 98.62,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 99.546,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 98.553,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 103.629,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 98.398,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 103.586,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 34,
+      "time": 117.831,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 98.179,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 96.345,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 97.112,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 97.649,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 98.871,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 97.62,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 97.438,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.495,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 96.537,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 96.332,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 97.866,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 97.73,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 97.51,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 97.062,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 98.753,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 97.889,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 99.149,
+      "compound": "MEDIUM",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "GIO": [
+    {
+      "lap": 1,
+      "time": 103.548,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 97.631,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 97.357,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 97.012,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 97.188,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 97.152,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 98.427,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 97.115,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 96.853,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 97.085,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 96.872,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 97.309,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 97.221,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 96.962,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 97.155,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 97.992,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 97.412,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 100.74,
+      "compound": "MEDIUM",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 19,
+      "time": 117.415,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 95.504,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 96.036,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 97.115,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 97.738,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 96.1,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 96.315,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 96.106,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 96.136,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 95.971,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 97.245,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 95.932,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 96.011,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 95.891,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 95.979,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 96.363,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 96.919,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 95.594,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 97.44,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 98.08,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 97.274,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 96.398,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 96.821,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 96.014,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 96.104,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 95.842,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 96.801,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 96.193,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 96.533,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 98.143,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 99.419,
+      "compound": "HARD",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 50,
+      "time": 114.24,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 92.369,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 94.234,
+      "compound": "SOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "_meta": {
+    "pit_stop_durations": [],
+    "total_laps": 53,
+    "drivers": 20
+  }
+}

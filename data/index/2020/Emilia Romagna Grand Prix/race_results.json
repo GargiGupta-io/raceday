@@ -1,0 +1,162 @@
+[
+  {
+    "driver": "HAM",
+    "grid_position": 2,
+    "finish_position": 1,
+    "team": "Mercedes",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "BOT",
+    "grid_position": 1,
+    "finish_position": 2,
+    "team": "Mercedes",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "RIC",
+    "grid_position": 5,
+    "finish_position": 3,
+    "team": "Renault",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "KVY",
+    "grid_position": 8,
+    "finish_position": 4,
+    "team": "AlphaTauri",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "LEC",
+    "grid_position": 7,
+    "finish_position": 5,
+    "team": "Ferrari",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "PER",
+    "grid_position": 11,
+    "finish_position": 6,
+    "team": "Racing Point",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "SAI",
+    "grid_position": 10,
+    "finish_position": 7,
+    "team": "McLaren",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "NOR",
+    "grid_position": 9,
+    "finish_position": 8,
+    "team": "McLaren",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "RAI",
+    "grid_position": 18,
+    "finish_position": 9,
+    "team": "Alfa Romeo Racing",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "GIO",
+    "grid_position": 20,
+    "finish_position": 10,
+    "team": "Alfa Romeo Racing",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "LAT",
+    "grid_position": 19,
+    "finish_position": 11,
+    "team": "Williams",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "VET",
+    "grid_position": 14,
+    "finish_position": 12,
+    "team": "Ferrari",
+    "compound": "MEDIUM",
+    "status": "Finished"
+  },
+  {
+    "driver": "STR",
+    "grid_position": 15,
+    "finish_position": 13,
+    "team": "Racing Point",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "GRO",
+    "grid_position": 16,
+    "finish_position": 14,
+    "team": "Haas F1 Team",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "ALB",
+    "grid_position": 6,
+    "finish_position": 15,
+    "team": "Red Bull Racing",
+    "compound": "HARD",
+    "status": "Finished"
+  },
+  {
+    "driver": "RUS",
+    "grid_position": 13,
+    "finish_position": 16,
+    "team": "Williams",
+    "compound": "HARD",
+    "status": "Accident"
+  },
+  {
+    "driver": "VER",
+    "grid_position": 3,
+    "finish_position": 17,
+    "team": "Red Bull Racing",
+    "compound": "HARD",
+    "status": "Puncture"
+  },
+  {
+    "driver": "MAG",
+    "grid_position": 17,
+    "finish_position": 18,
+    "team": "Haas F1 Team",
+    "compound": "MEDIUM",
+    "status": "Illness"
+  },
+  {
+    "driver": "OCO",
+    "grid_position": 12,
+    "finish_position": 19,
+    "team": "Renault",
+    "compound": "HARD",
+    "status": "Gearbox"
+  },
+  {
+    "driver": "GAS",
+    "grid_position": 4,
+    "finish_position": 20,
+    "team": "AlphaTauri",
+    "compound": "SOFT",
+    "status": "Water pressure"
+  }
+]

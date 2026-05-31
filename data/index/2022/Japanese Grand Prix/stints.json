@@ -1,0 +1,476 @@
+{
+  "ALB": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    }
+  ],
+  "ALO": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 8,
+      "lap_count": 6
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 9,
+      "lap_end": 22,
+      "lap_count": 14
+    },
+    {
+      "stint": 4,
+      "compound": "INTERMEDIATE",
+      "lap_start": 23,
+      "lap_end": 28,
+      "lap_count": 6
+    }
+  ],
+  "BOT": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 6,
+      "lap_count": 4
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 7,
+      "lap_end": 28,
+      "lap_count": 22
+    }
+  ],
+  "GAS": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 2,
+      "lap_end": 2,
+      "lap_count": 1
+    },
+    {
+      "stint": 3,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 4,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 19,
+      "lap_count": 12
+    },
+    {
+      "stint": 5,
+      "compound": "INTERMEDIATE",
+      "lap_start": 20,
+      "lap_end": 28,
+      "lap_count": 9
+    }
+  ],
+  "HAM": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "LAT": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 5,
+      "lap_count": 3
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 6,
+      "lap_end": 28,
+      "lap_count": 23
+    }
+  ],
+  "LEC": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "MAG": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "MSC": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 11,
+      "lap_count": 9
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 12,
+      "lap_end": 28,
+      "lap_count": 17
+    }
+  ],
+  "NOR": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 6,
+      "lap_count": 4
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 7,
+      "lap_end": 28,
+      "lap_count": 22
+    }
+  ],
+  "OCO": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "PER": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "RIC": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 8,
+      "lap_count": 6
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 9,
+      "lap_end": 28,
+      "lap_count": 20
+    }
+  ],
+  "RUS": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 28,
+      "lap_count": 21
+    }
+  ],
+  "SAI": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    }
+  ],
+  "STR": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 19,
+      "lap_count": 12
+    },
+    {
+      "stint": 4,
+      "compound": "INTERMEDIATE",
+      "lap_start": 20,
+      "lap_end": 28,
+      "lap_count": 9
+    }
+  ],
+  "TSU": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 20,
+      "lap_count": 13
+    },
+    {
+      "stint": 4,
+      "compound": "INTERMEDIATE",
+      "lap_start": 21,
+      "lap_end": 28,
+      "lap_count": 8
+    }
+  ],
+  "VER": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 7,
+      "lap_count": 5
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 8,
+      "lap_end": 29,
+      "lap_count": 22
+    }
+  ],
+  "VET": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 5,
+      "lap_count": 3
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 6,
+      "lap_end": 28,
+      "lap_count": 23
+    }
+  ],
+  "ZHO": [
+    {
+      "stint": 1,
+      "compound": "INTERMEDIATE",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "WET",
+      "lap_start": 3,
+      "lap_end": 9,
+      "lap_count": 7
+    },
+    {
+      "stint": 3,
+      "compound": "INTERMEDIATE",
+      "lap_start": 10,
+      "lap_end": 18,
+      "lap_count": 9
+    },
+    {
+      "stint": 4,
+      "compound": "INTERMEDIATE",
+      "lap_start": 19,
+      "lap_end": 28,
+      "lap_count": 10
+    }
+  ]
+}

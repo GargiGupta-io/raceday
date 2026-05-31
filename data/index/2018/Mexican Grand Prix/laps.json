@@ -1,0 +1,8741 @@
+{
+  "GAS": [
+    {
+      "lap": 1,
+      "time": 96.516,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 86.566,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.876,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 87.707,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 104.408,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 6,
+      "time": 102.148,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.375,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.413,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 82.896,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.01,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 83.113,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 83.483,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 83.583,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 83.961,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 83.974,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.699,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 84.426,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 85.302,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.667,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.31,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.359,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 85.494,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.973,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 86.412,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 85.709,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 88.164,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 27,
+      "time": 103.917,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.063,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 92.433,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 110.969,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 95.224,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 83.926,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 84.473,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.586,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.969,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 85.491,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 83.728,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 83.923,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 83.475,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 83.89,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 83.922,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.069,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.014,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 83.421,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.742,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 83.893,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 83.698,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 83.098,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 83.63,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 83.553,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 85.826,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.083,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 83.32,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 85.232,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 84.203,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 84.11,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 83.97,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 86.6,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.248,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 105.68,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 103.71,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 84.262,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.515,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 83.181,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.509,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.467,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 83.004,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 82.756,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 82.755,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "PER": [
+    {
+      "lap": 1,
+      "time": 94.212,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 84.416,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.078,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 83.975,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 100.916,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.545,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 84.256,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 84.826,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.762,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.542,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 87.347,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 86.658,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 86.389,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 83.633,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 83.974,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.583,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 83.753,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.046,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.465,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 84.054,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 84.332,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.701,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.538,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.664,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 84.903,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 84.37,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.798,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.284,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 83.837,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 109.679,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 31,
+      "time": 123.872,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 84.174,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 87.025,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.442,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 84.451,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 86.225,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 87.517,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 102.831,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": true
+    }
+  ],
+  "ALO": [
+    {
+      "lap": 1,
+      "time": 94.715,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 85.044,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.197,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    }
+  ],
+  "LEC": [
+    {
+      "lap": 1,
+      "time": 91.389,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 83.965,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 83.624,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 83.359,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 101.425,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.341,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.75,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.531,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.493,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.654,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 85.372,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 85.636,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 88.335,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 14,
+      "time": 101.537,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 84.322,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 84.135,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 84.03,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 85.279,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.319,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.191,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 84.548,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.356,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.04,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 83.64,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 84.417,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 86.436,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.924,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.632,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 84.453,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 107.478,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 107.364,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 86.22,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 87.017,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 86.456,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 85.798,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.637,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 85.014,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 84.171,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.747,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 85.269,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 85.124,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.714,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.662,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.591,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.312,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 85.003,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.692,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.791,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.204,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.758,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.437,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.291,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 83.864,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 84.619,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 83.253,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 83.063,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 86.671,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 82.679,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 82.923,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 99.35,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 108.788,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 81.733,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 81.138,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 81.25,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 82.077,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 80.951,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.537,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 80.684,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 81.879,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "STR": [
+    {
+      "lap": 1,
+      "time": 95.073,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 85.715,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.314,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 84.567,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 101.542,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.29,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.678,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 84.21,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.958,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 90.579,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 11,
+      "time": 104.755,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 83.632,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 83.573,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 84.297,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 84.544,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.852,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 83.822,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 83.94,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.29,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 84.684,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.33,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 85.058,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 88.653,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 24,
+      "time": 102.627,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 83.276,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 83.001,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 82.983,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.845,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 88.689,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 109.564,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 97.997,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 84.618,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.822,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 83.664,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.556,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 83.944,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.511,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 85.993,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 85.477,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.785,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.469,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.341,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.845,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.833,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.396,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 85.266,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.15,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.13,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 85.598,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.314,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 85.903,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 85.425,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 84.46,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 84.152,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 84.328,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 86.164,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.383,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 84.813,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 85.113,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 107.461,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 100.656,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 84.493,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.956,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 84.086,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.671,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.204,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 83.233,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 83.525,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 83.745,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "VAN": [
+    {
+      "lap": 1,
+      "time": 97.424,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 86.274,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.867,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 84.427,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 102.308,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.545,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.549,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.756,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.988,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.109,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.899,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 89.055,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 13,
+      "time": 101.02,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 81.921,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 83.366,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 82.873,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 83.65,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.827,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.672,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.53,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.261,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 85.224,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 85.424,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 85.963,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 83.626,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 83.976,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.337,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 87.095,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 84.817,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 112.135,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 103.764,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 86.036,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.412,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 83.73,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 84.955,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.793,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 85.081,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 85.153,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.558,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.654,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.832,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.918,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 85.161,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.113,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.033,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 84.412,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.44,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.612,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.462,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.419,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.457,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.266,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 83.82,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 85.131,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 83.821,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 86.22,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 83.475,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 83.549,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 83.449,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 102.486,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 107.251,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 83.399,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 82.567,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 82.435,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 82.78,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.054,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 82.79,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 85.723,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 83.036,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "MAG": [
+    {
+      "lap": 1,
+      "time": 95.478,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 86.054,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.144,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 84.985,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 102.566,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.307,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.303,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.592,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.422,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 84.403,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 86.475,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 86.394,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 86.565,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 87.185,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 86.404,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 86.209,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 84.143,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.903,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.102,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.076,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.175,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.877,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.509,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.692,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 86.124,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 87.068,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 85.005,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.68,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 86.756,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 111.782,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 105.41,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 84.241,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 86.01,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.627,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 85.44,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.585,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 85.482,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 84.689,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.362,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.539,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 85.009,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 85.06,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 88.053,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 44,
+      "time": 101.53,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 81.874,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 82.77,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 83.505,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 85.849,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 82.848,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.914,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.095,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 86.32,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 83.451,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 83.973,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 85.869,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 84.433,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.883,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 85.385,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 85.294,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 108.182,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 99.658,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 83.68,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.984,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 84.172,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 86.501,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 86.745,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 84.436,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 84.005,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 84.482,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "HUL": [
+    {
+      "lap": 1,
+      "time": 89.609,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 83.422,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 83.641,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 82.839,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 101.471,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.009,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.294,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.574,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.074,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 84.722,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.845,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 87.832,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 13,
+      "time": 103.544,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 84.108,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 84.286,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 84.292,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 84.38,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.103,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.457,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 84.116,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 84.546,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.61,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.68,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.692,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 84.436,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 84.585,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.475,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 85.944,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 83.578,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 104.761,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 109.246,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 83.756,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.797,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 83.462,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.948,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 87.906,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 83.885,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 86.363,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 86.244,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 86.423,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.158,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 83.878,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 85.273,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.634,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.812,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 83.87,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.162,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.079,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 85.987,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 83.886,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 83.457,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 83.787,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 83.581,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 83.361,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 83.292,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 83.239,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 83.38,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 83.086,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.813,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 94.52,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 111.281,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 86.204,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.936,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 81.616,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.619,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 80.991,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.637,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 80.748,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 81.536,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "HAR": [
+    {
+      "lap": 1,
+      "time": 99.18,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 2,
+      "time": 101.496,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 83.31,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 89.459,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 95.404,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.528,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 82.847,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.083,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.403,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.851,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.449,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 84.741,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 84.708,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 84.674,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 85.106,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 85.35,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 86.038,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 85.603,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.623,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.396,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.108,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.913,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 85.038,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 88.589,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 25,
+      "time": 102.988,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 82.438,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 82.473,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 82.901,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 88.753,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 109.665,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 99.034,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 84.55,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.839,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.276,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.877,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.217,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.628,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 86.617,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.33,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.492,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.604,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.599,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.785,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 85.392,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 83.405,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 84.355,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.483,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.45,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.205,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.39,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.407,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 85.419,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 84.39,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 87.737,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 84.421,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 84.694,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 85.391,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 84.96,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.39,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 105.982,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 103.588,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 85.399,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.746,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 83.454,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.56,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.525,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 83.523,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 83.473,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 83.694,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "RIC": [
+    {
+      "lap": 1,
+      "time": 85.456,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 81.553,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 81.694,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 81.369,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 99.891,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.074,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 81.322,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 81.609,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 81.878,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 82.51,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 83.433,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 85.232,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 13,
+      "time": 100.006,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 81.623,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 81.004,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 82.555,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 82.196,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 82.491,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 81.94,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 81.81,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 81.544,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.289,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 81.034,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.455,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 81.399,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.74,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 81.945,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 82.169,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 82.823,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 82.937,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 112.689,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 101.697,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 82.67,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 83.403,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 82.868,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 82.57,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 81.808,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 81.531,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 81.723,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 81.027,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 80.735,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 80.888,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 81.199,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 81.011,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 82.444,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 81.79,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 81.035,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 80.766,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 80.913,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 81.085,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 80.723,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 81.442,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 80.873,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 81.216,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 81.782,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 81.445,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 79.462,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 80.536,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 80.78,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 80.327,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 80.37,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "OCO": [
+    {
+      "lap": 1,
+      "time": 96.27,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 2,
+      "time": 106.839,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 82.749,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 92.107,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 92.097,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.629,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 82.89,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.142,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.359,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.641,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.13,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 84.912,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 84.827,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 84.849,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 84.839,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 85.986,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 85.247,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 85.347,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.79,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.349,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.146,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 85.106,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 85.075,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 85.407,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 84.765,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 84.221,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.247,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 85.734,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 86.403,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 114.369,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 31,
+      "time": 112.39,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 83.785,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.701,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.463,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.648,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.634,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.496,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 85.991,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.646,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.602,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.55,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.828,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.684,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.982,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 83.801,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 85.649,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.051,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 83.842,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.5,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.451,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.884,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 85.161,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 87.029,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 84.703,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 84.634,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 86.172,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.332,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 84.705,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.93,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 107.031,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 100.705,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 84.04,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.523,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 83.358,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.544,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.5,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 83.433,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 83.382,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 83.39,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "VER": [
+    {
+      "lap": 1,
+      "time": 83.044,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 80.959,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 81.091,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 81.162,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 98.701,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.465,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 81.177,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 80.923,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 81.249,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 81.634,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 82.291,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 82.692,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 85.704,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 14,
+      "time": 100.948,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 80.299,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 80.919,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 80.66,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 80.431,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 81.373,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 81.607,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 81.403,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.265,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 81.17,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.612,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 82.346,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.065,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 80.87,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 80.898,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 81.68,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 82.083,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 104.739,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 108.215,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 82.946,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 81.459,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 81.495,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 81.137,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 81.655,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 81.316,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 80.641,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 81.025,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 80.851,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 80.768,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 80.863,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 80.386,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 80.572,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 81.023,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 81.391,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.301,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 49,
+      "time": 98.058,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 80.173,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 80.69,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 80.434,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 81.256,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 81.657,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 79.738,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 80.786,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 79.564,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 79.747,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 79.749,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 79.795,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 80.099,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 91.178,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 111.497,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 85.065,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 79.527,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 79.186,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.081,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 79.796,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 79.983,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 70,
+      "time": 80.242,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 71,
+      "time": 81.046,
+      "compound": "SUPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "SIR": [
+    {
+      "lap": 1,
+      "time": 95.808,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 86.893,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.854,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 86.956,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 101.863,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 84.254,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 84.033,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 84.385,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.64,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.317,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 89.982,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 12,
+      "time": 103.491,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 83.374,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 83.177,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 83.435,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.728,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 83.857,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.024,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.339,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 84.301,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 84.561,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 85.309,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 86.521,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.717,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 85.845,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 87.664,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.567,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 86.26,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 89.859,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 110.352,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 100.584,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 87.661,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 85.73,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.359,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 84.271,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 85.078,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.697,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 84.692,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.598,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.504,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.855,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.574,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.383,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.297,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 87.061,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 84.313,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.025,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 85.666,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 86.849,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.781,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 86.34,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.252,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 84.193,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 85.773,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 83.497,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 83.734,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.332,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 84.333,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.719,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 107.915,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 100.169,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 83.669,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.827,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 84.072,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.242,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 82.64,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 82.895,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 83.209,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 83.487,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "HAM": [
+    {
+      "lap": 1,
+      "time": 84.169,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 81.225,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 81.62,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 81.363,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 99.795,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.315,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 80.995,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 81.53,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 82.232,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.13,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 86.983,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 12,
+      "time": 98.647,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 81.341,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 81.855,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 82.407,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.146,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 81.426,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 81.303,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 81.976,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 81.846,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 81.465,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.573,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 81.511,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.832,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 81.032,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.85,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 82.097,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 81.808,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 81.827,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 82.658,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 109.406,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 104.947,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 81.86,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 81.7,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 81.37,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 81.766,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 82.063,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 81.829,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 83.743,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 81.909,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 81.858,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 81.794,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 81.986,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 81.83,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 82.418,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 82.03,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 87.13,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 48,
+      "time": 100.476,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 80.728,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 81.426,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 80.816,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 80.79,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 81.194,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 82.295,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 81.992,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 82.242,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 82.962,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 82.591,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 83.13,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 83.09,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 83.746,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 113.241,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 94.778,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 83.0,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.185,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.072,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 82.696,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 82.77,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 82.351,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 70,
+      "time": 82.694,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 71,
+      "time": 85.728,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "VET": [
+    {
+      "lap": 1,
+      "time": 86.511,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 81.799,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 82.42,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 81.959,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 99.698,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.285,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 81.918,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 81.872,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 82.007,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 82.024,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 82.495,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 82.641,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 82.5,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 82.05,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 82.158,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 82.127,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 85.551,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 18,
+      "time": 99.705,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 81.076,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 81.142,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 81.128,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.0,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 80.757,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.287,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 81.615,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.74,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 82.101,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 81.728,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 82.352,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 82.936,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 112.589,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 102.308,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 82.087,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 81.308,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 80.856,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 80.745,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 81.069,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 81.144,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 80.516,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 80.386,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 80.263,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 80.26,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 80.112,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 80.138,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 80.338,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 80.403,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 83.939,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 48,
+      "time": 97.226,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 79.522,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 80.343,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 80.409,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 80.967,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 81.547,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 80.966,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 80.78,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 81.159,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 79.851,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 81.573,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 80.264,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 80.195,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 80.787,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 98.751,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 109.665,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 80.003,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 79.763,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 79.835,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.15,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 80.046,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 79.978,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 70,
+      "time": 80.951,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 71,
+      "time": 82.393,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "SAI": [
+    {
+      "lap": 1,
+      "time": 88.61,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 83.83,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 83.398,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 82.891,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 101.334,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.386,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.136,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 83.611,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.85,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 84.052,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 87.476,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 12,
+      "time": 102.416,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 84.847,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 85.705,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 83.846,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.75,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 84.139,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 84.302,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.41,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 84.557,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 83.819,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.985,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.205,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.793,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 84.983,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 85.192,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.577,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 84.139,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "RAI": [
+    {
+      "lap": 1,
+      "time": 89.144,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 82.058,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 82.306,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 82.416,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 100.29,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 81.727,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 82.305,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 82.801,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.088,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.775,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.314,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 83.446,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 83.142,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 84.026,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 84.094,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 83.219,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 89.23,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 18,
+      "time": 100.087,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 80.334,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 80.72,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 80.711,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.108,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 81.062,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.295,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 81.586,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.482,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 80.908,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 81.248,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 81.653,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 87.438,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 109.7,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 98.514,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 81.468,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 81.601,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 81.024,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 81.421,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 83.072,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 81.851,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 81.461,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 81.222,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 81.744,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 81.234,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 81.373,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 80.948,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 81.824,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 80.915,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 81.773,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 80.85,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 81.107,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 81.357,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 81.155,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 81.126,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 81.255,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 80.905,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 81.413,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 81.4,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 81.358,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 82.307,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 82.261,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 83.7,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 82.585,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 106.043,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 103.641,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 81.927,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 81.039,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 81.393,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.892,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 81.671,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 82.256,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 70,
+      "time": 81.745,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 71,
+      "time": 83.221,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "BOT": [
+    {
+      "lap": 1,
+      "time": 87.855,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 82.541,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 82.039,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 81.987,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 99.911,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 82.281,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 82.65,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 82.572,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 83.042,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 83.308,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 86.778,
+      "compound": "ULTRASOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 12,
+      "time": 100.541,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 81.236,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 81.571,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 81.61,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 81.68,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 81.323,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 82.516,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 81.655,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 81.748,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 81.481,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 81.358,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 81.554,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 81.415,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 81.764,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 81.788,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 82.426,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 82.101,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 81.591,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 85.026,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 110.213,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 101.689,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 81.894,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 81.64,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 82.416,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 81.485,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 81.675,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 82.082,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 82.769,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 81.58,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 81.74,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 82.2,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 82.108,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 81.921,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 82.191,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 82.25,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 82.103,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 90.063,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 49,
+      "time": 102.285,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 81.749,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 81.678,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 81.886,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 81.794,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 81.669,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 82.011,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 82.803,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 83.04,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 83.193,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 84.052,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 84.462,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 91.735,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 113.517,
+      "compound": "ULTRASOFT",
+      "stint": 3,
+      "pit_stop": true
+    },
+    {
+      "lap": 63,
+      "time": 100.226,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 79.331,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 78.741,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 80.459,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 80.062,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 80.383,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 81.75,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    },
+    {
+      "lap": 70,
+      "time": 83.257,
+      "compound": "HYPERSOFT",
+      "stint": 4,
+      "pit_stop": false
+    }
+  ],
+  "GRO": [
+    {
+      "lap": 1,
+      "time": 96.83,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 87.651,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.711,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 85.891,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 102.593,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.701,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 83.935,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 84.447,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.756,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.161,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 84.336,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 85.301,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 84.907,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 85.572,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 86.407,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 86.031,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 17,
+      "time": 85.428,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 86.603,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 85.509,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 85.313,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 85.158,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 84.503,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 84.586,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 84.97,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 86.048,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 84.393,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 84.641,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 86.64,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 86.466,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 112.575,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 104.208,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 85.935,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 86.582,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 85.065,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 84.547,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 85.131,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.935,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 85.297,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.878,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.84,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.777,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.659,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 85.443,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 89.904,
+      "compound": "SUPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 45,
+      "time": 99.695,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 81.37,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 81.948,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 82.672,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.217,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 86.075,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 85.146,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.355,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 86.192,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 84.305,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 84.205,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 84.18,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.756,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 85.035,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 85.531,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 113.751,
+      "compound": "ULTRASOFT",
+      "stint": 2,
+      "pit_stop": true
+    },
+    {
+      "lap": 61,
+      "time": 109.556,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 82.196,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 82.166,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 81.438,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 82.012,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 81.613,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 82.302,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 85.082,
+      "compound": "HYPERSOFT",
+      "stint": 3,
+      "pit_stop": false
+    }
+  ],
+  "ERI": [
+    {
+      "lap": 1,
+      "time": 93.592,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 2,
+      "time": 84.159,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 3,
+      "time": 84.123,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 4,
+      "time": 83.708,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 5,
+      "time": 100.775,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 6,
+      "time": 83.925,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 7,
+      "time": 84.167,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 8,
+      "time": 84.898,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 9,
+      "time": 84.855,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 10,
+      "time": 85.817,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 11,
+      "time": 87.202,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 12,
+      "time": 86.626,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 13,
+      "time": 86.561,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 14,
+      "time": 86.826,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 15,
+      "time": 86.754,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": false
+    },
+    {
+      "lap": 16,
+      "time": 90.32,
+      "compound": "HYPERSOFT",
+      "stint": 1,
+      "pit_stop": true
+    },
+    {
+      "lap": 17,
+      "time": 109.978,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 18,
+      "time": 82.44,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 19,
+      "time": 84.597,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 20,
+      "time": 83.468,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 21,
+      "time": 82.891,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 22,
+      "time": 83.535,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 23,
+      "time": 83.763,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 24,
+      "time": 87.166,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 25,
+      "time": 83.461,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 26,
+      "time": 83.879,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 27,
+      "time": 85.643,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 28,
+      "time": 83.624,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 29,
+      "time": 88.789,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 30,
+      "time": 109.91,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 31,
+      "time": 99.231,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 32,
+      "time": 85.545,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 33,
+      "time": 83.724,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 34,
+      "time": 84.279,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 35,
+      "time": 83.683,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 36,
+      "time": 84.351,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 37,
+      "time": 84.412,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 38,
+      "time": 86.516,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 39,
+      "time": 84.293,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 40,
+      "time": 84.514,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 41,
+      "time": 84.597,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 42,
+      "time": 84.688,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 43,
+      "time": 84.555,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 44,
+      "time": 84.085,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 45,
+      "time": 84.545,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 46,
+      "time": 84.463,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 47,
+      "time": 84.478,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 48,
+      "time": 84.23,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 49,
+      "time": 84.414,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 50,
+      "time": 84.177,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 51,
+      "time": 84.35,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 52,
+      "time": 84.786,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 53,
+      "time": 85.209,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 54,
+      "time": 84.466,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 55,
+      "time": 85.675,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 56,
+      "time": 84.56,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 57,
+      "time": 84.501,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 58,
+      "time": 84.804,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 59,
+      "time": 85.498,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 60,
+      "time": 106.43,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 61,
+      "time": 103.467,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 62,
+      "time": 84.187,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 63,
+      "time": 83.194,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 64,
+      "time": 83.002,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 65,
+      "time": 83.364,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 66,
+      "time": 83.355,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 67,
+      "time": 83.097,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 68,
+      "time": 82.823,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    },
+    {
+      "lap": 69,
+      "time": 82.895,
+      "compound": "SUPERSOFT",
+      "stint": 2,
+      "pit_stop": false
+    }
+  ],
+  "_meta": {
+    "pit_stop_durations": [],
+    "total_laps": 71,
+    "drivers": 20
+  }
+}

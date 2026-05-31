@@ -3,8 +3,11 @@
 .env.local
 client_secret_*.json
 
-# FastF1 cache and index
-data/
+# FastF1 cache and generated runtime data
+data/*
+!data/index/
+!data/index/**
+data/cache/
 
 # Python
 __pycache__/

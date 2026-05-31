@@ -1,0 +1,325 @@
+{
+  "VET": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 2,
+      "lap_end": 32,
+      "lap_count": 31
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 71,
+      "lap_count": 39
+    }
+  ],
+  "HAM": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 2,
+      "lap_end": 31,
+      "lap_count": 30
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 70,
+      "lap_count": 39
+    }
+  ],
+  "SAI": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 2,
+      "lap_count": 2
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 3,
+      "lap_end": 31,
+      "lap_count": 29
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 59,
+      "lap_count": 28
+    }
+  ],
+  "MAS": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 3,
+      "lap_count": 3
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 4,
+      "lap_end": 70,
+      "lap_count": 67
+    }
+  ],
+  "WEH": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 4,
+      "lap_count": 4
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 5,
+      "lap_end": 69,
+      "lap_count": 65
+    }
+  ],
+  "PER": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 18,
+      "lap_count": 18
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 19,
+      "lap_end": 50,
+      "lap_count": 32
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 51,
+      "lap_end": 70,
+      "lap_count": 20
+    }
+  ],
+  "HUL": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 19,
+      "lap_count": 19
+    },
+    {
+      "stint": 2,
+      "compound": "SUPERSOFT",
+      "lap_start": 20,
+      "lap_end": 24,
+      "lap_count": 5
+    }
+  ],
+  "OCO": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 20,
+      "lap_count": 20
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 21,
+      "lap_end": 70,
+      "lap_count": 50
+    }
+  ],
+  "ERI": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 28,
+      "lap_count": 28
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 29,
+      "lap_end": 55,
+      "lap_count": 27
+    }
+  ],
+  "MAG": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 31,
+      "lap_count": 31
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 70,
+      "lap_count": 39
+    }
+  ],
+  "VAN": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 31,
+      "lap_count": 31
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 70,
+      "lap_count": 39
+    }
+  ],
+  "VER": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 71,
+      "lap_count": 39
+    }
+  ],
+  "GAS": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 31,
+      "lap_count": 31
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 70,
+      "lap_count": 39
+    }
+  ],
+  "GRO": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 31,
+      "lap_count": 31
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 32,
+      "lap_end": 62,
+      "lap_count": 31
+    },
+    {
+      "stint": 3,
+      "compound": "SUPERSOFT",
+      "lap_start": 63,
+      "lap_end": 69,
+      "lap_count": 7
+    }
+  ],
+  "BOT": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 71,
+      "lap_count": 39
+    }
+  ],
+  "RAI": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 71,
+      "lap_count": 39
+    }
+  ],
+  "STR": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 70,
+      "lap_count": 38
+    }
+  ],
+  "ALO": [
+    {
+      "stint": 1,
+      "compound": "SUPERSOFT",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 70,
+      "lap_count": 38
+    }
+  ]
+}

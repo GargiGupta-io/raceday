@@ -1,0 +1,238 @@
+{
+  "ERI": [
+    {
+      "stint": 1,
+      "compound": "MEDIUM",
+      "lap_start": 1,
+      "lap_end": 1,
+      "lap_count": 1
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 2,
+      "lap_end": 26,
+      "lap_count": 25
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 27,
+      "lap_end": 43,
+      "lap_count": 17
+    },
+    {
+      "stint": 4,
+      "compound": "SOFT",
+      "lap_start": 44,
+      "lap_end": 57,
+      "lap_count": 14
+    }
+  ],
+  "RAI": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 16,
+      "lap_count": 16
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 17,
+      "lap_end": 40,
+      "lap_count": 24
+    },
+    {
+      "stint": 3,
+      "compound": "MEDIUM",
+      "lap_start": 41,
+      "lap_end": 40,
+      "lap_count": 0
+    }
+  ],
+  "MAS": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 21,
+      "lap_count": 21
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 22,
+      "lap_end": 58,
+      "lap_count": 37
+    }
+  ],
+  "HUL": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 21,
+      "lap_count": 21
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 22,
+      "lap_end": 44,
+      "lap_count": 23
+    },
+    {
+      "stint": 3,
+      "compound": "SOFT",
+      "lap_start": 45,
+      "lap_end": 57,
+      "lap_count": 13
+    }
+  ],
+  "RIC": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 23,
+      "lap_count": 23
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 24,
+      "lap_end": 57,
+      "lap_count": 34
+    }
+  ],
+  "VET": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 24,
+      "lap_count": 24
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 25,
+      "lap_end": 58,
+      "lap_count": 34
+    }
+  ],
+  "SAI": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 24,
+      "lap_count": 24
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 25,
+      "lap_end": 57,
+      "lap_count": 33
+    }
+  ],
+  "HAM": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 25,
+      "lap_count": 25
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 26,
+      "lap_end": 58,
+      "lap_count": 33
+    }
+  ],
+  "NAS": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 25,
+      "lap_count": 25
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 26,
+      "lap_end": 58,
+      "lap_count": 33
+    }
+  ],
+  "ROS": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 26,
+      "lap_count": 26
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 27,
+      "lap_end": 58,
+      "lap_count": 32
+    }
+  ],
+  "BUT": [
+    {
+      "stint": 1,
+      "compound": "SOFT",
+      "lap_start": 1,
+      "lap_end": 27,
+      "lap_count": 27
+    },
+    {
+      "stint": 2,
+      "compound": "MEDIUM",
+      "lap_start": 28,
+      "lap_end": 56,
+      "lap_count": 29
+    }
+  ],
+  "VER": [
+    {
+      "stint": 1,
+      "compound": "MEDIUM",
+      "lap_start": 1,
+      "lap_end": 32,
+      "lap_count": 32
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 33,
+      "lap_end": 32,
+      "lap_count": 0
+    }
+  ],
+  "PER": [
+    {
+      "stint": 1,
+      "compound": "MEDIUM",
+      "lap_start": 1,
+      "lap_end": 38,
+      "lap_count": 38
+    },
+    {
+      "stint": 2,
+      "compound": "SOFT",
+      "lap_start": 39,
+      "lap_end": 57,
+      "lap_count": 19
+    }
+  ]
+}
