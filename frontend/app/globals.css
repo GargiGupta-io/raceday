@@ -323,3 +323,31 @@ body {
   50% { transform: translateX(80%); }
   100% { transform: translateX(-20%); }
 }
+
+/* Subtle homepage-only noise texture. */
+.spectra-noise {
+  background-image:
+    radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.18) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 72% 42%, rgba(239, 68, 68, 0.16) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 46% 76%, rgba(255, 255, 255, 0.1) 0 1px, transparent 1.4px),
+    linear-gradient(115deg, transparent 0%, rgba(239, 68, 68, 0.08) 44%, transparent 58%);
+  background-size: 33px 33px, 47px 47px, 61px 61px, 100% 100%;
+  background-position: 0 0, 18px 24px, 9px 13px, center;
+  mix-blend-mode: screen;
+  animation: spectraDrift 16s linear infinite;
+}
+
+@keyframes spectraDrift {
+  0% {
+    background-position: 0 0, 18px 24px, 9px 13px, center;
+  }
+  100% {
+    background-position: 33px 33px, -29px 71px, 70px -48px, center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spectra-noise {
+    animation: none;
+  }
+}
