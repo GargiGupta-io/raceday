@@ -56,12 +56,16 @@ function Toggle({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        border: "1px solid #27272a",
-        background: checked ? "rgba(220, 38, 38, 0.16)" : "#0c0c0e",
+        border: checked ? "1px solid rgba(220, 38, 38, 0.38)" : "1px solid rgba(255, 255, 255, 0.12)",
+        background: checked
+          ? "linear-gradient(145deg, rgba(220, 38, 38, 0.22), rgba(255, 255, 255, 0.045))"
+          : "linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.018))",
         color: "#f4f4f5",
         borderRadius: 7,
         padding: "9px 11px",
         cursor: "pointer",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.12), 0 10px 28px rgba(0,0,0,0.24)",
+        backdropFilter: "blur(16px) saturate(1.35)",
       }}
     >
       <span style={{ fontSize: 12, fontWeight: 700 }}>{label}</span>
@@ -122,7 +126,16 @@ function Popup() {
   }
 
   return (
-    <div style={{ padding: 12 }}>
+    <div
+      style={{
+        padding: 12,
+        background:
+          "linear-gradient(145deg, rgba(255,255,255,0.075), rgba(255,255,255,0.018) 42%, rgba(220,38,38,0.045)), rgba(8,8,10,0.84)",
+        border: "1px solid rgba(255,255,255,0.14)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.16), 0 18px 44px rgba(0,0,0,0.55)",
+        backdropFilter: "blur(22px) saturate(1.45)",
+      }}
+    >
       <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
         <div
           style={{
@@ -133,6 +146,7 @@ function Popup() {
             padding: "5px 8px",
             borderRadius: 6,
             letterSpacing: 0.5,
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.28), 0 0 20px rgba(220,38,38,0.3)",
           }}
         >
           RD
