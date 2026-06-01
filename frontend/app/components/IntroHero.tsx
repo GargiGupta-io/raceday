@@ -136,14 +136,18 @@ function HeroSection() {
   useEffect(() => {
     const el = heroRef.current;
     if (!el) return;
+    let frame = 0;
 
     const updatePointer = (event: PointerEvent) => {
       if (event.pointerType === "touch") return;
       const rect = el.getBoundingClientRect();
       const x = ((event.clientX - rect.left) / rect.width) * 100;
       const y = ((event.clientY - rect.top) / rect.height) * 100;
-      el.style.setProperty("--spectra-x", `${Math.min(100, Math.max(0, x))}%`);
-      el.style.setProperty("--spectra-y", `${Math.min(100, Math.max(0, y))}%`);
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        el.style.setProperty("--spectra-x", `${Math.min(100, Math.max(0, x))}%`);
+        el.style.setProperty("--spectra-y", `${Math.min(100, Math.max(0, y))}%`);
+      });
     };
 
     const resetPointer = () => {
@@ -155,6 +159,7 @@ function HeroSection() {
     el.addEventListener("pointerleave", resetPointer);
 
     return () => {
+      if (frame) cancelAnimationFrame(frame);
       el.removeEventListener("pointermove", updatePointer);
       el.removeEventListener("pointerleave", resetPointer);
     };
