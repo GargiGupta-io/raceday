@@ -161,7 +161,7 @@ function HeroSection() {
         />
 
         {/* Edge fade — blends into pure black background */}
-        <div className="spectra-noise absolute inset-0 opacity-[0.26]" />
+        <div className="spectra-noise absolute inset-0 opacity-[0.55]" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.7 }} />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" style={{ opacity: 0.5 }} />
       </div>
