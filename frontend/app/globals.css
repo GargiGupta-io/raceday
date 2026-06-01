@@ -327,22 +327,23 @@ body {
 /* Subtle homepage-only noise texture. */
 .spectra-noise {
   background-image:
-    radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.18) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 72% 42%, rgba(239, 68, 68, 0.16) 0 1px, transparent 1.5px),
-    radial-gradient(circle at 46% 76%, rgba(255, 255, 255, 0.1) 0 1px, transparent 1.4px),
-    linear-gradient(115deg, transparent 0%, rgba(239, 68, 68, 0.08) 44%, transparent 58%);
-  background-size: 33px 33px, 47px 47px, 61px 61px, 100% 100%;
-  background-position: 0 0, 18px 24px, 9px 13px, center;
+    radial-gradient(circle at 18% 28%, rgba(255, 255, 255, 0.22) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 72% 42%, rgba(239, 68, 68, 0.24) 0 1.4px, transparent 2px),
+    radial-gradient(circle at 46% 76%, rgba(255, 255, 255, 0.14) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.16), transparent 46%),
+    linear-gradient(115deg, transparent 0%, rgba(239, 68, 68, 0.14) 44%, transparent 58%);
+  background-size: 29px 29px, 41px 41px, 53px 53px, 100% 100%, 100% 100%;
+  background-position: 0 0, 18px 24px, 9px 13px, center, center;
   mix-blend-mode: screen;
   animation: spectraDrift 16s linear infinite;
 }
 
 @keyframes spectraDrift {
   0% {
-    background-position: 0 0, 18px 24px, 9px 13px, center;
+    background-position: 0 0, 18px 24px, 9px 13px, center, center;
   }
   100% {
-    background-position: 33px 33px, -29px 71px, 70px -48px, center;
+    background-position: 29px 29px, -23px 65px, 62px -40px, center, center;
   }
 }
 
