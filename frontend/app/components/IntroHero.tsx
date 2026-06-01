@@ -106,6 +106,7 @@ export default function IntroHero({
 function HeroSection() {
   const [visible, setVisible] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setVisible(true), 100);
@@ -132,8 +133,42 @@ function HeroSection() {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+
+    const updatePointer = (event: PointerEvent) => {
+      if (event.pointerType === "touch") return;
+      const rect = el.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      el.style.setProperty("--spectra-x", `${Math.min(100, Math.max(0, x))}%`);
+      el.style.setProperty("--spectra-y", `${Math.min(100, Math.max(0, y))}%`);
+    };
+
+    const resetPointer = () => {
+      el.style.setProperty("--spectra-x", "50%");
+      el.style.setProperty("--spectra-y", "50%");
+    };
+
+    el.addEventListener("pointermove", updatePointer);
+    el.addEventListener("pointerleave", resetPointer);
+
+    return () => {
+      el.removeEventListener("pointermove", updatePointer);
+      el.removeEventListener("pointerleave", resetPointer);
+    };
+  }, []);
+
   return (
-    <div className="relative min-h-[100dvh] flex flex-col overflow-hidden">
+    <div
+      ref={heroRef}
+      className="relative min-h-[100dvh] flex flex-col overflow-hidden"
+      style={{
+        "--spectra-x": "50%",
+        "--spectra-y": "50%",
+      } as React.CSSProperties}
+    >
       {/* Red chevron glow — full coverage */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
         {/* Large radiating diamond lines */}
@@ -161,7 +196,7 @@ function HeroSection() {
         />
 
         {/* Edge fade — blends into pure black background */}
-        <div className="spectra-noise absolute inset-0 opacity-[0.55]" />
+        <div className="spectra-noise absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" style={{ opacity: 0.7 }} />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black" style={{ opacity: 0.5 }} />
       </div>
