@@ -14,6 +14,7 @@ import logging
 import os
 import threading
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, TimeoutError
 from contextlib import asynccontextmanager
 from datetime import datetime
@@ -45,6 +46,12 @@ _indexing_status = {
     "total_skipped": 0,
     "total_failed": 0,
 }
+
+PREBUILT_INDEX_MIN_RACES = int(os.getenv("PREBUILT_INDEX_MIN_RACES", "100"))
+
+
+def _env_flag(name: str) -> bool:
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def _cors_origins() -> list[str]:
@@ -177,10 +184,40 @@ def _periodic_current_season_check():
             logger.error("  Periodic check failed: %s", exc)
 
 
+def _use_prebuilt_index_if_available() -> bool:
+    """Skip full startup indexing when the deployed image already ships race data."""
+    if _env_flag("FORCE_STARTUP_INDEX"):
+        return False
+
+    indexed = indexer.list_indexed()
+    if len(indexed) < PREBUILT_INDEX_MIN_RACES:
+        return False
+
+    years = sorted({race["year"] for race in indexed})
+    _indexing_status["running"] = False
+    _indexing_status["current_year"] = None
+    _indexing_status["completed_years"] = years
+    _indexing_status["total_indexed"] = 0
+    _indexing_status["total_skipped"] = len(indexed)
+    _indexing_status["total_failed"] = 0
+
+    counts = Counter(race["year"] for race in indexed)
+    logger.info(
+        "Using prebuilt race index: %d races across %d seasons (%s)",
+        len(indexed),
+        len(years),
+        ", ".join(f"{year}:{counts[year]}" for year in years[-5:]),
+    )
+    return True
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: launch background indexer thread + live feed
-    thread = threading.Thread(target=_background_index_all, daemon=True)
+    # Startup: use the shipped index when available, otherwise build it in the background.
+    if _use_prebuilt_index_if_available():
+        thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
+    else:
+        thread = threading.Thread(target=_background_index_all, daemon=True)
     thread.start()
     live_feed.start_feed()
     yield
