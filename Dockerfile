@@ -6,8 +6,9 @@ WORKDIR /app
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend code (data is indexed on startup)
+# Copy backend code and prebuilt race index for fast cold starts
 COPY backend/ backend/
+COPY data/ data/
 
 # Expose port
 ENV PORT=8888
