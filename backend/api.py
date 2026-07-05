@@ -65,6 +65,7 @@ class HealthResponse(BaseModel):
     service: str
     current_year: int
     indexing_running: bool
+    build_commit: str | None = None
 
 
 class DataSourceHealth(BaseModel):
@@ -227,6 +228,7 @@ def health():
         "service": "raceday-backend",
         "current_year": CURRENT_YEAR,
         "indexing_running": bool(_indexing_status["running"]),
+        "build_commit": os.getenv("RENDER_GIT_COMMIT"),
     }
 
 
