@@ -8,11 +8,15 @@ never from FastF1 directly.
 
 import json
 import logging
+import time
 from datetime import datetime
 
 from backend.core import indexer, loader
 
 logger = logging.getLogger(__name__)
+
+_SEASON_SUMMARY_CACHE_TTL_SECONDS = 600
+_season_summary_cache: dict[str, object] = {"expires_at": 0.0, "data": None}
 
 
 def _race_details_from_index(year: int, track: str) -> dict:
@@ -1337,13 +1341,79 @@ def get_season_summary(year: int) -> dict | None:
 
 
 def get_all_season_summaries() -> list[dict]:
-    """Return season summaries for all years 2010–2024."""
-    summaries = []
-    from datetime import datetime
+    """Return season summaries for all indexed years without repeated rescans."""
+    now = time.time()
+    cached = _season_summary_cache.get("data")
+    if cached is not None and now < float(_season_summary_cache.get("expires_at", 0.0)):
+        return cached  # type: ignore[return-value]
+
+    indexed = indexer.list_indexed()
+    by_year: dict[int, list[str]] = {}
+    for race in indexed:
+        by_year.setdefault(race["year"], []).append(race["track"])
+
+    summaries: list[dict] = []
     for year in range(datetime.now().year, 2009, -1):
-        s = get_season_summary(year)
-        if s:
-            summaries.append(s)
+        tracks = by_year.get(year)
+        if not tracks:
+            continue
+
+        tally: dict[str, dict] = {}
+        for track in tracks:
+            data = indexer.load_race_index(year, track)
+            if data is None:
+                continue
+
+            for result in data["results"]:
+                driver = result["driver"]
+                pos = result.get("finish_position")
+                pts = _POINTS_TABLE.get(pos, 0) if pos else 0
+
+                if driver not in tally:
+                    tally[driver] = {"points": 0, "wins": 0, "races": 0, "team": result["team"]}
+
+                tally[driver]["points"] += pts
+                tally[driver]["wins"] += 1 if pos == 1 else 0
+                tally[driver]["races"] += 1
+                tally[driver]["team"] = result["team"]
+
+        if not tally:
+            continue
+
+        standings = sorted(tally.items(), key=lambda item: (-item[1]["points"], -item[1]["wins"]))
+        leader_driver, leader = standings[0]
+        wins = leader["wins"]
+        races = leader["races"]
+
+        if wins >= races * 0.8:
+            tagline = "dominant season"
+        elif wins >= races * 0.6:
+            tagline = f"{wins} wins"
+        elif wins >= 10:
+            tagline = f"{wins} wins"
+        elif wins >= 1:
+            tagline = f"{wins} win{'s' if wins > 1 else ''}"
+        else:
+            tagline = f"led with {leader['points']} pts"
+
+        if len(standings) >= 2:
+            gap = leader["points"] - standings[1][1]["points"]
+            if gap <= 10 and races >= 10:
+                tagline = "title decided last race"
+            elif gap <= 25 and races >= 10:
+                tagline = "tight championship battle"
+
+        summaries.append({
+            "year": year,
+            "champion": leader_driver,
+            "team": leader["team"],
+            "wins": wins,
+            "races": races,
+            "tagline": tagline,
+        })
+
+    _season_summary_cache["data"] = summaries
+    _season_summary_cache["expires_at"] = now + _SEASON_SUMMARY_CACHE_TTL_SECONDS
     return summaries
 
 
