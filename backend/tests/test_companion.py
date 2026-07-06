@@ -155,7 +155,7 @@ def test_replay_companion_turns_transcript_context_into_strategy_note(monkeypatc
     note = companion.build_companion_note(payload, analysis=analysis)
 
     _assert_beginner_strategy_note(note)
-    assert note["momentLabel"] == "first pit choices"
+    assert note["momentLabel"] == "the pit call is the key"
     assert note["source"] == "race-story"
 
 
@@ -203,7 +203,7 @@ def test_replay_companion_uses_video_analysis_without_exposing_metadata(monkeypa
 
     _assert_beginner_strategy_note(note)
     assert "mediaSource" not in note
-    assert note["momentLabel"] == "first pit choices"
+    assert note["momentLabel"] == "the pit call is the key"
 
 
 def test_replay_companion_uses_caption_number_clues(monkeypatch):
