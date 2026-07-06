@@ -1,7 +1,21 @@
 from backend.core import companion
 
 
-def test_replay_companion_merges_radio_context(monkeypatch):
+TECHNICAL_LEAK_WORDS = ("radio", "transcript", "mediaSource", "radioSource", "video/audio clue")
+STRATEGY_WORDS = ("tyre", "tyres", "pit", "pressure", "track position", "clean air", "strategy", "pace")
+
+
+def _assert_beginner_strategy_note(note):
+    assert note["ok"] is True
+    assert note["headline"]
+    assert 1 <= len(note["notes"]) <= 4
+
+    text = f"{note['headline']} {' '.join(note['notes'])}".lower()
+    assert any(word.lower() in text for word in STRATEGY_WORDS)
+    assert not any(word.lower() in text for word in TECHNICAL_LEAK_WORDS)
+
+
+def test_replay_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
     monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
@@ -53,12 +67,12 @@ def test_replay_companion_merges_radio_context(monkeypatch):
 
     note = companion.build_companion_note(payload, analysis=analysis)
 
-    assert note["radioSource"] == "radio-transcript"
-    assert "tyres are dead" in " ".join(note["notes"]).lower()
-    assert note["notes"]
+    _assert_beginner_strategy_note(note)
+    assert "radioSource" not in note
+    assert "the pit call is the key" == note["momentLabel"]
 
 
-def test_live_companion_merges_radio_context(monkeypatch):
+def test_live_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
     monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
@@ -93,12 +107,12 @@ def test_live_companion_merges_radio_context(monkeypatch):
         }
     )
 
-    assert note["radioSource"] == "radio-transcript"
-    assert "sliding" in " ".join(note["notes"]).lower()
-    assert note["notes"]
+    _assert_beginner_strategy_note(note)
+    assert "radioSource" not in note
+    assert note["mode"] == "live"
 
 
-def test_replay_companion_uses_transcript_context(monkeypatch):
+def test_replay_companion_turns_transcript_context_into_strategy_note(monkeypatch):
     monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
@@ -140,12 +154,12 @@ def test_replay_companion_uses_transcript_context(monkeypatch):
 
     note = companion.build_companion_note(payload, analysis=analysis)
 
-    assert note["source"] == "video-transcript"
+    _assert_beginner_strategy_note(note)
     assert note["momentLabel"] == "first pit choices"
-    assert "transcript" in " ".join(note["notes"]).lower()
+    assert note["source"] == "race-story"
 
 
-def test_replay_companion_uses_video_analysis_context(monkeypatch):
+def test_replay_companion_uses_video_analysis_without_exposing_metadata(monkeypatch):
     monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
@@ -187,9 +201,9 @@ def test_replay_companion_uses_video_analysis_context(monkeypatch):
 
     note = companion.build_companion_note(payload, analysis=analysis)
 
-    assert note["mediaSource"] == "video-analysis"
-    assert note["headline"] == "A pit call looks close."
-    assert "video/audio clue" in " ".join(note["notes"]).lower()
+    _assert_beginner_strategy_note(note)
+    assert "mediaSource" not in note
+    assert note["momentLabel"] == "first pit choices"
 
 
 def test_replay_companion_uses_caption_number_clues(monkeypatch):
@@ -235,5 +249,6 @@ def test_replay_companion_uses_caption_number_clues(monkeypatch):
     note = companion.build_companion_note(payload, analysis=analysis)
 
     joined = " ".join(note["notes"]).lower()
-    assert "lap 5" in joined
-    assert "position" in joined or "lead fight" in joined
+    _assert_beginner_strategy_note(note)
+    assert "lap 5" not in joined
+    assert "this race is opening up" == note["momentLabel"]
