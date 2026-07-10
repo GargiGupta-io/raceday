@@ -1,6 +1,6 @@
 import pytest
 
-from backend.core import companion, companion_ai, http_client
+from backend.core import companion, companion_ai, event_store, http_client
 
 
 BASE_NOTE = {
@@ -111,6 +111,8 @@ async def test_gemini_key_is_sent_as_a_parameter_not_in_the_url(monkeypatch):
 
 @pytest.mark.asyncio
 async def test_provider_failure_returns_deterministic_fallback_signal(monkeypatch):
+    events = []
+
     async def request_json(*args, **kwargs):
         raise http_client.UpstreamRequestError(
             "ai",
@@ -123,10 +125,41 @@ async def test_provider_failure_returns_deterministic_fallback_signal(monkeypatc
     monkeypatch.setattr(companion_ai, "OPENAI_KEY", "test-openai-key")
     monkeypatch.setattr(companion_ai, "GEMINI_KEY", "")
     monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+    monkeypatch.setattr(
+        event_store,
+        "record_service_event",
+        lambda **event: events.append(event) or True,
+    )
 
     result = await companion_ai.refine_companion_note({}, BASE_NOTE)
 
     assert result is None
+    assert events == [
+        {
+            "event_type": "fallback",
+            "source": "ai",
+            "outcome": "used",
+            "fallback_used": True,
+            "error_code": "UpstreamRequestError",
+            "context": {"provider": "openai"},
+        }
+    ]
+
+
+@pytest.mark.asyncio
+async def test_event_recorder_failure_does_not_block_ai_fallback(monkeypatch):
+    async def request_json(*args, **kwargs):
+        raise TimeoutError("provider unavailable")
+
+    def failed_recorder(**event):
+        raise RuntimeError("event queue unavailable")
+
+    monkeypatch.setattr(companion_ai, "OPENAI_KEY", "test-openai-key")
+    monkeypatch.setattr(companion_ai, "GEMINI_KEY", "")
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+    monkeypatch.setattr(event_store, "record_service_event", failed_recorder)
+
+    assert await companion_ai.refine_companion_note({}, BASE_NOTE) is None
 
 
 @pytest.mark.asyncio
