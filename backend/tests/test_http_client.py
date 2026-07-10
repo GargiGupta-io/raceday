@@ -4,9 +4,11 @@ from datetime import datetime, timezone
 import httpx
 import pytest
 
+from backend.core.circuit_breaker import CircuitBreakerPolicy, CircuitBreakerRegistry
 from backend.core.http_client import (
     AsyncUpstreamClient,
     RequestPolicy,
+    UpstreamCircuitOpenError,
     UpstreamPayloadError,
     UpstreamRequestError,
 )
@@ -121,6 +123,7 @@ async def test_retries_temporary_server_error():
 @pytest.mark.asyncio
 async def test_does_not_retry_permanent_client_error():
     attempts = 0
+    registry = CircuitBreakerRegistry()
 
     def handler(request):
         nonlocal attempts
@@ -128,7 +131,7 @@ async def test_does_not_retry_permanent_client_error():
         return httpx.Response(400, request=request)
 
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
-        client = AsyncUpstreamClient(raw_client)
+        client = AsyncUpstreamClient(raw_client, breaker_registry=registry)
         with pytest.raises(UpstreamRequestError) as caught:
             await client.request_json(
                 "GET",
@@ -141,6 +144,8 @@ async def test_does_not_retry_permanent_client_error():
     assert attempts == 1
     assert caught.value.status_code == 400
     assert caught.value.retryable is False
+    assert registry.snapshot()["test"]["state"] == "closed"
+    assert registry.snapshot()["test"]["failure_count"] == 0
 
 
 @pytest.mark.asyncio
@@ -315,6 +320,92 @@ async def test_cancellation_is_never_retried():
             )
 
     assert attempts == 1
+
+
+@pytest.mark.asyncio
+async def test_repeated_exhausted_requests_open_the_circuit():
+    attempts = 0
+    registry = CircuitBreakerRegistry(
+        default_policy=CircuitBreakerPolicy(
+            failure_threshold=2,
+            recovery_timeout_seconds=10,
+        )
+    )
+
+    def handler(request):
+        nonlocal attempts
+        attempts += 1
+        return httpx.Response(503, request=request)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
+        client = AsyncUpstreamClient(raw_client, breaker_registry=registry)
+        for _ in range(2):
+            with pytest.raises(UpstreamRequestError):
+                await client.request_json(
+                    "GET",
+                    "https://example.test/unavailable",
+                    source="test",
+                    operation="unavailable",
+                    policy=policy(max_attempts=1),
+                )
+
+        with pytest.raises(UpstreamCircuitOpenError) as caught:
+            await client.request_json(
+                "GET",
+                "https://example.test/unavailable",
+                source="test",
+                operation="unavailable",
+                policy=policy(max_attempts=1),
+            )
+
+    assert attempts == 2
+    assert caught.value.attempts == 0
+    assert caught.value.retry_after_seconds > 0
+    assert registry.snapshot()["test"]["state"] == "open"
+
+
+@pytest.mark.asyncio
+async def test_successful_half_open_request_closes_the_circuit():
+    attempts = 0
+    clock = [0.0]
+    registry = CircuitBreakerRegistry(
+        default_policy=CircuitBreakerPolicy(
+            failure_threshold=1,
+            recovery_timeout_seconds=5,
+        ),
+        clock=lambda: clock[0],
+    )
+
+    def handler(request):
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            return httpx.Response(503, request=request)
+        return httpx.Response(200, json={"recovered": True}, request=request)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
+        client = AsyncUpstreamClient(raw_client, breaker_registry=registry)
+        with pytest.raises(UpstreamRequestError):
+            await client.request_json(
+                "GET",
+                "https://example.test/recovering",
+                source="test",
+                operation="recovering",
+                policy=policy(max_attempts=1),
+            )
+
+        clock[0] = 5.0
+        result = await client.request_json(
+            "GET",
+            "https://example.test/recovering",
+            source="test",
+            operation="recovering",
+            policy=policy(max_attempts=1),
+        )
+
+    assert result == {"recovered": True}
+    assert attempts == 2
+    assert registry.snapshot()["test"]["state"] == "closed"
 
 
 @pytest.mark.asyncio
