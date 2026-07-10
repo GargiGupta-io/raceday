@@ -12,9 +12,15 @@ from typing import Any, Awaitable, Callable, Mapping
 
 import httpx
 
+from backend.core.circuit_breaker import (
+    DEFAULT_SOURCE_POLICIES,
+    CircuitBreakerOpen,
+    CircuitBreakerRegistry,
+)
+
 logger = logging.getLogger(__name__)
 
-RETRYABLE_STATUS_CODES = frozenset({408, 425, 429, 502, 503, 504})
+RETRYABLE_STATUS_CODES = frozenset({408, 425, 429, 500, 502, 503, 504})
 
 
 @dataclass(frozen=True)
@@ -128,6 +134,26 @@ class UpstreamPayloadError(UpstreamRequestError):
     """An upstream response succeeded at HTTP level but did not contain JSON."""
 
 
+class UpstreamCircuitOpenError(UpstreamRequestError):
+    """An upstream call was skipped because its circuit is open."""
+
+    def __init__(
+        self,
+        source: str,
+        operation: str,
+        *,
+        retry_after_seconds: float,
+    ):
+        super().__init__(
+            source,
+            operation,
+            attempts=0,
+            retryable=True,
+            reason="circuit open",
+        )
+        self.retry_after_seconds = retry_after_seconds
+
+
 Sleep = Callable[[float], Awaitable[None]]
 Jitter = Callable[[], float]
 Now = Callable[[], datetime]
@@ -143,12 +169,14 @@ class AsyncUpstreamClient:
         sleep: Sleep = asyncio.sleep,
         jitter: Jitter = random.random,
         now: Now = lambda: datetime.now(timezone.utc),
+        breaker_registry: CircuitBreakerRegistry | None = None,
     ):
         self._client = client
         self._owns_client = client is None
         self._sleep = sleep
         self._jitter = jitter
         self._now = now
+        self._breaker_registry = breaker_registry or CircuitBreakerRegistry()
 
     @property
     def started(self) -> bool:
@@ -181,10 +209,67 @@ class AsyncUpstreamClient:
     ) -> Any:
         client = self._require_client()
         source_key = source.strip().lower()
+        if not source_key:
+            raise ValueError("source cannot be empty")
+
         request_policy = policy or SOURCE_POLICIES.get(source_key, DEFAULT_POLICY)
         operation_name = operation or method.upper()
+        breaker = self._breaker_registry.get(source_key)
 
-        for attempt in range(1, request_policy.max_attempts + 1):
+        try:
+            permit = await breaker.acquire()
+        except CircuitBreakerOpen as exc:
+            raise UpstreamCircuitOpenError(
+                source_key,
+                operation_name,
+                retry_after_seconds=exc.retry_after_seconds,
+            ) from exc
+
+        try:
+            result = await self._request_json_with_retries(
+                client,
+                method,
+                url,
+                source=source_key,
+                operation=operation_name,
+                policy=request_policy,
+                params=params,
+                headers=headers,
+                json=json,
+            )
+        except asyncio.CancelledError:
+            await breaker.abandon(permit)
+            raise
+        except UpstreamPayloadError:
+            await breaker.record_failure(permit)
+            raise
+        except UpstreamRequestError as exc:
+            if exc.retryable:
+                await breaker.record_failure(permit)
+            else:
+                await breaker.record_success(permit)
+            raise
+        except Exception:
+            await breaker.abandon(permit)
+            raise
+
+        await breaker.record_success(permit)
+        return result
+
+    async def _request_json_with_retries(
+        self,
+        client: httpx.AsyncClient,
+        method: str,
+        url: str,
+        *,
+        source: str,
+        operation: str,
+        policy: RequestPolicy,
+        params: Mapping[str, Any] | None,
+        headers: Mapping[str, str] | None,
+        json: Any,
+    ) -> Any:
+        for attempt in range(1, policy.max_attempts + 1):
             try:
                 response = await client.request(
                     method,
@@ -192,34 +277,34 @@ class AsyncUpstreamClient:
                     params=params,
                     headers=headers,
                     json=json,
-                    timeout=request_policy.as_httpx_timeout(),
+                    timeout=policy.as_httpx_timeout(),
                 )
             except asyncio.CancelledError:
                 raise
             except httpx.RequestError as exc:
-                if attempt >= request_policy.max_attempts:
+                if attempt >= policy.max_attempts:
                     raise UpstreamRequestError(
-                        source_key,
-                        operation_name,
+                        source,
+                        operation,
                         attempts=attempt,
                         retryable=True,
                         reason=self._request_error_reason(exc),
                     ) from exc
 
                 await self._wait_before_retry(
-                    source_key,
-                    operation_name,
+                    source,
+                    operation,
                     attempt,
-                    request_policy,
+                    policy,
                 )
                 continue
 
             if response.status_code >= 400:
-                retryable = response.status_code in request_policy.retryable_status_codes
-                if not retryable or attempt >= request_policy.max_attempts:
+                retryable = response.status_code in policy.retryable_status_codes
+                if not retryable or attempt >= policy.max_attempts:
                     raise UpstreamRequestError(
-                        source_key,
-                        operation_name,
+                        source,
+                        operation,
                         attempts=attempt,
                         status_code=response.status_code,
                         retryable=retryable,
@@ -229,11 +314,11 @@ class AsyncUpstreamClient:
                 retry_after = self._retry_after_seconds(response.headers.get("Retry-After"))
                 if (
                     retry_after is not None
-                    and retry_after > request_policy.max_retry_after_seconds
+                    and retry_after > policy.max_retry_after_seconds
                 ):
                     raise UpstreamRequestError(
-                        source_key,
-                        operation_name,
+                        source,
+                        operation,
                         attempts=attempt,
                         status_code=response.status_code,
                         retryable=True,
@@ -241,10 +326,10 @@ class AsyncUpstreamClient:
                     )
 
                 await self._wait_before_retry(
-                    source_key,
-                    operation_name,
+                    source,
+                    operation,
                     attempt,
-                    request_policy,
+                    policy,
                     retry_after=retry_after,
                 )
                 continue
@@ -256,8 +341,8 @@ class AsyncUpstreamClient:
                 return response.json()
             except ValueError as exc:
                 raise UpstreamPayloadError(
-                    source_key,
-                    operation_name,
+                    source,
+                    operation,
                     attempts=attempt,
                     status_code=response.status_code,
                     retryable=False,
@@ -328,7 +413,8 @@ class AsyncUpstreamClient:
         return "transport error"
 
 
-upstream_client = AsyncUpstreamClient()
+circuit_breakers = CircuitBreakerRegistry(DEFAULT_SOURCE_POLICIES)
+upstream_client = AsyncUpstreamClient(breaker_registry=circuit_breakers)
 
 
 async def start_upstream_client():
