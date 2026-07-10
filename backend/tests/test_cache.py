@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from backend.core import cache as cache_module
 from backend.core.cache import MemoryCache, RateLimiter, RuntimeCache
 
 
@@ -140,13 +141,19 @@ async def test_runtime_cache_uses_fake_redis_when_available():
 
 
 @pytest.mark.asyncio
-async def test_redis_startup_failure_falls_back_to_memory():
+async def test_redis_startup_failure_falls_back_to_memory(monkeypatch):
+    events = []
     clock = FakeClock(20.0)
     redis = FakeRedis(fail_ping=True)
     cache = RuntimeCache(
         redis_factory=lambda url: redis,
         clock=clock,
         redis_retry_seconds=30,
+    )
+    monkeypatch.setattr(
+        cache_module.event_store,
+        "record_service_event",
+        lambda **event: events.append(event) or True,
     )
     await cache.start(redis_url="redis://cache.test")
 
@@ -158,6 +165,37 @@ async def test_redis_startup_failure_falls_back_to_memory():
     assert cache.status()["status"] == "degraded"
     assert cache.status()["last_error"] == "ConnectionError"
     assert cache.status()["retry_after_seconds"] == 30.0
+    assert events == [
+        {
+            "event_type": "cache_fallback",
+            "source": "redis",
+            "outcome": "used",
+            "fallback_used": True,
+            "error_code": "ConnectionError",
+            "context": {"operation": "connect", "cache_backend": "memory"},
+        }
+    ]
+
+
+@pytest.mark.asyncio
+async def test_event_recorder_failure_does_not_break_memory_fallback(monkeypatch):
+    redis = FakeRedis(fail_ping=True)
+    cache = RuntimeCache(redis_factory=lambda url: redis)
+
+    def failed_recorder(**event):
+        raise RuntimeError("event queue unavailable")
+
+    monkeypatch.setattr(
+        cache_module.event_store,
+        "record_service_event",
+        failed_recorder,
+    )
+
+    await cache.start(redis_url="redis://cache.test")
+    await cache.set_json("live", {"lap": 27}, 30)
+
+    assert await cache.get_json("live") == {"lap": 27}
+    assert cache.status()["backend"] == "memory"
 
 
 @pytest.mark.asyncio
