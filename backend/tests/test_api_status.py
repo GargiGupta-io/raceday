@@ -27,6 +27,43 @@ def test_data_source_health_includes_live_source():
     assert {"FastF1", "Jolpica", "OpenMeteo", "OpenF1"}.issubset(names)
 
 
+def test_data_source_health_exposes_circuit_state():
+    response = api.data_source_health()
+    sources = {source["name"]: source for source in response}
+
+    assert sources["OpenF1"]["circuit"] == "closed"
+    assert sources["Jolpica"]["circuit"] == "closed"
+    assert sources["OpenMeteo"]["circuit"] == "closed"
+    assert sources["Companion AI"]["circuit"] == "closed"
+
+
+def test_open_circuit_marks_source_as_degraded(monkeypatch):
+    monkeypatch.setattr(
+        api.http_client.circuit_breakers,
+        "snapshot",
+        lambda: {
+            "openf1": {
+                "state": "open",
+                "failure_count": 4,
+                "retry_after_seconds": 12.5,
+            }
+        },
+    )
+    monkeypatch.setattr(
+        api.live_feed,
+        "get_live_status",
+        lambda: {"status": "idle", "last_error": None},
+    )
+
+    sources = {source["name"]: source for source in api.data_source_health()}
+    openf1 = sources["OpenF1"]
+
+    assert openf1["status"] == "degraded"
+    assert openf1["circuit"] == "open"
+    assert openf1["circuit_failures"] == 4
+    assert openf1["circuit_retry_after_seconds"] == 12.5
+
+
 def test_live_demo_endpoint_returns_active_snapshot():
     response = api.live_demo_snapshot()
 
