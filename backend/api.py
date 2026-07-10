@@ -10,8 +10,10 @@ is re-checked periodically to pick up new races as they happen.
 """
 
 import asyncio
+import hashlib
 import logging
 import os
+import secrets
 import threading
 import time
 from collections import Counter
@@ -25,7 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import companion, http_client, indexer, insights, storage
+from backend.core import cache, companion, http_client, indexer, insights, storage
 from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
@@ -48,6 +50,41 @@ _indexing_status = {
 }
 
 PREBUILT_INDEX_MIN_RACES = int(os.getenv("PREBUILT_INDEX_MIN_RACES", "100"))
+SEASON_SUMMARY_CACHE_KEY = "raceday:season-summary:v1"
+SEASON_SUMMARY_CACHE_TTL_SECONDS = 600
+
+
+def _positive_env_int(name: str, default: int) -> int:
+    try:
+        value = int(os.getenv(name, str(default)))
+    except ValueError:
+        return default
+    return value if value > 0 else default
+
+
+_RATE_LIMIT_POLICIES = {
+    "companion-note": (
+        _positive_env_int("RATE_LIMIT_COMPANION_PER_MINUTE", 120),
+        60,
+    ),
+    "companion-analysis": (
+        _positive_env_int("RATE_LIMIT_ANALYSIS_PER_MINUTE", 30),
+        60,
+    ),
+    "simulation": (
+        _positive_env_int("RATE_LIMIT_SIMULATION_PER_MINUTE", 60),
+        60,
+    ),
+    "refresh": (
+        _positive_env_int("RATE_LIMIT_REFRESH_PER_HOUR", 6),
+        3600,
+    ),
+}
+_RATE_LIMIT_SALT = (
+    os.getenv("RATE_LIMIT_SALT")
+    or os.getenv("REDIS_URL")
+    or secrets.token_hex(32)
+)
 
 
 def _env_flag(name: str) -> bool:
@@ -111,6 +148,16 @@ class StorageStatusResponse(BaseModel):
     database_url_configured: bool
     postgres_ready: bool
     active_store: str
+
+
+class CacheStatusResponse(BaseModel):
+    status: str
+    backend: str
+    redis_configured: bool
+    redis_available: bool
+    fallback_backend: str
+    last_error: str | None = None
+    retry_after_seconds: float
 
 
 class CompanionVideoRequest(BaseModel):
@@ -216,8 +263,9 @@ def _use_prebuilt_index_if_available() -> bool:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await http_client.start_upstream_client()
+    await cache.start_runtime_cache()
     try:
+        await http_client.start_upstream_client()
         # Startup: use the shipped index when available, otherwise build it in the background.
         if _use_prebuilt_index_if_available():
             thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
@@ -229,6 +277,7 @@ async def lifespan(app: FastAPI):
     finally:
         await live_feed.stop_feed()
         await http_client.stop_upstream_client()
+        await cache.stop_runtime_cache()
 
 
 # ---------------------------------------------------------------------------
@@ -248,6 +297,74 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+
+def _rate_limit_policy(method: str, path: str) -> tuple[str, int, int] | None:
+    if method.upper() != "POST":
+        return None
+    if path == "/companion/note":
+        limit, window = _RATE_LIMIT_POLICIES["companion-note"]
+        return "companion-note", limit, window
+    if path == "/companion/analyze-video":
+        limit, window = _RATE_LIMIT_POLICIES["companion-analysis"]
+        return "companion-analysis", limit, window
+    if path.startswith("/refresh/"):
+        limit, window = _RATE_LIMIT_POLICIES["refresh"]
+        return "refresh", limit, window
+    if path.endswith("/simulate") or path.endswith("/simulate-swap"):
+        limit, window = _RATE_LIMIT_POLICIES["simulation"]
+        return "simulation", limit, window
+    return None
+
+
+def _rate_limit_identifier(request: Request) -> str:
+    forwarded = request.headers.get("x-forwarded-for", "").rsplit(",", 1)[-1].strip()
+    address = (
+        request.headers.get("cf-connecting-ip")
+        or request.headers.get("x-real-ip")
+        or forwarded
+        or (request.client.host if request.client else "unknown")
+    )
+    digest = hashlib.sha256(f"{_RATE_LIMIT_SALT}:{address[:256]}".encode("utf-8"))
+    return digest.hexdigest()[:24]
+
+
+@app.middleware("http")
+async def targeted_rate_limit(request: Request, call_next):
+    policy = _rate_limit_policy(request.method, request.url.path)
+    if policy is None:
+        return await call_next(request)
+
+    scope, limit, window_seconds = policy
+    try:
+        decision = await cache.rate_limiter.check(
+            scope,
+            _rate_limit_identifier(request),
+            limit=limit,
+            window_seconds=window_seconds,
+        )
+    except Exception as exc:
+        logger.warning(
+            "rate_limiter_failed_open",
+            extra={"scope": scope, "error_type": type(exc).__name__},
+        )
+        return await call_next(request)
+
+    headers = {
+        "X-RateLimit-Limit": str(decision.limit),
+        "X-RateLimit-Remaining": str(decision.remaining),
+    }
+    if not decision.allowed:
+        headers["Retry-After"] = str(decision.retry_after_seconds)
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please try again shortly."},
+            headers=headers,
+        )
+
+    response = await call_next(request)
+    response.headers.update(headers)
+    return response
 
 
 @app.exception_handler(Exception)
@@ -339,6 +456,11 @@ def data_source_health():
             **breaker_fields("ai"),
         },
     ]
+
+
+@app.get("/health/cache", response_model=CacheStatusResponse)
+def cache_health():
+    return cache.runtime_cache.status()
 
 
 @app.post("/refresh/{year}")
@@ -456,8 +578,34 @@ def storage_status():
 
 
 @app.get("/seasons/summary")
-def all_season_summaries():
-    return insights.get_all_season_summaries()
+async def all_season_summaries():
+    try:
+        cached = await cache.runtime_cache.get_json(
+            SEASON_SUMMARY_CACHE_KEY,
+            memory_ttl_seconds=SEASON_SUMMARY_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        cached = None
+        logger.warning(
+            "season_summary_cache_read_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    if isinstance(cached, list):
+        return cached
+
+    summaries = await asyncio.to_thread(insights.get_all_season_summaries)
+    try:
+        await cache.runtime_cache.set_json(
+            SEASON_SUMMARY_CACHE_KEY,
+            summaries,
+            SEASON_SUMMARY_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        logger.warning(
+            "season_summary_cache_write_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    return summaries
 
 
 @app.get("/races/{year}")
