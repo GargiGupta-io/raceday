@@ -25,7 +25,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import companion, indexer, insights, storage
+from backend.core import companion, http_client, indexer, insights, storage
 from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
@@ -213,16 +213,19 @@ def _use_prebuilt_index_if_available() -> bool:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: use the shipped index when available, otherwise build it in the background.
-    if _use_prebuilt_index_if_available():
-        thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
-    else:
-        thread = threading.Thread(target=_background_index_all, daemon=True)
-    thread.start()
-    live_feed.start_feed()
-    yield
-    # Shutdown
-    live_feed.stop_feed()
+    await http_client.start_upstream_client()
+    try:
+        # Startup: use the shipped index when available, otherwise build it in the background.
+        if _use_prebuilt_index_if_available():
+            thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
+        else:
+            thread = threading.Thread(target=_background_index_all, daemon=True)
+        thread.start()
+        live_feed.start_feed()
+        yield
+    finally:
+        live_feed.stop_feed()
+        await http_client.stop_upstream_client()
 
 
 # ---------------------------------------------------------------------------
