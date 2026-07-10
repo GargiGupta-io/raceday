@@ -27,7 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import cache, companion, http_client, indexer, insights, storage
+from backend.core import cache, companion, event_store, http_client, indexer, insights, storage
 from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
@@ -142,14 +142,6 @@ class LiveStatusResponse(BaseModel):
     source: str
 
 
-class StorageStatusResponse(BaseModel):
-    backend: str
-    json_index_dir: str
-    database_url_configured: bool
-    postgres_ready: bool
-    active_store: str
-
-
 class CacheStatusResponse(BaseModel):
     status: str
     backend: str
@@ -158,6 +150,31 @@ class CacheStatusResponse(BaseModel):
     fallback_backend: str
     last_error: str | None = None
     retry_after_seconds: float
+
+
+class EventStoreStatusResponse(BaseModel):
+    status: str
+    enabled: bool
+    database_configured: bool
+    database_available: bool
+    worker_running: bool
+    queue_depth: int
+    queue_capacity: int
+    written_events: int
+    failed_writes: int
+    dropped_events: int
+    invalid_events: int
+    last_error: str | None = None
+    retry_after_seconds: float
+
+
+class StorageStatusResponse(BaseModel):
+    backend: str
+    json_index_dir: str
+    database_url_configured: bool
+    postgres_ready: bool
+    active_store: str
+    event_store: EventStoreStatusResponse
 
 
 class CompanionVideoRequest(BaseModel):
@@ -263,8 +280,9 @@ def _use_prebuilt_index_if_available() -> bool:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await cache.start_runtime_cache()
+    await event_store.start_service_event_store()
     try:
+        await cache.start_runtime_cache()
         await http_client.start_upstream_client()
         # Startup: use the shipped index when available, otherwise build it in the background.
         if _use_prebuilt_index_if_available():
@@ -278,6 +296,7 @@ async def lifespan(app: FastAPI):
         await live_feed.stop_feed()
         await http_client.stop_upstream_client()
         await cache.stop_runtime_cache()
+        await event_store.stop_service_event_store()
 
 
 # ---------------------------------------------------------------------------
@@ -463,6 +482,11 @@ def cache_health():
     return cache.runtime_cache.status()
 
 
+@app.get("/health/events", response_model=EventStoreStatusResponse)
+def event_store_health():
+    return event_store.service_events.status()
+
+
 @app.post("/refresh/{year}")
 def refresh_season(year: int):
     """Manually trigger re-indexing for a specific season. Useful after a race weekend."""
@@ -574,7 +598,10 @@ def indexing_status():
 
 @app.get("/storage/status", response_model=StorageStatusResponse)
 def storage_status():
-    return storage.storage_status()
+    return {
+        **storage.storage_status(),
+        "event_store": event_store.service_events.status(),
+    }
 
 
 @app.get("/seasons/summary")
