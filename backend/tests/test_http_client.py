@@ -419,3 +419,115 @@ async def test_owned_client_starts_and_closes_cleanly():
 
     await client.close()
     assert client.started is False
+
+
+@pytest.mark.asyncio
+async def test_successful_request_records_sanitized_operational_event():
+    events = []
+    times = iter([10.0, 10.125])
+
+    def handler(request):
+        return httpx.Response(200, json={"ok": True}, request=request)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
+        client = AsyncUpstreamClient(
+            raw_client,
+            timer=lambda: next(times),
+            event_recorder=lambda **event: events.append(event) or True,
+        )
+        result = await client.request_json(
+            "GET",
+            "https://provider.example/private-path?token=secret",
+            source="openf1",
+            operation="sessions",
+            policy=policy(max_attempts=1),
+            headers={"Authorization": "Bearer secret"},
+        )
+
+    assert result == {"ok": True}
+    assert events == [
+        {
+            "event_type": "upstream_request",
+            "source": "openf1",
+            "outcome": "success",
+            "duration_ms": 125,
+            "status_code": None,
+            "fallback_used": False,
+            "error_code": None,
+            "context": {"operation": "sessions"},
+        }
+    ]
+    assert "secret" not in str(events)
+    assert "provider.example" not in str(events)
+
+
+@pytest.mark.asyncio
+async def test_failed_and_open_circuit_requests_record_failure_and_fallback():
+    events = []
+    timer_value = 0.0
+    registry = CircuitBreakerRegistry(
+        default_policy=CircuitBreakerPolicy(
+            failure_threshold=1,
+            recovery_timeout_seconds=30,
+        )
+    )
+
+    def timer():
+        nonlocal timer_value
+        timer_value += 0.1
+        return timer_value
+
+    def handler(request):
+        return httpx.Response(503, request=request)
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
+        client = AsyncUpstreamClient(
+            raw_client,
+            breaker_registry=registry,
+            timer=timer,
+            event_recorder=lambda **event: events.append(event) or True,
+        )
+        with pytest.raises(UpstreamRequestError):
+            await client.request_json(
+                "GET",
+                "https://provider.example/failing",
+                source="openf1",
+                operation="position",
+                policy=policy(max_attempts=1),
+            )
+        with pytest.raises(UpstreamCircuitOpenError):
+            await client.request_json(
+                "GET",
+                "https://provider.example/failing",
+                source="openf1",
+                operation="position",
+                policy=policy(max_attempts=1),
+            )
+
+    assert [event["outcome"] for event in events] == ["failure", "skipped"]
+    assert events[0]["status_code"] == 503
+    assert events[0]["context"] == {"operation": "position", "attempts": 1}
+    assert events[1]["fallback_used"] is True
+    assert events[1]["error_code"] == "circuit_open"
+    assert events[1]["context"] == {"operation": "position", "circuit": "open"}
+
+
+@pytest.mark.asyncio
+async def test_event_recorder_failure_does_not_break_upstream_request():
+    def handler(request):
+        return httpx.Response(200, json={"ok": True}, request=request)
+
+    def failed_recorder(**event):
+        raise RuntimeError("event queue unavailable")
+
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as raw_client:
+        client = AsyncUpstreamClient(raw_client, event_recorder=failed_recorder)
+        result = await client.request_json(
+            "GET",
+            "https://provider.example/healthy",
+            source="openf1",
+            operation="sessions",
+            policy=policy(max_attempts=1),
+        )
+
+    assert result == {"ok": True}
