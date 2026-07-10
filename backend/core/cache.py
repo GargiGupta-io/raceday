@@ -12,6 +12,8 @@ import time
 from dataclasses import dataclass
 from typing import Any, Callable, Protocol
 
+from backend.core import event_store
+
 logger = logging.getLogger(__name__)
 
 
@@ -335,7 +337,7 @@ class RuntimeCache:
                     self._redis = RedisCache(self._redis_factory(self._redis_url))
                 await self._redis.ping()
             except Exception as exc:
-                self._mark_redis_failure(exc)
+                self._mark_redis_failure(exc, operation="connect")
                 logger.warning(
                     "redis_connection_failed",
                     extra={"error_type": type(exc).__name__},
@@ -359,17 +361,31 @@ class RuntimeCache:
             self._last_error = None
             return result
         except Exception as exc:
-            self._mark_redis_failure(exc)
+            self._mark_redis_failure(exc, operation=operation)
             logger.warning(
                 "redis_operation_failed",
                 extra={"operation": operation, "error_type": type(exc).__name__},
             )
             return _PRIMARY_UNAVAILABLE
 
-    def _mark_redis_failure(self, exc: Exception) -> None:
+    def _mark_redis_failure(self, exc: Exception, *, operation: str) -> None:
         self._redis_available = False
         self._last_error = type(exc).__name__
         self._redis_retry_at = self._clock() + self._redis_retry_seconds
+        try:
+            event_store.record_service_event(
+                event_type="cache_fallback",
+                source="redis",
+                outcome="used",
+                fallback_used=True,
+                error_code=type(exc).__name__,
+                context={"operation": operation, "cache_backend": "memory"},
+            )
+        except Exception as event_exc:
+            logger.warning(
+                "redis_event_record_failed",
+                extra={"error_type": type(event_exc).__name__},
+            )
 
 
 @dataclass(frozen=True)
