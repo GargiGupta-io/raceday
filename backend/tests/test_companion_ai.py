@@ -11,6 +11,24 @@ BASE_NOTE = {
 }
 
 
+class FakeRuntimeCache:
+    def __init__(self, *, fail: bool = False):
+        self.values = {}
+        self.fail = fail
+        self.set_calls = []
+
+    async def get_json(self, key, **kwargs):
+        if self.fail:
+            raise ConnectionError("cache unavailable")
+        return self.values.get(key)
+
+    async def set_json(self, key, value, ttl_seconds):
+        if self.fail:
+            raise ConnectionError("cache unavailable")
+        self.values[key] = value
+        self.set_calls.append((key, value, ttl_seconds))
+
+
 @pytest.mark.asyncio
 async def test_missing_provider_key_keeps_deterministic_note_path(monkeypatch):
     monkeypatch.setattr(companion_ai, "OPENAI_KEY", "")
@@ -109,6 +127,79 @@ async def test_provider_failure_returns_deterministic_fallback_signal(monkeypatc
     result = await companion_ai.refine_companion_note({}, BASE_NOTE)
 
     assert result is None
+
+
+@pytest.mark.asyncio
+async def test_identical_companion_moment_reuses_cached_ai_note(monkeypatch):
+    calls = 0
+    fake_cache = FakeRuntimeCache()
+
+    async def request_json(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return {
+            "choices": [
+                {
+                    "message": {
+                        "content": (
+                            '{"headline":"Traffic decides this stop.",'
+                            '"notes":["Fresh tyres help only with clear road ahead."]}'
+                        )
+                    }
+                }
+            ]
+        }
+
+    monkeypatch.setattr(companion_ai, "OPENAI_KEY", "test-openai-key")
+    monkeypatch.setattr(companion_ai, "GEMINI_KEY", "")
+    monkeypatch.setattr(companion_ai.cache, "runtime_cache", fake_cache)
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+
+    first = await companion_ai.refine_companion_note(
+        {"raceName": "Dutch Grand Prix", "currentTime": 120, "duration": 480},
+        BASE_NOTE,
+    )
+    second = await companion_ai.refine_companion_note(
+        {"raceName": "Dutch Grand Prix", "currentTime": 128, "duration": 480},
+        BASE_NOTE,
+    )
+
+    assert first == second
+    assert calls == 1
+    assert fake_cache.set_calls[0][2] == companion_ai.COMPANION_AI_CACHE_TTL_SECONDS
+
+
+@pytest.mark.asyncio
+async def test_cache_failure_does_not_block_ai_refinement(monkeypatch):
+    async def request_json(*args, **kwargs):
+        return {
+            "choices": [
+                {
+                    "message": {
+                        "content": (
+                            '{"headline":"The timing of this stop matters.",'
+                            '"notes":["Traffic can erase the fresh-tyre advantage."]}'
+                        )
+                    }
+                }
+            ]
+        }
+
+    monkeypatch.setattr(companion_ai, "OPENAI_KEY", "test-openai-key")
+    monkeypatch.setattr(companion_ai, "GEMINI_KEY", "")
+    monkeypatch.setattr(
+        companion_ai.cache,
+        "runtime_cache",
+        FakeRuntimeCache(fail=True),
+    )
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+
+    result = await companion_ai.refine_companion_note(
+        {"raceName": "Singapore Grand Prix", "currentTime": 200},
+        BASE_NOTE,
+    )
+
+    assert result["headline"] == "The timing of this stop matters."
 
 
 @pytest.mark.asyncio
