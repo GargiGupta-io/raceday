@@ -224,10 +224,10 @@ async def lifespan(app: FastAPI):
         else:
             thread = threading.Thread(target=_background_index_all, daemon=True)
         thread.start()
-        live_feed.start_feed()
+        await live_feed.start_feed()
         yield
     finally:
-        live_feed.stop_feed()
+        await live_feed.stop_feed()
         await http_client.stop_upstream_client()
 
 
@@ -297,7 +297,7 @@ def data_source_health():
         return default
 
     openf1_status = source_status("openf1")
-    if live_status.get("status") == "error":
+    if live_status.get("status") in {"error", "degraded"}:
         openf1_status = "degraded"
 
     ai_configured = bool(os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY"))
@@ -389,7 +389,7 @@ def companion_analyze_video(payload: CompanionVideoRequest):
 
 
 @app.post("/companion/note")
-def companion_note(payload: CompanionNoteRequest):
+async def companion_note(payload: CompanionNoteRequest):
     """
     Return the current short RaceDay companion note for a replay or live session.
     """
@@ -399,7 +399,11 @@ def companion_note(payload: CompanionNoteRequest):
         live_state = data.get("liveState")
         if data.get("mode") == "live" and live_state is None:
             live_state = live_feed.get_live_state()
-        return companion.build_companion_note(data, analysis=analysis, live_state=live_state)
+        return await companion.build_companion_note_with_ai(
+            data,
+            analysis=analysis,
+            live_state=live_state,
+        )
     except Exception as exc:
         logger.exception("companion_note_failed")
         raise HTTPException(status_code=500, detail=f"Companion note failed: {exc}")
