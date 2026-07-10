@@ -6,6 +6,7 @@ numpy
 python-dotenv
 requests
 httpx
+redis>=5.0,<7.0
 pytest
 pytest-asyncio
 
