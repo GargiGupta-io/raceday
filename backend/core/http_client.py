@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import random
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
@@ -12,6 +13,7 @@ from typing import Any, Awaitable, Callable, Mapping
 
 import httpx
 
+from backend.core import event_store
 from backend.core.circuit_breaker import (
     DEFAULT_SOURCE_POLICIES,
     CircuitBreakerOpen,
@@ -157,6 +159,8 @@ class UpstreamCircuitOpenError(UpstreamRequestError):
 Sleep = Callable[[float], Awaitable[None]]
 Jitter = Callable[[], float]
 Now = Callable[[], datetime]
+Timer = Callable[[], float]
+EventRecorder = Callable[..., bool]
 
 
 class AsyncUpstreamClient:
@@ -169,6 +173,8 @@ class AsyncUpstreamClient:
         sleep: Sleep = asyncio.sleep,
         jitter: Jitter = random.random,
         now: Now = lambda: datetime.now(timezone.utc),
+        timer: Timer = time.monotonic,
+        event_recorder: EventRecorder = event_store.record_service_event,
         breaker_registry: CircuitBreakerRegistry | None = None,
     ):
         self._client = client
@@ -176,6 +182,8 @@ class AsyncUpstreamClient:
         self._sleep = sleep
         self._jitter = jitter
         self._now = now
+        self._timer = timer
+        self._event_recorder = event_recorder
         self._breaker_registry = breaker_registry or CircuitBreakerRegistry()
 
     @property
@@ -215,10 +223,20 @@ class AsyncUpstreamClient:
         request_policy = policy or SOURCE_POLICIES.get(source_key, DEFAULT_POLICY)
         operation_name = operation or method.upper()
         breaker = self._breaker_registry.get(source_key)
+        started_at = self._timer()
 
         try:
             permit = await breaker.acquire()
         except CircuitBreakerOpen as exc:
+            self._record_upstream_event(
+                source=source_key,
+                operation=operation_name,
+                outcome="skipped",
+                started_at=started_at,
+                fallback_used=True,
+                error_code="circuit_open",
+                context={"circuit": "open"},
+            )
             raise UpstreamCircuitOpenError(
                 source_key,
                 operation_name,
@@ -240,20 +258,51 @@ class AsyncUpstreamClient:
         except asyncio.CancelledError:
             await breaker.abandon(permit)
             raise
-        except UpstreamPayloadError:
+        except UpstreamPayloadError as exc:
             await breaker.record_failure(permit)
+            self._record_upstream_event(
+                source=source_key,
+                operation=operation_name,
+                outcome="failure",
+                started_at=started_at,
+                status_code=exc.status_code,
+                error_code=exc.reason,
+                context={"attempts": exc.attempts},
+            )
             raise
         except UpstreamRequestError as exc:
             if exc.retryable:
                 await breaker.record_failure(permit)
             else:
                 await breaker.record_success(permit)
+            self._record_upstream_event(
+                source=source_key,
+                operation=operation_name,
+                outcome="failure",
+                started_at=started_at,
+                status_code=exc.status_code,
+                error_code=exc.reason,
+                context={"attempts": exc.attempts},
+            )
             raise
-        except Exception:
+        except Exception as exc:
             await breaker.abandon(permit)
+            self._record_upstream_event(
+                source=source_key,
+                operation=operation_name,
+                outcome="failure",
+                started_at=started_at,
+                error_code=type(exc).__name__,
+            )
             raise
 
         await breaker.record_success(permit)
+        self._record_upstream_event(
+            source=source_key,
+            operation=operation_name,
+            outcome="success",
+            started_at=started_at,
+        )
         return result
 
     async def _request_json_with_retries(
@@ -411,6 +460,36 @@ class AsyncUpstreamClient:
         if isinstance(exc, httpx.NetworkError):
             return "network error"
         return "transport error"
+
+    def _record_upstream_event(
+        self,
+        *,
+        source: str,
+        operation: str,
+        outcome: str,
+        started_at: float,
+        status_code: int | None = None,
+        fallback_used: bool = False,
+        error_code: str | None = None,
+        context: dict[str, Any] | None = None,
+    ) -> None:
+        event_context = {"operation": operation, **(context or {})}
+        try:
+            self._event_recorder(
+                event_type="upstream_request",
+                source=source,
+                outcome=outcome,
+                duration_ms=max(0, round((self._timer() - started_at) * 1000)),
+                status_code=status_code,
+                fallback_used=fallback_used,
+                error_code=error_code,
+                context=event_context,
+            )
+        except Exception as exc:
+            logger.warning(
+                "upstream_event_record_failed",
+                extra={"source": source, "error_type": type(exc).__name__},
+            )
 
 
 circuit_breakers = CircuitBreakerRegistry(DEFAULT_SOURCE_POLICIES)
