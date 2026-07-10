@@ -2,13 +2,14 @@
 RaceDay companion intelligence.
 
 This module is the backend "brain" for the browser companion. It does not
-render UI, call external AI providers, or know anything about browser popups.
-It takes video/live context and returns short fan-facing notes that the
-extension can display with its existing overlay.
+render UI or know anything about browser popups. Its deterministic core takes
+video/live context and returns short fan-facing notes. An async wrapper can
+optionally refine that note through the protected AI client.
 """
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from difflib import SequenceMatcher
@@ -174,8 +175,7 @@ def build_companion_note(
     """
     mode = payload.get("mode") or (analysis or {}).get("mode") or "replay"
     if mode == "live" and live_state:
-        note = build_live_note(live_state)
-        return _refine_with_ai(payload, note, analysis=analysis, live_state=live_state)
+        return build_live_note(live_state)
 
     analysis = analysis or analyze_video_context(payload)
     race_data = _safe_call(indexer.load_race_index, analysis.get("year"), analysis.get("track")) or {}
@@ -211,7 +211,27 @@ def build_companion_note(
         "confidence": moment.get("confidence") or analysis.get("confidence") or "medium",
         "source": replay_note.get("source") or moment.get("source") or analysis.get("source") or "backend-companion",
     }
-    return _refine_with_ai(payload, note, analysis=analysis)
+    return note
+
+
+async def build_companion_note_with_ai(
+    payload: dict[str, Any],
+    analysis: dict[str, Any] | None = None,
+    live_state: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Build the deterministic note off-loop, then optionally refine it."""
+    base_note = await asyncio.to_thread(
+        build_companion_note,
+        payload,
+        analysis,
+        live_state,
+    )
+    return await _refine_with_ai(
+        payload,
+        base_note,
+        analysis=analysis,
+        live_state=live_state,
+    )
 
 
 def build_live_note(live_state: dict[str, Any]) -> dict[str, Any]:
@@ -1066,13 +1086,18 @@ def _dedupe(items: list[str]) -> list[str]:
     return result
 
 
-def _refine_with_ai(
+async def _refine_with_ai(
     payload: dict[str, Any],
     base_note: dict[str, Any],
     analysis: dict[str, Any] | None = None,
     live_state: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    refined = companion_ai.refine_companion_note(payload, base_note, analysis=analysis, live_state=live_state)
+    refined = await companion_ai.refine_companion_note(
+        payload,
+        base_note,
+        analysis=analysis,
+        live_state=live_state,
+    )
     if not refined:
         return {
             **base_note,
