@@ -1,5 +1,6 @@
 import asyncio
 
+import pytest
 from fastapi import WebSocketDisconnect
 
 from backend import api
@@ -83,3 +84,36 @@ def test_companion_endpoint_preserves_the_extension_response_contract(monkeypatc
     )
 
     assert api.companion_note(payload) == expected
+
+
+@pytest.mark.asyncio
+async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
+    events = []
+
+    class FakeThread:
+        def start(self):
+            events.append("index-thread-start")
+
+    async def start_http():
+        events.append("http-start")
+
+    async def stop_http():
+        events.append("http-stop")
+
+    monkeypatch.setattr(api.http_client, "start_upstream_client", start_http)
+    monkeypatch.setattr(api.http_client, "stop_upstream_client", stop_http)
+    monkeypatch.setattr(api, "_use_prebuilt_index_if_available", lambda: True)
+    monkeypatch.setattr(api.threading, "Thread", lambda **kwargs: FakeThread())
+    monkeypatch.setattr(api.live_feed, "start_feed", lambda: events.append("live-start"))
+    monkeypatch.setattr(api.live_feed, "stop_feed", lambda: events.append("live-stop"))
+
+    async with api.lifespan(api.app):
+        assert events == ["http-start", "index-thread-start", "live-start"]
+
+    assert events == [
+        "http-start",
+        "index-thread-start",
+        "live-start",
+        "live-stop",
+        "http-stop",
+    ]
