@@ -60,7 +60,8 @@ def test_websocket_sends_current_state_and_removes_disconnected_client(monkeypat
     assert client_events == [("add", socket), ("remove", socket)]
 
 
-def test_companion_endpoint_preserves_the_extension_response_contract(monkeypatch):
+@pytest.mark.asyncio
+async def test_companion_endpoint_preserves_the_extension_response_contract(monkeypatch):
     expected = {
         "ok": True,
         "mode": "replay",
@@ -72,7 +73,11 @@ def test_companion_endpoint_preserves_the_extension_response_contract(monkeypatc
         ],
         "source": "race-context",
     }
-    monkeypatch.setattr(api.companion, "build_companion_note", lambda *args, **kwargs: expected)
+
+    async def build_note(*args, **kwargs):
+        return expected
+
+    monkeypatch.setattr(api.companion, "build_companion_note_with_ai", build_note)
 
     payload = api.CompanionNoteRequest(
         title="Race Highlights | 2026 Canadian Grand Prix",
@@ -83,7 +88,7 @@ def test_companion_endpoint_preserves_the_extension_response_contract(monkeypatc
         mode="replay",
     )
 
-    assert api.companion_note(payload) == expected
+    assert await api.companion_note(payload) == expected
 
 
 @pytest.mark.asyncio
@@ -100,12 +105,18 @@ async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
     async def stop_http():
         events.append("http-stop")
 
+    async def start_live():
+        events.append("live-start")
+
+    async def stop_live():
+        events.append("live-stop")
+
     monkeypatch.setattr(api.http_client, "start_upstream_client", start_http)
     monkeypatch.setattr(api.http_client, "stop_upstream_client", stop_http)
     monkeypatch.setattr(api, "_use_prebuilt_index_if_available", lambda: True)
     monkeypatch.setattr(api.threading, "Thread", lambda **kwargs: FakeThread())
-    monkeypatch.setattr(api.live_feed, "start_feed", lambda: events.append("live-start"))
-    monkeypatch.setattr(api.live_feed, "stop_feed", lambda: events.append("live-stop"))
+    monkeypatch.setattr(api.live_feed, "start_feed", start_live)
+    monkeypatch.setattr(api.live_feed, "stop_feed", stop_live)
 
     async with api.lifespan(api.app):
         assert events == ["http-start", "index-thread-start", "live-start"]
