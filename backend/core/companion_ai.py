@@ -19,7 +19,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from backend.core import cache, http_client
+from backend.core import cache, event_store, http_client
 
 logger = logging.getLogger(__name__)
 
@@ -74,10 +74,15 @@ async def refine_companion_note(
         else:
             refined = await _call_gemini(prompt)
     except Exception as exc:
-        logger.info("companion_ai_failed", extra={"provider": provider, "error": str(exc)})
+        logger.info(
+            "companion_ai_failed",
+            extra={"provider": provider, "error_type": type(exc).__name__},
+        )
+        _record_ai_fallback(provider, type(exc).__name__)
         return None
 
     if not refined:
+        _record_ai_fallback(provider, "empty_response")
         return None
 
     normalized = _normalize_ai_note(refined, base_note)
@@ -94,6 +99,23 @@ async def refine_companion_note(
                 extra={"provider": provider, "error_type": type(exc).__name__},
             )
     return normalized
+
+
+def _record_ai_fallback(provider: str, error_code: str) -> None:
+    try:
+        event_store.record_service_event(
+            event_type="fallback",
+            source="ai",
+            outcome="used",
+            fallback_used=True,
+            error_code=error_code,
+            context={"provider": provider},
+        )
+    except Exception as exc:
+        logger.warning(
+            "companion_ai_event_record_failed",
+            extra={"provider": provider, "error_type": type(exc).__name__},
+        )
 
 
 def _selected_provider() -> str | None:
