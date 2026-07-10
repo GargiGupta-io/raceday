@@ -2,6 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { API, FetchState, fetchWithTimeout, wsUrl } from "@/app/lib/api";
+import {
+  createBrowserLiveSocket,
+  LiveConnectionController,
+  LiveConnectionSource,
+  LiveTransportStatus,
+} from "@/app/lib/live-connection";
 import ProgressiveDetail from "@/app/components/ProgressiveDetail";
 
 interface DriverLive {
@@ -47,7 +53,7 @@ interface LiveData {
   alerts?: PatternAlert[];
 }
 
-type ConnectionStatus = "connected" | "reconnecting" | "offline" | "demo" | "no-session";
+type ConnectionStatus = LiveTransportStatus | "demo" | "no-session";
 
 const DEMO_SNAPSHOTS: LiveData[] = [
   {
@@ -218,12 +224,8 @@ export default function LivePage() {
     if (demoMode) return;
 
     let active = true;
-    let receivedWebSocketMessage = false;
-    let socket: WebSocket | null = null;
-    let noSessionTimer: number | undefined;
-    let pollingInterval: number | undefined;
 
-    const applyLiveData = (payload: Partial<LiveData> | null, source: "websocket" | "polling") => {
+    const applyLiveData = (payload: Partial<LiveData> | null, source: LiveConnectionSource) => {
       if (!active) return;
 
       const liveData = normalizeLiveData(payload);
@@ -240,73 +242,38 @@ export default function LivePage() {
       setConnectionStatus(source === "websocket" ? "connected" : "reconnecting");
     };
 
-    const fetchLiveFallback = () => {
-      fetchWithTimeout<LiveData | null>(`${API}/live`, {
-        onState: (state) => {
-          setLiveState(state);
-          if (state !== "error") setLiveError(false);
-        },
-      })
-        .then((liveData) => {
-          applyLiveData(liveData, "polling");
-        })
-        .catch(() => {
-          if (active) {
-            setData(null);
-            setLiveError(true);
-            setLoading(false);
-            setConnectionStatus("offline");
-          }
-        });
-    };
-
-    const startPollingFallback = () => {
-      if (pollingInterval) return;
-      setConnectionStatus("reconnecting");
-      fetchLiveFallback();
-      pollingInterval = window.setInterval(fetchLiveFallback, 10000);
-    };
-
-    try {
-      socket = new WebSocket(wsUrl("/ws/live"));
-
-      socket.onopen = () => {
+    const controller = new LiveConnectionController<Partial<LiveData> | null>({
+      createSocket: () => createBrowserLiveSocket(wsUrl("/ws/live")),
+      poll: () =>
+        fetchWithTimeout<LiveData | null>(`${API}/live`, {
+          onState: (state) => {
+            if (!active) return;
+            setLiveState(state);
+            if (state !== "error") setLiveError(false);
+          },
+        }),
+      parseMessage: (message) => JSON.parse(String(message)) as Partial<LiveData>,
+      onData: applyLiveData,
+      onStatus: (status) => {
         if (!active) return;
-        setConnectionStatus("connected");
-        noSessionTimer = window.setTimeout(() => {
-          if (!active || receivedWebSocketMessage) return;
-          applyLiveData({ active: false, session: null }, "websocket");
-        }, 3500);
-      };
+        if (status === "connected") setLiveError(false);
+        setConnectionStatus(status);
+      },
+      onNoMessage: () => applyLiveData({ active: false, session: null }, "websocket"),
+      onPollError: () => {
+        if (!active) return;
+        setData(null);
+        setLiveError(true);
+        setLoading(false);
+        setConnectionStatus("offline");
+      },
+    });
 
-      socket.onmessage = (event) => {
-        receivedWebSocketMessage = true;
-        if (noSessionTimer) window.clearTimeout(noSessionTimer);
-        try {
-          const payload = JSON.parse(event.data) as Partial<LiveData>;
-          applyLiveData(payload, "websocket");
-        } catch {
-          startPollingFallback();
-        }
-      };
-
-      socket.onerror = () => {
-        startPollingFallback();
-      };
-
-      socket.onclose = () => {
-        if (active && !receivedWebSocketMessage) startPollingFallback();
-        if (active && receivedWebSocketMessage) startPollingFallback();
-      };
-    } catch {
-      startPollingFallback();
-    }
+    controller.start();
 
     return () => {
       active = false;
-      if (noSessionTimer) window.clearTimeout(noSessionTimer);
-      if (pollingInterval) window.clearInterval(pollingInterval);
-      socket?.close();
+      controller.stop();
     };
   }, [demoMode, retryCount]);
 
