@@ -9,6 +9,7 @@ should keep the non-AI note unchanged.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import os
@@ -18,7 +19,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from backend.core import http_client
+from backend.core import cache, http_client
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 OPENAI_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+COMPANION_AI_CACHE_TTL_SECONDS = 600
 
 
 async def refine_companion_note(
@@ -45,6 +47,26 @@ async def refine_companion_note(
         return None
 
     prompt = _build_prompt(payload, base_note, analysis=analysis, live_state=live_state)
+    cache_key = _companion_cache_key(
+        provider,
+        payload,
+        base_note,
+        analysis=analysis,
+        live_state=live_state,
+    )
+    try:
+        cached = await cache.runtime_cache.get_json(
+            cache_key,
+            memory_ttl_seconds=COMPANION_AI_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        cached = None
+        logger.warning(
+            "companion_ai_cache_read_failed",
+            extra={"provider": provider, "error_type": type(exc).__name__},
+        )
+    if isinstance(cached, dict) and (cached.get("headline") or cached.get("notes")):
+        return cached
 
     try:
         if provider == "openai":
@@ -58,7 +80,20 @@ async def refine_companion_note(
     if not refined:
         return None
 
-    return _normalize_ai_note(refined, base_note)
+    normalized = _normalize_ai_note(refined, base_note)
+    if normalized:
+        try:
+            await cache.runtime_cache.set_json(
+                cache_key,
+                normalized,
+                COMPANION_AI_CACHE_TTL_SECONDS,
+            )
+        except Exception as exc:
+            logger.warning(
+                "companion_ai_cache_write_failed",
+                extra={"provider": provider, "error_type": type(exc).__name__},
+            )
+    return normalized
 
 
 def _selected_provider() -> str | None:
@@ -67,6 +102,52 @@ def _selected_provider() -> str | None:
     if GEMINI_KEY:
         return "gemini"
     return None
+
+
+def _companion_cache_key(
+    provider: str,
+    payload: dict[str, Any],
+    base_note: dict[str, Any],
+    *,
+    analysis: dict[str, Any] | None,
+    live_state: dict[str, Any] | None,
+) -> str:
+    analysis = analysis or {}
+    live_state = live_state or {}
+    moment_id = payload.get("momentId") or analysis.get("momentId")
+    current_time = payload.get("currentTime") or analysis.get("currentTime") or 0
+    try:
+        time_bucket = int(float(current_time) // 15) if not moment_id else None
+    except (TypeError, ValueError):
+        time_bucket = 0
+
+    alerts = live_state.get("alerts") or []
+    first_alert = alerts[0].get("text") if alerts and isinstance(alerts[0], dict) else None
+    key_context = {
+        "version": 1,
+        "provider": provider,
+        "mode": payload.get("mode") or base_note.get("mode") or "replay",
+        "year": payload.get("year") or analysis.get("year"),
+        "race": payload.get("raceName") or analysis.get("raceName"),
+        "track": payload.get("track") or analysis.get("track"),
+        "chapter": payload.get("chapter") or analysis.get("chapter"),
+        "moment": moment_id,
+        "timeBucket": time_bucket,
+        "headline": base_note.get("headline"),
+        "notes": list(base_note.get("notes") or [])[:4],
+        "liveSession": live_state.get("session"),
+        "liveLap": live_state.get("lap"),
+        "liveAlert": first_alert,
+    }
+    encoded = json.dumps(
+        key_context,
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=str,
+    )
+    digest = hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+    return f"raceday:companion-ai:v1:{digest}"
 
 
 def _build_prompt(
