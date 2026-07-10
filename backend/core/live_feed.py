@@ -19,7 +19,7 @@ import threading
 from contextlib import suppress
 from datetime import datetime, timezone
 
-from backend.core import cache, http_client, indexer
+from backend.core import cache, event_store, http_client, indexer
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +127,22 @@ async def _openf1_get(endpoint: str, params: dict | None = None) -> list | None:
     except http_client.UpstreamRequestError as exc:
         _last_error = exc.reason
         _last_source_status = "error"
+        fallback_used = _live_state is not None
+        try:
+            event_store.record_service_event(
+                event_type="fallback",
+                source="openf1",
+                outcome="used" if fallback_used else "unavailable",
+                status_code=exc.status_code,
+                fallback_used=fallback_used,
+                error_code=exc.reason,
+                context={"endpoint": endpoint, "attempts": exc.attempts},
+            )
+        except Exception as event_exc:
+            logger.warning(
+                "openf1_event_record_failed",
+                extra={"error_type": type(event_exc).__name__},
+            )
         logger.warning(
             "openf1_request_failed",
             extra={
