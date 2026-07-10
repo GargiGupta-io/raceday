@@ -1,8 +1,27 @@
 import asyncio
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
 from backend.core import http_client, live_feed
+
+
+class FakeRuntimeCache:
+    def __init__(self):
+        self.values = {}
+        self.set_calls = []
+        self.deleted = []
+
+    async def get_json(self, key, **kwargs):
+        return self.values.get(key)
+
+    async def set_json(self, key, value, ttl_seconds):
+        self.values[key] = value
+        self.set_calls.append((key, value, ttl_seconds))
+
+    async def delete(self, key):
+        self.values.pop(key, None)
+        self.deleted.append(key)
 
 
 @pytest.mark.asyncio
@@ -24,6 +43,29 @@ async def test_openf1_requests_use_the_protected_client(monkeypatch):
     assert captured["source"] == "openf1"
     assert captured["operation"] == "sessions"
     assert captured["params"] == {"year": 2026}
+
+
+@pytest.mark.asyncio
+async def test_openf1_response_cache_avoids_duplicate_source_calls(monkeypatch):
+    calls = 0
+    fake_cache = FakeRuntimeCache()
+
+    async def request_json(*args, **kwargs):
+        nonlocal calls
+        calls += 1
+        return [{"session_key": 456}]
+
+    monkeypatch.setattr(live_feed.cache, "runtime_cache", fake_cache)
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+    monkeypatch.setattr(live_feed, "_last_error", None)
+    monkeypatch.setattr(live_feed, "_last_source_status", "idle")
+
+    first = await live_feed._openf1_get("sessions", {"year": 2031})
+    second = await live_feed._openf1_get("sessions", {"year": 2031})
+
+    assert first == second == [{"session_key": 456}]
+    assert calls == 1
+    assert fake_cache.set_calls[0][2] == live_feed.OPENF1_RESPONSE_CACHE_TTL_SECONDS
 
 
 @pytest.mark.asyncio
@@ -164,17 +206,86 @@ async def test_partial_live_snapshot_is_marked_degraded(monkeypatch):
 @pytest.mark.asyncio
 async def test_finished_session_broadcasts_inactive_state(monkeypatch):
     messages = []
+    fake_cache = FakeRuntimeCache()
 
     async def broadcast(payload):
         messages.append(payload)
 
     monkeypatch.setattr(live_feed, "_live_state", {"session": "Canadian Grand Prix"})
     monkeypatch.setattr(live_feed, "_broadcast", broadcast)
+    monkeypatch.setattr(live_feed.cache, "runtime_cache", fake_cache)
 
     await live_feed._publish_no_live_session()
 
     assert live_feed._live_state is None
     assert messages == [{"active": False, "session": None}]
+    assert fake_cache.deleted == [live_feed.LIVE_STATE_CACHE_KEY]
+
+
+@pytest.mark.asyncio
+async def test_live_snapshot_is_timestamped_cached_and_broadcast(monkeypatch):
+    messages = []
+    fake_cache = FakeRuntimeCache()
+
+    async def broadcast(payload):
+        messages.append(payload)
+
+    monkeypatch.setattr(live_feed.cache, "runtime_cache", fake_cache)
+    monkeypatch.setattr(live_feed, "_broadcast", broadcast)
+    monkeypatch.setattr(live_feed, "_last_error", None)
+
+    await live_feed._publish_live_state(
+        {"session": "2026 Canadian Grand Prix", "lap": 25, "drivers": []}
+    )
+
+    assert live_feed._live_state["capturedAt"]
+    assert live_feed._last_source_status == "live"
+    assert messages == [live_feed._live_state]
+    cached = fake_cache.values[live_feed.LIVE_STATE_CACHE_KEY]
+    assert cached == {"active": True, **live_feed._live_state}
+    assert fake_cache.set_calls[0][2] == live_feed.LIVE_STATE_CACHE_TTL_SECONDS
+
+
+@pytest.mark.asyncio
+async def test_recent_cached_live_snapshot_is_restored_as_degraded(monkeypatch):
+    fake_cache = FakeRuntimeCache()
+    fake_cache.values[live_feed.LIVE_STATE_CACHE_KEY] = {
+        "active": True,
+        "session": "2026 Canadian Grand Prix",
+        "lap": 26,
+        "capturedAt": datetime.now(timezone.utc).isoformat(),
+    }
+    monkeypatch.setattr(live_feed.cache, "runtime_cache", fake_cache)
+    monkeypatch.setattr(live_feed, "_live_state", None)
+    monkeypatch.setattr(live_feed, "_last_update_at", None)
+    monkeypatch.setattr(live_feed, "_last_error", None)
+    monkeypatch.setattr(live_feed, "_last_source_status", "idle")
+
+    await live_feed._restore_cached_live_state()
+
+    assert live_feed._live_state["lap"] == 26
+    assert live_feed.get_live_status()["status"] == "degraded"
+    assert "cached live snapshot" in live_feed.get_live_status()["last_error"]
+
+
+@pytest.mark.asyncio
+async def test_stale_cached_live_snapshot_is_not_restored(monkeypatch):
+    fake_cache = FakeRuntimeCache()
+    fake_cache.values[live_feed.LIVE_STATE_CACHE_KEY] = {
+        "active": True,
+        "session": "2026 Canadian Grand Prix",
+        "lap": 20,
+        "capturedAt": (
+            datetime.now(timezone.utc)
+            - timedelta(seconds=live_feed.LIVE_STATE_CACHE_TTL_SECONDS + 1)
+        ).isoformat(),
+    }
+    monkeypatch.setattr(live_feed.cache, "runtime_cache", fake_cache)
+    monkeypatch.setattr(live_feed, "_live_state", None)
+
+    await live_feed._restore_cached_live_state()
+
+    assert live_feed._live_state is None
 
 
 @pytest.mark.asyncio
