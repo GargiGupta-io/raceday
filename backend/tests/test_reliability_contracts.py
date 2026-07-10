@@ -117,8 +117,16 @@ async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
     async def stop_cache():
         events.append("cache-stop")
 
+    async def start_events():
+        events.append("events-start")
+
+    async def stop_events():
+        events.append("events-stop")
+
     monkeypatch.setattr(api.cache, "start_runtime_cache", start_cache)
     monkeypatch.setattr(api.cache, "stop_runtime_cache", stop_cache)
+    monkeypatch.setattr(api.event_store, "start_service_event_store", start_events)
+    monkeypatch.setattr(api.event_store, "stop_service_event_store", stop_events)
     monkeypatch.setattr(api.http_client, "start_upstream_client", start_http)
     monkeypatch.setattr(api.http_client, "stop_upstream_client", stop_http)
     monkeypatch.setattr(api, "_use_prebuilt_index_if_available", lambda: True)
@@ -128,6 +136,7 @@ async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
 
     async with api.lifespan(api.app):
         assert events == [
+            "events-start",
             "cache-start",
             "http-start",
             "index-thread-start",
@@ -135,6 +144,7 @@ async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
         ]
 
     assert events == [
+        "events-start",
         "cache-start",
         "http-start",
         "index-thread-start",
@@ -142,4 +152,5 @@ async def test_lifespan_owns_the_shared_upstream_client(monkeypatch):
         "live-stop",
         "http-stop",
         "cache-stop",
+        "events-stop",
     ]
