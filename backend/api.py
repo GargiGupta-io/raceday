@@ -81,6 +81,9 @@ class DataSourceHealth(BaseModel):
     purpose: str
     timeout_seconds: int | None = None
     note: str | None = None
+    circuit: str | None = None
+    circuit_failures: int | None = None
+    circuit_retry_after_seconds: float | None = None
 
 
 class IndexingStatusResponse(BaseModel):
@@ -275,7 +278,29 @@ def health():
 @app.get("/health/data-sources", response_model=list[DataSourceHealth])
 def data_source_health():
     live_status = live_feed.get_live_status()
-    openf1_status = "degraded" if live_status.get("status") == "error" else "configured"
+    circuit_status = http_client.circuit_breakers.snapshot()
+
+    def breaker_fields(source: str) -> dict:
+        snapshot = circuit_status.get(source, {})
+        if not snapshot:
+            return {}
+        return {
+            "circuit": snapshot["state"],
+            "circuit_failures": snapshot["failure_count"],
+            "circuit_retry_after_seconds": snapshot["retry_after_seconds"],
+        }
+
+    def source_status(source: str, default: str = "configured") -> str:
+        snapshot = circuit_status.get(source, {})
+        if snapshot.get("state") in {"open", "half_open"}:
+            return "degraded"
+        return default
+
+    openf1_status = source_status("openf1")
+    if live_status.get("status") == "error":
+        openf1_status = "degraded"
+
+    ai_configured = bool(os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY"))
     return [
         {
             "name": "FastF1",
@@ -285,15 +310,17 @@ def data_source_health():
         },
         {
             "name": "Jolpica",
-            "status": "configured",
+            "status": source_status("jolpica"),
             "purpose": "Historical schedules and results fallback",
             "timeout_seconds": 15,
+            **breaker_fields("jolpica"),
         },
         {
             "name": "OpenMeteo",
-            "status": "configured",
+            "status": source_status("openmeteo"),
             "purpose": "Weather context for race conditions",
             "timeout_seconds": 15,
+            **breaker_fields("openmeteo"),
         },
         {
             "name": "OpenF1",
@@ -301,6 +328,15 @@ def data_source_health():
             "purpose": "Live session, timing, stint, and driver data",
             "timeout_seconds": live_feed.OPENF1_TIMEOUT_SECONDS,
             "note": live_status.get("last_error"),
+            **breaker_fields("openf1"),
+        },
+        {
+            "name": "Companion AI",
+            "status": source_status("ai", "configured" if ai_configured else "optional"),
+            "purpose": "Optional beginner-language refinement for companion notes",
+            "timeout_seconds": 10,
+            "note": None if ai_configured else "Deterministic companion notes remain available",
+            **breaker_fields("ai"),
         },
     ]
 
