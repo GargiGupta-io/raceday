@@ -93,6 +93,33 @@ def test_storage_status_route_reports_active_store():
 
     assert response["active_store"] == "json"
     assert response["backend"] in {"json", "postgres"}
+    assert response["event_store"]["status"] in {
+        "disabled",
+        "misconfigured",
+        "degraded",
+        "available",
+    }
+
+
+def test_event_store_health_reports_operational_status(monkeypatch):
+    expected = {
+        "status": "degraded",
+        "enabled": True,
+        "database_configured": True,
+        "database_available": False,
+        "worker_running": True,
+        "queue_depth": 2,
+        "queue_capacity": 500,
+        "written_events": 10,
+        "failed_writes": 1,
+        "dropped_events": 3,
+        "invalid_events": 0,
+        "last_error": "ConnectionError",
+        "retry_after_seconds": 12.0,
+    }
+    monkeypatch.setattr(api.event_store.service_events, "status", lambda: expected)
+
+    assert api.event_store_health() == expected
 
 
 def test_cache_health_reports_memory_fallback(monkeypatch):
