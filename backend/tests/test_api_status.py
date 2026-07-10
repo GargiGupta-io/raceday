@@ -64,6 +64,19 @@ def test_open_circuit_marks_source_as_degraded(monkeypatch):
     assert openf1["circuit_retry_after_seconds"] == 12.5
 
 
+def test_partial_live_data_marks_openf1_as_degraded(monkeypatch):
+    monkeypatch.setattr(
+        api.live_feed,
+        "get_live_status",
+        lambda: {"status": "degraded", "last_error": "Partial OpenF1 data: stints"},
+    )
+
+    sources = {source["name"]: source for source in api.data_source_health()}
+
+    assert sources["OpenF1"]["status"] == "degraded"
+    assert sources["OpenF1"]["note"] == "Partial OpenF1 data: stints"
+
+
 def test_live_demo_endpoint_returns_active_snapshot():
     response = api.live_demo_snapshot()
 
