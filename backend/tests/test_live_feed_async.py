@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from backend.core import http_client, live_feed
+from backend.core import event_store, http_client, live_feed
 
 
 class FakeRuntimeCache:
@@ -89,6 +89,63 @@ async def test_openf1_failure_sets_degraded_live_status(monkeypatch):
     assert result is None
     assert live_feed.get_live_status()["status"] == "error"
     assert live_feed.get_live_status()["last_error"] == "timeout"
+
+
+@pytest.mark.asyncio
+async def test_openf1_failure_records_last_live_state_fallback(monkeypatch):
+    events = []
+
+    async def request_json(*args, **kwargs):
+        raise http_client.UpstreamRequestError(
+            "openf1",
+            "position",
+            attempts=2,
+            retryable=True,
+            reason="timeout",
+            status_code=503,
+        )
+
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+    monkeypatch.setattr(live_feed, "_live_state", {"lap": 25})
+    monkeypatch.setattr(
+        event_store,
+        "record_service_event",
+        lambda **event: events.append(event) or True,
+    )
+
+    assert await live_feed._openf1_get("position") is None
+    assert events == [
+        {
+            "event_type": "fallback",
+            "source": "openf1",
+            "outcome": "used",
+            "status_code": 503,
+            "fallback_used": True,
+            "error_code": "timeout",
+            "context": {"endpoint": "position", "attempts": 2},
+        }
+    ]
+
+
+@pytest.mark.asyncio
+async def test_event_recorder_failure_does_not_break_openf1_fallback(monkeypatch):
+    async def request_json(*args, **kwargs):
+        raise http_client.UpstreamRequestError(
+            "openf1",
+            "sessions",
+            attempts=1,
+            retryable=True,
+            reason="timeout",
+        )
+
+    def failed_recorder(**event):
+        raise RuntimeError("event queue unavailable")
+
+    monkeypatch.setattr(http_client.upstream_client, "request_json", request_json)
+    monkeypatch.setattr(event_store, "record_service_event", failed_recorder)
+    monkeypatch.setattr(live_feed, "_live_state", None)
+
+    assert await live_feed._openf1_get("sessions") is None
 
 
 @pytest.mark.asyncio
