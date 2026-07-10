@@ -16,8 +16,9 @@ import re
 from pathlib import Path
 from typing import Any
 
-import requests
 from dotenv import load_dotenv
+
+from backend.core import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +28,7 @@ OPENAI_KEY = os.getenv("OPENAI_API_KEY", "").strip()
 GEMINI_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
 
-def refine_companion_note(
+async def refine_companion_note(
     payload: dict[str, Any],
     base_note: dict[str, Any],
     analysis: dict[str, Any] | None = None,
@@ -47,9 +48,9 @@ def refine_companion_note(
 
     try:
         if provider == "openai":
-            refined = _call_openai(prompt)
+            refined = await _call_openai(prompt)
         else:
-            refined = _call_gemini(prompt)
+            refined = await _call_gemini(prompt)
     except Exception as exc:
         logger.info("companion_ai_failed", extra={"provider": provider, "error": str(exc)})
         return None
@@ -130,9 +131,12 @@ Context:
 """.strip()
 
 
-def _call_openai(prompt: str) -> str | None:
-    resp = requests.post(
+async def _call_openai(prompt: str) -> str | None:
+    data = await http_client.upstream_client.request_json(
+        "POST",
         "https://api.openai.com/v1/chat/completions",
+        source="ai",
+        operation="openai-companion-refine",
         headers={
             "Authorization": f"Bearer {OPENAI_KEY}",
             "Content-Type": "application/json",
@@ -145,18 +149,17 @@ def _call_openai(prompt: str) -> str | None:
                 {"role": "user", "content": prompt},
             ],
         },
-        timeout=10,
     )
-    if resp.status_code != 200:
-        logger.warning("OpenAI companion refine failed: %s %s", resp.status_code, resp.text[:120])
-        return None
-    data = resp.json()
     return data.get("choices", [{}])[0].get("message", {}).get("content")
 
 
-def _call_gemini(prompt: str) -> str | None:
-    resp = requests.post(
-        f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_KEY}",
+async def _call_gemini(prompt: str) -> str | None:
+    data = await http_client.upstream_client.request_json(
+        "POST",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+        source="ai",
+        operation="gemini-companion-refine",
+        params={"key": GEMINI_KEY},
         headers={"Content-Type": "application/json"},
         json={
             "contents": [
@@ -170,12 +173,7 @@ def _call_gemini(prompt: str) -> str | None:
                 "maxOutputTokens": 250,
             },
         },
-        timeout=10,
     )
-    if resp.status_code != 200:
-        logger.warning("Gemini companion refine failed: %s %s", resp.status_code, resp.text[:120])
-        return None
-    data = resp.json()
     candidates = data.get("candidates") or []
     if not candidates:
         return None
