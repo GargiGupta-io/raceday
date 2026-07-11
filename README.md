@@ -41,6 +41,7 @@ The goal is to make F1 easier to follow without overwhelming users with dense ta
 - Saved live demo replay works outside race weekends.
 - Prebuilt indexed race data keeps historical browsing independent of live provider availability.
 - Optional Redis caching, circuit breakers, fail-open PostgreSQL events, and failure integration tests are implemented.
+- Automated coverage currently includes 102 backend tests and 15 frontend tests on this branch.
 
 ## Architecture
 
@@ -169,6 +170,8 @@ The simulator considers:
 The goal is not to perfectly recreate a Formula 1 team simulator. It is designed as an explainable fan tool that shows how strategy decisions can change race outcomes and helps users understand why pit timing, tyre choice, and stint length matter.
 
 ## API Endpoints
+
+The reliability branch exposes 33 application HTTP routes and two WebSocket routes. FastAPI's generated documentation routes are not included in this count.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
