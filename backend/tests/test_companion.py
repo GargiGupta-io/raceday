@@ -16,7 +16,6 @@ def _assert_beginner_strategy_note(note):
 
 
 def test_replay_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
-    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
         "get_radio_moments",
@@ -73,7 +72,6 @@ def test_replay_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
 
 
 def test_live_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
-    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
         "get_radio_moments",
@@ -113,7 +111,6 @@ def test_live_companion_keeps_radio_context_out_of_user_copy(monkeypatch):
 
 
 def test_replay_companion_turns_transcript_context_into_strategy_note(monkeypatch):
-    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
         "get_radio_moments",
@@ -160,7 +157,6 @@ def test_replay_companion_turns_transcript_context_into_strategy_note(monkeypatc
 
 
 def test_replay_companion_uses_video_analysis_without_exposing_metadata(monkeypatch):
-    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
         "get_radio_moments",
@@ -207,7 +203,6 @@ def test_replay_companion_uses_video_analysis_without_exposing_metadata(monkeypa
 
 
 def test_replay_companion_uses_caption_number_clues(monkeypatch):
-    monkeypatch.setattr(companion.companion_ai, "refine_companion_note", lambda *args, **kwargs: None)
     monkeypatch.setattr(
         companion.insights,
         "get_radio_moments",

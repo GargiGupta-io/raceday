@@ -7,27 +7,29 @@ position, tyre, and timing data to connected WebSocket clients.
 Architecture:
     OpenF1 API (polling) → LiveFeed (processing) → WebSocket clients
 
-The feed runs in its own thread. Connected clients receive JSON updates
-every ~10 seconds during a live session.
+The feed runs as a FastAPI-owned async task. Connected clients receive JSON
+updates every ~10 seconds during a live session.
 """
 
 import asyncio
+import hashlib
 import json
 import logging
 import threading
-import time
+from contextlib import suppress
 from datetime import datetime, timezone
 
-import requests
-
-from backend.core import indexer
+from backend.core import cache, event_store, http_client, indexer
 
 logger = logging.getLogger(__name__)
 
 OPENF1_BASE = "https://api.openf1.org/v1"
-OPENF1_TIMEOUT_SECONDS = 10
-OPENF1_RETRIES = 2
-OPENF1_BACKOFF_SECONDS = 0.75
+OPENF1_TIMEOUT_SECONDS = int(
+    http_client.SOURCE_POLICIES["openf1"].read_timeout_seconds
+)
+OPENF1_RESPONSE_CACHE_TTL_SECONDS = 8
+LIVE_STATE_CACHE_KEY = "raceday:live:latest:v1"
+LIVE_STATE_CACHE_TTL_SECONDS = 30
 
 # Connected WebSocket clients
 _clients: set = set()
@@ -39,6 +41,7 @@ _last_update_at: datetime | None = None
 _last_error: str | None = None
 _last_source_status = "idle"
 _feed_running = False
+_feed_task: asyncio.Task[None] | None = None
 
 
 def add_client(ws):
@@ -66,7 +69,7 @@ def get_live_status() -> dict:
         client_count = len(_clients)
 
     if _live_state:
-        status = "live"
+        status = "degraded" if _last_error else "live"
         session = _live_state.get("session")
     elif _last_error:
         status = "error"
@@ -91,63 +94,109 @@ def get_live_status() -> dict:
 # ---------------------------------------------------------------------------
 
 
-def _openf1_get(endpoint: str, params: dict | None = None) -> list | None:
+async def _openf1_get(endpoint: str, params: dict | None = None) -> list | None:
     """Fetch data from OpenF1 API."""
     global _last_error, _last_source_status
 
+    cache_key = _openf1_cache_key(endpoint, params)
+    try:
+        cached = await cache.runtime_cache.get_json(
+            cache_key,
+            memory_ttl_seconds=OPENF1_RESPONSE_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        cached = None
+        logger.warning(
+            "openf1_cache_read_failed",
+            extra={"endpoint": endpoint, "error_type": type(exc).__name__},
+        )
+    if isinstance(cached, list):
+        if _last_source_status != "error":
+            _last_source_status = "cached"
+        return cached
+
     url = f"{OPENF1_BASE}/{endpoint}"
-    last_error = None
-    for attempt in range(OPENF1_RETRIES + 1):
+    try:
+        data = await http_client.upstream_client.request_json(
+            "GET",
+            url,
+            source="openf1",
+            operation=endpoint,
+            params=params,
+        )
+    except http_client.UpstreamRequestError as exc:
+        _last_error = exc.reason
+        _last_source_status = "error"
+        fallback_used = _live_state is not None
         try:
-            resp = requests.get(
-                url,
-                params=params,
-                timeout=OPENF1_TIMEOUT_SECONDS,
-                headers={"User-Agent": "Raceday/1.0"},
+            event_store.record_service_event(
+                event_type="fallback",
+                source="openf1",
+                outcome="used" if fallback_used else "unavailable",
+                status_code=exc.status_code,
+                fallback_used=fallback_used,
+                error_code=exc.reason,
+                context={"endpoint": endpoint, "attempts": exc.attempts},
             )
-            if resp.status_code == 200:
-                data = resp.json()
-                _last_error = None
-                _last_source_status = "available"
-                if isinstance(data, list):
-                    return data
-                if isinstance(data, dict) and "detail" in data:
-                    return []
-
-            last_error = f"OpenF1 {endpoint} returned HTTP {resp.status_code}"
+        except Exception as event_exc:
             logger.warning(
-                "openf1_request_bad_status",
-                extra={
-                    "endpoint": endpoint,
-                    "status_code": resp.status_code,
-                    "attempt": attempt + 1,
-                },
+                "openf1_event_record_failed",
+                extra={"error_type": type(event_exc).__name__},
             )
-        except requests.RequestException as exc:
-            last_error = str(exc)
-            logger.warning(
-                "openf1_request_failed",
-                extra={
-                    "endpoint": endpoint,
-                    "attempt": attempt + 1,
-                    "error": last_error,
-                },
-            )
+        logger.warning(
+            "openf1_request_failed",
+            extra={
+                "endpoint": endpoint,
+                "reason": exc.reason,
+                "attempts": exc.attempts,
+                "status_code": exc.status_code,
+            },
+        )
+        return None
 
-        if attempt < OPENF1_RETRIES:
-            time.sleep(OPENF1_BACKOFF_SECONDS * (2 ** attempt))
+    if isinstance(data, list):
+        _last_error = None
+        _last_source_status = "available"
+        await _cache_openf1_response(cache_key, endpoint, data)
+        return data
+    if isinstance(data, dict) and "detail" in data:
+        _last_error = None
+        _last_source_status = "available"
+        await _cache_openf1_response(cache_key, endpoint, [])
+        return []
 
-    _last_error = last_error
+    _last_error = "invalid OpenF1 payload"
     _last_source_status = "error"
+    logger.warning("openf1_invalid_payload", extra={"endpoint": endpoint})
     return None
 
 
-def _find_active_session() -> dict | None:
+def _openf1_cache_key(endpoint: str, params: dict | None) -> str:
+    payload = json.dumps(params or {}, sort_keys=True, separators=(",", ":"), default=str)
+    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:20]
+    return f"raceday:openf1:{endpoint}:{digest}"
+
+
+async def _cache_openf1_response(key: str, endpoint: str, data: list) -> None:
+    try:
+        await cache.runtime_cache.set_json(
+            key,
+            data,
+            OPENF1_RESPONSE_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        logger.warning(
+            "openf1_cache_write_failed",
+            extra={"endpoint": endpoint, "error_type": type(exc).__name__},
+        )
+
+
+async def _find_active_session() -> dict | None:
     """
     Check if there's a live F1 session happening right now.
     Returns session info dict or None.
     """
-    sessions = _openf1_get("sessions", {
+    sessions = await _openf1_get("sessions", {
         "year": datetime.now().year,
         "session_name": "Race",
     })
@@ -175,9 +224,9 @@ def _find_active_session() -> dict | None:
     return None
 
 
-def _fetch_positions(session_key: int) -> list[dict]:
+async def _fetch_positions(session_key: int) -> list[dict]:
     """Fetch current driver positions from OpenF1."""
-    data = _openf1_get("position", {"session_key": session_key})
+    data = await _openf1_get("position", {"session_key": session_key})
     if not data:
         return []
 
@@ -191,9 +240,9 @@ def _fetch_positions(session_key: int) -> list[dict]:
     return sorted(latest.values(), key=lambda x: x.get("position", 99))
 
 
-def _fetch_stints(session_key: int) -> dict[int, dict]:
+async def _fetch_stints(session_key: int) -> dict[int, dict]:
     """Fetch current stint info (compound, stint number, age) per driver."""
-    data = _openf1_get("stints", {"session_key": session_key})
+    data = await _openf1_get("stints", {"session_key": session_key})
     if not data:
         return {}
 
@@ -209,9 +258,9 @@ def _fetch_stints(session_key: int) -> dict[int, dict]:
     return latest
 
 
-def _fetch_drivers(session_key: int) -> dict[int, dict]:
+async def _fetch_drivers(session_key: int) -> dict[int, dict]:
     """Fetch driver info (name, team, etc.) keyed by driver number."""
-    data = _openf1_get("drivers", {"session_key": session_key})
+    data = await _openf1_get("drivers", {"session_key": session_key})
     if not data:
         return {}
 
@@ -228,9 +277,9 @@ def _fetch_drivers(session_key: int) -> dict[int, dict]:
     return drivers
 
 
-def _fetch_lap_count(session_key: int) -> dict:
+async def _fetch_lap_count(session_key: int) -> dict:
     """Fetch current lap and total laps."""
-    data = _openf1_get("lap_count", {"session_key": session_key})
+    data = await _openf1_get("lap_count", {"session_key": session_key})
     if not data:
         return {"current": 0, "total": 0}
 
@@ -585,20 +634,41 @@ def _generate_pattern_alerts(
     return alerts[:4]  # max 4 alerts
 
 
-def _build_live_state(session: dict) -> dict | None:
+async def _build_live_state(session: dict) -> dict | None:
     """Build a complete live state snapshot from OpenF1 data."""
+    global _last_error, _last_source_status
+
     session_key = session.get("session_key")
     if not session_key:
         return None
 
-    # Fetch all data
-    drivers_info = _fetch_drivers(session_key)
-    positions = _fetch_positions(session_key)
-    stints = _fetch_stints(session_key)
-    lap_count = _fetch_lap_count(session_key)
+    # Fetch independent OpenF1 resources concurrently.
+    drivers_info, positions, stints, lap_count = await asyncio.gather(
+        _fetch_drivers(session_key),
+        _fetch_positions(session_key),
+        _fetch_stints(session_key),
+        _fetch_lap_count(session_key),
+    )
 
     if not positions:
+        _last_error = "OpenF1 position data unavailable"
+        _last_source_status = "error"
         return None
+
+    missing_resources = []
+    if not drivers_info:
+        missing_resources.append("drivers")
+    if not stints:
+        missing_resources.append("stints")
+    if not lap_count.get("current"):
+        missing_resources.append("lap count")
+
+    if missing_resources:
+        _last_error = f"Partial OpenF1 data: {', '.join(missing_resources)}"
+        _last_source_status = "degraded"
+    else:
+        _last_error = None
+        _last_source_status = "available"
 
     # Build driver list
     drivers = []
@@ -667,65 +737,171 @@ def _build_live_state(session: dict) -> dict | None:
 # ---------------------------------------------------------------------------
 
 
-def _feed_loop():
+async def _feed_loop():
     """Main polling loop — checks for active session, fetches data, broadcasts."""
     global _live_state, _feed_running, _last_error, _last_source_status, _last_update_at
-    _feed_running = True
 
     logger.info("Live feed started — polling for active sessions")
 
-    while _feed_running:
-        try:
-            session = _find_active_session()
-
-            if session:
-                state = _build_live_state(session)
-                if state:
-                    _live_state = state
-                    _last_update_at = datetime.now(timezone.utc)
-                    _last_error = None
-                    _last_source_status = "live"
-                    _broadcast(state)
-                    time.sleep(10)  # Update every 10 seconds during live session
-                    continue
-
-            # No active session
-            _live_state = None
-            if _last_source_status != "error":
-                _last_source_status = "idle"
-            time.sleep(60)  # Check every minute when idle
-
-        except Exception as exc:
-            _last_error = str(exc)
-            _last_source_status = "error"
-            logger.exception("live_feed_loop_failed")
-            time.sleep(30)
-
-
-def _broadcast(state: dict):
-    """Send state to all connected WebSocket clients."""
-    message = json.dumps(state)
-    with _clients_lock:
-        dead_clients = []
-        for client in _clients:
+    try:
+        while _feed_running:
             try:
-                # asyncio.run_coroutine_threadsafe for async ws.send
-                asyncio.run(client.send_text(message))
-            except Exception:
-                dead_clients.append(client)
+                session = await _find_active_session()
 
-        for client in dead_clients:
-            _clients.discard(client)
+                if session:
+                    state = await _build_live_state(session)
+                    if state:
+                        await _publish_live_state(state)
+                        await asyncio.sleep(10)
+                        continue
+
+                source_available = await _handle_missing_session()
+                await asyncio.sleep(60 if source_available else 30)
+
+            except asyncio.CancelledError:
+                raise
+            except Exception as exc:
+                _last_error = str(exc)
+                _last_source_status = "error"
+                logger.exception("live_feed_loop_failed")
+                await asyncio.sleep(30)
+    finally:
+        _feed_running = False
 
 
-def start_feed():
-    """Start the live feed in a background thread."""
-    thread = threading.Thread(target=_feed_loop, daemon=True, name="live-feed")
-    thread.start()
-    logger.info("Live feed thread launched")
+async def _publish_live_state(state: dict) -> None:
+    """Timestamp, cache, and broadcast one fresh live snapshot."""
+    global _live_state, _last_update_at, _last_source_status
+
+    captured_at = datetime.now(timezone.utc)
+    published_state = {**state, "capturedAt": captured_at.isoformat()}
+    _live_state = published_state
+    _last_update_at = captured_at
+    _last_source_status = "degraded" if _last_error else "live"
+    try:
+        await cache.runtime_cache.set_json(
+            LIVE_STATE_CACHE_KEY,
+            {"active": True, **published_state},
+            LIVE_STATE_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        logger.warning(
+            "live_state_cache_write_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    await _broadcast(published_state)
 
 
-def stop_feed():
-    """Stop the live feed."""
-    global _feed_running
+async def _restore_cached_live_state() -> None:
+    """Restore a very recent live snapshot after a process restart."""
+    global _live_state, _last_update_at, _last_error, _last_source_status
+
+    if _live_state is not None:
+        return
+    try:
+        cached = await cache.runtime_cache.get_json(
+            LIVE_STATE_CACHE_KEY,
+            memory_ttl_seconds=LIVE_STATE_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        logger.warning(
+            "live_state_cache_read_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+        return
+    if not isinstance(cached, dict) or cached.get("active") is not True:
+        return
+
+    restored = {key: value for key, value in cached.items() if key != "active"}
+    captured_at = restored.get("capturedAt")
+    try:
+        parsed_at = datetime.fromisoformat(str(captured_at))
+    except (TypeError, ValueError):
+        return
+    if parsed_at.tzinfo is None:
+        parsed_at = parsed_at.replace(tzinfo=timezone.utc)
+    age_seconds = (datetime.now(timezone.utc) - parsed_at).total_seconds()
+    if age_seconds < -5 or age_seconds > LIVE_STATE_CACHE_TTL_SECONDS:
+        return
+
+    _live_state = restored
+    _last_update_at = parsed_at
+    _last_error = "Using a recent cached live snapshot while OpenF1 reconnects"
+    _last_source_status = "cached"
+
+
+async def _publish_no_live_session():
+    """Clear a finished session and notify clients without masking source errors."""
+    global _live_state
+    was_active = _live_state is not None
+    _live_state = None
+    try:
+        await cache.runtime_cache.delete(LIVE_STATE_CACHE_KEY)
+    except Exception as exc:
+        logger.warning(
+            "live_state_cache_delete_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    if was_active:
+        await _broadcast({"active": False, "session": None})
+
+
+async def _handle_missing_session() -> bool:
+    """Distinguish a real idle period from an upstream outage."""
+    global _last_source_status
+    if _last_source_status == "error":
+        return False
+
+    await _publish_no_live_session()
+    _last_source_status = "idle"
+    return True
+
+
+async def _broadcast(state: dict):
+    """Send state to all connected WebSocket clients."""
+    with _clients_lock:
+        clients = list(_clients)
+
+    if not clients:
+        return
+
+    results = await asyncio.gather(
+        *(client.send_json(state) for client in clients),
+        return_exceptions=True,
+    )
+    dead_clients = [
+        client
+        for client, result in zip(clients, results)
+        if isinstance(result, BaseException)
+    ]
+
+    if dead_clients:
+        with _clients_lock:
+            for client in dead_clients:
+                _clients.discard(client)
+
+
+async def start_feed():
+    """Start the live feed as one FastAPI-owned task."""
+    global _feed_running, _feed_task
+    if _feed_task is not None and not _feed_task.done():
+        return
+
+    await _restore_cached_live_state()
+    _feed_running = True
+    _feed_task = asyncio.create_task(_feed_loop(), name="live-feed")
+    logger.info("Live feed task launched")
+
+
+async def stop_feed():
+    """Cancel and await the live feed task."""
+    global _feed_running, _feed_task
     _feed_running = False
+    task = _feed_task
+    _feed_task = None
+    if task is None:
+        return
+
+    task.cancel()
+    with suppress(asyncio.CancelledError):
+        await task

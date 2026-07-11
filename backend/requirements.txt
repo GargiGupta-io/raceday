@@ -5,7 +5,11 @@ pandas
 numpy
 python-dotenv
 requests
+httpx
+redis>=5.0,<7.0
+asyncpg>=0.29,<1.0
 pytest
+pytest-asyncio
 
 # Optional: radio transcription (local, no API key needed)
 # faster-whisper

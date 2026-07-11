@@ -10,8 +10,10 @@ is re-checked periodically to pick up new races as they happen.
 """
 
 import asyncio
+import hashlib
 import logging
 import os
+import secrets
 import threading
 import time
 from collections import Counter
@@ -25,7 +27,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
-from backend.core import companion, indexer, insights, storage
+from backend.core import cache, companion, event_store, http_client, indexer, insights, storage
 from backend.core import live_demo, live_feed
 
 logger = logging.getLogger(__name__)
@@ -48,6 +50,41 @@ _indexing_status = {
 }
 
 PREBUILT_INDEX_MIN_RACES = int(os.getenv("PREBUILT_INDEX_MIN_RACES", "100"))
+SEASON_SUMMARY_CACHE_KEY = "raceday:season-summary:v1"
+SEASON_SUMMARY_CACHE_TTL_SECONDS = 600
+
+
+def _positive_env_int(name: str, default: int) -> int:
+    try:
+        value = int(os.getenv(name, str(default)))
+    except ValueError:
+        return default
+    return value if value > 0 else default
+
+
+_RATE_LIMIT_POLICIES = {
+    "companion-note": (
+        _positive_env_int("RATE_LIMIT_COMPANION_PER_MINUTE", 120),
+        60,
+    ),
+    "companion-analysis": (
+        _positive_env_int("RATE_LIMIT_ANALYSIS_PER_MINUTE", 30),
+        60,
+    ),
+    "simulation": (
+        _positive_env_int("RATE_LIMIT_SIMULATION_PER_MINUTE", 60),
+        60,
+    ),
+    "refresh": (
+        _positive_env_int("RATE_LIMIT_REFRESH_PER_HOUR", 6),
+        3600,
+    ),
+}
+_RATE_LIMIT_SALT = (
+    os.getenv("RATE_LIMIT_SALT")
+    or os.getenv("REDIS_URL")
+    or secrets.token_hex(32)
+)
 
 
 def _env_flag(name: str) -> bool:
@@ -81,6 +118,9 @@ class DataSourceHealth(BaseModel):
     purpose: str
     timeout_seconds: int | None = None
     note: str | None = None
+    circuit: str | None = None
+    circuit_failures: int | None = None
+    circuit_retry_after_seconds: float | None = None
 
 
 class IndexingStatusResponse(BaseModel):
@@ -102,12 +142,39 @@ class LiveStatusResponse(BaseModel):
     source: str
 
 
+class CacheStatusResponse(BaseModel):
+    status: str
+    backend: str
+    redis_configured: bool
+    redis_available: bool
+    fallback_backend: str
+    last_error: str | None = None
+    retry_after_seconds: float
+
+
+class EventStoreStatusResponse(BaseModel):
+    status: str
+    enabled: bool
+    database_configured: bool
+    database_available: bool
+    worker_running: bool
+    queue_depth: int
+    queue_capacity: int
+    written_events: int
+    failed_writes: int
+    dropped_events: int
+    invalid_events: int
+    last_error: str | None = None
+    retry_after_seconds: float
+
+
 class StorageStatusResponse(BaseModel):
     backend: str
     json_index_dir: str
     database_url_configured: bool
     postgres_ready: bool
     active_store: str
+    event_store: EventStoreStatusResponse
 
 
 class CompanionVideoRequest(BaseModel):
@@ -213,16 +280,23 @@ def _use_prebuilt_index_if_available() -> bool:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: use the shipped index when available, otherwise build it in the background.
-    if _use_prebuilt_index_if_available():
-        thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
-    else:
-        thread = threading.Thread(target=_background_index_all, daemon=True)
-    thread.start()
-    live_feed.start_feed()
-    yield
-    # Shutdown
-    live_feed.stop_feed()
+    await event_store.start_service_event_store()
+    try:
+        await cache.start_runtime_cache()
+        await http_client.start_upstream_client()
+        # Startup: use the shipped index when available, otherwise build it in the background.
+        if _use_prebuilt_index_if_available():
+            thread = threading.Thread(target=_periodic_current_season_check, daemon=True)
+        else:
+            thread = threading.Thread(target=_background_index_all, daemon=True)
+        thread.start()
+        await live_feed.start_feed()
+        yield
+    finally:
+        await live_feed.stop_feed()
+        await http_client.stop_upstream_client()
+        await cache.stop_runtime_cache()
+        await event_store.stop_service_event_store()
 
 
 # ---------------------------------------------------------------------------
@@ -242,6 +316,74 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+
+
+def _rate_limit_policy(method: str, path: str) -> tuple[str, int, int] | None:
+    if method.upper() != "POST":
+        return None
+    if path == "/companion/note":
+        limit, window = _RATE_LIMIT_POLICIES["companion-note"]
+        return "companion-note", limit, window
+    if path == "/companion/analyze-video":
+        limit, window = _RATE_LIMIT_POLICIES["companion-analysis"]
+        return "companion-analysis", limit, window
+    if path.startswith("/refresh/"):
+        limit, window = _RATE_LIMIT_POLICIES["refresh"]
+        return "refresh", limit, window
+    if path.endswith("/simulate") or path.endswith("/simulate-swap"):
+        limit, window = _RATE_LIMIT_POLICIES["simulation"]
+        return "simulation", limit, window
+    return None
+
+
+def _rate_limit_identifier(request: Request) -> str:
+    forwarded = request.headers.get("x-forwarded-for", "").rsplit(",", 1)[-1].strip()
+    address = (
+        request.headers.get("cf-connecting-ip")
+        or request.headers.get("x-real-ip")
+        or forwarded
+        or (request.client.host if request.client else "unknown")
+    )
+    digest = hashlib.sha256(f"{_RATE_LIMIT_SALT}:{address[:256]}".encode("utf-8"))
+    return digest.hexdigest()[:24]
+
+
+@app.middleware("http")
+async def targeted_rate_limit(request: Request, call_next):
+    policy = _rate_limit_policy(request.method, request.url.path)
+    if policy is None:
+        return await call_next(request)
+
+    scope, limit, window_seconds = policy
+    try:
+        decision = await cache.rate_limiter.check(
+            scope,
+            _rate_limit_identifier(request),
+            limit=limit,
+            window_seconds=window_seconds,
+        )
+    except Exception as exc:
+        logger.warning(
+            "rate_limiter_failed_open",
+            extra={"scope": scope, "error_type": type(exc).__name__},
+        )
+        return await call_next(request)
+
+    headers = {
+        "X-RateLimit-Limit": str(decision.limit),
+        "X-RateLimit-Remaining": str(decision.remaining),
+    }
+    if not decision.allowed:
+        headers["Retry-After"] = str(decision.retry_after_seconds)
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Too many requests. Please try again shortly."},
+            headers=headers,
+        )
+
+    response = await call_next(request)
+    response.headers.update(headers)
+    return response
 
 
 @app.exception_handler(Exception)
@@ -272,7 +414,29 @@ def health():
 @app.get("/health/data-sources", response_model=list[DataSourceHealth])
 def data_source_health():
     live_status = live_feed.get_live_status()
-    openf1_status = "degraded" if live_status.get("status") == "error" else "configured"
+    circuit_status = http_client.circuit_breakers.snapshot()
+
+    def breaker_fields(source: str) -> dict:
+        snapshot = circuit_status.get(source, {})
+        if not snapshot:
+            return {}
+        return {
+            "circuit": snapshot["state"],
+            "circuit_failures": snapshot["failure_count"],
+            "circuit_retry_after_seconds": snapshot["retry_after_seconds"],
+        }
+
+    def source_status(source: str, default: str = "configured") -> str:
+        snapshot = circuit_status.get(source, {})
+        if snapshot.get("state") in {"open", "half_open"}:
+            return "degraded"
+        return default
+
+    openf1_status = source_status("openf1")
+    if live_status.get("status") in {"error", "degraded"}:
+        openf1_status = "degraded"
+
+    ai_configured = bool(os.getenv("OPENAI_API_KEY") or os.getenv("GEMINI_API_KEY"))
     return [
         {
             "name": "FastF1",
@@ -282,15 +446,17 @@ def data_source_health():
         },
         {
             "name": "Jolpica",
-            "status": "configured",
+            "status": source_status("jolpica"),
             "purpose": "Historical schedules and results fallback",
             "timeout_seconds": 15,
+            **breaker_fields("jolpica"),
         },
         {
             "name": "OpenMeteo",
-            "status": "configured",
+            "status": source_status("openmeteo"),
             "purpose": "Weather context for race conditions",
             "timeout_seconds": 15,
+            **breaker_fields("openmeteo"),
         },
         {
             "name": "OpenF1",
@@ -298,8 +464,27 @@ def data_source_health():
             "purpose": "Live session, timing, stint, and driver data",
             "timeout_seconds": live_feed.OPENF1_TIMEOUT_SECONDS,
             "note": live_status.get("last_error"),
+            **breaker_fields("openf1"),
+        },
+        {
+            "name": "Companion AI",
+            "status": source_status("ai", "configured" if ai_configured else "optional"),
+            "purpose": "Optional beginner-language refinement for companion notes",
+            "timeout_seconds": 10,
+            "note": None if ai_configured else "Deterministic companion notes remain available",
+            **breaker_fields("ai"),
         },
     ]
+
+
+@app.get("/health/cache", response_model=CacheStatusResponse)
+def cache_health():
+    return cache.runtime_cache.status()
+
+
+@app.get("/health/events", response_model=EventStoreStatusResponse)
+def event_store_health():
+    return event_store.service_events.status()
 
 
 @app.post("/refresh/{year}")
@@ -350,7 +535,7 @@ def companion_analyze_video(payload: CompanionVideoRequest):
 
 
 @app.post("/companion/note")
-def companion_note(payload: CompanionNoteRequest):
+async def companion_note(payload: CompanionNoteRequest):
     """
     Return the current short RaceDay companion note for a replay or live session.
     """
@@ -360,7 +545,11 @@ def companion_note(payload: CompanionNoteRequest):
         live_state = data.get("liveState")
         if data.get("mode") == "live" and live_state is None:
             live_state = live_feed.get_live_state()
-        return companion.build_companion_note(data, analysis=analysis, live_state=live_state)
+        return await companion.build_companion_note_with_ai(
+            data,
+            analysis=analysis,
+            live_state=live_state,
+        )
     except Exception as exc:
         logger.exception("companion_note_failed")
         raise HTTPException(status_code=500, detail=f"Companion note failed: {exc}")
@@ -409,12 +598,41 @@ def indexing_status():
 
 @app.get("/storage/status", response_model=StorageStatusResponse)
 def storage_status():
-    return storage.storage_status()
+    return {
+        **storage.storage_status(),
+        "event_store": event_store.service_events.status(),
+    }
 
 
 @app.get("/seasons/summary")
-def all_season_summaries():
-    return insights.get_all_season_summaries()
+async def all_season_summaries():
+    try:
+        cached = await cache.runtime_cache.get_json(
+            SEASON_SUMMARY_CACHE_KEY,
+            memory_ttl_seconds=SEASON_SUMMARY_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        cached = None
+        logger.warning(
+            "season_summary_cache_read_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    if isinstance(cached, list):
+        return cached
+
+    summaries = await asyncio.to_thread(insights.get_all_season_summaries)
+    try:
+        await cache.runtime_cache.set_json(
+            SEASON_SUMMARY_CACHE_KEY,
+            summaries,
+            SEASON_SUMMARY_CACHE_TTL_SECONDS,
+        )
+    except Exception as exc:
+        logger.warning(
+            "season_summary_cache_write_failed",
+            extra={"error_type": type(exc).__name__},
+        )
+    return summaries
 
 
 @app.get("/races/{year}")

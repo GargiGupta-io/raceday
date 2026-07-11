@@ -5,10 +5,15 @@
  */
 
 const DEFAULT_SETTINGS = {
-  backendUrl: "https://web-production-b8406.up.railway.app",
+  backendUrl: "https://raceday-backend.onrender.com",
   overlayEnabled: true,
   demoMode: false,
 };
+
+const LEGACY_BACKEND_URLS = new Set([
+  "http://localhost:8888",
+  "https://web-production-b8406.up.railway.app",
+]);
 
 const DEMO_DATA = {
   active: true,
@@ -91,7 +96,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 async function loadSettings() {
   const stored = await chrome.storage.local.get(DEFAULT_SETTINGS);
   settings = { ...DEFAULT_SETTINGS, ...stored };
-  if (!settings.backendUrl || settings.backendUrl === "http://localhost:8888") {
+  const backendUrl = String(settings.backendUrl || "").replace(/\/+$/, "");
+  if (!backendUrl || LEGACY_BACKEND_URLS.has(backendUrl)) {
     settings.backendUrl = DEFAULT_SETTINGS.backendUrl;
     await chrome.storage.local.set({ backendUrl: settings.backendUrl });
   }

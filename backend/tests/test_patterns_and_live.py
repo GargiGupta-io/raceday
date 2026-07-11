@@ -1,5 +1,14 @@
+import pytest
+
 from backend import api
 from backend.core import live_feed
+
+
+def async_result(value):
+    async def result(*args, **kwargs):
+        return value
+
+    return result
 
 
 def test_pattern_search_applies_filters(monkeypatch):
@@ -35,44 +44,47 @@ def test_pattern_search_applies_filters(monkeypatch):
     assert response["races"][0]["track"] == "Wet Test Grand Prix"
 
 
-def test_live_state_builder_uses_mocked_openf1_data(monkeypatch):
+@pytest.mark.asyncio
+async def test_live_state_builder_uses_mocked_openf1_data(monkeypatch):
     monkeypatch.setattr(
         live_feed,
         "_fetch_drivers",
-        lambda session_key: {
+        async_result({
             1: {
                 "code": "VER",
                 "name": "Max Verstappen",
                 "team": "Red Bull Racing",
                 "team_colour": "ff0000",
             }
-        },
+        }),
     )
     monkeypatch.setattr(
         live_feed,
         "_fetch_positions",
-        lambda session_key: [{"driver_number": 1, "position": 1}],
+        async_result([{"driver_number": 1, "position": 1}]),
     )
     monkeypatch.setattr(
         live_feed,
         "_fetch_stints",
-        lambda session_key: {
+        async_result({
             1: {
                 "compound": "MEDIUM",
                 "lap_start": 1,
                 "lap_end": 20,
                 "stint_number": 1,
             }
-        },
+        }),
     )
     monkeypatch.setattr(
         live_feed,
         "_fetch_lap_count",
-        lambda session_key: {"current": 20, "total": 58},
+        async_result({"current": 20, "total": 58}),
     )
     monkeypatch.setattr(live_feed, "_generate_pattern_alerts", lambda *args: [])
+    monkeypatch.setattr(live_feed, "_last_error", None)
+    monkeypatch.setattr(live_feed, "_last_source_status", "idle")
 
-    state = live_feed._build_live_state({
+    state = await live_feed._build_live_state({
         "session_key": 123,
         "year": 2026,
         "location": "Melbourne",

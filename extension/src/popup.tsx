@@ -11,7 +11,7 @@ interface ExtensionSettings {
 type ConnectionStatus = "connected" | "checking" | "offline" | "demo" | "no-session" | "stopped" | "disconnected";
 
 const DEFAULT_SETTINGS: ExtensionSettings = {
-  backendUrl: "https://web-production-b8406.up.railway.app",
+  backendUrl: "https://raceday-backend.onrender.com",
   overlayEnabled: true,
   overlayMode: "full",
   demoMode: false,
